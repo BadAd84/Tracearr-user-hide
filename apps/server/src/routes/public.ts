@@ -51,6 +51,7 @@ import { getCacheService } from '../services/cache.js';
 import { getDashboardStats } from '../services/dashboardStats.js';
 import { buildAvatarUrl, buildPosterUrl } from '../services/imageProxy.js';
 import { terminateSession } from '../services/termination.js';
+import { hiddenSessionConditions, withoutHiddenSessions } from '../fork/hiddenUsers.js'; // fork: hide users
 import { getCurrentVersion } from '../utils/buildInfo.js';
 import { generateOpenAPIDocument } from './public.openapi.js';
 import {
@@ -238,7 +239,9 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
 
     // Get cached health state and active sessions
     const cacheService = getCacheService();
-    const activeSessions = cacheService ? await cacheService.getAllActiveSessions() : [];
+    const activeSessions = withoutHiddenSessions(
+      cacheService ? await cacheService.getAllActiveSessions() : []
+    ); // fork: hide users
 
     // Build server status using cached health from the poller
     const serverStatus = await Promise.all(
@@ -277,6 +280,7 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
     // Get active streams
     const cacheService = getCacheService();
     let activeSessions = cacheService ? await cacheService.getAllActiveSessions() : [];
+    activeSessions = withoutHiddenSessions(activeSessions); // fork: hide users
     if (serverId) {
       activeSessions = activeSessions.filter((s) => s.serverId === serverId);
     }
@@ -336,6 +340,7 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
 
     const cacheService = getCacheService();
     let activeSessions = cacheService ? await cacheService.getAllActiveSessions() : [];
+    activeSessions = withoutHiddenSessions(activeSessions); // fork: hide users
 
     if (serverId) {
       activeSessions = activeSessions.filter((s) => s.serverId === serverId);
@@ -700,6 +705,7 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
       const endUTC = toEndOfDayUTC(endDate, timezone);
       conditions.push(sql`s.started_at <= ${endUTC}`);
     }
+    conditions.push(...hiddenSessionConditions('s')); // fork: hide users
 
     const whereClause =
       conditions.length > 0 ? sql`WHERE ${sql.join(conditions, sql` AND `)}` : sql``;

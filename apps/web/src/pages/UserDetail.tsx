@@ -26,6 +26,7 @@ import { UserDevicesCard } from '@/components/users/UserDevicesCard';
 import { EditUserIdentityDialog } from '@/components/users/EditUserIdentityDialog';
 import { ContactEmailLine } from '@/components/users/ContactEmailLine';
 import { EditTrustScoreDialog } from '@/components/users/EditTrustScoreDialog';
+import { HideUserToggle } from '@/fork/HideUserToggle'; // fork: hide users
 import { SessionDetailSheet } from '@/components/history/SessionDetailSheet';
 import { HistoryTable } from '@/components/history/HistoryTable';
 import type { ColumnVisibility } from '@/components/history/HistoryFilters';
@@ -594,6 +595,7 @@ export function UserDetail() {
                     {removedBadgeState.removed && (
                       <RemovedBadge removedAt={removedBadgeState.removedAt} />
                     )}
+                    {isOwner && identityUserId && <HideUserToggle userId={identityUserId} />}
                   </div>
                   <p className="text-muted-foreground text-sm">@{user.username}</p>
                   <ContactEmailLine

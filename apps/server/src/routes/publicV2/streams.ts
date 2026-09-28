@@ -10,6 +10,7 @@ import { db } from '../../db/client.js';
 import { getCacheService } from '../../services/cache.js';
 import { buildAvatarUrl, buildPosterUrl } from '../../services/imageProxy.js';
 import { displayValues, emptyToNull, type RouteConfig } from './shared.js';
+import { withoutHiddenSessions } from '../../fork/hiddenUsers.js'; // fork: hide users
 
 interface SessionIdentityRow {
   id: string;
@@ -49,6 +50,7 @@ export function registerStreamsRoutes(app: FastifyInstance, routeConfig: RouteCo
 
       const cacheService = getCacheService();
       let activeSessions = cacheService ? await cacheService.getAllActiveSessions() : [];
+      activeSessions = withoutHiddenSessions(activeSessions); // fork: hide users
       if (serverId) {
         activeSessions = activeSessions.filter((s) => s.serverId === serverId);
       }

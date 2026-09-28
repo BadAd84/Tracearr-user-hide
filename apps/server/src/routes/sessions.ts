@@ -42,6 +42,12 @@ import { serverOrderBy } from '../utils/serverOrder.js';
 import { isLocalSession, localSessionSql } from '../utils/localSession.js';
 import { terminateSession } from '../services/termination.js';
 import { getCacheService } from '../services/cache.js';
+import {
+  hiddenSessionConditions,
+  hiddenUsersKey,
+  withoutHiddenSessions,
+  withoutHiddenUsers,
+} from '../fork/hiddenUsers.js'; // fork: hide users
 
 // Register English locale for country name lookups
 countries.registerLocale(countriesEn);
@@ -202,6 +208,7 @@ function buildHistoryFilterConditions(
   // Status filters
   if (watched !== undefined) conditions.push(sql`s.watched = ${watched}`);
   if (excludeShortSessions) conditions.push(sql`s.short_session = false`);
+  conditions.push(...hiddenSessionConditions('s')); // fork: hide users
 
   return { conditions, whereClause: buildWhereClause(conditions) };
 }
@@ -299,6 +306,7 @@ export const sessionRoutes: FastifyPluginAsync = async (app) => {
       endOfDay.setHours(23, 59, 59, 999);
       conditions.push(sql`s.started_at <= ${endOfDay}`);
     }
+    conditions.push(...hiddenSessionConditions('s')); // fork: hide users
 
     // Build the WHERE clause
     const whereClause =
@@ -1116,6 +1124,7 @@ export const sessionRoutes: FastifyPluginAsync = async (app) => {
         startDate: startDate?.toISOString(),
         endDate: endDate?.toISOString(),
         includeAllCountries,
+        hiddenUsers: includeAllCountries ? '' : hiddenUsersKey(), // fork: hide users
       },
       authUser.userId
     );
@@ -1334,7 +1343,7 @@ export const sessionRoutes: FastifyPluginAsync = async (app) => {
       devices: devicesResult.rows as unknown as HistoryFilterOptions['devices'],
       countries: countriesResult.rows as unknown as HistoryFilterOptions['countries'],
       cities: citiesResult.rows as unknown as HistoryFilterOptions['cities'],
-      users: usersData,
+      users: withoutHiddenUsers(usersData), // fork: hide users
       servers: serversData,
     };
 
@@ -1378,6 +1387,7 @@ export const sessionRoutes: FastifyPluginAsync = async (app) => {
     }
     // else: owner with no filter, keep all
 
+    activeSessions = withoutHiddenSessions(activeSessions); // fork: hide users
     return { data: activeSessions };
   });
 

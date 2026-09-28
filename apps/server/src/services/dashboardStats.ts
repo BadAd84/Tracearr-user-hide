@@ -21,6 +21,7 @@ import { VIOLATION_ALIAS_SQL } from './automations/aliasFilter.js';
 import { getCacheService } from './cache.js';
 import { getStartOfDayInTimezone, getStartOfNextDayInTimezone } from '../routes/stats/utils.js';
 import { PRIMARY_MEDIA_TYPES, MEDIA_TYPE_SQL_FILTER } from '../constants/index.js';
+import { withoutHiddenSessions } from '../fork/hiddenUsers.js'; // fork: hide users
 
 export interface GetDashboardStatsOptions {
   /** Server IDs to filter by. undefined = all servers */
@@ -83,6 +84,7 @@ async function computeDashboardStats(
         const idSet = new Set(serverIds);
         activeSessions = activeSessions.filter((s) => idSet.has(s.serverId));
       }
+      activeSessions = withoutHiddenSessions(activeSessions); // fork: hide users
       activeStreams = activeSessions.length;
     } catch {
       // Ignore cache errors

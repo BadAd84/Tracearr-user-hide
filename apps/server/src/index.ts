@@ -14,6 +14,8 @@ import { Redis } from 'ioredis';
 import { API_BASE_PATH, API_V2_BASE_PATH, REDIS_KEYS, WS_EVENTS } from '@tracearr/shared';
 import { createBetterAuthHandler } from './lib/betterAuthRequest.js';
 import { getBasePath } from './lib/basePath.js';
+import { hiddenUsersRoutes } from './fork/hiddenUsersRoutes.js'; // fork: hide users
+import { isHiddenSessionEvent, startHiddenUsersSync } from './fork/hiddenUsers.js'; // fork: hide users
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -534,6 +536,7 @@ async function buildApp(options: { trustProxy?: boolean } = {}) {
   await app.register(publicV2Routes, { prefix: `${API_V2_BASE_PATH}/public` });
   await app.register(libraryRoutes, { prefix: `${API_BASE_PATH}/library` });
   await app.register(backupRoutes, { prefix: `${API_BASE_PATH}/backup` });
+  await app.register(hiddenUsersRoutes, { prefix: `${API_BASE_PATH}/fork/hidden-users` }); // fork: hide users
 
   // Serve static frontend in production
   if (serveSpa) {
@@ -1186,6 +1189,7 @@ async function initializePostListen(app: FastifyInstance) {
   // Initialize WebSocket server using Fastify's underlying HTTP server
   const httpServer = app.server;
   initializeWebSocket(httpServer, BASE_PATH, app.redis);
+  await startHiddenUsersSync(); // fork: hide users
   app.log.info('WebSocket server initialized');
 
   // Set up Redis pub/sub to forward events to WebSocket clients
@@ -1217,6 +1221,7 @@ async function initializePostListen(app: FastifyInstance) {
         data: unknown;
         timestamp: number;
       };
+      if (isHiddenSessionEvent(event, data)) return; // fork: hide users
 
       // Forward events to WebSocket clients
       switch (event) {

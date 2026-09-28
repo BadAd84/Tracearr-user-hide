@@ -13,6 +13,7 @@ import {
 } from '../../services/library/mediaDetailService.js';
 import { decodeCursor } from '../../utils/cursor.js';
 import { cursorPage, cursorPaginationSchema, runHistoryPage, type RouteConfig } from './shared.js';
+import { hiddenSessionConditions } from '../../fork/hiddenUsers.js'; // fork: hide users
 
 export function registerHistoryRoutes(app: FastifyInstance, routeConfig: RouteConfig): void {
   /**
@@ -92,6 +93,7 @@ export function registerHistoryRoutes(app: FastifyInstance, routeConfig: RouteCo
       if (mediaType) conditions.push(sql`s.media_type = ${mediaType}`);
       if (since) conditions.push(sql`s.started_at >= ${since}`);
       if (until) conditions.push(sql`s.started_at <= ${until}`);
+      conditions.push(...hiddenSessionConditions('s')); // fork: hide users
 
       const { data, nextCursor } = await runHistoryPage(conditions, pageSize, cursorValue, watched);
       return cursorPage(data, nextCursor, pageSize);
