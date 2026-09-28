@@ -19,7 +19,7 @@ async function hiddenUsersRequest(path: string, method = 'GET'): Promise<string[
 
 export function HideUserToggle({ userId }: { userId: string }) {
   const queryClient = useQueryClient();
-  const { data: hiddenIds } = useQuery({
+  const { data: hiddenIds, error } = useQuery({
     queryKey: HIDDEN_USERS_KEY,
     queryFn: () => hiddenUsersRequest(''),
   });
@@ -38,9 +38,13 @@ export function HideUserToggle({ userId }: { userId: string }) {
     },
   });
 
-  if (hiddenIds === undefined) return null;
+  if (hiddenIds === undefined && !error) return null;
 
-  const label = hidden ? 'Show in activity and history' : 'Hide from activity and history';
+  const label = error
+    ? `Hidden users unavailable: ${error.message}`
+    : hidden
+      ? 'Show in activity and history'
+      : 'Hide from activity and history';
   return (
     <>
       <Button
@@ -49,7 +53,7 @@ export function HideUserToggle({ userId }: { userId: string }) {
         className="h-7 w-7"
         aria-label={label}
         title={label}
-        disabled={mutation.isPending}
+        disabled={!!error || mutation.isPending}
         onClick={() => mutation.mutate(!hidden)}
       >
         {hidden ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
