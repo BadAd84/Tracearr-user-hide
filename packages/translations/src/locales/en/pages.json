@@ -53,7 +53,6 @@
     "title": "Users",
     "showRemoved": "Show removed",
     "noUsersFound": "No users found.",
-    "searchPlaceholder": "Search users...",
     "selectAllUsers_one": "Select {{count}} user",
     "selectAllUsers_other": "Select all {{count}} users",
     "serversColumn": "Servers",
@@ -73,8 +72,6 @@
     "mergeRequired": "{{name}} can sign in to Tracearr, so {{name}} is kept.",
     "mergeLastActive": "Last active {{relative}}",
     "mergeNeverActive": "Never active",
-    "mergeSessions_one": "{{count}} session",
-    "mergeSessions_other": "{{count}} sessions",
     "mergeMoreServers": "+{{count}}",
     "mergeWhatHappens": "What happens",
     "mergeMoves_one": "{{foldName}}'s server accounts and {{count}} session move to {{keepName}}.",
@@ -227,7 +224,6 @@
       "noDuplicatesTitle": "No duplicates found",
       "noDuplicatesDesc": "No titles with more than one physical file detected.",
       "colTitle": "Title",
-      "colType": "Type",
       "colMatchType": "Match Type",
       "colCopies": "Copies",
       "colRecoverable": "Recoverable Space",
@@ -495,7 +491,6 @@
       "nameHelper": "The name in the automations list.",
       "namePlaceholder": "A name for this automation",
       "activeLabel": "Turn it on now",
-      "back": "Back",
       "submit": "Use this",
       "submitting": "Setting it up…",
       "customize": "Open in the builder",
@@ -1641,7 +1636,6 @@
       "alertsGoTo_other": "Alerts go to {{count}} addresses",
       "builtinNote": "Built in",
       "clearSecret": "Clear",
-      "delete": "Delete",
       "deleteConfirm": "Delete {{name}}? Automations and newsletters that use it stop until they are updated.",
       "description": "Where notifications go. Add as many as you like, and automations can send to any of them.",
       "emailDescription": "Tracearr sends mail through this SMTP server. Newsletters pick their own recipients; automation alerts go to the addresses below.",
@@ -1951,7 +1945,6 @@
         "columns": {
           "poster": "Poster",
           "title": "Title",
-          "size": "Size",
           "added": "Added",
           "servers": "Servers"
         },
@@ -1980,7 +1973,6 @@
         "title": "Genre breakdown",
         "columns": {
           "genre": "Genre",
-          "items": "Items",
           "plays": "Plays",
           "watchTime": "Watch time"
         },
@@ -2053,7 +2045,6 @@
         "lastWatchedAgo": "{{age}} ago",
         "completionLabel": "{{percent}}% complete",
         "columns": {
-          "user": "User",
           "plays": "Plays",
           "episodes": "Episodes",
           "completion": "Completion",
@@ -2080,7 +2071,6 @@
         "empty": "No platform data yet",
         "unknown": "Unknown",
         "columns": {
-          "platform": "Platform",
           "plays": "Plays",
           "watchTime": "Watch time"
         }
@@ -2092,10 +2082,6 @@
         "watched": "Watched",
         "notWatched": "Not finished",
         "columns": {
-          "date": "Date",
-          "user": "User",
-          "content": "Content",
-          "server": "Server",
           "duration": "Duration"
         }
       },
@@ -2104,11 +2090,8 @@
         "loadError": "Couldn't load copies",
         "unknownLibrary": "Unknown library",
         "columns": {
-          "server": "Server",
           "library": "Library",
-          "quality": "Quality",
           "episodes": "Episodes",
-          "size": "Size",
           "added": "Added"
         },
         "versionLabel": "File {{index}}"
@@ -2118,8 +2101,6 @@
       "rankSuffix": ", rank {{rank}}",
       "onServers": "On {{servers}}",
       "addedLabel": "Added {{date}}",
-      "plays_one": "{{count}} play",
-      "plays_other": "{{count}} plays",
       "viewers_one": "{{count}} viewer",
       "viewers_other": "{{count}} viewers",
       "watchedState": {
@@ -2150,7 +2131,6 @@
         "showsToggle": "Shows",
         "searchPlaceholder": "Search titles…",
         "searchLabel": "Search titles",
-        "removeFilter": "Remove {{label}} filter",
         "filtersLabel": "Filters",
         "filtersSheetTitle": "Filters",
         "done": "Done",
@@ -2221,7 +2201,6 @@
     "columns": {
       "requester": "Requested by",
       "title": "Title",
-      "status": "Status",
       "requested": "Requested",
       "wait": "Wait",
       "seasons": "Seasons",

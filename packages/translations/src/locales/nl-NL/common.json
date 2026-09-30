@@ -229,8 +229,8 @@
     "location_other": "{{count}} locaties",
     "device_one": "{{count}} apparaat",
     "device_other": "{{count}} apparaten",
-    "play_one": "",
-    "play_other": "",
+    "play_one": "{{count}} keer afgespeeld",
+    "play_other": "{{count}} keer afgespeeld",
     "segment_one": "",
     "segment_other": ""
   },

@@ -229,7 +229,7 @@
     "location_other": "{{count}}条违反",
     "device_one": "{{count}} 已选",
     "device_other": "{{count}} 已选",
-    "play_one": "",
+    "play_one": "{{count}} 次播放",
     "play_other": "{{count}} 次播放",
     "segment_one": "",
     "segment_other": ""

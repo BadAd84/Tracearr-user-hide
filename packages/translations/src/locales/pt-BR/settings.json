@@ -154,7 +154,6 @@
     "serverUrlPlaceholder": "",
     "serverNamePlaceholder": "Meu Servidor de Mídia",
     "apiKeyPlaceholder": "Digite sua chave da API",
-    "connecting": "A ligar...",
     "connectServer": "Conectar servidor",
     "removeServer": "Remover Servidor",
     "removeServerConfirm": "Tem certeza que deseja remover este servidor? Todos os dados da sessão associados serão mantidos, mas você não será capaz de monitorar novas sessões deste servidor.",
@@ -195,7 +194,6 @@
       "addMove": "",
       "fromBeginning": "",
       "movedOn": "",
-      "remove": "",
       "latitude": "",
       "longitude": "",
       "country": "",
@@ -219,7 +217,6 @@
       "copyUrl": "",
       "jellyfinRepoUrl": "",
       "autoDetectNote": "",
-      "close": "",
       "issueBlocked": "",
       "issueRestartRequired": "",
       "issueMalfunctioned": ""
@@ -478,9 +475,6 @@
     "lowDiskSpace": "Pouco espaço em disco — backups e restaurações requerem pelo menos o dobro do tamanho do banco de dados no espaço livre.",
     "backupHistory": "Histórico de backup",
     "noBackups": "Nenhum backup ainda. Crie seu primeiro backup acima.",
-    "size": "Tamanho",
-    "date": "Encontro",
-    "type": "tipo",
     "version": "Versão",
     "actions": "Ações.",
     "rowActions": "",
@@ -553,7 +547,6 @@
     "noDestinationDescription": "",
     "noDestinationHint": "",
     "addEmailDestination": "",
-    "enabled": "",
     "rowActions": "",
     "duplicate": "",
     "sendNow": "",
@@ -595,7 +588,6 @@
       "link": "",
       "bulletList": "",
       "linkHref": "",
-      "linkApply": "",
       "counter": ""
     },
     "editor": {
@@ -678,7 +670,6 @@
           "albums": "",
           "mostPlayed": ""
         },
-        "labels": {},
         "musicHelp": "",
         "mostWatchedHelp": ""
       },
@@ -991,7 +982,6 @@
       "hideKey": "",
       "test": "",
       "testing": "",
-      "save": "",
       "saveHint": "",
       "match": "",
       "mismatch": "",

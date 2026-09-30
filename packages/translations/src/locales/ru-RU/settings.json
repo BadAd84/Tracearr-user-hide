@@ -154,7 +154,6 @@
     "serverUrlPlaceholder": "",
     "serverNamePlaceholder": "Мой медиа сервер",
     "apiKeyPlaceholder": "Введите ваш API ключ",
-    "connecting": "Подключение...",
     "connectServer": "Подключить сервер",
     "removeServer": "Удалить сервер",
     "removeServerConfirm": "Вы уверены, что хотите удалить этот сервер? Все соответствующие данные сессии будут сохранены, но вы не сможете контролировать новые сеансы с этого сервера.",
@@ -195,7 +194,6 @@
       "addMove": "",
       "fromBeginning": "",
       "movedOn": "",
-      "remove": "",
       "latitude": "",
       "longitude": "",
       "country": "",
@@ -219,7 +217,6 @@
       "copyUrl": "",
       "jellyfinRepoUrl": "",
       "autoDetectNote": "",
-      "close": "",
       "issueBlocked": "",
       "issueRestartRequired": "",
       "issueMalfunctioned": ""
@@ -479,9 +476,6 @@
     "lowDiskSpace": "Низкое место на диске — резервные копии и восстановления требуют по крайней мере в два раза больше размера базы данных в свободное пространство.",
     "backupHistory": "История резервных копий",
     "noBackups": "Резервных копий пока нет. Создайте первую резервную копию выше.",
-    "size": "Размер",
-    "date": "Дата",
-    "type": "Тип",
     "version": "Версии",
     "actions": "Действия",
     "rowActions": "",
@@ -554,7 +548,6 @@
     "noDestinationDescription": "",
     "noDestinationHint": "",
     "addEmailDestination": "",
-    "enabled": "",
     "rowActions": "",
     "duplicate": "",
     "sendNow": "",
@@ -596,7 +589,6 @@
       "link": "",
       "bulletList": "",
       "linkHref": "",
-      "linkApply": "",
       "counter": ""
     },
     "editor": {
@@ -679,7 +671,6 @@
           "albums": "",
           "mostPlayed": ""
         },
-        "labels": {},
         "musicHelp": "",
         "mostWatchedHelp": ""
       },
@@ -992,7 +983,6 @@
       "hideKey": "",
       "test": "",
       "testing": "",
-      "save": "",
       "saveHint": "",
       "match": "",
       "mismatch": "",

@@ -154,7 +154,6 @@
     "serverUrlPlaceholder": "",
     "serverNamePlaceholder": "Il Mio Media Server",
     "apiKeyPlaceholder": "Inserisci la tua chiave API",
-    "connecting": "Connessione...",
     "connectServer": "Connetti Server",
     "removeServer": "Rimuovi Server",
     "removeServerConfirm": "Sei sicuro di voler rimuovere questo server? Tutti i dati associati alla sessione saranno conservati, ma non sarai in grado di monitorare nuove sessioni da questo server.",
@@ -195,7 +194,6 @@
       "addMove": "",
       "fromBeginning": "",
       "movedOn": "",
-      "remove": "",
       "latitude": "",
       "longitude": "",
       "country": "",
@@ -219,7 +217,6 @@
       "copyUrl": "",
       "jellyfinRepoUrl": "",
       "autoDetectNote": "",
-      "close": "",
       "issueBlocked": "",
       "issueRestartRequired": "",
       "issueMalfunctioned": ""
@@ -479,9 +476,6 @@
     "lowDiskSpace": "Spazio su disco basso: i backup e i ripristini richiedono almeno il doppio della dimensione del database nello spazio libero.",
     "backupHistory": "Cronologia Backup",
     "noBackups": "Ancora nessun backup. Crea il tuo primo backup sopra.",
-    "size": "Dimensione",
-    "date": "Data",
-    "type": "Tipo",
     "version": "Versione",
     "actions": "Azioni",
     "rowActions": "",
@@ -554,7 +548,6 @@
     "noDestinationDescription": "",
     "noDestinationHint": "",
     "addEmailDestination": "",
-    "enabled": "",
     "rowActions": "",
     "duplicate": "",
     "sendNow": "",
@@ -596,7 +589,6 @@
       "link": "",
       "bulletList": "",
       "linkHref": "",
-      "linkApply": "",
       "counter": ""
     },
     "editor": {
@@ -679,7 +671,6 @@
           "albums": "",
           "mostPlayed": ""
         },
-        "labels": {},
         "musicHelp": "",
         "mostWatchedHelp": ""
       },
@@ -992,7 +983,6 @@
       "hideKey": "",
       "test": "",
       "testing": "",
-      "save": "",
       "saveHint": "",
       "match": "",
       "mismatch": "",

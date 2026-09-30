@@ -53,7 +53,6 @@
     "title": "Utilisateurs",
     "showRemoved": "Afficher les utilisateurs supprimés",
     "noUsersFound": "Aucun utilisateur trouvé.",
-    "searchPlaceholder": "Rechercher des utilisateurs...",
     "selectAllUsers_other": "Sélectionner les {{count}} utilisateurs",
     "serversColumn": "Serveurs",
     "resetTrustScore": "Réinitialiser le score de confiance",
@@ -72,8 +71,6 @@
     "mergeRequired": "",
     "mergeLastActive": "",
     "mergeNeverActive": "",
-    "mergeSessions_one": "{{count}} session",
-    "mergeSessions_other": "{{count}} sessions",
     "mergeMoreServers": "",
     "mergeWhatHappens": "",
     "mergeMoves_one": "",
@@ -226,7 +223,6 @@
       "noDuplicatesTitle": "Aucun doublon trouvé",
       "noDuplicatesDesc": "Aucun titre avec plus d'un fichier physique détecté.",
       "colTitle": "Titre",
-      "colType": "Type",
       "colMatchType": "Type de correspondance",
       "colCopies": "Copies",
       "colRecoverable": "Espace récupérable",
@@ -490,7 +486,6 @@
       "nameHelper": "Le nom dans la liste des automatisations.",
       "namePlaceholder": "Un nom pour cette automatisation",
       "activeLabel": "Activez-le maintenant",
-      "back": "Retour",
       "submit": "Utiliser ceci",
       "submitting": "Configuration de…",
       "customize": "Ouvrir dans le constructeur",
@@ -1632,7 +1627,6 @@
       "alertsGoTo_other": "",
       "builtinNote": "",
       "clearSecret": "",
-      "delete": "",
       "deleteConfirm": "",
       "description": "",
       "emailDescription": "",
@@ -1936,7 +1930,6 @@
         "columns": {
           "poster": "Affiche",
           "title": "Titre",
-          "size": "Taille",
           "added": "Ajouté",
           "servers": "Serveurs"
         },
@@ -1965,7 +1958,6 @@
         "title": "",
         "columns": {
           "genre": "",
-          "items": "Éléments",
           "plays": "Lectures",
           "watchTime": "Temps de visionnage"
         },
@@ -2038,7 +2030,6 @@
         "lastWatchedAgo": "il y a {{age}}",
         "completionLabel": "{{percent}} % terminé",
         "columns": {
-          "user": "Utilisateurs",
           "plays": "Lectures",
           "episodes": "Épisodes",
           "completion": "Avancement",
@@ -2065,7 +2056,6 @@
         "empty": "Aucune donnée de plateforme pour le moment",
         "unknown": "Inconnu",
         "columns": {
-          "platform": "Plateforme",
           "plays": "Lectures",
           "watchTime": "Temps de visionnage"
         }
@@ -2077,10 +2067,6 @@
         "watched": "",
         "notWatched": "",
         "columns": {
-          "date": "",
-          "user": "Utilisateur",
-          "content": "Contenu",
-          "server": "Serveur",
           "duration": "Durée"
         }
       },
@@ -2089,11 +2075,8 @@
         "loadError": "Échec du chargement des copies",
         "unknownLibrary": "Bibliothèque inconnue",
         "columns": {
-          "server": "Serveur",
           "library": "Bibliothèque",
-          "quality": "Qualité",
           "episodes": "Épisodes",
-          "size": "Taille",
           "added": "Ajouté"
         },
         "versionLabel": "Fichier {{index}}"
@@ -2103,8 +2086,6 @@
       "rankSuffix": ", rang {{rank}}",
       "onServers": "Sur {{servers}}",
       "addedLabel": "Ajouté {{date}}",
-      "plays_one": "{{count}} lecture",
-      "plays_other": "{{count}} lectures",
       "viewers_one": "{{count}} spectateur",
       "viewers_other": "{{count}} spectateurs",
       "watchedState": {
@@ -2135,7 +2116,6 @@
         "showsToggle": "Séries",
         "searchPlaceholder": "Rechercher des titres…",
         "searchLabel": "Rechercher des titres",
-        "removeFilter": "Supprimer le filtre {{label}}",
         "filtersLabel": "Filtres",
         "filtersSheetTitle": "Filtres",
         "done": "Terminé",
@@ -2206,7 +2186,6 @@
     "columns": {
       "requester": "",
       "title": "",
-      "status": "",
       "requested": "",
       "wait": "",
       "seasons": "",

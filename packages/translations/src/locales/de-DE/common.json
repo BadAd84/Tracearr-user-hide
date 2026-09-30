@@ -229,8 +229,8 @@
     "location_other": "{{count}} Standorte",
     "device_one": "{{count}} Gerät",
     "device_other": "{{count}} Geräte",
-    "play_one": "",
-    "play_other": "",
+    "play_one": "{{count}} Wiedergabe",
+    "play_other": "{{count}} Wiedergaben",
     "segment_one": "",
     "segment_other": ""
   },

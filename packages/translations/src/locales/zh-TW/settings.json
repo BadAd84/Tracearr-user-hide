@@ -154,7 +154,6 @@
     "serverUrlPlaceholder": "",
     "serverNamePlaceholder": "",
     "apiKeyPlaceholder": "",
-    "connecting": "正在連接……",
     "connectServer": "",
     "removeServer": "",
     "removeServerConfirm": "",
@@ -195,7 +194,6 @@
       "addMove": "",
       "fromBeginning": "",
       "movedOn": "",
-      "remove": "",
       "latitude": "",
       "longitude": "",
       "country": "",
@@ -219,7 +217,6 @@
       "copyUrl": "",
       "jellyfinRepoUrl": "",
       "autoDetectNote": "",
-      "close": "",
       "issueBlocked": "",
       "issueRestartRequired": "",
       "issueMalfunctioned": ""
@@ -478,9 +475,6 @@
     "lowDiskSpace": "硬碟空間不足— 備份和還原需要至少兩倍的可用空間。",
     "backupHistory": "備份記錄",
     "noBackups": "尚未備份。請在上面建立您的第一個備份。",
-    "size": "大小",
-    "date": "",
-    "type": "類型",
     "version": "",
     "actions": "操作",
     "rowActions": "",
@@ -553,7 +547,6 @@
     "noDestinationDescription": "",
     "noDestinationHint": "",
     "addEmailDestination": "",
-    "enabled": "",
     "rowActions": "",
     "duplicate": "",
     "sendNow": "",
@@ -595,7 +588,6 @@
       "link": "",
       "bulletList": "",
       "linkHref": "",
-      "linkApply": "",
       "counter": ""
     },
     "editor": {
@@ -678,7 +670,6 @@
           "albums": "",
           "mostPlayed": ""
         },
-        "labels": {},
         "musicHelp": "",
         "mostWatchedHelp": ""
       },
@@ -991,7 +982,6 @@
       "hideKey": "",
       "test": "",
       "testing": "",
-      "save": "",
       "saveHint": "",
       "match": "",
       "mismatch": "",

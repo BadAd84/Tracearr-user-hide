@@ -155,7 +155,6 @@
     "serverUrlPlaceholder": "http://192.168.1.100:8096",
     "serverNamePlaceholder": "Mon serveur multimédia",
     "apiKeyPlaceholder": "Entrez votre clé API",
-    "connecting": "Connexion en cours...",
     "connectServer": "Connecter le serveur",
     "removeServer": "Supprimer le serveur",
     "removeServerConfirm": "Êtes-vous sûr de vouloir supprimer ce serveur ? Toutes les données de session associées seront conservées, mais vous ne serez pas en mesure de surveiller les nouvelles sessions de ce serveur.",
@@ -196,7 +195,6 @@
       "addMove": "Ajouter un déménagement",
       "fromBeginning": "Du début",
       "movedOn": "De",
-      "remove": "Supprimer",
       "latitude": "Latitude",
       "longitude": "Longitude",
       "country": "Pays",
@@ -220,7 +218,6 @@
       "copyUrl": "Copier l'URL",
       "jellyfinRepoUrl": "https://raw.githubusercontent.com/Tracearr/Media-Server-SSE/main/manifest.json",
       "autoDetectNote": "Redémarrez Jellyfin ou Emby après l'installation du plugin ; le redémarrage est nécessaire. Tracearr lui-même n'a pas besoin de redémarrer et récupère automatiquement le plugin.",
-      "close": "Fermer",
       "issueBlocked": "Le serveur indique que le plugin est installé et actif, mais Tracearr renvoie une erreur 404 depuis son point de terminaison. La cause la plus courante est un proxy inverse qui bloque le chemin d'accès.",
       "issueRestartRequired": "Le plugin est installé, mais le serveur multimédia a besoin d'un redémarrage avant de l'activer.",
       "issueMalfunctioned": "Le serveur signale que le chargement du plugin a échoué. La mise à jour du plugin ou du serveur multimédia permet généralement de résoudre ce problème."
@@ -482,9 +479,6 @@
     "lowDiskSpace": "Espace disque faible — les sauvegardes et restaurations nécessitent au moins deux fois la taille de la base de données en espace libre.",
     "backupHistory": "Historique des sauvegardes",
     "noBackups": "Aucune sauvegarde pour le moment. Créez votre première sauvegarde ci-dessus.",
-    "size": "Taille",
-    "date": "Date",
-    "type": "Type",
     "version": "Version",
     "actions": "Actions",
     "rowActions": "",
@@ -557,7 +551,6 @@
     "noDestinationDescription": "",
     "noDestinationHint": "",
     "addEmailDestination": "",
-    "enabled": "",
     "rowActions": "",
     "duplicate": "",
     "sendNow": "",
@@ -599,7 +592,6 @@
       "link": "",
       "bulletList": "",
       "linkHref": "",
-      "linkApply": "",
       "counter": ""
     },
     "editor": {
@@ -682,7 +674,6 @@
           "albums": "",
           "mostPlayed": ""
         },
-        "labels": {},
         "musicHelp": "",
         "mostWatchedHelp": ""
       },
@@ -995,7 +986,6 @@
       "hideKey": "",
       "test": "",
       "testing": "",
-      "save": "",
       "saveHint": "",
       "match": "",
       "mismatch": "",

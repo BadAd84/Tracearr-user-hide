@@ -53,7 +53,6 @@
     "title": "Utenti",
     "showRemoved": "",
     "noUsersFound": "Nessun utente trovato.",
-    "searchPlaceholder": "Cerca utenti...",
     "selectAllUsers_other": "Seleziona tutti gli utenti {{count}}",
     "serversColumn": "",
     "resetTrustScore": "Reimposta Punteggio Di Fiducia",
@@ -72,8 +71,6 @@
     "mergeRequired": "",
     "mergeLastActive": "",
     "mergeNeverActive": "",
-    "mergeSessions_one": "",
-    "mergeSessions_other": "",
     "mergeMoreServers": "",
     "mergeWhatHappens": "",
     "mergeMoves_one": "",
@@ -226,7 +223,6 @@
       "noDuplicatesTitle": "",
       "noDuplicatesDesc": "",
       "colTitle": "",
-      "colType": "",
       "colMatchType": "",
       "colCopies": "",
       "colRecoverable": "",
@@ -487,7 +483,6 @@
       "nameHelper": "",
       "namePlaceholder": "",
       "activeLabel": "",
-      "back": "",
       "submit": "",
       "submitting": "",
       "customize": "",
@@ -1627,7 +1622,6 @@
       "alertsGoTo_other": "",
       "builtinNote": "",
       "clearSecret": "",
-      "delete": "",
       "deleteConfirm": "",
       "description": "",
       "emailDescription": "",
@@ -1929,7 +1923,6 @@
         "columns": {
           "poster": "",
           "title": "",
-          "size": "",
           "added": "",
           "servers": ""
         },
@@ -1958,7 +1951,6 @@
         "title": "",
         "columns": {
           "genre": "",
-          "items": "",
           "plays": "",
           "watchTime": ""
         },
@@ -2031,7 +2023,6 @@
         "lastWatchedAgo": "",
         "completionLabel": "",
         "columns": {
-          "user": "",
           "plays": "",
           "episodes": "",
           "completion": "",
@@ -2058,7 +2049,6 @@
         "empty": "",
         "unknown": "",
         "columns": {
-          "platform": "",
           "plays": "",
           "watchTime": ""
         }
@@ -2070,10 +2060,6 @@
         "watched": "",
         "notWatched": "",
         "columns": {
-          "date": "",
-          "user": "",
-          "content": "",
-          "server": "",
           "duration": ""
         }
       },
@@ -2082,11 +2068,8 @@
         "loadError": "",
         "unknownLibrary": "",
         "columns": {
-          "server": "",
           "library": "",
-          "quality": "",
           "episodes": "",
-          "size": "",
           "added": ""
         },
         "versionLabel": ""
@@ -2096,8 +2079,6 @@
       "rankSuffix": ", posizione {{rank}}",
       "onServers": "Su {{servers}}",
       "addedLabel": "Aggiunto {{date}}",
-      "plays_one": "{{count}} riproduzione",
-      "plays_other": "{{count}} riproduzioni",
       "viewers_one": "{{count}} spettatore",
       "viewers_other": "{{count}} spettatori",
       "watchedState": {
@@ -2128,7 +2109,6 @@
         "showsToggle": "",
         "searchPlaceholder": "",
         "searchLabel": "",
-        "removeFilter": "",
         "filtersLabel": "",
         "filtersSheetTitle": "",
         "done": "",
@@ -2199,7 +2179,6 @@
     "columns": {
       "requester": "",
       "title": "",
-      "status": "",
       "requested": "",
       "wait": "",
       "seasons": "",

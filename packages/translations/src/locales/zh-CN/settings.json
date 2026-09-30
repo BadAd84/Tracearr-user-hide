@@ -154,7 +154,6 @@
     "serverUrlPlaceholder": "http://192.168.1/100：8096",
     "serverNamePlaceholder": "我的媒体服务器",
     "apiKeyPlaceholder": "输入您的 API 密钥",
-    "connecting": "正在连接……",
     "connectServer": "连接服务器",
     "removeServer": "删除服务器",
     "removeServerConfirm": "您确定要删除此服务器吗？ 所有相关会话数据将被保留，但您将无法从此服务器监视新会话。",
@@ -195,7 +194,6 @@
       "addMove": "",
       "fromBeginning": "",
       "movedOn": "",
-      "remove": "",
       "latitude": "",
       "longitude": "",
       "country": "",
@@ -219,7 +217,6 @@
       "copyUrl": "复制 URL",
       "jellyfinRepoUrl": "https://raw.githubusercontent.com/Tracearr/Media-SSE/main/manifest.json",
       "autoDetectNote": "安装插件后重启 Jellyfin 或 Emby；需要重启。追踪器本身不需要重启并自动选择插件。",
-      "close": "关闭",
       "issueBlocked": "服务器报告插件已安装和激活，但Tracearr 从端点获取404个。 通常原因是反向代理阻止路径。",
       "issueRestartRequired": "插件已安装，但媒体服务器需要重新启动才能激活。",
       "issueMalfunctioned": "服务器报告插件加载失败。更新插件或媒体服务器通常清除它。"
@@ -479,9 +476,6 @@
     "lowDiskSpace": "磁盘空间不足 — 备份和恢复需要至少两倍的可用空间。",
     "backupHistory": "备份历史",
     "noBackups": "尚未备份。请在上面创建您的第一个备份。",
-    "size": "尺寸",
-    "date": "日期",
-    "type": "类型",
     "version": "版本",
     "actions": "动作",
     "rowActions": "",
@@ -554,7 +548,6 @@
     "noDestinationDescription": "",
     "noDestinationHint": "",
     "addEmailDestination": "",
-    "enabled": "",
     "rowActions": "",
     "duplicate": "",
     "sendNow": "",
@@ -596,7 +589,6 @@
       "link": "",
       "bulletList": "",
       "linkHref": "",
-      "linkApply": "",
       "counter": ""
     },
     "editor": {
@@ -679,7 +671,6 @@
           "albums": "",
           "mostPlayed": ""
         },
-        "labels": {},
         "musicHelp": "",
         "mostWatchedHelp": ""
       },
@@ -992,7 +983,6 @@
       "hideKey": "",
       "test": "",
       "testing": "",
-      "save": "",
       "saveHint": "",
       "match": "",
       "mismatch": "",

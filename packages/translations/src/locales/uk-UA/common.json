@@ -229,8 +229,8 @@
     "location_other": "",
     "device_one": "{{count}} пристрій",
     "device_other": "{{count}} пристрої",
-    "play_one": "",
-    "play_other": "",
+    "play_one": "{{count}} перегляд",
+    "play_other": "{{count}} переглядів",
     "segment_one": "",
     "segment_other": ""
   },

@@ -229,8 +229,8 @@
     "location_other": "",
     "device_one": "",
     "device_other": "",
-    "play_one": "",
-    "play_other": "",
+    "play_one": "{{count}} lượt phát",
+    "play_other": "{{count}} lượt phát",
     "segment_one": "",
     "segment_other": ""
   },

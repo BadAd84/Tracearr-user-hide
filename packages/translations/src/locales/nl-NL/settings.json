@@ -154,7 +154,6 @@
     "serverUrlPlaceholder": "",
     "serverNamePlaceholder": "Mijn mediaserver",
     "apiKeyPlaceholder": "Voer uw API-sleutel in",
-    "connecting": "Verbinden...",
     "connectServer": "Server verbinden",
     "removeServer": "Server verwijderen",
     "removeServerConfirm": "Weet je zeker dat je deze server wilt verwijderen? Alle bijbehorende sessiegegevens worden bewaard, maar je kunt geen nieuwe sessies vanaf deze server bijhouden.",
@@ -195,7 +194,6 @@
       "addMove": "",
       "fromBeginning": "",
       "movedOn": "",
-      "remove": "",
       "latitude": "",
       "longitude": "",
       "country": "",
@@ -219,7 +217,6 @@
       "copyUrl": "Kopieer URL",
       "jellyfinRepoUrl": "",
       "autoDetectNote": "Start Jellyfin of Emby opnieuw op na het installeren van de plugin; dit is noodzakelijk. Tracearr zelf hoeft niet opnieuw opgestart te worden en detecteert de plugin automatisch.",
-      "close": "Sluiten",
       "issueBlocked": "De server meldt dat de plugin is geïnstalleerd en actief, maar Tracearr krijgt een 404 foutmelding van het eindpunt. Een reverse proxy die het pad blokkeert is meestal de oorzaak.",
       "issueRestartRequired": "De plugin is geïnstalleerd, maar de mediaserver moet opnieuw worden opgestart voordat deze geactiveerd wordt.",
       "issueMalfunctioned": "De server meldt dat de plugin niet geladen kon worden. Het bijwerken van de plugin of de mediaserver lost dit probleem meestal op."
@@ -481,9 +478,6 @@
     "lowDiskSpace": "Weinig schijfruimte — back-ups en herstelbewerkingen vereisen minstens twee keer de grootte van de database aan vrije ruimte.",
     "backupHistory": "Backup Historie",
     "noBackups": "Nog geen back-ups. Maak hierboven uw eerste back-up aan.",
-    "size": "Grootte",
-    "date": "Datum",
-    "type": "",
     "version": "Versie",
     "actions": "Acties",
     "rowActions": "",
@@ -556,7 +550,6 @@
     "noDestinationDescription": "",
     "noDestinationHint": "",
     "addEmailDestination": "",
-    "enabled": "",
     "rowActions": "",
     "duplicate": "",
     "sendNow": "",
@@ -598,7 +591,6 @@
       "link": "",
       "bulletList": "",
       "linkHref": "",
-      "linkApply": "",
       "counter": ""
     },
     "editor": {
@@ -681,7 +673,6 @@
           "albums": "",
           "mostPlayed": ""
         },
-        "labels": {},
         "musicHelp": "",
         "mostWatchedHelp": ""
       },
@@ -994,7 +985,6 @@
       "hideKey": "",
       "test": "",
       "testing": "",
-      "save": "",
       "saveHint": "",
       "match": "",
       "mismatch": "",

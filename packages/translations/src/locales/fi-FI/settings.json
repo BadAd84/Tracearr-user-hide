@@ -154,7 +154,6 @@
     "serverUrlPlaceholder": "",
     "serverNamePlaceholder": "Oma Mediapalvelin",
     "apiKeyPlaceholder": "Syötä API-avain",
-    "connecting": "Yhdistetään...",
     "connectServer": "Yhdistä Palvelin",
     "removeServer": "Poista Palvelin",
     "removeServerConfirm": "Oletko varma, että haluat poistaa tämän palvelimen? Kaikki liittyvät istunnon tiedot säilytetään, mutta et voi seurata uusia istuntoja tältä palvelimelta.",
@@ -195,7 +194,6 @@
       "addMove": "",
       "fromBeginning": "",
       "movedOn": "",
-      "remove": "",
       "latitude": "",
       "longitude": "",
       "country": "",
@@ -219,7 +217,6 @@
       "copyUrl": "",
       "jellyfinRepoUrl": "",
       "autoDetectNote": "",
-      "close": "",
       "issueBlocked": "",
       "issueRestartRequired": "",
       "issueMalfunctioned": ""
@@ -478,9 +475,6 @@
     "lowDiskSpace": "Alhainen levytila — varmuuskopiot ja palautukset vaativat vähintään kaksi kertaa tietokannan koko vapaassa tilassa.",
     "backupHistory": "Varmuuskopioinnin Historia",
     "noBackups": "Ei vielä varmuuskopioita. Luo ensimmäinen varmuuskopiosi yllä.",
-    "size": "Koko",
-    "date": "Päivämäärä",
-    "type": "Tyyppi",
     "version": "Versio",
     "actions": "Toiminnot",
     "rowActions": "",
@@ -553,7 +547,6 @@
     "noDestinationDescription": "",
     "noDestinationHint": "",
     "addEmailDestination": "",
-    "enabled": "",
     "rowActions": "",
     "duplicate": "",
     "sendNow": "",
@@ -595,7 +588,6 @@
       "link": "",
       "bulletList": "",
       "linkHref": "",
-      "linkApply": "",
       "counter": ""
     },
     "editor": {
@@ -678,7 +670,6 @@
           "albums": "",
           "mostPlayed": ""
         },
-        "labels": {},
         "musicHelp": "",
         "mostWatchedHelp": ""
       },
@@ -991,7 +982,6 @@
       "hideKey": "",
       "test": "",
       "testing": "",
-      "save": "",
       "saveHint": "",
       "match": "",
       "mismatch": "",

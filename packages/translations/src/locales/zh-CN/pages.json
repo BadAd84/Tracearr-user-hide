@@ -53,7 +53,6 @@
     "title": "用户",
     "showRemoved": "显示已删除",
     "noUsersFound": "未找到用户。",
-    "searchPlaceholder": "搜索用户……",
     "selectAllUsers_other": "选择所有{{count}}个用户",
     "serversColumn": "服务器",
     "resetTrustScore": "重置信任分数",
@@ -72,8 +71,6 @@
     "mergeRequired": "",
     "mergeLastActive": "",
     "mergeNeverActive": "从未激活",
-    "mergeSessions_one": "",
-    "mergeSessions_other": "",
     "mergeMoreServers": "",
     "mergeWhatHappens": "",
     "mergeMoves_one": "",
@@ -226,7 +223,6 @@
       "noDuplicatesTitle": "没有找到重复的记录",
       "noDuplicatesDesc": "未检测到多于一个物理文件的标题。",
       "colTitle": "标题",
-      "colType": "",
       "colMatchType": "匹配类型",
       "colCopies": "份数",
       "colRecoverable": "可恢复的空间",
@@ -490,7 +486,6 @@
       "nameHelper": "自动化列表中的名称。",
       "namePlaceholder": "此自动化的名称",
       "activeLabel": "立即打开",
-      "back": "后退",
       "submit": "使用这个",
       "submitting": "设置为…",
       "customize": "在构建器中打开",
@@ -1631,7 +1626,6 @@
       "alertsGoTo_other": "",
       "builtinNote": "",
       "clearSecret": "",
-      "delete": "",
       "deleteConfirm": "",
       "description": "",
       "emailDescription": "",
@@ -1933,7 +1927,6 @@
         "columns": {
           "poster": "海报",
           "title": "标题",
-          "size": "大小",
           "added": "已添加",
           "servers": "服务器"
         },
@@ -1962,7 +1955,6 @@
         "title": "流派分类",
         "columns": {
           "genre": "流派",
-          "items": "项目",
           "plays": "播放",
           "watchTime": "观看时长"
         },
@@ -2035,7 +2027,6 @@
         "lastWatchedAgo": "{{age}} 以前",
         "completionLabel": "",
         "columns": {
-          "user": "用户",
           "plays": "播放",
           "episodes": "剧集",
           "completion": "完成",
@@ -2062,7 +2053,6 @@
         "empty": "暂无季数据",
         "unknown": "未知",
         "columns": {
-          "platform": "平台",
           "plays": "播放",
           "watchTime": "观看时长"
         }
@@ -2074,10 +2064,6 @@
         "watched": "已观看",
         "notWatched": "未完成",
         "columns": {
-          "date": "日期",
-          "user": "用户",
-          "content": "内容",
-          "server": "服务器",
           "duration": "持续时长"
         }
       },
@@ -2086,11 +2072,8 @@
         "loadError": "无法加载类型",
         "unknownLibrary": "未知库",
         "columns": {
-          "server": "服务器",
           "library": "媒体库",
-          "quality": "品质",
           "episodes": "剧集",
-          "size": "大小",
           "added": "已添加"
         },
         "versionLabel": ""
@@ -2100,8 +2083,6 @@
       "rankSuffix": "，排名第 {{rank}} 位",
       "onServers": "可在 {{servers}} 观看",
       "addedLabel": "{{date}}添加",
-      "plays_one": "{{count}} 次播放",
-      "plays_other": "{{count}} 次播放",
       "viewers_one": "{{count}} 位观众",
       "viewers_other": "{{count}} 位观众",
       "watchedState": {
@@ -2132,7 +2113,6 @@
         "showsToggle": "剧集",
         "searchPlaceholder": "",
         "searchLabel": "搜索标题",
-        "removeFilter": "",
         "filtersLabel": "过滤器",
         "filtersSheetTitle": "过滤器",
         "done": "完成",
@@ -2203,7 +2183,6 @@
     "columns": {
       "requester": "请求人",
       "title": "标题",
-      "status": "状态",
       "requested": "已请求",
       "wait": "等待",
       "seasons": "季",

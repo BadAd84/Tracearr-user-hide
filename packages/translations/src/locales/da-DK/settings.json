@@ -154,7 +154,6 @@
     "serverUrlPlaceholder": "",
     "serverNamePlaceholder": "Min Medieserver",
     "apiKeyPlaceholder": "Indtast din API-nøgle",
-    "connecting": "Forbinder...",
     "connectServer": "Forbind Server",
     "removeServer": "Fjern Server",
     "removeServerConfirm": "Er du sikker på, at du vil fjerne denne server? Alle tilknyttede sessionsdata vil blive bevaret, men du vil ikke kunne overvåge nye sessioner fra denne server.",
@@ -195,7 +194,6 @@
       "addMove": "",
       "fromBeginning": "",
       "movedOn": "",
-      "remove": "",
       "latitude": "",
       "longitude": "",
       "country": "",
@@ -219,7 +217,6 @@
       "copyUrl": "",
       "jellyfinRepoUrl": "",
       "autoDetectNote": "",
-      "close": "",
       "issueBlocked": "",
       "issueRestartRequired": "",
       "issueMalfunctioned": ""
@@ -479,9 +476,6 @@
     "lowDiskSpace": "Lav diskplads — sikkerhedskopier og genopretter kræver mindst to gange databasestørrelsen i ledig plads.",
     "backupHistory": "Backup Historik",
     "noBackups": "Ingen sikkerhedskopier endnu. Opret din første sikkerhedskopi ovenfor.",
-    "size": "Størrelse",
-    "date": "Dato",
-    "type": "",
     "version": "",
     "actions": "Handlinger",
     "rowActions": "",
@@ -554,7 +548,6 @@
     "noDestinationDescription": "",
     "noDestinationHint": "",
     "addEmailDestination": "",
-    "enabled": "",
     "rowActions": "",
     "duplicate": "",
     "sendNow": "",
@@ -596,7 +589,6 @@
       "link": "",
       "bulletList": "",
       "linkHref": "",
-      "linkApply": "",
       "counter": ""
     },
     "editor": {
@@ -679,7 +671,6 @@
           "albums": "",
           "mostPlayed": ""
         },
-        "labels": {},
         "musicHelp": "",
         "mostWatchedHelp": ""
       },
@@ -992,7 +983,6 @@
       "hideKey": "",
       "test": "",
       "testing": "",
-      "save": "",
       "saveHint": "",
       "match": "",
       "mismatch": "",

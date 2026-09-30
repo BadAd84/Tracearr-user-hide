@@ -154,7 +154,6 @@
     "serverUrlPlaceholder": "",
     "serverNamePlaceholder": "私のメディアサーバー",
     "apiKeyPlaceholder": "API キーを入力してください",
-    "connecting": "接続中...",
     "connectServer": "サーバーに接続",
     "removeServer": "サーバーを削除",
     "removeServerConfirm": "このサーバーを削除してもよろしいですか？ 関連するすべてのセッションデータは保持されますが、このサーバーから新しいセッションを監視することはできません。",
@@ -195,7 +194,6 @@
       "addMove": "",
       "fromBeginning": "",
       "movedOn": "",
-      "remove": "",
       "latitude": "",
       "longitude": "",
       "country": "",
@@ -219,7 +217,6 @@
       "copyUrl": "",
       "jellyfinRepoUrl": "",
       "autoDetectNote": "",
-      "close": "",
       "issueBlocked": "",
       "issueRestartRequired": "",
       "issueMalfunctioned": ""
@@ -479,9 +476,6 @@
     "lowDiskSpace": "ディスク容量が少なくても、バックアップと復元には空き容量の少なくとも2倍以上のデータベースサイズが必要です。",
     "backupHistory": "バックアップ履歴",
     "noBackups": "まだバックアップはありません。上記の最初のバックアップを作成してください。",
-    "size": "サイズ",
-    "date": "日付",
-    "type": "タイプ",
     "version": "バージョン",
     "actions": "アクション",
     "rowActions": "",
@@ -554,7 +548,6 @@
     "noDestinationDescription": "",
     "noDestinationHint": "",
     "addEmailDestination": "",
-    "enabled": "",
     "rowActions": "",
     "duplicate": "",
     "sendNow": "",
@@ -596,7 +589,6 @@
       "link": "",
       "bulletList": "",
       "linkHref": "",
-      "linkApply": "",
       "counter": ""
     },
     "editor": {
@@ -679,7 +671,6 @@
           "albums": "",
           "mostPlayed": ""
         },
-        "labels": {},
         "musicHelp": "",
         "mostWatchedHelp": ""
       },
@@ -992,7 +983,6 @@
       "hideKey": "",
       "test": "",
       "testing": "",
-      "save": "",
       "saveHint": "",
       "match": "",
       "mismatch": "",

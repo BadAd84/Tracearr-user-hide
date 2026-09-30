@@ -53,7 +53,6 @@
     "title": "Usuaris",
     "showRemoved": "Mostra els eliminats",
     "noUsersFound": "No s'ha trobat cap usuari.",
-    "searchPlaceholder": "Cerca d'usuaris...",
     "selectAllUsers_other": "Selecciona els {{count}} usuaris",
     "serversColumn": "Servidors",
     "resetTrustScore": "Restableix la puntuació de confiança",
@@ -72,8 +71,6 @@
     "mergeRequired": "{{name}} pot iniciar sessió a Tracearr, per això es manté {{name}}.",
     "mergeLastActive": "Darrera activitat {{relative}}",
     "mergeNeverActive": "Mai no ha estat actiu",
-    "mergeSessions_one": "{{count}} sessió",
-    "mergeSessions_other": "{{count}} sessions",
     "mergeMoreServers": "+{{count}}",
     "mergeWhatHappens": "Què passa",
     "mergeMoves_one": "Els comptes de servidor i {{count}} sessió de {{foldName}} es traslladen a {{keepName}}.",
@@ -226,7 +223,6 @@
       "noDuplicatesTitle": "No s'ha trobat cap duplicat",
       "noDuplicatesDesc": "No s'ha detectat cap títol amb més d'un fitxer físic.",
       "colTitle": "Títol",
-      "colType": "Tipus",
       "colMatchType": "Tipus de coincidència",
       "colCopies": "Còpies",
       "colRecoverable": "Espai recuperable",
@@ -490,7 +486,6 @@
       "nameHelper": "El nom que apareix a la llista d'automatitzacions.",
       "namePlaceholder": "Un nom per a aquesta automatització",
       "activeLabel": "Activa'l ara",
-      "back": "Torna",
       "submit": "Utilitza-ho",
       "submitting": "S'està configurant…",
       "customize": "Obre-ho al constructor",
@@ -1632,7 +1627,6 @@
       "alertsGoTo_other": "Les alertes van a {{count}} adreces",
       "builtinNote": "Integrat",
       "clearSecret": "Neteja",
-      "delete": "Suprimeix",
       "deleteConfirm": "Voleu suprimir {{name}}? Les automatitzacions i els butlletins que l'utilitzen s'aturaran fins que s'actualitzin.",
       "description": "On van les notificacions. Afegiu-ne tantes com vulgueu; les automatitzacions poden enviar a qualsevol d'elles.",
       "emailDescription": "Tracearr envia el correu a través d'aquest servidor SMTP. Els butlletins trien els seus propis destinataris; les alertes de les automatitzacions van a les adreces següents.",
@@ -1937,7 +1931,6 @@
         "columns": {
           "poster": "Pòster",
           "title": "Títol",
-          "size": "Mida",
           "added": "Afegit",
           "servers": "Servidors"
         },
@@ -1966,7 +1959,6 @@
         "title": "Desglossament per gènere",
         "columns": {
           "genre": "Gènere",
-          "items": "Elements",
           "plays": "Reproduccions",
           "watchTime": "Temps de visualització"
         },
@@ -2039,7 +2031,6 @@
         "lastWatchedAgo": "fa {{age}}",
         "completionLabel": "{{percent}}% completat",
         "columns": {
-          "user": "Usuari",
           "plays": "Reproduccions",
           "episodes": "Episodis",
           "completion": "Finalització",
@@ -2066,7 +2057,6 @@
         "empty": "Encara no hi ha dades de plataformes",
         "unknown": "Desconegut",
         "columns": {
-          "platform": "Plataforma",
           "plays": "Reproduccions",
           "watchTime": "Temps de visualització"
         }
@@ -2078,10 +2068,6 @@
         "watched": "Vist",
         "notWatched": "Sense acabar",
         "columns": {
-          "date": "Data",
-          "user": "Usuari",
-          "content": "Contingut",
-          "server": "Servidor",
           "duration": "Durada"
         }
       },
@@ -2090,11 +2076,8 @@
         "loadError": "No s'han pogut carregar les còpies",
         "unknownLibrary": "Biblioteca desconeguda",
         "columns": {
-          "server": "Servidor",
           "library": "Biblioteca",
-          "quality": "Qualitat",
           "episodes": "Episodis",
-          "size": "Mida",
           "added": "Afegit"
         },
         "versionLabel": "Fitxer {{index}}"
@@ -2104,8 +2087,6 @@
       "rankSuffix": ", posició {{rank}}",
       "onServers": "A {{servers}}",
       "addedLabel": "Afegit {{date}}",
-      "plays_one": "{{count}} reproducció",
-      "plays_other": "{{count}} reproduccions",
       "viewers_one": "{{count}} espectador",
       "viewers_other": "{{count}} espectadors",
       "watchedState": {
@@ -2136,7 +2117,6 @@
         "showsToggle": "Sèries",
         "searchPlaceholder": "Cerca títols…",
         "searchLabel": "Cerca títols",
-        "removeFilter": "Suprimeix el filtre {{label}}",
         "filtersLabel": "Filtres",
         "filtersSheetTitle": "Filtres",
         "done": "Fet",
@@ -2207,7 +2187,6 @@
     "columns": {
       "requester": "Sol·licitat per",
       "title": "Títol",
-      "status": "Estat",
       "requested": "Sol·licitat",
       "wait": "Espera",
       "seasons": "Temporades",

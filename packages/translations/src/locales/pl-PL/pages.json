@@ -53,7 +53,6 @@
     "title": "Użytkownicy",
     "showRemoved": "Pokaż usunięte",
     "noUsersFound": "Nie znaleziono użytkowników.",
-    "searchPlaceholder": "Szukaj użytkowników...",
     "selectAllUsers_other": "Zaznacz wszystkich {{count}} użytkowników",
     "serversColumn": "Serwery",
     "resetTrustScore": "Zresetuj wynik zaufania",
@@ -72,8 +71,6 @@
     "mergeRequired": "{{name}} może zalogować się do Tracearr, więc {{name}} jest zachowany.",
     "mergeLastActive": "Ostatnio aktywny {{relative}}",
     "mergeNeverActive": "Nigdy nie był aktywny",
-    "mergeSessions_one": "{{count}} sesja",
-    "mergeSessions_other": "{{count}} sesji",
     "mergeMoreServers": "+{{count}}",
     "mergeWhatHappens": "Co się stanie",
     "mergeMoves_one": "Konta serwera {{foldName}} i {{count}} sesja przenoszą się do {{keepName}}.",
@@ -226,7 +223,6 @@
       "noDuplicatesTitle": "Nie znaleziono duplikatów",
       "noDuplicatesDesc": "Brak tytułów z więcej niż jednym fizycznym plikiem.",
       "colTitle": "Tytuł",
-      "colType": "Rodzaj",
       "colMatchType": "Rodzaj dopasowania",
       "colCopies": "Kopie",
       "colRecoverable": "Odzyskiwalne miejsce",
@@ -490,7 +486,6 @@
       "nameHelper": "Nazwa na liście automatyzacji.",
       "namePlaceholder": "Nazwa dla tej automatyzacji",
       "activeLabel": "Włącz teraz",
-      "back": "Powrót",
       "submit": "Użyj szablonu",
       "submitting": "Konfigurowanie…",
       "customize": "Otwórz w konstruktorze",
@@ -1632,7 +1627,6 @@
       "alertsGoTo_other": "Powiadomienia są kierowane do {{count}} adresów",
       "builtinNote": "Wbudowane",
       "clearSecret": "Wyczyść",
-      "delete": "Usuń",
       "deleteConfirm": "Usunąć {{name}}? Automatyzacje i newslettery, które go używają, przestaną działać, dopóki nie zostaną zaktualizowane.",
       "description": "Miejsca docelowe dla powiadomień. Dodaj ich tyle, ile chcesz, a automatyzacje mogą wysyłać do dowolnego z nich.",
       "emailDescription": "Tracearr wysyła wiadomości e-mail, korzystając z tego serwera SMTP. Newslettery wybierają własnych odbiorców; powiadomienia z automatyzacji są kierowane do adresów poniżej.",
@@ -1937,7 +1931,6 @@
         "columns": {
           "poster": "Plakat",
           "title": "Tytuł",
-          "size": "Rozmiar",
           "added": "Dodano",
           "servers": "Serwery"
         },
@@ -1966,7 +1959,6 @@
         "title": "Zestawienie według gatunku",
         "columns": {
           "genre": "Gatunek",
-          "items": "Pozycje",
           "plays": "Odtworzenia",
           "watchTime": "Czas oglądania"
         },
@@ -2039,7 +2031,6 @@
         "lastWatchedAgo": "{{age}} temu",
         "completionLabel": "{{percent}}% ukończono",
         "columns": {
-          "user": "Użytkownik",
           "plays": "Odtworzenia",
           "episodes": "Odcinki",
           "completion": "Ukończenie",
@@ -2066,7 +2057,6 @@
         "empty": "Brak danych o platformach",
         "unknown": "Nieznana",
         "columns": {
-          "platform": "Platforma",
           "plays": "Odtworzenia",
           "watchTime": "Czas oglądania"
         }
@@ -2078,10 +2068,6 @@
         "watched": "Obejrzane",
         "notWatched": "Nie ukończono",
         "columns": {
-          "date": "Data",
-          "user": "Użytkownik",
-          "content": "Zawartość",
-          "server": "Serwer",
           "duration": "Czas trwania"
         }
       },
@@ -2090,11 +2076,8 @@
         "loadError": "Nie udało się załadować kopii",
         "unknownLibrary": "Nieznana biblioteka",
         "columns": {
-          "server": "Serwer",
           "library": "Biblioteka",
-          "quality": "Jakość",
           "episodes": "Odcinki",
-          "size": "Rozmiar",
           "added": "Dodano"
         },
         "versionLabel": "Plik {{index}}"
@@ -2104,8 +2087,6 @@
       "rankSuffix": ", pozycja {{rank}}",
       "onServers": "Na {{servers}}",
       "addedLabel": "Dodano {{date}}",
-      "plays_one": "{{count}} odtworzenie",
-      "plays_other": "{{count}} odtworzeń",
       "viewers_one": "{{count}} widz",
       "viewers_other": "{{count}} widzów",
       "watchedState": {
@@ -2136,7 +2117,6 @@
         "showsToggle": "Seriale",
         "searchPlaceholder": "Szukaj tytułów…",
         "searchLabel": "Szukaj tytułów",
-        "removeFilter": "Usuń filtr {{label}}",
         "filtersLabel": "Filtry",
         "filtersSheetTitle": "Filtry",
         "done": "Gotowe",
@@ -2207,7 +2187,6 @@
     "columns": {
       "requester": "Zamówione przez",
       "title": "Tytuł",
-      "status": "Status",
       "requested": "Zamówione",
       "wait": "Czas oczekiwania",
       "seasons": "Sezony",

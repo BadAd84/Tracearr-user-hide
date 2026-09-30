@@ -154,7 +154,6 @@
     "serverUrlPlaceholder": "",
     "serverNamePlaceholder": "Мій медіа-сервер",
     "apiKeyPlaceholder": "Введіть ваш ключ API",
-    "connecting": "Підключення...",
     "connectServer": "Під'єднати сервер",
     "removeServer": "Видалити сервер",
     "removeServerConfirm": "Ви впевнені, що хочете видалити цей сервер? Усі пов'язані дані сеансу буде збережено, але ви не зможете стежити за новими сеансами з цього сервера.",
@@ -195,7 +194,6 @@
       "addMove": "",
       "fromBeginning": "",
       "movedOn": "",
-      "remove": "",
       "latitude": "",
       "longitude": "",
       "country": "",
@@ -219,7 +217,6 @@
       "copyUrl": "",
       "jellyfinRepoUrl": "",
       "autoDetectNote": "",
-      "close": "",
       "issueBlocked": "",
       "issueRestartRequired": "",
       "issueMalfunctioned": ""
@@ -479,9 +476,6 @@
     "lowDiskSpace": "Недостатньо місця на диску - резервні копії та відновлення вимагають хоча б двічі розміру бази даних у вільному просторі.",
     "backupHistory": "Історія резервного копіювання",
     "noBackups": "Поки немає резервних копій. Створіть першу резервну копію вище.",
-    "size": "Розмір",
-    "date": "Дата",
-    "type": "Тип",
     "version": "Версія",
     "actions": "Дії",
     "rowActions": "",
@@ -554,7 +548,6 @@
     "noDestinationDescription": "",
     "noDestinationHint": "",
     "addEmailDestination": "",
-    "enabled": "",
     "rowActions": "",
     "duplicate": "",
     "sendNow": "",
@@ -596,7 +589,6 @@
       "link": "",
       "bulletList": "",
       "linkHref": "",
-      "linkApply": "",
       "counter": ""
     },
     "editor": {
@@ -679,7 +671,6 @@
           "albums": "",
           "mostPlayed": ""
         },
-        "labels": {},
         "musicHelp": "",
         "mostWatchedHelp": ""
       },
@@ -992,7 +983,6 @@
       "hideKey": "",
       "test": "",
       "testing": "",
-      "save": "",
       "saveHint": "",
       "match": "",
       "mismatch": "",

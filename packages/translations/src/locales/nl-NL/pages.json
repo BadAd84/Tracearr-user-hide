@@ -53,7 +53,6 @@
     "title": "Gebruikers",
     "showRemoved": "Show verwijdert",
     "noUsersFound": "Geen gebruikers gevonden.",
-    "searchPlaceholder": "Gebruikers zoeken...",
     "selectAllUsers_other": "Alle {{count}} gebruikers selecteren",
     "serversColumn": "",
     "resetTrustScore": "Vertrouwensscore herstellen",
@@ -72,8 +71,6 @@
     "mergeRequired": "",
     "mergeLastActive": "",
     "mergeNeverActive": "",
-    "mergeSessions_one": "",
-    "mergeSessions_other": "",
     "mergeMoreServers": "",
     "mergeWhatHappens": "",
     "mergeMoves_one": "",
@@ -226,7 +223,6 @@
       "noDuplicatesTitle": "Geen duplicaten gevonden",
       "noDuplicatesDesc": "Er zijn geen titels gevonden met meer dan een fysiek bestand.",
       "colTitle": "Titel",
-      "colType": "",
       "colMatchType": "Overeenkomsttype",
       "colCopies": "Kopieën",
       "colRecoverable": "Herstelbare ruimte",
@@ -489,7 +485,6 @@
       "nameHelper": "",
       "namePlaceholder": "",
       "activeLabel": "",
-      "back": "",
       "submit": "",
       "submitting": "",
       "customize": "",
@@ -1631,7 +1626,6 @@
       "alertsGoTo_other": "",
       "builtinNote": "Ingebouwd",
       "clearSecret": "Maak leeg",
-      "delete": "Verwijder",
       "deleteConfirm": "",
       "description": "",
       "emailDescription": "",
@@ -1936,7 +1930,6 @@
         "columns": {
           "poster": "",
           "title": "Titel",
-          "size": "Grootte",
           "added": "Toegevoegd",
           "servers": ""
         },
@@ -1965,7 +1958,6 @@
         "title": "Genre indeling",
         "columns": {
           "genre": "",
-          "items": "Voorwerpen",
           "plays": "Afspeelmomenten",
           "watchTime": "Kijktijd"
         },
@@ -2038,7 +2030,6 @@
         "lastWatchedAgo": "{{age}} geleden",
         "completionLabel": "{{percent}}% compleet",
         "columns": {
-          "user": "Gebruiker",
           "plays": "Gespeeld",
           "episodes": "Afleveringen",
           "completion": "Voltooiing",
@@ -2065,7 +2056,6 @@
         "empty": "Er zijn nog geen platformgegevens beschikbaar",
         "unknown": "Onbekend",
         "columns": {
-          "platform": "",
           "plays": "Afgespeeld",
           "watchTime": "Kijktijd"
         }
@@ -2077,10 +2067,6 @@
         "watched": "Bekeken",
         "notWatched": "Nog niet afgemaakt",
         "columns": {
-          "date": "Datum",
-          "user": "Gebruiker",
-          "content": "Inhoud",
-          "server": "",
           "duration": ""
         }
       },
@@ -2089,11 +2075,8 @@
         "loadError": "",
         "unknownLibrary": "",
         "columns": {
-          "server": "",
           "library": "",
-          "quality": "",
           "episodes": "",
-          "size": "",
           "added": ""
         },
         "versionLabel": ""
@@ -2103,8 +2086,6 @@
       "rankSuffix": ", rang {{rank}}",
       "onServers": "Op {{servers}}",
       "addedLabel": "Toegevoegd {{date}}",
-      "plays_one": "{{count}} keer afgespeeld",
-      "plays_other": "{{count}} keer afgespeeld",
       "viewers_one": "{{count}} kijker",
       "viewers_other": "{{count}} kijkers",
       "watchedState": {
@@ -2135,7 +2116,6 @@
         "showsToggle": "",
         "searchPlaceholder": "",
         "searchLabel": "",
-        "removeFilter": "",
         "filtersLabel": "",
         "filtersSheetTitle": "",
         "done": "",
@@ -2206,7 +2186,6 @@
     "columns": {
       "requester": "",
       "title": "",
-      "status": "",
       "requested": "",
       "wait": "",
       "seasons": "",
