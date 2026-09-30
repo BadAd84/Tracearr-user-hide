@@ -1,7 +1,6 @@
 {
   "pair": {
     "welcome": "Velkommen til Tracearr",
-    "addServer": "Legg til server",
     "connectToServer": "Koble til server",
     "enterServerDetails": "Skriv inn din tracker server URL og mobil tilgangstoken",
     "serverUrl": "URL til server",
@@ -16,10 +15,7 @@
     "pleaseEnterToken": ""
   },
   "errors": {
-    "missingFields": "Manglende felt",
-    "pleaseEnterBothFields": "Vennligst skriv inn både serverens URL og token",
     "invalidUrl": "Ugyldig nettadresse",
-    "serverUrlMustStartWith": "Server-URL-adressen må starte med http:// eller https://",
     "pleaseEnterValidUrl": "Vennligst skriv inn en gyldig nettadresse til serveren",
     "pairingFailed": "Sammenkobling mislyktes",
     "unableToPair": "",
@@ -28,12 +24,7 @@
     "invalidQrCodeFormat": "Ugyldig QR-kode format. Opprett en ny kode.",
     "invalidQrCodeMissingUrl": "Ugyldig QR-kode: manglende server-URL",
     "invalidQrCodeMissingToken": "Ugyldig QR-kode: manglende tilkoblingstoken",
-    "invalidServerUrlInQr": "Ugyldig server URL i QR-kode",
-    "tooManyPairingAttempts": "For mange paringsforsøk. Vent et par minutter.",
-    "invalidOrExpiredToken": "Ugyldig eller utgått tilkoblingsnøkkel.",
-    "invalidPairingRequest": "Ugyldig sammenkoblingsforespørsel. Kontroller koden.",
     "errorDetails": "",
-    "componentStack": "",
     "connectionLost": "",
     "failedToLoadSession": ""
   },
@@ -63,10 +54,8 @@
     "build": ""
   },
   "navigation": {
-    "home": "",
     "selectServer": "Velg Server",
-    "server": "Tjener",
-    "navigation": ""
+    "server": "Tjener"
   },
   "resources": {
     "cpu": "Prosessor",
@@ -86,7 +75,6 @@
     "ruleViolationTriggered": "",
     "newPlaybackBegan": "",
     "playbackEnded": "",
-    "exceededStreamLimit": "",
     "newDeviceDetected": "",
     "trustScoreDegraded": "",
     "serverUnreachable": "",
@@ -193,9 +181,6 @@
     "allServers": ""
   },
   "reconnected": "",
-  "serverScope": {
-    "single": ""
-  },
   "a11y": {
     "selectServer": "",
     "alerts": "",

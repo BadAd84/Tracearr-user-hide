@@ -10,16 +10,11 @@
         "message": "Сервер успішно видалено"
       },
       "serverSynced": {
-        "title": "Сервер синхронізовано",
-        "message": "Дані сервера синхронізовано"
+        "title": "Сервер синхронізовано"
       },
       "settingsUpdated": {
         "title": "Налаштування оновлено",
         "message": "Ваші налаштування збережено"
-      },
-      "tokenCopied": {
-        "title": "Токен скопійовано",
-        "message": "Парний токен скопійовано до буфера обміну"
       },
       "violationAcknowledged": {
         "title": "Порушення підтверджено",
@@ -38,19 +33,11 @@
         "message": "Назву пристрою оновлено"
       },
       "sessionsRevoked": {
-        "title": "Сеанси знято",
-        "message": "Усі мобільні сеанси було відкликано"
+        "title": "Сеанси знято"
       },
       "loggedIn": {
         "title": "Успішно",
         "message": "Успішно ввійшли"
-      },
-      "webhookTest": {
-        "title": "Тестування успішне",
-        "message": "Вебхук працює правильно"
-      },
-      "copiedToClipboard": {
-        "title": "Скопійовати до буфера обміну"
       },
       "plexAccountLinked": {
         "title": "Plex обліковий запис пов’язаний",
@@ -68,21 +55,8 @@
         "partial": "",
         "unmatched": ""
       },
-      "agentAdded": {
-        "title": "Агент додано",
-        "message": "Агент повідомлення був доданий"
-      },
-      "agentUpdated": {
-        "title": "Агент оновлено",
-        "message": "Сигнал агента була оновлена"
-      },
-      "agentRemoved": {
-        "title": "Агент видалено",
-        "message": "Агент сповіщення було видалено"
-      },
       "jobCompleted": {
-        "title": "Завдання завершене",
-        "message": "{{name}} успішно завершено"
+        "title": "Завдання завершене"
       },
       "automationCreated": {
         "title": "",
@@ -189,7 +163,6 @@
       "acknowledgeFailed": "Не вдалося підтвердити порушення",
       "dismissFailed": "Не вдалося відхилити порушення",
       "authFailed": "Помилка автентифікації",
-      "webhookTestFailed": "Тест Webhook не вдався",
       "automationCreateFailed": "",
       "automationUpdateFailed": "",
       "automationDeleteFailed": "",
@@ -208,14 +181,8 @@
       "sessionsRevokeFailed": "Не вдалося скасувати сеанси",
       "identityUpdateFailed": "",
       "trustScoresResetFailed": "Не вдалося скинути рейтинг довіри",
-      "routingUpdateFailed": "Не вдалося оновити маршрутизацію",
-      "clipboardFailed": "Не вдалося скопіювати в буфер обміну",
       "plexUnlinkFailed": "Не вдалося від'єднати акаунт Plex",
       "plexReauthorizeFailed": "",
-      "agentAddFailed": "Не вдалося додати агента",
-      "agentUpdateFailed": "Не вдалося оновити агента",
-      "agentRemoveFailed": "Не вдалося видалити агента",
-      "agentTestFailed": "Перевірка не вдалася",
       "jobAlreadyRunning": "Завдання вже виконується",
       "jobStartFailed": "Не вдалося розпочати роботу",
       "jobLoadFailed": "Не вдалося завантажити завдання технічного обслуговування",
@@ -248,8 +215,7 @@
     },
     "warning": {
       "jobFailed": {
-        "title": "Невдала спроба",
-        "message": "В {{name}} виникла помилка"
+        "title": "Невдала спроба"
       }
     },
     "info": {
@@ -263,43 +229,23 @@
       }
     }
   },
-  "push": {
-    "violationDetected": "Виявлено порушення спільного доступу",
-    "streamStarted": "Трансляцію розпочато",
-    "streamEnded": "Трансляцію завершено",
-    "serverDown": "З'єднання з сервером втрачено",
-    "serverUp": "Сервер знову онлайн",
-    "newDevice": "Новий пристрій",
-    "trustScoreChanged": "Змінено рейтинг довіри"
-  },
   "settings": {
-    "title": "Налаштування сповіщень",
     "allSeverity": "Усі (за замовчуванням, попередження, висока)",
     "warningAndHigh": "Попередження і високі",
     "highOnly": "Лише високий рівень",
-    "allTypes": "Усі типи",
     "rateLimit": "Статус поточного ліміту частот",
     "perMinute": "За хвилину",
     "perHour": "За годину",
     "enablePushNotifications": "Увімкнути push-сповіщення",
     "notificationEvents": "Події повідомлень",
     "violationDetected": "Виявлено порушення",
-    "violationDetectedDesc": "Коли порушення спільного доступу запущено",
     "streamStarted": "Трансляцію розпочато",
-    "streamStartedDesc": "Користувач починає відстежувати",
     "streamStopped": "Трансляцію зупинено",
-    "streamStoppedDesc": "Коли користувач перестає дивитися",
     "concurrentStreams": "Конактуальні потоки",
-    "concurrentStreamsDesc": "Якщо перевищити макс. ліміт потоку",
     "newDevice": "Новий пристрій",
-    "newDeviceDesc": "Коли новий пристрій підключається",
     "trustScoreChanged": "Змінено рейтинг довіри",
-    "trustScoreChangedDesc": "Коли очки довіри користувача змінюються",
     "serverDown": "Сервер недоступний",
-    "serverDownDesc": "Коли медіа-сервер переходить в автономний режим",
     "serverUp": "Сервер доступний",
-    "serverUpDesc": "Коли медіа-сервер повертається в мережу",
-    "violationFilters": "Фільтри порушень",
     "minimumSeverity": "Мінімальна серйозність",
     "quietHours": "Тихі години",
     "enableQuietHours": "Увімкнути тихі години",

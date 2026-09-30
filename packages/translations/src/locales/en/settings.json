@@ -49,14 +49,9 @@
     }
   },
   "general": {
-    "title": "General Settings",
     "unitSystem": "Unit System",
     "metric": "Metric (km, km/h)",
     "imperial": "Imperial (mi, mph)",
-    "timezone": "Timezone",
-    "primaryAuth": "Primary Authentication Method",
-    "localAccount": "Local Account",
-    "plexAccount": "Plex Account",
     "language": "Language",
     "languageDescription": "Stored in this browser, so everyone signed in picks their own.",
     "helpTranslate": "Help translate Tracearr",
@@ -142,14 +137,10 @@
     }
   },
   "servers": {
-    "title": "Connected Servers",
     "addServer": "Add Server",
     "serverName": "Server Name",
     "serverUrl": "Server URL",
-    "syncInterval": "Sync Interval",
     "testConnection": "Test Connection",
-    "connectionSuccess": "Connection successful",
-    "connectionFailed": "Connection failed",
     "noServersConnected": "No servers connected",
     "noServersConnectedHint": "Click \"Add Server\" to connect a Jellyfin or Emby server",
     "serverType": "Server Type",
@@ -162,10 +153,8 @@
     "allServersConnected": "All Servers Connected",
     "allServersConnectedDesc": "All servers from this account are already connected.",
     "serverUrlPlaceholder": "http://192.168.1.100:8096",
-    "serverUrlHelp": "Direct URL to your Jellyfin or Emby server. Use IP:port for best reliability.",
     "serverNamePlaceholder": "My Media Server",
     "apiKeyPlaceholder": "Enter your API key",
-    "apiKeyHelp": "Found in your media server's dashboard under API Keys or Advanced settings.",
     "connecting": "Connecting...",
     "connectServer": "Connect Server",
     "removeServer": "Remove Server",
@@ -178,7 +167,6 @@
     "allFieldsRequired": "All fields are required",
     "addServerDialogDescPlex": "Select a Plex server from your linked account.",
     "addServerDialogDescOther": "Connect a Jellyfin or Emby server.",
-    "description": "Manage your connected Plex, Jellyfin, and Emby servers.",
     "discoveringServers": "Discovering available Plex servers...",
     "discoveringConnections": "Discovering connections...",
     "plexAccount": "Plex Account",
@@ -238,8 +226,6 @@
       "issueMalfunctioned": "The server reports the plugin failed to load. Updating the plugin or the media server usually clears this."
     },
     "posterSource": {
-      "title": "Poster Preferences",
-      "titleDesc": "Choose which server's poster is shown when a title exists on more than one server",
       "label": "Preferred Poster Source",
       "description": "When a title is on more than one server, use this server's poster. If it doesn't have one, we'll fall back to the most recently added copy.",
       "automatic": "Automatic (most recent)",
@@ -316,8 +302,6 @@
     "showLogs": "Show Logs",
     "hideLogs": "Hide Logs",
     "noLogs": "No log output available.",
-    "exitNodeNone": "None",
-    "exitNodeOffline": "(offline)",
     "unknownError": "An unknown error occurred.",
     "disableConfirmTitle": "Disable Tailscale?",
     "disableConfirmDescription": "This will disconnect Tracearr from your tailnet. You can re-enable without re-authorizing.",
@@ -361,33 +345,12 @@
     "automatic": "Automatic",
     "startJob": "Start Job"
   },
-  "advanced": {
-    "title": "Advanced Settings",
-    "externalUrl": "External URL",
-    "trustProxy": "Trust Proxy Headers",
-    "reverseProxy": "Reverse Proxy",
-    "connectionScenarios": "Connection Scenarios"
-  },
   "accessControl": {
-    "title": "Access Control",
-    "description": "Configure who can access Tracearr.",
     "allowGuestAccess": "Allow Guest Access",
     "allowGuestAccessDesc": "When disabled, only the server owner can log in to Tracearr.",
     "singleOwnerNote": "Note: When guest access is disabled, only the server owner can sign in. All other users will see an \"Access Denied\" message."
   },
   "import": {
-    "title": "Import Data",
-    "jellystat": "Import from Jellystat",
-    "tautulli": "Import from Tautulli",
-    "importProgress": "Import Progress",
-    "importComplete": "Import Complete",
-    "importFailed": "Import Failed",
-    "processed": "Processed",
-    "page": "Page",
-    "imported": "Imported",
-    "skipped": "Skipped",
-    "enriched": "Enriched",
-    "errors": "Errors",
     "noServers": "No Servers Connected",
     "noServersHint": "You need at least one connected server to import data.",
     "tautulliUrl": "Tautulli URL",
@@ -424,8 +387,6 @@
     "uploadingBackup": "Uploading backup file...",
     "plex": "Plex (Tautulli)",
     "jellyfinEmby": "Jellyfin/Emby (Jellystat)",
-    "step1": "1",
-    "step2": "2",
     "apiKeyPlaceholder": "Your Tautulli API key",
     "skipUserNotFoundPlex": "User not found — The Plex user doesn't exist in Tracearr. Sync your server first to add all users.",
     "skipDuplicate": "Duplicate session — The session was already imported previously.",
@@ -461,10 +422,7 @@
     "createAccount": "Create Account",
     "email": "Email",
     "password": "Password",
-    "displayName": "Display Name",
-    "createYourAccount": "Create your account to get started",
-    "signInToAccount": "Sign in to your account",
-    "useLocalAccount": "Use local account instead"
+    "displayName": "Display Name"
   },
   "update": {
     "title": "Update Available",

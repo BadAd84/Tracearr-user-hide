@@ -1,7 +1,6 @@
 {
   "pair": {
     "welcome": "Välkommen till Tracearr",
-    "addServer": "Lägg till server",
     "connectToServer": "Anslut till server",
     "enterServerDetails": "Ange din Tracearr server-URL och mobilaccess-token",
     "serverUrl": "",
@@ -16,10 +15,7 @@
     "pleaseEnterToken": ""
   },
   "errors": {
-    "missingFields": "Fält saknas",
-    "pleaseEnterBothFields": "Ange både server-URL och token",
     "invalidUrl": "Ogiltig URL",
-    "serverUrlMustStartWith": "Server-URL måste börja med http:// eller https://",
     "pleaseEnterValidUrl": "Ange en giltig server-URL",
     "pairingFailed": "Parkoppling misslyckades",
     "unableToPair": "",
@@ -28,12 +24,7 @@
     "invalidQrCodeFormat": "Ogiltigt QR-kodformat. Vänligen generera en ny kod.",
     "invalidQrCodeMissingUrl": "Ogiltig QR-kod: saknar server-URL",
     "invalidQrCodeMissingToken": "Ogiltig QR-kod: saknad parkopplingstoken",
-    "invalidServerUrlInQr": "Ogiltig server-URL i QR-kod",
-    "tooManyPairingAttempts": "För många parningsförsök. Vänligen vänta några minuter.",
-    "invalidOrExpiredToken": "Ogiltig eller utgången parkopplingstoken.",
-    "invalidPairingRequest": "Ogiltig parkopplingsbegäran. Kontrollera din token.",
     "errorDetails": "",
-    "componentStack": "",
     "connectionLost": "",
     "failedToLoadSession": ""
   },
@@ -63,10 +54,8 @@
     "build": ""
   },
   "navigation": {
-    "home": "",
     "selectServer": "Välj server",
-    "server": "",
-    "navigation": ""
+    "server": ""
   },
   "resources": {
     "cpu": "",
@@ -86,7 +75,6 @@
     "ruleViolationTriggered": "",
     "newPlaybackBegan": "",
     "playbackEnded": "",
-    "exceededStreamLimit": "",
     "newDeviceDetected": "",
     "trustScoreDegraded": "",
     "serverUnreachable": "",
@@ -193,9 +181,6 @@
     "allServers": ""
   },
   "reconnected": "",
-  "serverScope": {
-    "single": ""
-  },
   "a11y": {
     "selectServer": "",
     "alerts": "",

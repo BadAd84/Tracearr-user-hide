@@ -27,9 +27,7 @@
     "plexAuthFailed": "Plex authentication failed",
     "plexStartFailed": "Failed to start Plex login",
     "serverConnectFailed": "Failed to connect to server",
-    "signupFailed": "Signup failed",
     "createAccountFailed": "Failed to create account",
-    "loginFailed": "Login failed",
     "invalidCredentials": "Invalid username, email, or password",
     "claimCodeRequired": "First-time setup requires a claim code",
     "enterClaimCode": "Enter Claim Code",
@@ -159,12 +157,6 @@
   "history": {
     "title": "History",
     "description": "Browse all streaming sessions with powerful filtering.",
-    "loadingMore": "Loading more...",
-    "scrollForMore": "Scroll for more",
-    "showingAllResults": "Showing all {{total}} results",
-    "deleteSession_one": "Delete {{count}} Session",
-    "deleteSession_other": "Delete {{count}} Sessions",
-    "deleteSessionsConfirm": "Are you sure you want to delete? This action cannot be undone.",
     "totalPlays": "Total Plays",
     "uniqueTitles": "Unique Titles",
     "uniqueUsers": "Unique Users"
@@ -1591,13 +1583,7 @@
     "messageLabel": "Message to user (optional)",
     "messagePlaceholder": "e.g., Please don't share your account",
     "messageHint": "This message will be shown to them during playback",
-    "terminating": "Terminating...",
-    "killStream": "Kill Stream"
-  },
-  "notFound": {
-    "title": "404",
-    "heading": "Page Not Found",
-    "description": "The page you're looking for doesn't exist or has been moved."
+    "terminating": "Terminating..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "Basemap not installed",
     "webglUnavailable": "WebGL is disabled in this browser",
     "webglHint": "The map needs WebGL. Enable it for this site in your browser settings.",
-    "basemapShadowed": "Basemap missing from {{path}}. Tracearr ships it in the image, so a volume mounted over that directory is hiding it. To persist the poster cache, mount /app/data/image-cache instead of /app/data.",
     "badMounts": "Incorrect volume mounts detected — functionality is not guaranteed."
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "Library Items",
     "environment": "Environment",
     "systemInformation": "System Information",
-    "cpu": "CPU",
-    "memory": "Memory",
-    "uptime": "Uptime",
     "database": "Database",
     "databaseDesc": "Database size and table statistics.",
     "totalSize": "Total Size",

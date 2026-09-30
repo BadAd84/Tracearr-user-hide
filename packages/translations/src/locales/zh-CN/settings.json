@@ -49,14 +49,9 @@
     }
   },
   "general": {
-    "title": "通用设置",
     "unitSystem": "单位系统",
     "metric": "公制 (km, km/h)",
     "imperial": "英制(mi, mph)",
-    "timezone": "时区",
-    "primaryAuth": "主要认证方法",
-    "localAccount": "本地用户",
-    "plexAccount": "Plex账户",
     "language": "语言",
     "languageDescription": "选择您首选的显示语言。",
     "helpTranslate": "帮助翻译 Tracearr",
@@ -142,14 +137,10 @@
     }
   },
   "servers": {
-    "title": "连接的服务器",
     "addServer": "添加服务器",
     "serverName": "服务器名称",
     "serverUrl": "服务器URL",
-    "syncInterval": "同步间隔",
     "testConnection": "测试连接",
-    "connectionSuccess": "连接成功",
-    "connectionFailed": "连接失败",
     "noServersConnected": "未连接服务器",
     "noServersConnectedHint": "点击“添加服务器”连接一个 Jellyfin 或 Emby 服务器",
     "serverType": "服务器类型",
@@ -162,10 +153,8 @@
     "allServersConnected": "所有服务器已连接",
     "allServersConnectedDesc": "此帐户的所有服务器已经连接。",
     "serverUrlPlaceholder": "http://192.168.1/100：8096",
-    "serverUrlHelp": "直接链接到您的 Jellyfin 或 Emby 服务器。使用IP:端口获取最佳可靠性。",
     "serverNamePlaceholder": "我的媒体服务器",
     "apiKeyPlaceholder": "输入您的 API 密钥",
-    "apiKeyHelp": "在 API 密钥或高级设置下您的媒体服务器的仪表盘中找到。",
     "connecting": "正在连接……",
     "connectServer": "连接服务器",
     "removeServer": "删除服务器",
@@ -178,7 +167,6 @@
     "allFieldsRequired": "所有字段都是必需的",
     "addServerDialogDescPlex": "从您链接的帐户中选择一个 Plex服务器。",
     "addServerDialogDescOther": "连接一个 Jellyfin 或 Emby 服务器。",
-    "description": "",
     "discoveringServers": "发现可用的Plex服务器...",
     "discoveringConnections": "正在发现连接...",
     "plexAccount": "Plex账户",
@@ -238,8 +226,6 @@
       "issueMalfunctioned": "服务器报告插件加载失败。更新插件或媒体服务器通常清除它。"
     },
     "posterSource": {
-      "title": "海报首选项",
-      "titleDesc": "选择在多个服务器上存在标题时显示哪个服务器的海报",
       "label": "首选海报来源",
       "description": "当一个标题在多个服务器上时，使用此服务器的海报。 如果没有，我们将回到最近添加的副本。",
       "automatic": "自动(最近一次)",
@@ -316,8 +302,6 @@
     "showLogs": "显示日志",
     "hideLogs": "隐藏日志",
     "noLogs": "无可用日志输出。",
-    "exitNodeNone": "无",
-    "exitNodeOffline": "(离线)",
     "unknownError": "发生未知错误。",
     "disableConfirmTitle": "禁用 Tailscale？",
     "disableConfirmDescription": "这将使 Tracearr 与您的 tailnet 断开连接。您可以在不重新授权的情况下重新启用。",
@@ -361,33 +345,12 @@
     "automatic": "",
     "startJob": "开始作业"
   },
-  "advanced": {
-    "title": "高级设置",
-    "externalUrl": "外部 URL",
-    "trustProxy": "信任代理头",
-    "reverseProxy": "反向代理",
-    "connectionScenarios": "连接场景"
-  },
   "accessControl": {
-    "title": "访问控制",
-    "description": "",
     "allowGuestAccess": "允许访客访问",
     "allowGuestAccessDesc": "禁用时，只有服务器所有者可以登录到 Tracearr",
     "singleOwnerNote": "注意：当访客访问被禁用时，只有服务器所有者可以登录。所有其他用户都会看到“访问被拒绝”的消息。"
   },
   "import": {
-    "title": "导入数据",
-    "jellystat": "从 Jellystat 导入",
-    "tautulli": "从 Tautulli 导入",
-    "importProgress": "导入进度",
-    "importComplete": "导入完成",
-    "importFailed": "导入失败",
-    "processed": "已处理",
-    "page": "页面",
-    "imported": "已导入",
-    "skipped": "已跳过",
-    "enriched": "丰富",
-    "errors": "错误",
     "noServers": "没有服务器连接",
     "noServersHint": "您需要至少一个连接的服务器来导入数据。",
     "tautulliUrl": "Tautulli URL",
@@ -424,8 +387,6 @@
     "uploadingBackup": "正在上传备份文件...",
     "plex": "Plex(Tautulli)",
     "jellyfinEmby": "Jellyfin/Emby (Jellystat)",
-    "step1": "1",
-    "step2": "2",
     "apiKeyPlaceholder": "您的Tautulli API 密钥",
     "skipUserNotFoundPlex": "找不到用户 — Plex用户在 Trackearr 中不存在。首先同步您的服务器以添加所有用户。",
     "skipDuplicate": "复制会话 — 会话已经导入。",
@@ -461,10 +422,7 @@
     "createAccount": "创建新账户",
     "email": "电子邮件",
     "password": "密码",
-    "displayName": "显示名称",
-    "createYourAccount": "创建您的账户以开始",
-    "signInToAccount": "登录到您的帐户",
-    "useLocalAccount": "使用本地账户"
+    "displayName": "显示名称"
   },
   "update": {
     "title": "有可用更新",

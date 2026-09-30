@@ -49,14 +49,9 @@
     }
   },
   "general": {
-    "title": "全般設定",
     "unitSystem": "単位システム",
     "metric": "メトリック（km/h）",
     "imperial": "",
-    "timezone": "",
-    "primaryAuth": "プライマリ認証方法",
-    "localAccount": "ローカルアカウント",
-    "plexAccount": "プレックスアカウント",
     "language": "言語",
     "languageDescription": "お好みの表示言語を選択します。",
     "helpTranslate": "Tracearrの翻訳に協力する",
@@ -142,14 +137,10 @@
     }
   },
   "servers": {
-    "title": "接続されたサーバー",
     "addServer": "サーバーを追加",
     "serverName": "サーバー名",
     "serverUrl": "サーバー URL",
-    "syncInterval": "同期間隔",
     "testConnection": "接続をテスト",
-    "connectionSuccess": "接続に成功しました",
-    "connectionFailed": "接続に失敗しました",
     "noServersConnected": "サーバーが接続されていません",
     "noServersConnectedHint": "「サーバーを追加」をクリックしてJellyfinまたはEmbyサーバーに接続します",
     "serverType": "サーバーの種類",
@@ -162,10 +153,8 @@
     "allServersConnected": "すべてのサーバーが接続されました",
     "allServersConnectedDesc": "このアカウントのすべてのサーバーは既に接続されています。",
     "serverUrlPlaceholder": "",
-    "serverUrlHelp": "JellyfinまたはEmbyサーバーに直接URLを指定します。信頼性を高めるためにIP:portを使用してください。",
     "serverNamePlaceholder": "私のメディアサーバー",
     "apiKeyPlaceholder": "API キーを入力してください",
-    "apiKeyHelp": "API キーまたは詳細設定のメディアサーバーのダッシュボードで見つかります。",
     "connecting": "接続中...",
     "connectServer": "サーバーに接続",
     "removeServer": "サーバーを削除",
@@ -178,7 +167,6 @@
     "allFieldsRequired": "すべてのフィールドが必要です",
     "addServerDialogDescPlex": "リンクされたアカウントからプレックスサーバーを選択します。",
     "addServerDialogDescOther": "JellyfinまたはEmbyサーバーを接続します。",
-    "description": "",
     "discoveringServers": "利用可能なプレックスサーバーを発見しています...",
     "discoveringConnections": "接続を発見しています...",
     "plexAccount": "プレックスアカウント",
@@ -238,8 +226,6 @@
       "issueMalfunctioned": ""
     },
     "posterSource": {
-      "title": "",
-      "titleDesc": "",
       "label": "",
       "description": "",
       "automatic": "",
@@ -316,8 +302,6 @@
     "showLogs": "ログを表示",
     "hideLogs": "ログを隠す",
     "noLogs": "利用可能なログ出力がありません。",
-    "exitNodeNone": "なし",
-    "exitNodeOffline": "(オフライン)",
     "unknownError": "不明なエラーが発生しました。",
     "disableConfirmTitle": "テールスケールを無効にしますか？",
     "disableConfirmDescription": "これにより Tracearr があなたのテールネットから切断されます。再承認せずに再度有効にすることができます。",
@@ -361,33 +345,12 @@
     "automatic": "",
     "startJob": "作業を開始"
   },
-  "advanced": {
-    "title": "詳細設定",
-    "externalUrl": "外部 URL",
-    "trustProxy": "プロキシヘッダーを信頼する",
-    "reverseProxy": "リバースプロキシ",
-    "connectionScenarios": "接続シナリオ"
-  },
   "accessControl": {
-    "title": "アクセスコントロール",
-    "description": "",
     "allowGuestAccess": "ゲストアクセスを許可する",
     "allowGuestAccessDesc": "無効にすると、サーバの所有者のみが Tracear にログインできます。",
     "singleOwnerNote": "注: ゲストアクセスが無効になっている場合、サーバーの所有者のみがサインインできます。他のすべてのユーザーには「アクセス拒否」メッセージが表示されます。"
   },
   "import": {
-    "title": "データのインポート",
-    "jellystat": "Jellystat からインポート",
-    "tautulli": "Tautulliからインポート",
-    "importProgress": "インポートの進捗状況",
-    "importComplete": "インポート完了",
-    "importFailed": "インポートに失敗しました",
-    "processed": "処理完了",
-    "page": "ページ",
-    "imported": "インポートしました",
-    "skipped": "スキップ",
-    "enriched": "",
-    "errors": "エラー",
     "noServers": "サーバーが接続されていません",
     "noServersHint": "データをインポートするには、少なくとも1つの接続されたサーバーが必要です。",
     "tautulliUrl": "",
@@ -424,8 +387,6 @@
     "uploadingBackup": "バックアップファイルをアップロードしています...",
     "plex": "プレックス (Tautulli)",
     "jellyfinEmby": "",
-    "step1": "",
-    "step2": "",
     "apiKeyPlaceholder": "Tautulli APIキー",
     "skipUserNotFoundPlex": "ユーザが見つかりません — プレックスのユーザが Tracear に存在しません。すべてのユーザを追加するには、まずサーバを同期してください。",
     "skipDuplicate": "重複セッション — セッションは以前にインポートされていました。",
@@ -461,10 +422,7 @@
     "createAccount": "アカウントを作成",
     "email": "Eメールアドレス",
     "password": "パスワード",
-    "displayName": "表示名",
-    "createYourAccount": "アカウントを作成して開始する",
-    "signInToAccount": "アカウントにサインインする",
-    "useLocalAccount": "代わりにローカルアカウントを使用する"
+    "displayName": "表示名"
   },
   "update": {
     "title": "アップデートがあります",

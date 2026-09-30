@@ -27,9 +27,7 @@
     "plexAuthFailed": "Αποτυχία ταυτοποίησης Plex",
     "plexStartFailed": "Αποτυχία έναρξης σύνδεσης στο Plex",
     "serverConnectFailed": "Αποτυχία σύνδεσης με το διακομιστή",
-    "signupFailed": "Η εγγραφή απέτυχε",
     "createAccountFailed": "Αποτυχία δημιουργίας λογαριασμού",
-    "loginFailed": "Αποτυχία σύνδεσης",
     "invalidCredentials": "Μη έγκυρο email ή κωδικός πρόσβασης",
     "claimCodeRequired": "Η πρώτη ρύθμιση απαιτεί έναν κωδικό απαίτησης",
     "enterClaimCode": "Εισάγετε Κωδικό Διεκδίκησης",
@@ -159,12 +157,6 @@
   "history": {
     "title": "Ιστορικό",
     "description": "",
-    "loadingMore": "Φόρτωση περισσότερων...",
-    "scrollForMore": "Κύλιση για περισσότερα",
-    "showingAllResults": "",
-    "deleteSession_one": "",
-    "deleteSession_other": "",
-    "deleteSessionsConfirm": "Είστε βέβαιοι ότι θέλετε να διαγράψετε? Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "Μήνυμα προς το χρήστη (προαιρετικό)",
     "messagePlaceholder": "π.χ., Παρακαλώ μην κοινοποιήσετε το λογαριασμό σας",
     "messageHint": "Αυτό το μήνυμα θα εμφανιστεί σε αυτούς κατά την αναπαραγωγή",
-    "terminating": "Τερματισμός...",
-    "killStream": "Τερματισμός Ροής"
-  },
-  "notFound": {
-    "title": "",
-    "heading": "Η Σελίδα Δεν Βρέθηκε",
-    "description": "Η σελίδα που ψάχνετε δεν υπάρχει ή έχει μετακινηθεί."
+    "terminating": "Τερματισμός..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "Στοιχεία Βιβλιοθήκης",
     "environment": "Περιβάλλον",
     "systemInformation": "Πληροφορίες Συστήματος",
-    "cpu": "Επεξεργαστής",
-    "memory": "Μνήμη",
-    "uptime": "Χρόνος",
     "database": "Βάση Δεδομένων",
     "databaseDesc": "",
     "totalSize": "Συνολικό Μέγεθος",

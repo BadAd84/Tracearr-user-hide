@@ -49,14 +49,9 @@
     }
   },
   "general": {
-    "title": "",
     "unitSystem": "",
     "metric": "",
     "imperial": "",
-    "timezone": "",
-    "primaryAuth": "",
-    "localAccount": "",
-    "plexAccount": "",
     "language": "",
     "languageDescription": "",
     "helpTranslate": "",
@@ -142,14 +137,10 @@
     }
   },
   "servers": {
-    "title": "",
     "addServer": "",
     "serverName": "",
     "serverUrl": "",
-    "syncInterval": "",
     "testConnection": "",
-    "connectionSuccess": "",
-    "connectionFailed": "",
     "noServersConnected": "",
     "noServersConnectedHint": "",
     "serverType": "",
@@ -162,10 +153,8 @@
     "allServersConnected": "",
     "allServersConnectedDesc": "",
     "serverUrlPlaceholder": "",
-    "serverUrlHelp": "",
     "serverNamePlaceholder": "",
     "apiKeyPlaceholder": "",
-    "apiKeyHelp": "",
     "connecting": "Kapcsolódás...",
     "connectServer": "",
     "removeServer": "",
@@ -178,7 +167,6 @@
     "allFieldsRequired": "",
     "addServerDialogDescPlex": "",
     "addServerDialogDescOther": "",
-    "description": "",
     "discoveringServers": "",
     "discoveringConnections": "",
     "plexAccount": "",
@@ -238,8 +226,6 @@
       "issueMalfunctioned": ""
     },
     "posterSource": {
-      "title": "",
-      "titleDesc": "",
       "label": "",
       "description": "",
       "automatic": "",
@@ -316,8 +302,6 @@
     "showLogs": "",
     "hideLogs": "",
     "noLogs": "",
-    "exitNodeNone": "",
-    "exitNodeOffline": "(nem elérhető)",
     "unknownError": "",
     "disableConfirmTitle": "",
     "disableConfirmDescription": "",
@@ -361,33 +345,12 @@
     "automatic": "",
     "startJob": ""
   },
-  "advanced": {
-    "title": "",
-    "externalUrl": "",
-    "trustProxy": "",
-    "reverseProxy": "",
-    "connectionScenarios": ""
-  },
   "accessControl": {
-    "title": "",
-    "description": "",
     "allowGuestAccess": "",
     "allowGuestAccessDesc": "",
     "singleOwnerNote": ""
   },
   "import": {
-    "title": "",
-    "jellystat": "",
-    "tautulli": "",
-    "importProgress": "",
-    "importComplete": "",
-    "importFailed": "",
-    "processed": "",
-    "page": "",
-    "imported": "",
-    "skipped": "",
-    "enriched": "",
-    "errors": "",
     "noServers": "",
     "noServersHint": "",
     "tautulliUrl": "",
@@ -424,8 +387,6 @@
     "uploadingBackup": "",
     "plex": "",
     "jellyfinEmby": "",
-    "step1": "",
-    "step2": "",
     "apiKeyPlaceholder": "",
     "skipUserNotFoundPlex": "",
     "skipDuplicate": "",
@@ -461,10 +422,7 @@
     "createAccount": "",
     "email": "",
     "password": "",
-    "displayName": "",
-    "createYourAccount": "",
-    "signInToAccount": "",
-    "useLocalAccount": ""
+    "displayName": ""
   },
   "update": {
     "title": "",

@@ -27,9 +27,7 @@
     "plexAuthFailed": "",
     "plexStartFailed": "",
     "serverConnectFailed": "",
-    "signupFailed": "",
     "createAccountFailed": "",
-    "loginFailed": "",
     "invalidCredentials": "",
     "claimCodeRequired": "",
     "enterClaimCode": "",
@@ -159,12 +157,6 @@
   "history": {
     "title": "",
     "description": "",
-    "loadingMore": "",
-    "scrollForMore": "",
-    "showingAllResults": "",
-    "deleteSession_one": "",
-    "deleteSession_other": "",
-    "deleteSessionsConfirm": "",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "",
     "messagePlaceholder": "",
     "messageHint": "",
-    "terminating": "",
-    "killStream": ""
-  },
-  "notFound": {
-    "title": "",
-    "heading": "",
-    "description": ""
+    "terminating": ""
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "",
     "environment": "",
     "systemInformation": "",
-    "cpu": "",
-    "memory": "",
-    "uptime": "",
     "database": "",
     "databaseDesc": "",
     "totalSize": "",

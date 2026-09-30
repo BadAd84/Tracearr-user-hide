@@ -27,9 +27,7 @@
     "plexAuthFailed": "Autenticación de Plex fallida",
     "plexStartFailed": "No se pudo iniciar la sesión de Plex",
     "serverConnectFailed": "Error al conectar al servidor",
-    "signupFailed": "Error al registrarse",
     "createAccountFailed": "Error al crear la cuenta",
-    "loginFailed": "Inicio de sesión fallido",
     "invalidCredentials": "Correo electrónico o contraseña no válidos",
     "claimCodeRequired": "La configuración inicial requiere un código CLAIM",
     "enterClaimCode": "Ingrese el código CLAIM",
@@ -159,12 +157,6 @@
   "history": {
     "title": "Historial",
     "description": "",
-    "loadingMore": "Cargando más...",
-    "scrollForMore": "Desplácese para ver más",
-    "showingAllResults": "Mostrando {{total}} resultados",
-    "deleteSession_one": "Eliminar {{count}} sesión",
-    "deleteSession_other": "Eliminar {{count}} Sesiones",
-    "deleteSessionsConfirm": "¿Está seguro que desea eliminar? Esta acción no se puede deshacer.",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "Mensaje para el usuario (opcional)",
     "messagePlaceholder": "ej. Por favor, no compartas tu cuenta",
     "messageHint": "Este mensaje será mostrado durante la reproducción",
-    "terminating": "Terminando...",
-    "killStream": "Matar Reproducción"
-  },
-  "notFound": {
-    "title": "",
-    "heading": "Página No Encontrada",
-    "description": "La página que buscas no existe o ha sido movida."
+    "terminating": "Terminando..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "Elemento de biblioteca",
     "environment": "Entorno",
     "systemInformation": "Información del sistema",
-    "cpu": "",
-    "memory": "Memoria",
-    "uptime": "Actualización",
     "database": "Base de datos",
     "databaseDesc": "",
     "totalSize": "Tamaño total",

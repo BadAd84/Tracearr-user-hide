@@ -49,14 +49,9 @@
     }
   },
   "general": {
-    "title": "Algemene instellingen",
     "unitSystem": "Eenheidsstelsel",
     "metric": "Metrisch (km, km/u)",
     "imperial": "Imperiaal (mijl, mijl/u)",
-    "timezone": "Tijdzone",
-    "primaryAuth": "Primaire authenticatiemethode",
-    "localAccount": "Lokaal account",
-    "plexAccount": "Plex-account",
     "language": "Taal",
     "languageDescription": "Kies je gewenste weergavetaal.",
     "helpTranslate": "Help bij het vertalen van Tracearr",
@@ -142,14 +137,10 @@
     }
   },
   "servers": {
-    "title": "Verbonden servers",
     "addServer": "Server toevoegen",
     "serverName": "Servernaam",
     "serverUrl": "Server-URL",
-    "syncInterval": "Synchronisatie-interval",
     "testConnection": "Verbinding testen",
-    "connectionSuccess": "Succesvol verbonden",
-    "connectionFailed": "Verbinding mislukt",
     "noServersConnected": "Geen servers verbonden",
     "noServersConnectedHint": "Klik op \"Server toevoegen\" om een Jellyfin of Emby server te verbinden",
     "serverType": "Type server",
@@ -162,10 +153,8 @@
     "allServersConnected": "Alle servers verbonden",
     "allServersConnectedDesc": "Alle servers van deze account zijn al verbonden.",
     "serverUrlPlaceholder": "",
-    "serverUrlHelp": "Directe URL naar uw Jellyfin of Emby server. Gebruik IP:port voor de beste betrouwbaarheid",
     "serverNamePlaceholder": "Mijn mediaserver",
     "apiKeyPlaceholder": "Voer uw API-sleutel in",
-    "apiKeyHelp": "Gevonden in het dashboard van uw mediaserver onder API-sleutels of geavanceerde instellingen.",
     "connecting": "Verbinden...",
     "connectServer": "Server verbinden",
     "removeServer": "Server verwijderen",
@@ -178,7 +167,6 @@
     "allFieldsRequired": "Alle velden zijn verplicht",
     "addServerDialogDescPlex": "Selecteer een Plex server van uw gekoppelde account.",
     "addServerDialogDescOther": "Verbind een Jellyfin of Emby server.",
-    "description": "",
     "discoveringServers": "Ontdekken van beschikbare Plex servers...",
     "discoveringConnections": "Ontdekken van verbindingen...",
     "plexAccount": "Plex-account",
@@ -238,8 +226,6 @@
       "issueMalfunctioned": "De server meldt dat de plugin niet geladen kon worden. Het bijwerken van de plugin of de mediaserver lost dit probleem meestal op."
     },
     "posterSource": {
-      "title": "Postervoorkeuren",
-      "titleDesc": "Kies van welke server de poster wordt weergegeven wanneer een titel op meer dan één server beschikbaar is",
       "label": "Voorkeursbron voor posters",
       "description": "Als een titel op meerdere servers beschikbaar is, gebruik dan de poster van die server. Als die server geen poster heeft, gebruiken we de meest recent toegevoegde versie.",
       "automatic": "Automatisch (meest recent)",
@@ -316,8 +302,6 @@
     "showLogs": "Logboeken tonen",
     "hideLogs": "Logboeken verbergen",
     "noLogs": "Geen logboekuitvoer beschikbaar.",
-    "exitNodeNone": "Geen",
-    "exitNodeOffline": "",
     "unknownError": "Er is een onbekende fout opgetreden.",
     "disableConfirmTitle": "Tailscale uitschakelen?",
     "disableConfirmDescription": "Dit zal de verbinding van Tracearr met je tailnet verbreken. Je kunt dit opnieuw inschakelen zonder autorisatie.",
@@ -361,33 +345,12 @@
     "automatic": "",
     "startJob": "Taak starten"
   },
-  "advanced": {
-    "title": "Geavanceerde instellingen",
-    "externalUrl": "Externe URL",
-    "trustProxy": "Proxy-headers vertrouwen",
-    "reverseProxy": "Reverse proxy",
-    "connectionScenarios": "Verbindingsscenario's"
-  },
   "accessControl": {
-    "title": "Toegangsbeheer",
-    "description": "",
     "allowGuestAccess": "Gasttoegang toestaan",
     "allowGuestAccessDesc": "Indien uitgeschakeld kan alleen de server eigenaar inloggen op Tracearr",
     "singleOwnerNote": "Opmerking: Wanneer gasttoegang is uitgeschakeld, kan alleen de servereigenaar inloggen. Alle andere gebruikers zien het bericht \"Toegang Geweigerd\"."
   },
   "import": {
-    "title": "Gegevens importeren",
-    "jellystat": "Importeren uit Jellystat",
-    "tautulli": "Importeren uit Tautulli",
-    "importProgress": "Importvoortgang",
-    "importComplete": "Importeren voltooid",
-    "importFailed": "Importeren mislukt",
-    "processed": "Verwerkt",
-    "page": "Pagina",
-    "imported": "Geïmporteerd",
-    "skipped": "Overgeslagen",
-    "enriched": "Verrijkt",
-    "errors": "Fouten",
     "noServers": "Geen servers verbonden",
     "noServersHint": "Je hebt minstens één verbonden server nodig om gegevens te importeren.",
     "tautulliUrl": "",
@@ -424,8 +387,6 @@
     "uploadingBackup": "Back-upbestand uploaden...",
     "plex": "Plex (zeker)",
     "jellyfinEmby": "",
-    "step1": "",
-    "step2": "",
     "apiKeyPlaceholder": "Jouw Tautulli API-sleutel",
     "skipUserNotFoundPlex": "Gebruiker niet gevonden - De Plex gebruiker bestaat niet in Tracearr. Synchroniseer eerst je server om alle gebruikers toe te voegen.",
     "skipDuplicate": "Dupliceer sessie - De sessie is al eerder geïmporteerd.",
@@ -461,10 +422,7 @@
     "createAccount": "Account aanmaken",
     "email": "E-mail",
     "password": "Wachtwoord",
-    "displayName": "Weergavenaam",
-    "createYourAccount": "Maak je account aan om te beginnen",
-    "signInToAccount": "Aanmelden bij je account",
-    "useLocalAccount": "Lokaal account gebruiken"
+    "displayName": "Weergavenaam"
   },
   "update": {
     "title": "Update beschikbaar",

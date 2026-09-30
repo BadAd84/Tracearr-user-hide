@@ -27,9 +27,7 @@
     "plexAuthFailed": "Plex-Authentifizierung fehlgeschlagen",
     "plexStartFailed": "Plex-Anmeldung konnte nicht gestartet werden",
     "serverConnectFailed": "Verbindung zum Server fehlgeschlagen",
-    "signupFailed": "Anmeldung fehlgeschlagen",
     "createAccountFailed": "Konto konnte nicht erstellt werden",
-    "loginFailed": "Login fehlgeschlagen",
     "invalidCredentials": "Ungültige Email oder Password",
     "claimCodeRequired": "Erstmaliges Setup erfordert einen Bestätigungscode",
     "enterClaimCode": "Bestätigungscode eingeben",
@@ -159,12 +157,6 @@
   "history": {
     "title": "Historie",
     "description": "",
-    "loadingMore": "Lade mehr...",
-    "scrollForMore": "Scrollen um mehr zu sehen",
-    "showingAllResults": "Alle {{total}} Resultate anzeigen",
-    "deleteSession_one": "Lösche {{count}} Session",
-    "deleteSession_other": "Lösche {{count}} Sessions",
-    "deleteSessionsConfirm": "Möchten Sie wirklich {{count}} Sitzungen löschen? Diese Aktion kann nicht rückgängig gemacht werden..",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "Nachricht an Benutzer (optional)",
     "messagePlaceholder": "z.B. Bitte teilen Sie Ihr Konto nicht",
     "messageHint": "Diese Nachricht wird während der Wiedergabe angezeigt",
-    "terminating": "Wird beendet...",
-    "killStream": "Stream beenden"
-  },
-  "notFound": {
-    "title": "",
-    "heading": "Seite nicht gefunden",
-    "description": "Die gesuchte Seite existiert nicht oder wurde verschoben"
+    "terminating": "Wird beendet..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "Bibliothekselemente",
     "environment": "Umgebung",
     "systemInformation": "Systeminformationen",
-    "cpu": "",
-    "memory": "Speicher",
-    "uptime": "Laufzeit",
     "database": "Datenbank",
     "databaseDesc": "",
     "totalSize": "Gesamtgröße",

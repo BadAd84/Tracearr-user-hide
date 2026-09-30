@@ -27,9 +27,7 @@
     "plexAuthFailed": "Plex身份验证失败",
     "plexStartFailed": "启动Plex登录失败",
     "serverConnectFailed": "无法连接至服务器",
-    "signupFailed": "注册失败",
     "createAccountFailed": "创建账户失败",
-    "loginFailed": "登录失败",
     "invalidCredentials": "无效的电子邮件或密码",
     "claimCodeRequired": "首次设置需要一个索赔码",
     "enterClaimCode": "输入索赔码",
@@ -159,12 +157,6 @@
   "history": {
     "title": "历史记录",
     "description": "",
-    "loadingMore": "加载更多……",
-    "scrollForMore": "滚动获得更多",
-    "showingAllResults": "显示所有{{total}}个结果",
-    "deleteSession_one": "删除{{count}}个会话",
-    "deleteSession_other": "删除{{count}}个会话",
-    "deleteSessionsConfirm": "您确定要删除吗？此操作无法撤销。",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "给用户的消息(可选)",
     "messagePlaceholder": "例如，请不要分享您的帐户",
     "messageHint": "此消息将在播放时显示给他们",
-    "terminating": "正在终止……",
-    "killStream": "结束流"
-  },
-  "notFound": {
-    "title": "",
-    "heading": "无法找到页面",
-    "description": "您查找的页面不存在或已移至别处。"
+    "terminating": "正在终止……"
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "媒体库数量",
     "environment": "环境",
     "systemInformation": "系统信息",
-    "cpu": "",
-    "memory": "内存",
-    "uptime": "运行时间",
     "database": "数据库",
     "databaseDesc": "",
     "totalSize": "总大小",

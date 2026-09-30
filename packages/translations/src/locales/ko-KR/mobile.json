@@ -1,7 +1,6 @@
 {
   "pair": {
     "welcome": "Tracearr에 오신 것을 환영합니다",
-    "addServer": "서버 추가",
     "connectToServer": "서버에 연결",
     "enterServerDetails": "Tracearr 서버 URL과 모바일 접근 토큰을 입력하세요",
     "serverUrl": "서버 URL",
@@ -16,10 +15,7 @@
     "pleaseEnterToken": "접근 토큰을 입력하세요"
   },
   "errors": {
-    "missingFields": "누락된 항목",
-    "pleaseEnterBothFields": "서버 URL과 토큰을 모두 입력하세요",
     "invalidUrl": "올바르지 않은 URL입니다",
-    "serverUrlMustStartWith": "서버 URL은 http:// 또는 https://로 시작해야 합니다",
     "pleaseEnterValidUrl": "올바른 서버 URL을 입력하세요",
     "pairingFailed": "페어링 실패",
     "unableToPair": "서버와 페어링할 수 없습니다",
@@ -28,12 +24,7 @@
     "invalidQrCodeFormat": "QR 코드 형식이 올바르지 않습니다. 새 코드를 생성하세요.",
     "invalidQrCodeMissingUrl": "QR 코드에 서버 URL이 없습니다",
     "invalidQrCodeMissingToken": "QR 코드에 페어링 토큰이 없습니다",
-    "invalidServerUrlInQr": "QR 코드의 서버 URL이 올바르지 않습니다",
-    "tooManyPairingAttempts": "페어링 시도가 너무 많습니다. 몇 분 후 다시 시도하세요.",
-    "invalidOrExpiredToken": "페어링 토큰이 올바르지 않거나 만료되었습니다.",
-    "invalidPairingRequest": "페어링 요청이 올바르지 않습니다. 토큰을 확인하세요.",
     "errorDetails": "오류 상세:",
-    "componentStack": "컴포넌트 스택:",
     "connectionLost": "연결이 끊겼습니다",
     "failedToLoadSession": "세션을 불러오지 못했습니다"
   },
@@ -63,10 +54,8 @@
     "build": "빌드 {{build}}"
   },
   "navigation": {
-    "home": "홈",
     "selectServer": "서버 선택",
-    "server": "서버",
-    "navigation": "탐색"
+    "server": "서버"
   },
   "resources": {
     "cpu": "CPU",
@@ -86,7 +75,6 @@
     "ruleViolationTriggered": "규칙 위반이 발생했습니다",
     "newPlaybackBegan": "새 재생이 시작되었습니다",
     "playbackEnded": "재생이 종료되었습니다",
-    "exceededStreamLimit": "사용자가 스트림 제한을 초과했습니다",
     "newDeviceDetected": "사용자에게 새 기기가 감지되었습니다",
     "trustScoreDegraded": "사용자 신뢰 점수가 낮아졌습니다",
     "serverUnreachable": "미디어 서버에 연결할 수 없습니다",
@@ -193,9 +181,6 @@
     "allServers": "모든 서버"
   },
   "reconnected": "다시 연결됨",
-  "serverScope": {
-    "single": "{{name}}만 표시 중"
-  },
   "a11y": {
     "selectServer": "서버 선택",
     "alerts": "알림",

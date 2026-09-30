@@ -1,7 +1,6 @@
 {
   "pair": {
     "welcome": "Benvingut a Tracearr",
-    "addServer": "Afegeix un servidor",
     "connectToServer": "Connecta a un servidor",
     "enterServerDetails": "Introduïu l'URL del vostre servidor Tracearr i el testimoni d'accés mòbil",
     "serverUrl": "URL del servidor",
@@ -16,10 +15,7 @@
     "pleaseEnterToken": "Introduïu el vostre testimoni d'accés"
   },
   "errors": {
-    "missingFields": "Falten camps",
-    "pleaseEnterBothFields": "Introduïu l'URL del servidor i el testimoni",
     "invalidUrl": "URL no vàlid",
-    "serverUrlMustStartWith": "L'URL del servidor ha de començar amb http:// o https://",
     "pleaseEnterValidUrl": "Introduïu un URL de servidor vàlid",
     "pairingFailed": "L'aparellament ha fallat",
     "unableToPair": "No s'ha pogut aparellar amb el servidor",
@@ -28,12 +24,7 @@
     "invalidQrCodeFormat": "El format del codi QR no és vàlid. Genereu-ne un de nou.",
     "invalidQrCodeMissingUrl": "Codi QR no vàlid: falta l'URL del servidor",
     "invalidQrCodeMissingToken": "Codi QR no vàlid: falta el testimoni d'aparellament",
-    "invalidServerUrlInQr": "L'URL del servidor del codi QR no és vàlid",
-    "tooManyPairingAttempts": "Hi ha hagut massa intents d'aparellament. Espereu uns minuts.",
-    "invalidOrExpiredToken": "El testimoni d'aparellament no és vàlid o ha caducat.",
-    "invalidPairingRequest": "La sol·licitud d'aparellament no és vàlida. Comproveu el testimoni.",
     "errorDetails": "Detalls de l'error:",
-    "componentStack": "Pila de components:",
     "connectionLost": "S'ha perdut la connexió",
     "failedToLoadSession": "No s'ha pogut carregar la sessió"
   },
@@ -63,10 +54,8 @@
     "build": "Compilació {{build}}"
   },
   "navigation": {
-    "home": "Inici",
     "selectServer": "Selecciona el servidor",
-    "server": "Servidor",
-    "navigation": "Navegació"
+    "server": "Servidor"
   },
   "resources": {
     "cpu": "CPU",
@@ -86,7 +75,6 @@
     "ruleViolationTriggered": "S'ha activat un incompliment de regla",
     "newPlaybackBegan": "Ha començat una reproducció nova",
     "playbackEnded": "S'ha acabat la reproducció",
-    "exceededStreamLimit": "Un usuari ha superat el límit de transmissions",
     "newDeviceDetected": "S'ha detectat un dispositiu nou d'un usuari",
     "trustScoreDegraded": "La puntuació de confiança d'un usuari ha baixat",
     "serverUnreachable": "No es pot connectar al servidor multimèdia",
@@ -193,9 +181,6 @@
     "allServers": "Tots els servidors"
   },
   "reconnected": "S'ha tornat a connectar",
-  "serverScope": {
-    "single": "Es mostra només {{name}}"
-  },
   "a11y": {
     "selectServer": "Selecciona el servidor",
     "alerts": "Alertes",

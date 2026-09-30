@@ -1,7 +1,6 @@
 {
   "pair": {
     "welcome": "Vítejte v Tracearr",
-    "addServer": "Přidat server",
     "connectToServer": "Připojit k serveru",
     "enterServerDetails": "Zadejte URL serveru Tracearr a mobilní přístupový token",
     "serverUrl": "URL serveru",
@@ -16,10 +15,7 @@
     "pleaseEnterToken": ""
   },
   "errors": {
-    "missingFields": "Chybějící pole",
-    "pleaseEnterBothFields": "Zadejte URL adresu serveru a token",
     "invalidUrl": "Neplatná URL",
-    "serverUrlMustStartWith": "Adresa URL serveru musí začínat http:// nebo https:////",
     "pleaseEnterValidUrl": "Zadejte prosím platnou adresu URL serveru",
     "pairingFailed": "Párování se nezdařilo",
     "unableToPair": "",
@@ -28,12 +24,7 @@
     "invalidQrCodeFormat": "Neplatný formát QR kódu. Vygenerujte prosím nový kód.",
     "invalidQrCodeMissingUrl": "Neplatný QR kód: chybí URL serveru",
     "invalidQrCodeMissingToken": "Neplatný QR kód: chybí párovací token",
-    "invalidServerUrlInQr": "Neplatná URL adresa serveru v QR kódu",
-    "tooManyPairingAttempts": "Příliš mnoho pokusů o párování. Počkejte prosím několik minut.",
-    "invalidOrExpiredToken": "Neplatný nebo vypršela platnost tokenu.",
-    "invalidPairingRequest": "Neplatný požadavek na párování. Zkontrolujte token.",
     "errorDetails": "",
-    "componentStack": "",
     "connectionLost": "",
     "failedToLoadSession": ""
   },
@@ -63,10 +54,8 @@
     "build": ""
   },
   "navigation": {
-    "home": "",
     "selectServer": "Vybrat server",
-    "server": "",
-    "navigation": ""
+    "server": ""
   },
   "resources": {
     "cpu": "",
@@ -86,7 +75,6 @@
     "ruleViolationTriggered": "",
     "newPlaybackBegan": "",
     "playbackEnded": "",
-    "exceededStreamLimit": "",
     "newDeviceDetected": "",
     "trustScoreDegraded": "",
     "serverUnreachable": "",
@@ -193,9 +181,6 @@
     "allServers": ""
   },
   "reconnected": "",
-  "serverScope": {
-    "single": ""
-  },
   "a11y": {
     "selectServer": "",
     "alerts": "",

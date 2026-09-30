@@ -1,7 +1,6 @@
 {
   "pair": {
     "welcome": "Bienvenue sur Tracearr",
-    "addServer": "Ajouter un serveur",
     "connectToServer": "Se connecter au serveur",
     "enterServerDetails": "Entrez l'URL de votre serveur Tracearr et le jeton d'accès mobile",
     "serverUrl": "URL du serveur",
@@ -16,10 +15,7 @@
     "pleaseEnterToken": "Veuillez entrer votre jeton d'accès"
   },
   "errors": {
-    "missingFields": "Champs manquants",
-    "pleaseEnterBothFields": "Veuillez entrer à la fois l'URL du serveur et le jeton",
     "invalidUrl": "URL invalide",
-    "serverUrlMustStartWith": "L'URL du serveur doit commencer par http:// ou https://",
     "pleaseEnterValidUrl": "Veuillez entrer une URL de serveur valide",
     "pairingFailed": "Échec de l'appairage",
     "unableToPair": "Impossible d'appairer avec le serveur",
@@ -28,12 +24,7 @@
     "invalidQrCodeFormat": "Format du code QR invalide : veuillez générer un nouveau code.",
     "invalidQrCodeMissingUrl": "Code QR invalide : URL du serveur manquante",
     "invalidQrCodeMissingToken": "Code QR invalide : jeton d'appairage manquant",
-    "invalidServerUrlInQr": "URL du serveur invalide dans le code QR",
-    "tooManyPairingAttempts": "Trop de tentatives d'appairage. Veuillez patienter quelques minutes.",
-    "invalidOrExpiredToken": "Jeton d'appairage invalide ou expiré.",
-    "invalidPairingRequest": "Requête d'appairage invalide. Vérifiez votre jeton.",
     "errorDetails": "Détails de l'erreur :",
-    "componentStack": "Pile de composants :",
     "connectionLost": "Connexion perdue",
     "failedToLoadSession": "Échec du chargement de la session"
   },
@@ -63,10 +54,8 @@
     "build": "Version {{build}}"
   },
   "navigation": {
-    "home": "Accueil",
     "selectServer": "Sélectionner un serveur",
-    "server": "Serveur",
-    "navigation": "Navigation"
+    "server": "Serveur"
   },
   "resources": {
     "cpu": "CPU",
@@ -86,7 +75,6 @@
     "ruleViolationTriggered": "Violation de règle déclenchée",
     "newPlaybackBegan": "Nouvelle lecture commencée",
     "playbackEnded": "Lecture terminée",
-    "exceededStreamLimit": "Un utilisateur a dépassé la limite de diffusions",
     "newDeviceDetected": "Nouvel appareil détecté pour un utilisateur",
     "trustScoreDegraded": "Le score de confiance d'un utilisateur a été dégradé",
     "serverUnreachable": "Serveur multimédia inaccessible",
@@ -193,9 +181,6 @@
     "allServers": "Tous les serveurs"
   },
   "reconnected": "Reconnecté",
-  "serverScope": {
-    "single": "Affichage de {{name}} uniquement"
-  },
   "a11y": {
     "selectServer": "Sélectionner le serveur",
     "alerts": "Alertes",

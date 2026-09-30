@@ -27,9 +27,7 @@
     "plexAuthFailed": "فشل مصادقة Plex",
     "plexStartFailed": "فشل في بدء تسجيل الدخول لـ Plex",
     "serverConnectFailed": "فشل الاتصال بالخادم",
-    "signupFailed": "فشل التسجيل",
     "createAccountFailed": "فشل في إنشاء الحساب",
-    "loginFailed": "فشل تسجيل الدخول",
     "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صالحة",
     "claimCodeRequired": "يتطلب الإعداد لأول مرة رمز المطالبة",
     "enterClaimCode": "أدخل رمز المطالبة",
@@ -159,12 +157,6 @@
   "history": {
     "title": "التاريخ",
     "description": "",
-    "loadingMore": "تحميل المزيد...",
-    "scrollForMore": "التمرير للمزيد",
-    "showingAllResults": "عرض جميع النتائج {{total}}",
-    "deleteSession_one": "حذف جلسة {{count}}",
-    "deleteSession_other": "حذف جلسه {{count}}",
-    "deleteSessionsConfirm": "هل أنت متأكد من أنك تريد الحذف؟ لا يمكن التراجع عن هذا الإجراء.",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "رسالة إلى المستخدم (اختياري)",
     "messagePlaceholder": "على سبيل المثال، الرجاء عدم مشاركة حسابك",
     "messageHint": "سيتم عرض هذه الرسالة لهم أثناء التشغيل",
-    "terminating": "الإنهاء...",
-    "killStream": "اقتل البث"
-  },
-  "notFound": {
-    "title": "",
-    "heading": "الصفحة غير موجودة",
-    "description": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها."
+    "terminating": "الإنهاء..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "عناصر المكتبة",
     "environment": "البيئة",
     "systemInformation": "معلومات النظام",
-    "cpu": "المعالج",
-    "memory": "الذاكرة",
-    "uptime": "وقت التحديث",
     "database": "قاعدة البيانات",
     "databaseDesc": "",
     "totalSize": "الحجم الإجمالي",

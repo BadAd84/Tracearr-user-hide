@@ -27,9 +27,7 @@
     "plexAuthFailed": "Ověření Plex se nezdařilo",
     "plexStartFailed": "Nepodařilo se spustit přihlášení Plex",
     "serverConnectFailed": "Nepodařilo se připojit k serveru",
-    "signupFailed": "Registrace se nezdařila",
     "createAccountFailed": "Vytvoření účtu se nezdařilo",
-    "loginFailed": "Přihlášení se nezdařilo",
     "invalidCredentials": "Neplatný e-mail nebo heslo",
     "claimCodeRequired": "První nastavení vyžaduje kód pozemku",
     "enterClaimCode": "Zadejte kód žádosti",
@@ -159,12 +157,6 @@
   "history": {
     "title": "Historie",
     "description": "",
-    "loadingMore": "Načítání dalšího...",
-    "scrollForMore": "Posunout pro více",
-    "showingAllResults": "Zobrazení všech {{total}} výsledků",
-    "deleteSession_one": "Odstranit {{count}} relaci",
-    "deleteSession_other": "Odstranit {{count}} relace",
-    "deleteSessionsConfirm": "Jste si jisti, že chcete odstranit? Tuto akci nelze vrátit zpět.",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "Zpráva uživateli (volitelné)",
     "messagePlaceholder": "Např. nesdílejte svůj účet",
     "messageHint": "Tato zpráva se jim zobrazí během přehrávání",
-    "terminating": "Ukončování...",
-    "killStream": "Zabít Stream"
-  },
-  "notFound": {
-    "title": "",
-    "heading": "Stránka nenalezena",
-    "description": "Stránka, kterou hledáte, neexistuje nebo byla přesunuta."
+    "terminating": "Ukončování..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "Položky knihovny",
     "environment": "Životní prostředí",
     "systemInformation": "Systémové informace",
-    "cpu": "",
-    "memory": "Paměť",
-    "uptime": "Doba provozu",
     "database": "Databáze",
     "databaseDesc": "",
     "totalSize": "Celková velikost",

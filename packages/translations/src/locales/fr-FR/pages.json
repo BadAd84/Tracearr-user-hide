@@ -27,9 +27,7 @@
     "plexAuthFailed": "Échec de l'authentification à Plex",
     "plexStartFailed": "Échec du démarrage de la connexion à Plex",
     "serverConnectFailed": "Échec de la connexion au serveur",
-    "signupFailed": "Échec de l'inscription",
     "createAccountFailed": "Échec de la création du compte",
-    "loginFailed": "Échec de la connexion",
     "invalidCredentials": "Adresse email ou mot de passe invalide",
     "claimCodeRequired": "La première configuration nécessite un code de réclamation",
     "enterClaimCode": "Entrez le code de réclamation",
@@ -159,12 +157,6 @@
   "history": {
     "title": "Historique",
     "description": "",
-    "loadingMore": "Chargement en cours...",
-    "scrollForMore": "Faites défiler pour en voir plus",
-    "showingAllResults": "Affichage des {{total}} résultats",
-    "deleteSession_one": "Supprimer {{count}} session",
-    "deleteSession_other": "Supprimer les {{count}} sessions",
-    "deleteSessionsConfirm": "Êtes-vous sûr de vouloir supprimer ceci ? Cette action est irréversible.",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "Message à l'utilisateur (facultatif)",
     "messagePlaceholder": "ex. : Merci de ne pas partager ton compte",
     "messageHint": "Ce message sera affiché lors de la lecture",
-    "terminating": "Arrêt en cours...",
-    "killStream": "Interrompre la lecture"
-  },
-  "notFound": {
-    "title": "Erreur 404",
-    "heading": "Page introuvable",
-    "description": "La page que vous cherchez n'existe pas ou a été déplacée."
+    "terminating": "Arrêt en cours..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "Éléments de la bibliothèque",
     "environment": "Environnement",
     "systemInformation": "Informations du système",
-    "cpu": "",
-    "memory": "Mémoire",
-    "uptime": "Délai de disponibilité",
     "database": "Base de données",
     "databaseDesc": "",
     "totalSize": "Taille totale",

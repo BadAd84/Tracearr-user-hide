@@ -49,14 +49,9 @@
     }
   },
   "general": {
-    "title": "Setări generale",
     "unitSystem": "Sistem unitar",
     "metric": "Metrice (km, km/h)",
     "imperial": "",
-    "timezone": "",
-    "primaryAuth": "Metoda de autentificare primară",
-    "localAccount": "Cont local",
-    "plexAccount": "Cont Plex",
     "language": "Limba",
     "languageDescription": "Alegeți limba de afișare preferată.",
     "helpTranslate": "Ajută la traducerea Tracearr",
@@ -142,14 +137,10 @@
     }
   },
   "servers": {
-    "title": "Servere conectate",
     "addServer": "Adaugă server",
     "serverName": "Nume server",
     "serverUrl": "URL Server",
-    "syncInterval": "Interval de sincronizare",
     "testConnection": "Testare conexiune",
-    "connectionSuccess": "Conexiune reușită",
-    "connectionFailed": "Conexiune eșuată",
     "noServersConnected": "Niciun server conectat",
     "noServersConnectedHint": "Faceţi clic pe \"Adăugare server\" pentru a conecta un server Jellyfin sau Emby",
     "serverType": "Tip Server",
@@ -162,10 +153,8 @@
     "allServersConnected": "Toate serverele conectate",
     "allServersConnectedDesc": "Toate serverele din acest cont sunt deja conectate.",
     "serverUrlPlaceholder": "",
-    "serverUrlHelp": "URL direct la serverul Jellyfin sau Emby. Utilizați IP:port pentru cea mai bună fiabilitate.",
     "serverNamePlaceholder": "Serverul meu Media",
     "apiKeyPlaceholder": "Introduceți cheia API",
-    "apiKeyHelp": "Găsit în tabloul de bord al serverului media sub chei API sau setări avansate.",
     "connecting": "Conectare...",
     "connectServer": "Conectare server",
     "removeServer": "Elimină server",
@@ -178,7 +167,6 @@
     "allFieldsRequired": "Toate câmpurile sunt obligatorii",
     "addServerDialogDescPlex": "Selectează un server Plex din contul tău asociat.",
     "addServerDialogDescOther": "Conectează un server Jellyfin sau Emby.",
-    "description": "",
     "discoveringServers": "Descoperă serverele disponibile de Plex...",
     "discoveringConnections": "Descoperă conexiunile...",
     "plexAccount": "Cont Plex",
@@ -238,8 +226,6 @@
       "issueMalfunctioned": ""
     },
     "posterSource": {
-      "title": "",
-      "titleDesc": "",
       "label": "",
       "description": "",
       "automatic": "",
@@ -316,8 +302,6 @@
     "showLogs": "Arată jurnalele",
     "hideLogs": "Ascunde jurnalele",
     "noLogs": "Nici o intrare de jurnal disponibilă.",
-    "exitNodeNone": "Niciunul",
-    "exitNodeOffline": "",
     "unknownError": "A apărut o eroare necunoscută.",
     "disableConfirmTitle": "Dezactivați Tailscale?",
     "disableConfirmDescription": "Acest lucru va deconecta Tracearr de la coada dvs. Puteţi reactiva fără re-autorizare.",
@@ -361,33 +345,12 @@
     "automatic": "",
     "startJob": "Începe sarcina"
   },
-  "advanced": {
-    "title": "Setări avansate",
-    "externalUrl": "URL extern",
-    "trustProxy": "Antete proxy de încredere",
-    "reverseProxy": "Inversează Proxy",
-    "connectionScenarios": "Scenarii conexiune"
-  },
   "accessControl": {
-    "title": "Control Acces",
-    "description": "",
     "allowGuestAccess": "Permite accesul vizitatorilor",
     "allowGuestAccessDesc": "Când este dezactivat, numai proprietarul serverului se poate conecta la Tracearr",
     "singleOwnerNote": "Notă: Când accesul vizitatorilor este dezactivat, numai proprietarul serverului se poate conecta. Toți ceilalți utilizatori vor vedea un mesaj \"Acces refuzat\"."
   },
   "import": {
-    "title": "Importă date",
-    "jellystat": "Importă din Jellystat",
-    "tautulli": "Importă din Tautulli",
-    "importProgress": "Progresul importului",
-    "importComplete": "Importare completă",
-    "importFailed": "Importare eșuată",
-    "processed": "Procesate",
-    "page": "Pagină",
-    "imported": "Importat",
-    "skipped": "Sărit",
-    "enriched": "Îmbogăţit",
-    "errors": "Erori",
     "noServers": "Niciun server conectat",
     "noServersHint": "Aveţi nevoie de cel puţin un server conectat pentru a importa date.",
     "tautulliUrl": "URL Tautulli",
@@ -424,8 +387,6 @@
     "uploadingBackup": "Încărcare fișier copie de rezervă...",
     "plex": "",
     "jellyfinEmby": "",
-    "step1": "",
-    "step2": "",
     "apiKeyPlaceholder": "Cheia API Tautulli",
     "skipUserNotFoundPlex": "Utilizatorul nu a fost găsit — Utilizatorul Plex nu există în Tracearr. Sincronizați serverul mai întâi pentru a adăuga toți utilizatorii.",
     "skipDuplicate": "Duplică sesiune — Sesiunea a fost deja importată anterior.",
@@ -461,10 +422,7 @@
     "createAccount": "Creare cont",
     "email": "E-mail",
     "password": "Parolă",
-    "displayName": "Nume afișat",
-    "createYourAccount": "Creează-ți un cont pentru a începe",
-    "signInToAccount": "Conectează-te la contul tău",
-    "useLocalAccount": "Folosește în schimb contul local"
+    "displayName": "Nume afișat"
   },
   "update": {
     "title": "Actualizare disponibilă",

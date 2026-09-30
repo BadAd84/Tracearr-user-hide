@@ -1,7 +1,6 @@
 {
   "pair": {
     "welcome": "",
-    "addServer": "",
     "connectToServer": "",
     "enterServerDetails": "",
     "serverUrl": "",
@@ -16,10 +15,7 @@
     "pleaseEnterToken": ""
   },
   "errors": {
-    "missingFields": "",
-    "pleaseEnterBothFields": "",
     "invalidUrl": "",
-    "serverUrlMustStartWith": "",
     "pleaseEnterValidUrl": "",
     "pairingFailed": "",
     "unableToPair": "",
@@ -28,12 +24,7 @@
     "invalidQrCodeFormat": "",
     "invalidQrCodeMissingUrl": "",
     "invalidQrCodeMissingToken": "",
-    "invalidServerUrlInQr": "",
-    "tooManyPairingAttempts": "",
-    "invalidOrExpiredToken": "",
-    "invalidPairingRequest": "",
     "errorDetails": "",
-    "componentStack": "",
     "connectionLost": "",
     "failedToLoadSession": ""
   },
@@ -63,10 +54,8 @@
     "build": ""
   },
   "navigation": {
-    "home": "",
     "selectServer": "",
-    "server": "",
-    "navigation": ""
+    "server": ""
   },
   "resources": {
     "cpu": "",
@@ -86,7 +75,6 @@
     "ruleViolationTriggered": "",
     "newPlaybackBegan": "",
     "playbackEnded": "",
-    "exceededStreamLimit": "",
     "newDeviceDetected": "",
     "trustScoreDegraded": "",
     "serverUnreachable": "",
@@ -193,9 +181,6 @@
     "allServers": ""
   },
   "reconnected": "",
-  "serverScope": {
-    "single": ""
-  },
   "a11y": {
     "selectServer": "",
     "alerts": "",

@@ -27,9 +27,7 @@
     "plexAuthFailed": "Plex-authenticatie mislukt",
     "plexStartFailed": "Plex-aanmelding starten mislukt",
     "serverConnectFailed": "Verbinden met server mislukt",
-    "signupFailed": "Registratie mislukt",
     "createAccountFailed": "Account aanmaken mislukt",
-    "loginFailed": "Aanmelden mislukt",
     "invalidCredentials": "Ongeldig e-mailadres of wachtwoord",
     "claimCodeRequired": "De eerste keer instellen vereist een claimcode",
     "enterClaimCode": "Claimcode invoeren",
@@ -159,12 +157,6 @@
   "history": {
     "title": "Geschiedenis",
     "description": "",
-    "loadingMore": "Meer laden...",
-    "scrollForMore": "Scrollen voor meer",
-    "showingAllResults": "Alle {{total}} resultaten weergegeven",
-    "deleteSession_one": "{{count}} sessie verwijderen",
-    "deleteSession_other": "{{count}} sessies verwijderen",
-    "deleteSessionsConfirm": "Weet je zeker dat je wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "Bericht aan gebruiker (optioneel)",
     "messagePlaceholder": "bijv.: account niet delen a.u.b.",
     "messageHint": "Dit bericht wordt getoond tijdens het afspelen",
-    "terminating": "Afbreken...",
-    "killStream": "Stream afbreken"
-  },
-  "notFound": {
-    "title": "",
-    "heading": "Pagina niet gevonden",
-    "description": "De pagina die je zoekt, bestaat niet of is verplaatst."
+    "terminating": "Afbreken..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "Bibliotheek Items",
     "environment": "Milieu",
     "systemInformation": "Systeem informatie",
-    "cpu": "",
-    "memory": "Geheugen",
-    "uptime": "Actief",
     "database": "",
     "databaseDesc": "",
     "totalSize": "Totale grootte",

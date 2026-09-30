@@ -49,14 +49,9 @@
     }
   },
   "general": {
-    "title": "Generelle innstillinger",
     "unitSystem": "Enhet system",
     "metric": "Måltall (km, km/t)",
     "imperial": "Imperial (mi, mil)",
-    "timezone": "",
-    "primaryAuth": "Primær godkjenningsmetode",
-    "localAccount": "Lokal konto",
-    "plexAccount": "Plex konto",
     "language": "Språk",
     "languageDescription": "Velg ditt foretrukne visningsspråk.",
     "helpTranslate": "Hjelp med å oversette Tracearr",
@@ -142,14 +137,10 @@
     }
   },
   "servers": {
-    "title": "Tilkoblede servere",
     "addServer": "Legg til server",
     "serverName": "Server Navn",
     "serverUrl": "URL til server",
-    "syncInterval": "Synkroniser intervall",
     "testConnection": "Test tilkoblingen",
-    "connectionSuccess": "Tilkobling vellykket",
-    "connectionFailed": "Tilkobling mislyktes",
     "noServersConnected": "Ingen servere tilkoblet",
     "noServersConnectedHint": "Klikk på \"Add Server\" for å koble en Jellyfin eller Emby server",
     "serverType": "Type server",
@@ -162,10 +153,8 @@
     "allServersConnected": "Alle servere tilkoblet",
     "allServersConnectedDesc": "Alle servere fra denne kontoen er allerede tilkoblet.",
     "serverUrlPlaceholder": "",
-    "serverUrlHelp": "Direkte URL til din Jellyfin eller Emby server. Bruk IP:port for best pålitelighet.",
     "serverNamePlaceholder": "Min medieserver",
     "apiKeyPlaceholder": "Skriv inn API-nøkkel",
-    "apiKeyHelp": "Funnet i medieserverens dashbord under API-taster eller avanserte innstillinger.",
     "connecting": "Tilkobler...",
     "connectServer": "Koble til server",
     "removeServer": "Fjern Server",
@@ -178,7 +167,6 @@
     "allFieldsRequired": "Alle feltene er påkrevd",
     "addServerDialogDescPlex": "Velg en Plex server fra din koblede konto.",
     "addServerDialogDescOther": "Koble til en Jellyfin eller Emby server.",
-    "description": "",
     "discoveringServers": "Oppdager tilgjengelige Plex servere char@@0",
     "discoveringConnections": "Fordekker tilkoblinger...",
     "plexAccount": "Plex konto",
@@ -238,8 +226,6 @@
       "issueMalfunctioned": ""
     },
     "posterSource": {
-      "title": "",
-      "titleDesc": "",
       "label": "",
       "description": "",
       "automatic": "",
@@ -316,8 +302,6 @@
     "showLogs": "Vis logger",
     "hideLogs": "Skjul logger",
     "noLogs": "Ingen logg utdata tilgjengelig.",
-    "exitNodeNone": "Ingen",
-    "exitNodeOffline": "(frakoblet)",
     "unknownError": "En ukjent feil har oppstått.",
     "disableConfirmTitle": "Deaktivere trafikkskalering?",
     "disableConfirmDescription": "Dette vil koble fra Tracearr fra tailnet. Du kan aktivere på nytt uten at du trenger å autorisere igjen.",
@@ -361,33 +345,12 @@
     "automatic": "",
     "startJob": "Start jobb"
   },
-  "advanced": {
-    "title": "Avanserte innstillinger",
-    "externalUrl": "Ekstern URL",
-    "trustProxy": "Stol på Proxy-overskrifter",
-    "reverseProxy": "Revers proxy",
-    "connectionScenarios": "Scenarier for tilkobling"
-  },
   "accessControl": {
-    "title": "Kontroll av tilgang",
-    "description": "",
     "allowGuestAccess": "Tillat gjestetilgang",
     "allowGuestAccessDesc": "Når deaktivert, kan kun servereieren logge inn til Tracearr",
     "singleOwnerNote": "Merk: Når gjestetilgang er deaktivert, kan kun servereieren logge på. Alle andre brukere vil se en \"Tilgang nektet\" melding."
   },
   "import": {
-    "title": "Importer data",
-    "jellystat": "Importer fra Jellystat",
-    "tautulli": "Importer fra Tautulli",
-    "importProgress": "Import fremdrift",
-    "importComplete": "Importen er fullført",
-    "importFailed": "Import mislyktes",
-    "processed": "Behandlet",
-    "page": "Side",
-    "imported": "Importert",
-    "skipped": "Ignorert",
-    "enriched": "Beriket",
-    "errors": "Feil",
     "noServers": "Ingen servere tilkoblet",
     "noServersHint": "Du trenger minst en tilkoblet tjener for å importere data.",
     "tautulliUrl": "",
@@ -424,8 +387,6 @@
     "uploadingBackup": "Laster opp sikkerhetskopifil...",
     "plex": "Plex (elektronisk)",
     "jellyfinEmby": "",
-    "step1": "",
-    "step2": "",
     "apiKeyPlaceholder": "Din Tautulli API-nøkkel",
     "skipUserNotFoundPlex": "Bruker ikke funnet — Plex brukeren finnes ikke i Tracearr. Synk serveren din først for å legge til alle brukere.",
     "skipDuplicate": "Duplisert økt – Økten er allerede importert tidligere.",
@@ -461,10 +422,7 @@
     "createAccount": "Opprett konto",
     "email": "E-post",
     "password": "Passord",
-    "displayName": "Vis navn",
-    "createYourAccount": "Opprett din konto for å komme i gang",
-    "signInToAccount": "Logg inn på kontoen din",
-    "useLocalAccount": "Bruk lokal konto i stedet"
+    "displayName": "Vis navn"
   },
   "update": {
     "title": "Oppdatering tilgjengelig",

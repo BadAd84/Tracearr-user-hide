@@ -1,7 +1,6 @@
 {
   "pair": {
     "welcome": "Bun venit la Tracearr",
-    "addServer": "Adaugă server",
     "connectToServer": "Conectează-te la Server",
     "enterServerDetails": "Introduceți URL-ul serverului Tracearr și indicativul de acces mobil",
     "serverUrl": "URL Server",
@@ -16,10 +15,7 @@
     "pleaseEnterToken": ""
   },
   "errors": {
-    "missingFields": "Câmpuri lipsă",
-    "pleaseEnterBothFields": "Vă rugăm să introduceţi atât URL-ul serverului cât şi codul",
     "invalidUrl": "URL invalid",
-    "serverUrlMustStartWith": "URL-ul serverului trebuie să înceapă cu http:// sau http://",
     "pleaseEnterValidUrl": "Te rog introdu un URL de server valid",
     "pairingFailed": "Asociere eșuată",
     "unableToPair": "",
@@ -28,12 +24,7 @@
     "invalidQrCodeFormat": "Format de cod QR invalid. Vă rugăm să generați un nou cod.",
     "invalidQrCodeMissingUrl": "Cod QR nevalid: URL-ul serverului lipsă",
     "invalidQrCodeMissingToken": "Cod QR invalid: token lipsă de asociere",
-    "invalidServerUrlInQr": "URL server nevalid în codul QR",
-    "tooManyPairingAttempts": "Prea multe încercări de împerechere. Vă rugăm așteptați câteva minute.",
-    "invalidOrExpiredToken": "Token de asociere invalid sau expirat.",
-    "invalidPairingRequest": "Cerere de asociere nevalidă. Verificați tokenul.",
     "errorDetails": "",
-    "componentStack": "",
     "connectionLost": "",
     "failedToLoadSession": ""
   },
@@ -63,10 +54,8 @@
     "build": ""
   },
   "navigation": {
-    "home": "",
     "selectServer": "Selectare server",
-    "server": "",
-    "navigation": ""
+    "server": ""
   },
   "resources": {
     "cpu": "procesor",
@@ -86,7 +75,6 @@
     "ruleViolationTriggered": "",
     "newPlaybackBegan": "",
     "playbackEnded": "",
-    "exceededStreamLimit": "",
     "newDeviceDetected": "",
     "trustScoreDegraded": "",
     "serverUnreachable": "",
@@ -193,9 +181,6 @@
     "allServers": ""
   },
   "reconnected": "",
-  "serverScope": {
-    "single": ""
-  },
   "a11y": {
     "selectServer": "",
     "alerts": "",

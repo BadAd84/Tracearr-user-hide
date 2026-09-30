@@ -27,9 +27,7 @@
     "plexAuthFailed": "Plex todennus epäonnistui",
     "plexStartFailed": "Ei voitu aloittaa Plex kirjautumista",
     "serverConnectFailed": "Yhteyden muodostaminen palvelimeen epäonnistui",
-    "signupFailed": "Ilmoittautuminen epäonnistui",
     "createAccountFailed": "Tiliä ei voitu luoda",
-    "loginFailed": "Kirjautuminen epäonnistui",
     "invalidCredentials": "Virheellinen sähköpostiosoite tai salasana",
     "claimCodeRequired": "Ensi aikainen määritys vaatii korvauskoodin.",
     "enterClaimCode": "Syötä Lunastuskoodi",
@@ -159,12 +157,6 @@
   "history": {
     "title": "Historia",
     "description": "",
-    "loadingMore": "Ladataan lisää...",
-    "scrollForMore": "Vieritä lisää",
-    "showingAllResults": "Näytetään kaikki {{total}} tulokset",
-    "deleteSession_one": "Poista {{count}} Istunto",
-    "deleteSession_other": "",
-    "deleteSessionsConfirm": "Oletko varma, että haluat poistaa? Tätä toimintoa ei voi peruuttaa.",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "Viesti käyttäjälle (valinnainen)",
     "messagePlaceholder": "esim., Älä jaa tiliäsi",
     "messageHint": "Tämä viesti näytetään heille soiton aikana",
-    "terminating": "Lopetetaan...",
-    "killStream": "Tapa Stream"
-  },
-  "notFound": {
-    "title": "",
-    "heading": "Sivua Ei Löytynyt",
-    "description": "Sivua, jota etsit ei ole olemassa tai on siirretty."
+    "terminating": "Lopetetaan..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "Kirjaston Nimikkeet",
     "environment": "Ympäristö",
     "systemInformation": "Järjestelmän Tiedot",
-    "cpu": "Suoritin",
-    "memory": "Muisti",
-    "uptime": "Käyttöaika",
     "database": "Tietokanta",
     "databaseDesc": "",
     "totalSize": "Koko Yhteensä",

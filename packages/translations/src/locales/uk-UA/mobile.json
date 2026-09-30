@@ -1,7 +1,6 @@
 {
   "pair": {
     "welcome": "Ласкаво просимо до Tracearr",
-    "addServer": "Додати сервер",
     "connectToServer": "Підключитися до сервера",
     "enterServerDetails": "Введіть URL-адресу вашого серверу Tracearr та токен доступу",
     "serverUrl": "URL-адреса сервера",
@@ -16,10 +15,7 @@
     "pleaseEnterToken": ""
   },
   "errors": {
-    "missingFields": "Пропущені поля",
-    "pleaseEnterBothFields": "Будь ласка, введіть URL-адресу сервера та токен",
     "invalidUrl": "Неправильна URL-адреса",
-    "serverUrlMustStartWith": "URL-адреса сервера має починатися з http:// або https://",
     "pleaseEnterValidUrl": "Будь ласка, введіть коректний URL сервера",
     "pairingFailed": "Помилка парування",
     "unableToPair": "",
@@ -28,12 +24,7 @@
     "invalidQrCodeFormat": "Невірний формат QR-коду. Будь ласка, згенеруйте новий код.",
     "invalidQrCodeMissingUrl": "Невірний QR-код: відсутній URL сервера",
     "invalidQrCodeMissingToken": "Невірний QR-код: відсутній токен парування",
-    "invalidServerUrlInQr": "Хибна URL-адреса сервера у QR-коді",
-    "tooManyPairingAttempts": "Занадто багато спроб створення пари. Будь ласка, зачекайте кілька хвилин.",
-    "invalidOrExpiredToken": "Некоректний або прострочений токен парування.",
-    "invalidPairingRequest": "Хибний запит на парування. Перевірте свій маркер.",
     "errorDetails": "",
-    "componentStack": "",
     "connectionLost": "",
     "failedToLoadSession": ""
   },
@@ -63,10 +54,8 @@
     "build": ""
   },
   "navigation": {
-    "home": "",
     "selectServer": "Виберіть сервер",
-    "server": "Сервер",
-    "navigation": ""
+    "server": "Сервер"
   },
   "resources": {
     "cpu": "",
@@ -86,7 +75,6 @@
     "ruleViolationTriggered": "",
     "newPlaybackBegan": "",
     "playbackEnded": "",
-    "exceededStreamLimit": "",
     "newDeviceDetected": "",
     "trustScoreDegraded": "",
     "serverUnreachable": "",
@@ -193,9 +181,6 @@
     "allServers": ""
   },
   "reconnected": "",
-  "serverScope": {
-    "single": ""
-  },
   "a11y": {
     "selectServer": "",
     "alerts": "",

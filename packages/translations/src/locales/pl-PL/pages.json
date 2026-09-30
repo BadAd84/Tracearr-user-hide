@@ -27,9 +27,7 @@
     "plexAuthFailed": "Uwierzytelnianie nie powiodło się",
     "plexStartFailed": "Nie udało się uruchomić logowania Plex",
     "serverConnectFailed": "Nie udało połączyć się z serwerem",
-    "signupFailed": "Rejestracja nieudana",
     "createAccountFailed": "Nie udało się utworzyć konta",
-    "loginFailed": "Logowanie nie powiodło się",
     "invalidCredentials": "Niepoprawny e-mail lub hasło",
     "claimCodeRequired": "Konfiguracja po raz pierwszy wymaga kodu żądania",
     "enterClaimCode": "Wprowadź kod żądania",
@@ -159,12 +157,6 @@
   "history": {
     "title": "Historia",
     "description": "Przeglądaj wszystkie sesje transmisji z potężnym filtrowaniem.",
-    "loadingMore": "Ładuję więcej...",
-    "scrollForMore": "Przewiń, aby zobaczyć więcej",
-    "showingAllResults": "Wyświetlanie wszystkich {{total}} wyników",
-    "deleteSession_one": "Usuń {{count}} Sesję",
-    "deleteSession_other": "Usuń {{count}} Sesje",
-    "deleteSessionsConfirm": "Czy na pewno chcesz to usunąć? Tej akcji nie można cofnąć.",
     "totalPlays": "Całkowita liczba odtworzeń",
     "uniqueTitles": "Unikalne tytuły",
     "uniqueUsers": "Unikalni użytkownicy"
@@ -1591,13 +1583,7 @@
     "messageLabel": "Wiadomość do użytkownika (opcjonalnie)",
     "messagePlaceholder": "np. Nie udostępniaj swojego konta",
     "messageHint": "Ta wiadomość zostanie wyświetlona podczas odtwarzania",
-    "terminating": "Przerwij...",
-    "killStream": "Zabij transmisje"
-  },
-  "notFound": {
-    "title": "404",
-    "heading": "Strona nie znaleziona",
-    "description": "Strona, której szukasz, nie istnieje lub została przeniesiona."
+    "terminating": "Przerwij..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "Mapa bazowa nie jest zainstalowana",
     "webglUnavailable": "WebGL jest wyłączony w tej przeglądarce",
     "webglHint": "Mapa wymaga WebGL. Włącz go dla tej witryny w ustawieniach przeglądarki.",
-    "basemapShadowed": "Brak bazy mapy w {{path}}. Tracearr dostarcza ją wraz z obrazem Dockera, więc wolumin zamontowany na tym katalogu ją ukrywa. Aby utrzymać pamięć podręczną plakatów, zamontuj /app/data/image-cache zamiast /app/data.",
     "badMounts": "Wykryto nieprawidłowo zamontowane woluminy — poprawne działanie nie jest gwarantowane."
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "Elementy biblioteki",
     "environment": "Środowisko",
     "systemInformation": "Informacje o systemie",
-    "cpu": "Procesor",
-    "memory": "Pamięć",
-    "uptime": "Czas pracy",
     "database": "Baza danych",
     "databaseDesc": "Rozmiar bazy danych i statystyki tabel.",
     "totalSize": "Całkowity rozmiar",

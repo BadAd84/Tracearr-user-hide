@@ -27,9 +27,7 @@
     "plexAuthFailed": "",
     "plexStartFailed": "",
     "serverConnectFailed": "",
-    "signupFailed": "",
     "createAccountFailed": "",
-    "loginFailed": "",
     "invalidCredentials": "",
     "claimCodeRequired": "Primeira configuração requer um código de reivindicação",
     "enterClaimCode": "Inserir código de solicitação",
@@ -159,12 +157,6 @@
   "history": {
     "title": "",
     "description": "",
-    "loadingMore": "",
-    "scrollForMore": "",
-    "showingAllResults": "",
-    "deleteSession_one": "",
-    "deleteSession_other": "",
-    "deleteSessionsConfirm": "Are you sure you want to delete {{count}} session(s)? This action cannot be undone.",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "Mensagem para o utilizador (opcional)",
     "messagePlaceholder": "ex: Por favor não partilhe a sua conta",
     "messageHint": "Esta mensagem será mostrada durante a reprodução",
-    "terminating": "A terminar...",
-    "killStream": "Terminar transmissão"
-  },
-  "notFound": {
-    "title": "",
-    "heading": "",
-    "description": ""
+    "terminating": "A terminar..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "Itens da Biblioteca",
     "environment": "Seguros",
     "systemInformation": "Informação do Sistema",
-    "cpu": "",
-    "memory": "Memória",
-    "uptime": "Tempo em atividade",
     "database": "Banco",
     "databaseDesc": "",
     "totalSize": "Tamanho total",

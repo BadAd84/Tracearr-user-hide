@@ -1,7 +1,6 @@
 {
   "pair": {
     "welcome": "Bem-vindo ao Tracearr",
-    "addServer": "Adicionar Servidor",
     "connectToServer": "Conectar ao servidor",
     "enterServerDetails": "Digite seu URL do servidor Tracearr e token de acesso móvel",
     "serverUrl": "URL do servidor",
@@ -16,10 +15,7 @@
     "pleaseEnterToken": ""
   },
   "errors": {
-    "missingFields": "Campos em Falta",
-    "pleaseEnterBothFields": "Por favor, insira o URL e o token do servidor",
     "invalidUrl": "URL inválida",
-    "serverUrlMustStartWith": "O URL do servidor deve começar com http:// ou https://",
     "pleaseEnterValidUrl": "Por favor, insira uma URL de servidor válida",
     "pairingFailed": "Falha no pareamento",
     "unableToPair": "",
@@ -28,12 +24,7 @@
     "invalidQrCodeFormat": "Formato de código QR inválido. Por favor, gere um novo código.",
     "invalidQrCodeMissingUrl": "Código QR inválido: URL do servidor faltando",
     "invalidQrCodeMissingToken": "Código QR inválido: falta o token de emparelhamento",
-    "invalidServerUrlInQr": "URL do servidor inválida no código QR",
-    "tooManyPairingAttempts": "Muitas tentativas de emparelhamento. Por favor, aguarde alguns minutos.",
-    "invalidOrExpiredToken": "Token de pareamento inválido ou expirado.",
-    "invalidPairingRequest": "Pedido de emparelhamento inválido. Verifique seu token.",
     "errorDetails": "",
-    "componentStack": "",
     "connectionLost": "",
     "failedToLoadSession": ""
   },
@@ -63,10 +54,8 @@
     "build": "Compilação {{build}}"
   },
   "navigation": {
-    "home": "Início",
     "selectServer": "Selecionar servidor",
-    "server": "Servidor",
-    "navigation": "Navegação"
+    "server": "Servidor"
   },
   "resources": {
     "cpu": "cpu",
@@ -86,7 +75,6 @@
     "ruleViolationTriggered": "",
     "newPlaybackBegan": "",
     "playbackEnded": "",
-    "exceededStreamLimit": "",
     "newDeviceDetected": "",
     "trustScoreDegraded": "",
     "serverUnreachable": "",
@@ -193,9 +181,6 @@
     "allServers": ""
   },
   "reconnected": "",
-  "serverScope": {
-    "single": ""
-  },
   "a11y": {
     "selectServer": "",
     "alerts": "",

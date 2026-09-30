@@ -10,16 +10,11 @@
         "message": "Serwer został pomyślnie usunięty"
       },
       "serverSynced": {
-        "title": "Serwer zsynchronizowany",
-        "message": "Dane serwera zostały zsynchronizowane"
+        "title": "Serwer zsynchronizowany"
       },
       "settingsUpdated": {
         "title": "Zaktualizowano ustawienia",
         "message": "Ustawienia zostały zapisane"
-      },
-      "tokenCopied": {
-        "title": "Token skopiowany",
-        "message": "Skopiowano token do schowka"
       },
       "violationAcknowledged": {
         "title": "Potwierdzono naruszenie",
@@ -38,19 +33,11 @@
         "message": "Zaktualizowano nazwę urządzenia"
       },
       "sessionsRevoked": {
-        "title": "Sesje unieważnione",
-        "message": "Wszystkie sesje mobilne zostały anulowane"
+        "title": "Sesje unieważnione"
       },
       "loggedIn": {
         "title": "Powodzenie",
         "message": "Zalogowano pomyślnie"
-      },
-      "webhookTest": {
-        "title": "Test zakończony powodzeniem",
-        "message": "Webhook działa prawidłowo"
-      },
-      "copiedToClipboard": {
-        "title": "Skopiowane do schowka"
       },
       "plexAccountLinked": {
         "title": "Konto Plex powiązane",
@@ -68,21 +55,8 @@
         "partial": "Token został zaktualizowany, ale {{names}} nadal go odrzucił",
         "unmatched": "Token został zaktualizowany, ale {{names}} nie mógł zostać ponownie połączony"
       },
-      "agentAdded": {
-        "title": "Dodano agenta",
-        "message": "Agent powiadomień został dodany"
-      },
-      "agentUpdated": {
-        "title": "Agent zaktualizowany",
-        "message": "Agent powiadomień został zaktualizowany"
-      },
-      "agentRemoved": {
-        "title": "Agent został usunięty",
-        "message": "Agent powiadomień został usunięty"
-      },
       "jobCompleted": {
-        "title": "Zadanie zakończone",
-        "message": "{{name}} zakończono pomyślnie"
+        "title": "Zadanie zakończone"
       },
       "automationCreated": {
         "title": "Automatyzacja została utworzona",
@@ -189,7 +163,6 @@
       "acknowledgeFailed": "Nieudane potwierdzenie naruszenia",
       "dismissFailed": "Nie udało się odrzucić naruszenia",
       "authFailed": "Uwierzytelnianie nie powiodło się",
-      "webhookTestFailed": "Test webhooka nie powiódł się",
       "automationCreateFailed": "Nie udało się utworzyć automatyzacji",
       "automationUpdateFailed": "Nie udało się zaktualizować automatyzacji",
       "automationDeleteFailed": "Nie udało się usunąć automatyzacji",
@@ -208,14 +181,8 @@
       "sessionsRevokeFailed": "Nie udało się anulować sesji",
       "identityUpdateFailed": "Nie udało się zaktualizować profilu",
       "trustScoresResetFailed": "Nie udało się zresetować punktów zaufania",
-      "routingUpdateFailed": "Nie udało się zaktualizować trasy",
-      "clipboardFailed": "Nie udało się skopiować do schowka",
       "plexUnlinkFailed": "Nie udało się odłączyć konta Plex",
       "plexReauthorizeFailed": "Nie udało się ponownie autoryzować konta Plex",
-      "agentAddFailed": "Nie udało się dodać agenta",
-      "agentUpdateFailed": "Nie udało się zaktualizować agenta",
-      "agentRemoveFailed": "Nie udało się usunąć agenta",
-      "agentTestFailed": "Test nie powiódł się",
       "jobAlreadyRunning": "Zadanie jest już uruchomione",
       "jobStartFailed": "Nie udało się uruchomić zadania",
       "jobLoadFailed": "Nie udało się załadować zadań konserwacyjnych",
@@ -248,8 +215,7 @@
     },
     "warning": {
       "jobFailed": {
-        "title": "Zadanie nie powiodło się",
-        "message": "{{name}} napotkał na błąd"
+        "title": "Zadanie nie powiodło się"
       }
     },
     "info": {
@@ -263,43 +229,23 @@
       }
     }
   },
-  "push": {
-    "violationDetected": "Wykryto naruszenie współdzielenia",
-    "streamStarted": "Transmisja Rozpoczęta",
-    "streamEnded": "Transmisja Zakończona",
-    "serverDown": "Utracono połączenie z serwerem",
-    "serverUp": "Serwer z powrotem Online",
-    "newDevice": "Nowe Urządzenie",
-    "trustScoreChanged": "Zmienił się poziom zaufania"
-  },
   "settings": {
-    "title": "Ustawienia Powiadomień",
     "allSeverity": "Wszystkie (Niskie, Ostrzeżenie, Wysokie)",
     "warningAndHigh": "Tylko ostrzeżenie i wysokie",
     "highOnly": "Tylko o wysokim priorytecie",
-    "allTypes": "Wszystkie rodzaje",
     "rateLimit": "Aktualny status limitu zapytań",
     "perMinute": "Na minutę",
     "perHour": "Na godzinę",
     "enablePushNotifications": "Włącz powiadomienia push",
     "notificationEvents": "Powiadomienia o zdarzeniach",
     "violationDetected": "Wykryto naruszenie",
-    "violationDetectedDesc": "Gdy naruszenie udostępniania jest wyzwalane",
     "streamStarted": "Transmisja Rozpoczęta",
-    "streamStartedDesc": "Kiedy użytkownik zacznie obserwować",
     "streamStopped": "Transmisja Wstrzymana",
-    "streamStoppedDesc": "Gdy użytkownik przestanie oglądać",
     "concurrentStreams": "Równoległe Transmisje",
-    "concurrentStreamsDesc": "Po przekroczeniu maksymalnego limitu strumienia",
     "newDevice": "Nowe Urządzenie",
-    "newDeviceDesc": "Gdy nowe urządzenie łączy",
     "trustScoreChanged": "Zmieniono wynik zaufania",
-    "trustScoreChangedDesc": "Kiedy zmienia się wynik zaufania użytkownika",
     "serverDown": "Serwer Nieaktywny",
-    "serverDownDesc": "Kiedy serwer multimediów jest offline",
     "serverUp": "Serwer Aktywny",
-    "serverUpDesc": "Kiedy serwer multimediów wróci do trybu online",
-    "violationFilters": "Filtry naruszeń",
     "minimumSeverity": "Minimalna waga",
     "quietHours": "Godziny ciszy",
     "enableQuietHours": "Włącz godziny ciszy",

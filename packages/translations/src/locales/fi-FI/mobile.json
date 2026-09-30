@@ -1,7 +1,6 @@
 {
   "pair": {
     "welcome": "Tervetuloa Tracearriin",
-    "addServer": "Lisää Palvelin",
     "connectToServer": "Yhdistä palvelimeen",
     "enterServerDetails": "Syötä Tracearr palvelimen URL ja mobiili käyttötunnus",
     "serverUrl": "Palvelimen URL",
@@ -16,10 +15,7 @@
     "pleaseEnterToken": ""
   },
   "errors": {
-    "missingFields": "Puuttuvat Kentät",
-    "pleaseEnterBothFields": "Syötä sekä palvelimen URL-osoite että tunnus",
     "invalidUrl": "Virheellinen URL",
-    "serverUrlMustStartWith": "Palvelimen URL-osoitteen on alettava http:// tai http://",
     "pleaseEnterValidUrl": "Anna kelvollinen palvelimen URL-osoite",
     "pairingFailed": "Paritus Epäonnistui",
     "unableToPair": "",
@@ -28,12 +24,7 @@
     "invalidQrCodeFormat": "Virheellinen QR-koodin muoto. Ole hyvä ja luo uusi koodi.",
     "invalidQrCodeMissingUrl": "Virheellinen QR-koodi: puuttuva palvelimen URL",
     "invalidQrCodeMissingToken": "Virheellinen QR-koodi: puuttuu pariliitos",
-    "invalidServerUrlInQr": "Virheellinen palvelimen URL QR-koodissa",
-    "tooManyPairingAttempts": "Liian monta pariutumisyritystä. Odota muutama minuutti.",
-    "invalidOrExpiredToken": "Virheellinen tai vanhentunut pariliitos token.",
-    "invalidPairingRequest": "Virheellinen pariutumispyyntö. Tarkista token.",
     "errorDetails": "",
-    "componentStack": "",
     "connectionLost": "",
     "failedToLoadSession": ""
   },
@@ -63,10 +54,8 @@
     "build": ""
   },
   "navigation": {
-    "home": "",
     "selectServer": "Valitse Palvelin",
-    "server": "Palvelin",
-    "navigation": ""
+    "server": "Palvelin"
   },
   "resources": {
     "cpu": "Suoritin",
@@ -86,7 +75,6 @@
     "ruleViolationTriggered": "",
     "newPlaybackBegan": "",
     "playbackEnded": "",
-    "exceededStreamLimit": "",
     "newDeviceDetected": "",
     "trustScoreDegraded": "",
     "serverUnreachable": "",
@@ -193,9 +181,6 @@
     "allServers": ""
   },
   "reconnected": "",
-  "serverScope": {
-    "single": ""
-  },
   "a11y": {
     "selectServer": "",
     "alerts": "",

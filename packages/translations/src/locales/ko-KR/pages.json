@@ -27,9 +27,7 @@
     "plexAuthFailed": "Plex 인증에 실패했습니다",
     "plexStartFailed": "Plex 로그인을 시작하지 못했습니다",
     "serverConnectFailed": "서버에 연결하지 못했습니다",
-    "signupFailed": "가입에 실패했습니다",
     "createAccountFailed": "계정을 만들지 못했습니다",
-    "loginFailed": "로그인에 실패했습니다",
     "invalidCredentials": "사용자 이름, 이메일 또는 비밀번호가 올바르지 않습니다",
     "claimCodeRequired": "초기 설정에는 클레임 코드가 필요합니다",
     "enterClaimCode": "클레임 코드 입력",
@@ -159,12 +157,6 @@
   "history": {
     "title": "기록",
     "description": "",
-    "loadingMore": "더 불러오는 중...",
-    "scrollForMore": "더 보려면 스크롤하세요",
-    "showingAllResults": "전체 {{total}}개 결과 표시 중",
-    "deleteSession_one": "세션 {{count}}개 삭제",
-    "deleteSession_other": "세션 {{count}}개 삭제",
-    "deleteSessionsConfirm": "정말 삭제할까요? 이 작업은 되돌릴 수 없습니다.",
     "totalPlays": "총 재생 수",
     "uniqueTitles": "고유 제목 수",
     "uniqueUsers": "고유 사용자 수"
@@ -1591,13 +1583,7 @@
     "messageLabel": "사용자에게 보낼 메시지(선택 사항)",
     "messagePlaceholder": "예: 계정을 공유하지 말아 주세요",
     "messageHint": "이 메시지는 재생 중 사용자에게 표시됩니다",
-    "terminating": "종료 중...",
-    "killStream": "스트림 강제 종료"
-  },
-  "notFound": {
-    "title": "404",
-    "heading": "페이지를 찾을 수 없습니다",
-    "description": "찾으시는 페이지가 없거나 이동되었습니다."
+    "terminating": "종료 중..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "이 브라우저에서는 WebGL이 비활성화되어 있습니다",
     "webglUnavailable": "이 브라우저에서는 WebGL이 비활성화되어 있습니다",
     "webglHint": "지도에는 WebGL이 필요합니다. 브라우저 설정에서 이 사이트에 대해 활성화하세요.",
-    "basemapShadowed": "{{path}}에서 베이스맵이 누락되었습니다. Tracearr는 이를 이미지에 포함하므로 해당 디렉토리에 마운트된 볼륨이 이를 숨깁니다. 포스터 캐시를 유지하려면 /app/data 대신 /app/data/image-cache를 마운트하세요.",
     "badMounts": "잘못된 볼륨 마운트가 감지되었습니다. 기능이 보장되지 않습니다."
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "라이브러리 항목",
     "environment": "환경",
     "systemInformation": "시스템 정보",
-    "cpu": "CPU",
-    "memory": "메모리",
-    "uptime": "가동 시간",
     "database": "데이터베이스",
     "databaseDesc": "",
     "totalSize": "전체 크기",

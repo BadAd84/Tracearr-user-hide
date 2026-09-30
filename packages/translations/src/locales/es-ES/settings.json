@@ -49,14 +49,9 @@
     }
   },
   "general": {
-    "title": "Ajustes Generales",
     "unitSystem": "Sistema de unidades",
     "metric": "Métrico (km, km/h)",
     "imperial": "",
-    "timezone": "Zona horaria",
-    "primaryAuth": "Método de autenticación principal",
-    "localAccount": "Cuenta Local",
-    "plexAccount": "Cuenta de Plex",
     "language": "Idioma",
     "languageDescription": "Elige tu idioma de visualización preferido.",
     "helpTranslate": "Ayuda a traducir Tracearr",
@@ -142,14 +137,10 @@
     }
   },
   "servers": {
-    "title": "Servidores conectados",
     "addServer": "Añadir servidor",
     "serverName": "Nombre del servidor",
     "serverUrl": "URL del servidor",
-    "syncInterval": "Intervalo de sincronización",
     "testConnection": "Probar conexión",
-    "connectionSuccess": "Conexión establecida",
-    "connectionFailed": "Error de conexión",
     "noServersConnected": "Sin servidores conectados",
     "noServersConnectedHint": "Haga clic en \"Añadir servidor\" para conectar un servidor Jellyfin o Emby",
     "serverType": "Tipo de servidor",
@@ -162,10 +153,8 @@
     "allServersConnected": "Todos los servidores conectados",
     "allServersConnectedDesc": "Todos los servidores de esta cuenta ya están conectados.",
     "serverUrlPlaceholder": "",
-    "serverUrlHelp": "Directa la URL a tu servidor Jellyfin o Emby. Usa IP:port para mayor fiabilidad.",
     "serverNamePlaceholder": "Mi servidor multimedia",
     "apiKeyPlaceholder": "Introduzca su clave API",
-    "apiKeyHelp": "Encontrado en el panel de control de su servidor de medios bajo claves API o ajustes avanzados.",
     "connecting": "Conectando...",
     "connectServer": "Conectar servidor",
     "removeServer": "Eliminar servidor",
@@ -178,7 +167,6 @@
     "allFieldsRequired": "Todos los campos son obligatorios",
     "addServerDialogDescPlex": "Seleccione un servidor Plex de su cuenta vinculada.",
     "addServerDialogDescOther": "Conecte un servidor Jellyfin o Emby.",
-    "description": "",
     "discoveringServers": "Descubriendo servidores Plex disponibles...",
     "discoveringConnections": "Descubriendo conexiones...",
     "plexAccount": "Cuenta de Plex",
@@ -238,8 +226,6 @@
       "issueMalfunctioned": ""
     },
     "posterSource": {
-      "title": "",
-      "titleDesc": "",
       "label": "",
       "description": "",
       "automatic": "",
@@ -316,8 +302,6 @@
     "showLogs": "Mostrar registros",
     "hideLogs": "Ocultar registros",
     "noLogs": "No hay registros disponibles.",
-    "exitNodeNone": "Ninguno",
-    "exitNodeOffline": "(sin conexión)",
     "unknownError": "Se ha producido un error desconocido.",
     "disableConfirmTitle": "¿Desactivar Tailscale?",
     "disableConfirmDescription": "Esto desconectará Tracearr de tu tailnet. Puedes volver a activarlo sin necesidad de re-autorizar.",
@@ -361,33 +345,12 @@
     "automatic": "",
     "startJob": "Iniciar trabajo"
   },
-  "advanced": {
-    "title": "Ajustes avanzados",
-    "externalUrl": "URL externa",
-    "trustProxy": "Confiar en cabeceras de proxy",
-    "reverseProxy": "Proxy Inverso",
-    "connectionScenarios": "Escenarios de conexión"
-  },
   "accessControl": {
-    "title": "Control de acceso",
-    "description": "",
     "allowGuestAccess": "Permitir acceso al invitado",
     "allowGuestAccessDesc": "Cuando está desactivado, sólo el propietario del servidor puede iniciar sesión en Tracearr",
     "singleOwnerNote": "Nota: Cuando el acceso invitado está deshabilitado, sólo el propietario del servidor puede iniciar sesión. Todos los demás usuarios verán un mensaje \"Acceso denegado\"."
   },
   "import": {
-    "title": "Importar datos",
-    "jellystat": "Importar desde Jellystat",
-    "tautulli": "Importar desde Tautulli",
-    "importProgress": "Progreso de la importación",
-    "importComplete": "Importación completada",
-    "importFailed": "Error al importar",
-    "processed": "Procesados",
-    "page": "Página",
-    "imported": "Importados",
-    "skipped": "Omitidos",
-    "enriched": "Enriquecido",
-    "errors": "Errores",
     "noServers": "No hay servidores conectados",
     "noServersHint": "Necesita al menos un servidor conectado para importar datos.",
     "tautulliUrl": "URL de Tautulli",
@@ -424,8 +387,6 @@
     "uploadingBackup": "Subiendo copia de seguridad...",
     "plex": "",
     "jellyfinEmby": "",
-    "step1": "",
-    "step2": "",
     "apiKeyPlaceholder": "Tu clave API de Tautulli",
     "skipUserNotFoundPlex": "Usuario no encontrado. El usuario de Plex no existe en Tracearr. Sincroniza tu servidor primero para añadir todos los usuarios.",
     "skipDuplicate": "Sesión duplicada — La sesión ya se importó previamente.",
@@ -461,10 +422,7 @@
     "createAccount": "Crear cuenta",
     "email": "Correo electrónico",
     "password": "Contraseña",
-    "displayName": "Nombre visible",
-    "createYourAccount": "Crea tu cuenta para empezar",
-    "signInToAccount": "Inicia sesión en tu cuenta",
-    "useLocalAccount": "Usar cuenta local"
+    "displayName": "Nombre visible"
   },
   "update": {
     "title": "Actualización disponible",

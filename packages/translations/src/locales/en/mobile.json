@@ -1,7 +1,6 @@
 {
   "pair": {
     "welcome": "Welcome to Tracearr",
-    "addServer": "Add Server",
     "connectToServer": "Connect to Server",
     "enterServerDetails": "Enter your Tracearr server URL and mobile access token",
     "serverUrl": "Server URL",
@@ -16,10 +15,7 @@
     "pleaseEnterToken": "Please enter your access token"
   },
   "errors": {
-    "missingFields": "Missing Fields",
-    "pleaseEnterBothFields": "Please enter both server URL and token",
     "invalidUrl": "Invalid URL",
-    "serverUrlMustStartWith": "Server URL must start with http:// or https://",
     "pleaseEnterValidUrl": "Please enter a valid server URL",
     "pairingFailed": "Pairing Failed",
     "unableToPair": "Unable to pair with server",
@@ -28,12 +24,7 @@
     "invalidQrCodeFormat": "Invalid QR code format. Please generate a new code.",
     "invalidQrCodeMissingUrl": "Invalid QR code: missing server URL",
     "invalidQrCodeMissingToken": "Invalid QR code: missing pairing token",
-    "invalidServerUrlInQr": "Invalid server URL in QR code",
-    "tooManyPairingAttempts": "Too many pairing attempts. Please wait a few minutes.",
-    "invalidOrExpiredToken": "Invalid or expired pairing token.",
-    "invalidPairingRequest": "Invalid pairing request. Check your token.",
     "errorDetails": "Error Details:",
-    "componentStack": "Component Stack:",
     "connectionLost": "Connection lost",
     "failedToLoadSession": "Failed to load session"
   },
@@ -63,10 +54,8 @@
     "build": "Build {{build}}"
   },
   "navigation": {
-    "home": "Home",
     "selectServer": "Select Server",
-    "server": "Server",
-    "navigation": "Navigation"
+    "server": "Server"
   },
   "resources": {
     "cpu": "CPU",
@@ -86,7 +75,6 @@
     "ruleViolationTriggered": "Rule violation triggered",
     "newPlaybackBegan": "New playback began",
     "playbackEnded": "Playback ended",
-    "exceededStreamLimit": "User exceeded stream limit",
     "newDeviceDetected": "New device detected for user",
     "trustScoreDegraded": "User trust score degraded",
     "serverUnreachable": "Media server unreachable",
@@ -193,9 +181,6 @@
     "allServers": "All servers"
   },
   "reconnected": "Reconnected",
-  "serverScope": {
-    "single": "Showing {{name}} only"
-  },
   "a11y": {
     "selectServer": "Select server",
     "alerts": "Alerts",

@@ -49,14 +49,9 @@
     }
   },
   "general": {
-    "title": "Общие настройки",
     "unitSystem": "Система модулей",
     "metric": "Метрика (км, км/ч)",
     "imperial": "Имперская (mi, mph)",
-    "timezone": "",
-    "primaryAuth": "Метод первичной аутентификации",
-    "localAccount": "Локальный счет",
-    "plexAccount": "Аккаунт Plex",
     "language": "Язык",
     "languageDescription": "Выберите предпочитаемый язык отображения.",
     "helpTranslate": "Помогите перевести Tracearr",
@@ -142,14 +137,10 @@
     }
   },
   "servers": {
-    "title": "Подключенные серверы",
     "addServer": "Добавить сервер",
     "serverName": "Имя сервера",
     "serverUrl": "URL сервера",
-    "syncInterval": "Интервал синхронизации",
     "testConnection": "Проверить соединение",
-    "connectionSuccess": "Успешное подключение",
-    "connectionFailed": "Не удалось подключиться",
     "noServersConnected": "Нет подключенных серверов",
     "noServersConnectedHint": "Нажмите \"Add Server\", чтобы подключить сервер Jellyfin или Emby",
     "serverType": "Тип сервера",
@@ -162,10 +153,8 @@
     "allServersConnected": "Все серверы подключены",
     "allServersConnectedDesc": "Все серверы этой учетной записи уже подключены.",
     "serverUrlPlaceholder": "",
-    "serverUrlHelp": "Прямой URL-адрес вашего Jellyfin или Emby сервера. Используйте IP:порт для лучшей надежности.",
     "serverNamePlaceholder": "Мой медиа сервер",
     "apiKeyPlaceholder": "Введите ваш API ключ",
-    "apiKeyHelp": "Найдена в панели управления вашего медиа-сервера под API Keys или Расширенные настройки.",
     "connecting": "Подключение...",
     "connectServer": "Подключить сервер",
     "removeServer": "Удалить сервер",
@@ -178,7 +167,6 @@
     "allFieldsRequired": "Все поля обязательны",
     "addServerDialogDescPlex": "Выберите Plex сервер из связанного аккаунта.",
     "addServerDialogDescOther": "Подключите сервер Jellyfin или Emby.",
-    "description": "",
     "discoveringServers": "Поиск доступных серверов Plex...",
     "discoveringConnections": "Поиск соединений...",
     "plexAccount": "Аккаунт Plex",
@@ -238,8 +226,6 @@
       "issueMalfunctioned": ""
     },
     "posterSource": {
-      "title": "",
-      "titleDesc": "",
       "label": "",
       "description": "",
       "automatic": "",
@@ -316,8 +302,6 @@
     "showLogs": "Показать логи",
     "hideLogs": "Скрыть журналы",
     "noLogs": "Нет доступных журналов.",
-    "exitNodeNone": "Нет",
-    "exitNodeOffline": "(оффлайн)",
     "unknownError": "Произошла неизвестная ошибка.",
     "disableConfirmTitle": "Отключить Tailscale?",
     "disableConfirmDescription": "Это отключит Tracearr от вашего портсета. Вы можете снова включить без повторной авторизации.",
@@ -361,33 +345,12 @@
     "automatic": "",
     "startJob": "Начать работу"
   },
-  "advanced": {
-    "title": "Расширенные настройки",
-    "externalUrl": "Внешний URL",
-    "trustProxy": "Доверять заголовкам прокси",
-    "reverseProxy": "Обратный прокси",
-    "connectionScenarios": "Сценарии подключения"
-  },
   "accessControl": {
-    "title": "Контроль доступа",
-    "description": "",
     "allowGuestAccess": "Разрешить гостевой доступ",
     "allowGuestAccessDesc": "Когда отключено, только владелец сервера может войти в Tracearr",
     "singleOwnerNote": "Примечание: Если гостевой доступ отключен, авторизоваться могут только владелец сервера. Все другие пользователи увидят сообщение \"Отказано в доступе\"."
   },
   "import": {
-    "title": "Импорт данных",
-    "jellystat": "Импорт из Jellystat",
-    "tautulli": "Импорт из Tautulli",
-    "importProgress": "Прогресс импорта",
-    "importComplete": "Импорт завершен",
-    "importFailed": "Не удалось импортировать",
-    "processed": "Обработано",
-    "page": "Страница",
-    "imported": "Импортировано",
-    "skipped": "Пропущено",
-    "enriched": "Богатый",
-    "errors": "Ошибки",
     "noServers": "Серверы не подключены",
     "noServersHint": "Для импорта данных необходим по крайней мере один подключенный сервер.",
     "tautulliUrl": "URL Tautulli",
@@ -424,8 +387,6 @@
     "uploadingBackup": "Загрузка файла резервной копии...",
     "plex": "Plex (Таулли)",
     "jellyfinEmby": "",
-    "step1": "",
-    "step2": "",
     "apiKeyPlaceholder": "Ваш ключ Tautulli API",
     "skipUserNotFoundPlex": "Пользователь не найден — Plex пользователь не существует в Tracearr. Синхронизируйте ваш сервер, чтобы добавить всех пользователей.",
     "skipDuplicate": "Повторяющиеся сессии— сессия уже была импортирована ранее.",
@@ -461,10 +422,7 @@
     "createAccount": "Создать Аккаунт",
     "email": "Почта",
     "password": "Пароль",
-    "displayName": "Показать имя",
-    "createYourAccount": "Создайте свой аккаунт, чтобы начать",
-    "signInToAccount": "Войдите в свою учетную запись",
-    "useLocalAccount": "Использовать локальную учетную запись"
+    "displayName": "Показать имя"
   },
   "update": {
     "title": "Доступно обновление",

@@ -27,9 +27,7 @@
     "plexAuthFailed": "プレックス認証に失敗しました",
     "plexStartFailed": "プレックスのログインを開始できませんでした",
     "serverConnectFailed": "サーバーへの接続に失敗しました",
-    "signupFailed": "サインアップに失敗しました",
     "createAccountFailed": "アカウントの作成に失敗しました",
-    "loginFailed": "ログインに失敗しました",
     "invalidCredentials": "メールアドレスまたはパスワードが正しくありません",
     "claimCodeRequired": "初回セットアップには請求コードが必要です",
     "enterClaimCode": "請求コードを入力",
@@ -159,12 +157,6 @@
   "history": {
     "title": "沿革",
     "description": "",
-    "loadingMore": "さらに読み込み中...",
-    "scrollForMore": "詳細はスクロール",
-    "showingAllResults": "すべての {{total}} 結果を表示",
-    "deleteSession_one": "{{count}} セッションを削除",
-    "deleteSession_other": "{{count}} セッションを削除",
-    "deleteSessionsConfirm": "本当に削除しますか？この操作は元に戻せません。",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "ユーザーへのメッセージ (オプション)",
     "messagePlaceholder": "例えば、アカウントを共有しないでください",
     "messageHint": "このメッセージは再生中に表示されます",
-    "terminating": "終了中...",
-    "killStream": "キルストリーム"
-  },
-  "notFound": {
-    "title": "",
-    "heading": "ページが見つかりません",
-    "description": "お探しのページは存在しないか、移動されていません。"
+    "terminating": "終了中..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "ライブラリ項目",
     "environment": "環境",
     "systemInformation": "システム情報",
-    "cpu": "",
-    "memory": "メモリ",
-    "uptime": "稼働時間",
     "database": "データベース",
     "databaseDesc": "",
     "totalSize": "合計サイズ",

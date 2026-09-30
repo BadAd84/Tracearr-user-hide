@@ -27,9 +27,7 @@
     "plexAuthFailed": "Plex-autentisering mislyktes",
     "plexStartFailed": "Kunne ikke starte Plex innlogging",
     "serverConnectFailed": "Kan ikke koble til serveren",
-    "signupFailed": "Registrering mislyktes",
     "createAccountFailed": "Kunne ikke opprette konto",
-    "loginFailed": "Påloggingen mislyktes",
     "invalidCredentials": "Ugyldig epostadresse eller passord",
     "claimCodeRequired": "Første gangs oppsett krever en kravkode",
     "enterClaimCode": "Skriv inn kravkode",
@@ -159,12 +157,6 @@
   "history": {
     "title": "Historikk",
     "description": "",
-    "loadingMore": "Laster mer...",
-    "scrollForMore": "Rull for mer",
-    "showingAllResults": "Viser alle {{total}} resultater",
-    "deleteSession_one": "Slett {{count}} sesjon",
-    "deleteSession_other": "Slett {{count}} Økter",
-    "deleteSessionsConfirm": "Er du sikker på at du vil slette? Denne handlingen kan ikke angres.",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "Melding til bruker (valgfritt)",
     "messagePlaceholder": "F.eks. ikke del kontoen din",
     "messageHint": "Denne meldingen vil bli vist til dem under avspilling",
-    "terminating": "Avslutter...",
-    "killStream": "Drap Strøm"
-  },
-  "notFound": {
-    "title": "",
-    "heading": "Side ikke funnet",
-    "description": "Siden du leter etter finnes ikke eller har blitt flyttet."
+    "terminating": "Avslutter..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "Bibliotek elementer",
     "environment": "Miljø",
     "systemInformation": "System Informasjon",
-    "cpu": "Prosessor",
-    "memory": "Minne",
-    "uptime": "Oppetid",
     "database": "Databasen",
     "databaseDesc": "",
     "totalSize": "Total størrelse",

@@ -27,9 +27,7 @@
     "plexAuthFailed": "L'autenticació amb Plex ha fallat",
     "plexStartFailed": "No s'ha pogut iniciar la sessió de Plex",
     "serverConnectFailed": "No s'ha pogut connectar al servidor",
-    "signupFailed": "Ha fallat el registre",
     "createAccountFailed": "Ha fallat la creació del compte",
-    "loginFailed": "No s'ha pogut iniciar sessió",
     "invalidCredentials": "Correu electrònic o contrasenya incorrectes",
     "claimCodeRequired": "La configuració per primera vegada requereix un codi de vinculació",
     "enterClaimCode": "Introduïu el codi de vinculació",
@@ -159,12 +157,6 @@
   "history": {
     "title": "Històric",
     "description": "Exploreu totes les sessions de transmissió amb filtres potents.",
-    "loadingMore": "S'està carregant més contingut...",
-    "scrollForMore": "Desplaceu-vos per veure més",
-    "showingAllResults": "Es mostren tots els {{total}} resultats",
-    "deleteSession_one": "Elimina {{count}} sessió",
-    "deleteSession_other": "Elimina {{count}} sessions",
-    "deleteSessionsConfirm": "Segur que ho voleu eliminar? Aquesta acció no es pot desfer.",
     "totalPlays": "Reproduccions totals",
     "uniqueTitles": "Títols únics",
     "uniqueUsers": "Usuaris únics"
@@ -1591,13 +1583,7 @@
     "messageLabel": "Missatge per a l'usuari (opcional)",
     "messagePlaceholder": "p. ex., Si us plau, no comparteixis el teu compte",
     "messageHint": "Aquest missatge se li mostrarà durant la reproducció",
-    "terminating": "S'està finalitzant...",
-    "killStream": "Finalitza la transmissió"
-  },
-  "notFound": {
-    "title": "404",
-    "heading": "No s'ha trobat la pàgina",
-    "description": "La pàgina que cerqueu no existeix o s'ha mogut."
+    "terminating": "S'està finalitzant..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "El mapa base no està instal·lat",
     "webglUnavailable": "WebGL està deshabilitat en aquest navegador",
     "webglHint": "El mapa necessita WebGL. Habiliteu-lo per a aquest lloc a la configuració del navegador.",
-    "basemapShadowed": "Falta el mapa base a {{path}}. Tracearr l'inclou dins la imatge, de manera que un volum muntat sobre aquest directori l'està ocultant. Per conservar la memòria cau de pòsters, munteu /app/data/image-cache en lloc de /app/data.",
     "badMounts": "S'han detectat muntatges de volum incorrectes: no es garanteix el funcionament."
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "Elements de la biblioteca",
     "environment": "Entorn",
     "systemInformation": "Informació del sistema",
-    "cpu": "CPU",
-    "memory": "Memòria",
-    "uptime": "Temps en funcionament",
     "database": "Base de dades",
     "databaseDesc": "Mida de la base de dades i estadístiques de les taules.",
     "totalSize": "Mida total",

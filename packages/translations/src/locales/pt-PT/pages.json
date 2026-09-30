@@ -27,9 +27,7 @@
     "plexAuthFailed": "Falha na autenticação Plex",
     "plexStartFailed": "Falha ao iniciar o login Plex",
     "serverConnectFailed": "Falha ao conectar ao servidor",
-    "signupFailed": "Falha na inscrição",
     "createAccountFailed": "Falha ao criar conta",
-    "loginFailed": "Falha no login",
     "invalidCredentials": "E-mail ou senha inválidos",
     "claimCodeRequired": "Primeira configuração requer um código de reivindicação",
     "enterClaimCode": "Inserir código de solicitação",
@@ -159,12 +157,6 @@
   "history": {
     "title": "Histórico",
     "description": "",
-    "loadingMore": "Carregando mais...",
-    "scrollForMore": "Role para mais",
-    "showingAllResults": "Mostrando todos os resultados {{total}}",
-    "deleteSession_one": "Excluir a sessão {{count}}",
-    "deleteSession_other": "Apagar Sessões {{count}}",
-    "deleteSessionsConfirm": "Tem certeza que deseja excluir? Esta ação não pode ser desfeita.",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "Mensagem para o usuário (opcional)",
     "messagePlaceholder": "ex.: Por favor, não compartilhe sua conta",
     "messageHint": "Esta mensagem será exibida a eles durante a reprodução",
-    "terminating": "Finalizando...",
-    "killStream": "Matar Corrente"
-  },
-  "notFound": {
-    "title": "",
-    "heading": "Página não encontrada",
-    "description": "A página que você procura não existe ou foi movida."
+    "terminating": "Finalizando..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "Itens da Biblioteca",
     "environment": "Seguros",
     "systemInformation": "Informação do Sistema",
-    "cpu": "cpu",
-    "memory": "Memória",
-    "uptime": "Tempo em atividade",
     "database": "Banco",
     "databaseDesc": "",
     "totalSize": "Tamanho total",

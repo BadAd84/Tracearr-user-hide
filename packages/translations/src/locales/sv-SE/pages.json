@@ -27,9 +27,7 @@
     "plexAuthFailed": "Plex-autentisering misslyckades",
     "plexStartFailed": "Det gick inte att starta Plex inloggning",
     "serverConnectFailed": "Det gick inte att ansluta till servern",
-    "signupFailed": "Registrering misslyckades",
     "createAccountFailed": "Kunde inte skapa konto",
-    "loginFailed": "Inloggning misslyckades",
     "invalidCredentials": "Ogiltig e-postadress eller lösenord",
     "claimCodeRequired": "Första-tiden kräver en kravkod",
     "enterClaimCode": "Ange Anspråkskod",
@@ -159,12 +157,6 @@
   "history": {
     "title": "Historik",
     "description": "",
-    "loadingMore": "Laddar mer...",
-    "scrollForMore": "Bläddra för mer",
-    "showingAllResults": "Visar alla {{total}} resultat",
-    "deleteSession_one": "Ta bort {{count}} session",
-    "deleteSession_other": "Ta bort {{count}} sessioner",
-    "deleteSessionsConfirm": "Är du säker på att du vill ta bort? Denna åtgärd kan inte ångras.",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "Meddelande till användare (valfritt)",
     "messagePlaceholder": "T.ex. dela inte ditt konto",
     "messageHint": "Detta meddelande kommer att visas för dem under uppspelning",
-    "terminating": "Avslutar...",
-    "killStream": "Döda ström"
-  },
-  "notFound": {
-    "title": "",
-    "heading": "Sidan hittades inte",
-    "description": "Sidan du letar efter finns inte eller har flyttats."
+    "terminating": "Avslutar..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "Bibliotek objekt",
     "environment": "Miljö",
     "systemInformation": "Systeminformation",
-    "cpu": "",
-    "memory": "Minne",
-    "uptime": "Drifttid",
     "database": "Databas",
     "databaseDesc": "",
     "totalSize": "Total storlek",

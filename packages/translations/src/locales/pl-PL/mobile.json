@@ -1,7 +1,6 @@
 {
   "pair": {
     "welcome": "Witaj w Tracearr",
-    "addServer": "Dodaj serwer",
     "connectToServer": "Połącz z serwerem",
     "enterServerDetails": "Wprowadź swój adres URL serwera Tracearr i token dostępu mobilnego",
     "serverUrl": "Adres URL serwera",
@@ -16,10 +15,7 @@
     "pleaseEnterToken": "Wprowadź swój token dostępu"
   },
   "errors": {
-    "missingFields": "Brakujące pola",
-    "pleaseEnterBothFields": "Wprowadź adres URL serwera i token",
     "invalidUrl": "Nieprawidłowy adres URL",
-    "serverUrlMustStartWith": "Adres URL serwera musi zaczynać się od http:// lub https://",
     "pleaseEnterValidUrl": "Wprowadź prawidłowy adres URL serwera",
     "pairingFailed": "Parowanie nieudane",
     "unableToPair": "Nie można sparować z serwerem",
@@ -28,12 +24,7 @@
     "invalidQrCodeFormat": "Nieprawidłowy format kodu QR. Wygeneruj nowy kod.",
     "invalidQrCodeMissingUrl": "Nieprawidłowy kod QR: brakujący adres URL serwera",
     "invalidQrCodeMissingToken": "Nieprawidłowy kod QR brakujący token parowania",
-    "invalidServerUrlInQr": "Nieprawidłowy adres URL serwera w kodzie QR",
-    "tooManyPairingAttempts": "Zbyt wiele prób parowania. Poczekaj kilka minut.",
-    "invalidOrExpiredToken": "Token parowania jest nieprawidłowy lub wygasł.",
-    "invalidPairingRequest": "Niepoprawna prośba o parowanie. Sprawdź token.",
     "errorDetails": "Szczegóły błędu:",
-    "componentStack": "Stos komponentów:",
     "connectionLost": "Utracono połączenie",
     "failedToLoadSession": "Nie udało się załadować sesji"
   },
@@ -63,10 +54,8 @@
     "build": "Kompilacja {{build}}"
   },
   "navigation": {
-    "home": "Strona główna",
     "selectServer": "Wybierz serwer",
-    "server": "Serwer",
-    "navigation": "Nawigacja"
+    "server": "Serwer"
   },
   "resources": {
     "cpu": "Procesor",
@@ -86,7 +75,6 @@
     "ruleViolationTriggered": "Wykryto naruszenie reguły",
     "newPlaybackBegan": "Rozpoczęto nowe odtwarzanie",
     "playbackEnded": "Odtwarzanie zakończone",
-    "exceededStreamLimit": "Użytkownik przekroczył limit strumieni",
     "newDeviceDetected": "Wykryto nowe urządzenie użytkownika",
     "trustScoreDegraded": "Poziom zaufania użytkownika uległ pogorszeniu",
     "serverUnreachable": "Serwer mediów nieosiągalny",
@@ -193,9 +181,6 @@
     "allServers": "Wszystkie serwery"
   },
   "reconnected": "Połączono ponownie",
-  "serverScope": {
-    "single": "Wyświetlanie tylko {{name}}"
-  },
   "a11y": {
     "selectServer": "Wybierz serwer",
     "alerts": "Powiadomienia",

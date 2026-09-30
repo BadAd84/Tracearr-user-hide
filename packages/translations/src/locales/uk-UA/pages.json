@@ -27,9 +27,7 @@
     "plexAuthFailed": "Невдала авторизація Plex",
     "plexStartFailed": "Не вдалося виконати вхід до Plex",
     "serverConnectFailed": "Не вдалося підключитися до сервера",
-    "signupFailed": "Не вдалося зареєструватися",
     "createAccountFailed": "Не вдалося створити обліковий запис",
-    "loginFailed": "Не вдалося увійти",
     "invalidCredentials": "Невірна адреса електронної пошти або пароль",
     "claimCodeRequired": "Початкове налаштування потребує коду підтвердження",
     "enterClaimCode": "Введіть код захоплення",
@@ -159,12 +157,6 @@
   "history": {
     "title": "Історія",
     "description": "",
-    "loadingMore": "Завантажується більше...",
-    "scrollForMore": "Прокрутіть для додаткової інформації",
-    "showingAllResults": "Показано всі {{total}} результати",
-    "deleteSession_one": "Видалити {{count}} сеанс",
-    "deleteSession_other": "Видалити {{count}} сеансів",
-    "deleteSessionsConfirm": "Ви впевнені, що хочете видалити? Цю дію не можна скасувати.",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "Повідомлення користувачу (необов'язково)",
     "messagePlaceholder": "наприклад, Будь ласка, не діліться своїм обліковим записом",
     "messageHint": "Це повідомлення буде показано їм під час відтворення",
-    "terminating": "Завершення...",
-    "killStream": "Завершити потік"
-  },
-  "notFound": {
-    "title": "",
-    "heading": "Сторінку не знайдено",
-    "description": "Сторінка, яку ви шукаєте, не існує, або була переміщена."
+    "terminating": "Завершення..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "Елементи бібліотеки",
     "environment": "Навколишнє середовище",
     "systemInformation": "Інформація про систему",
-    "cpu": "",
-    "memory": "Пам'ять",
-    "uptime": "Час роботи",
     "database": "База даних",
     "databaseDesc": "",
     "totalSize": "Загальний розмір",

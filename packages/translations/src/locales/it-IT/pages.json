@@ -27,9 +27,7 @@
     "plexAuthFailed": "Autenticazione Plex non riuscita",
     "plexStartFailed": "Impossibile avviare il login Plex",
     "serverConnectFailed": "Connessione al server non riuscita",
-    "signupFailed": "Registrazione fallita",
     "createAccountFailed": "Creazione account non riuscita",
-    "loginFailed": "Accesso fallito",
     "invalidCredentials": "Email o password non valide",
     "claimCodeRequired": "La prima configurazione richiede un codice di rivendicazione",
     "enterClaimCode": "Inserisci Codice Reclamo",
@@ -159,12 +157,6 @@
   "history": {
     "title": "Storico",
     "description": "",
-    "loadingMore": "Caricamento di più...",
-    "scrollForMore": "Scorri per altro",
-    "showingAllResults": "Mostrando tutti i risultati {{total}}",
-    "deleteSession_one": "Elimina Sessione {{count}}",
-    "deleteSession_other": "Elimina Sessioni {{count}}",
-    "deleteSessionsConfirm": "Sei sicuro di voler eliminare? Questa azione non può essere annullata.",
     "totalPlays": "",
     "uniqueTitles": "",
     "uniqueUsers": ""
@@ -1591,13 +1583,7 @@
     "messageLabel": "Messaggio all'utente (opzionale)",
     "messagePlaceholder": "Ad esempio, per favore non condividere il tuo account",
     "messageHint": "Questo messaggio verrà mostrato loro durante la riproduzione",
-    "terminating": "Terminando...",
-    "killStream": "Termina Flusso"
-  },
-  "notFound": {
-    "title": "",
-    "heading": "Pagina Non Trovata",
-    "description": "La pagina che stai cercando non esiste o è stata spostata."
+    "terminating": "Terminando..."
   },
   "settings": {
     "plex": {
@@ -1803,7 +1789,6 @@
     "basemapMissing": "",
     "webglUnavailable": "",
     "webglHint": "",
-    "basemapShadowed": "",
     "badMounts": ""
   },
   "devices": {
@@ -1880,9 +1865,6 @@
     "libraryItems": "Oggetti Libreria",
     "environment": "Ambiente",
     "systemInformation": "Informazioni Di Sistema",
-    "cpu": "",
-    "memory": "Memoria",
-    "uptime": "",
     "database": "",
     "databaseDesc": "",
     "totalSize": "Dimensione Totale",

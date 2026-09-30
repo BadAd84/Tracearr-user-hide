@@ -10,16 +10,11 @@
         "message": "서버가 성공적으로 제거되었습니다"
       },
       "serverSynced": {
-        "title": "서버 동기화됨",
-        "message": "서버 데이터가 동기화되었습니다"
+        "title": "서버 동기화됨"
       },
       "settingsUpdated": {
         "title": "설정 저장됨",
         "message": "설정이 저장되었습니다"
-      },
-      "tokenCopied": {
-        "title": "토큰 복사됨",
-        "message": "페어링 토큰이 클립보드에 복사되었습니다"
       },
       "violationAcknowledged": {
         "title": "위반 확인됨",
@@ -38,19 +33,11 @@
         "message": "기기 이름이 업데이트되었습니다"
       },
       "sessionsRevoked": {
-        "title": "세션 취소됨",
-        "message": "모든 모바일 세션이 취소되었습니다"
+        "title": "세션 취소됨"
       },
       "loggedIn": {
         "title": "성공",
         "message": "로그인되었습니다"
-      },
-      "webhookTest": {
-        "title": "테스트 성공",
-        "message": "Webhook이 정상적으로 작동합니다"
-      },
-      "copiedToClipboard": {
-        "title": "클립보드에 복사됨"
       },
       "plexAccountLinked": {
         "title": "Plex 계정 연결됨",
@@ -68,21 +55,8 @@
         "partial": "토큰을 업데이트했지만 {{names}}에서 아직 거부되었습니다",
         "unmatched": "토큰은 업데이트됐지만 {{names}} 계정은 다시 연결하지 못했습니다"
       },
-      "agentAdded": {
-        "title": "에이전트 추가됨",
-        "message": "알림 에이전트가 추가되었습니다"
-      },
-      "agentUpdated": {
-        "title": "에이전트 업데이트됨",
-        "message": "알림 에이전트가 업데이트되었습니다"
-      },
-      "agentRemoved": {
-        "title": "에이전트 제거됨",
-        "message": "알림 에이전트가 제거되었습니다"
-      },
       "jobCompleted": {
-        "title": "작업 완료",
-        "message": "{{name}} 작업이 성공적으로 끝났습니다"
+        "title": "작업 완료"
       },
       "automationCreated": {
         "title": "자동화가 생성되었습니다",
@@ -189,7 +163,6 @@
       "acknowledgeFailed": "위반을 확인 처리하지 못했습니다",
       "dismissFailed": "위반을 해제하지 못했습니다",
       "authFailed": "인증에 실패했습니다",
-      "webhookTestFailed": "Webhook 테스트에 실패했습니다",
       "automationCreateFailed": "자동화를 생성하지 못했습니다",
       "automationUpdateFailed": "자동화를 업데이트하지 못했습니다",
       "automationDeleteFailed": "자동화를 삭제하지 못했습니다",
@@ -208,14 +181,8 @@
       "sessionsRevokeFailed": "세션을 취소하지 못했습니다",
       "identityUpdateFailed": "프로필을 업데이트하지 못했습니다.",
       "trustScoresResetFailed": "신뢰 점수를 초기화하지 못했습니다",
-      "routingUpdateFailed": "라우팅을 업데이트하지 못했습니다",
-      "clipboardFailed": "클립보드에 복사하지 못했습니다",
       "plexUnlinkFailed": "Plex 계정 연결을 해제하지 못했습니다",
       "plexReauthorizeFailed": "Plex 계정을 다시 인증하지 못했습니다",
-      "agentAddFailed": "에이전트를 추가하지 못했습니다",
-      "agentUpdateFailed": "에이전트를 업데이트하지 못했습니다",
-      "agentRemoveFailed": "에이전트를 제거하지 못했습니다",
-      "agentTestFailed": "테스트에 실패했습니다",
       "jobAlreadyRunning": "작업이 이미 실행 중입니다",
       "jobStartFailed": "작업을 시작하지 못했습니다",
       "jobLoadFailed": "유지관리 작업을 불러오지 못했습니다",
@@ -248,8 +215,7 @@
     },
     "warning": {
       "jobFailed": {
-        "title": "작업 실패",
-        "message": "{{name}} 작업에서 오류가 발생했습니다"
+        "title": "작업 실패"
       }
     },
     "info": {
@@ -263,43 +229,23 @@
       }
     }
   },
-  "push": {
-    "violationDetected": "공유 위반 감지됨",
-    "streamStarted": "스트림 시작됨",
-    "streamEnded": "스트림 종료됨",
-    "serverDown": "서버 연결 끊김",
-    "serverUp": "서버 다시 온라인",
-    "newDevice": "새 기기",
-    "trustScoreChanged": "신뢰 점수 변경됨"
-  },
   "settings": {
-    "title": "알림 설정",
     "allSeverity": "전체(낮음, 경고, 높음)",
     "warningAndHigh": "경고 및 높음만",
     "highOnly": "높은 심각도만",
-    "allTypes": "모든 유형",
     "rateLimit": "현재 전송 제한 상태",
     "perMinute": "분당",
     "perHour": "시간당",
     "enablePushNotifications": "푸시 알림 활성화",
     "notificationEvents": "알림 이벤트",
     "violationDetected": "위반 감지",
-    "violationDetectedDesc": "공유 위반이 발생했을 때",
     "streamStarted": "스트림 시작",
-    "streamStartedDesc": "사용자가 시청을 시작했을 때",
     "streamStopped": "스트림 중지",
-    "streamStoppedDesc": "사용자가 시청을 중지했을 때",
     "concurrentStreams": "동시 스트림",
-    "concurrentStreamsDesc": "최대 스트림 수를 초과했을 때",
     "newDevice": "새 기기",
-    "newDeviceDesc": "새 기기가 연결되었을 때",
     "trustScoreChanged": "신뢰 점수 변경",
-    "trustScoreChangedDesc": "사용자의 신뢰 점수가 변경되었을 때",
     "serverDown": "서버 다운",
-    "serverDownDesc": "미디어 서버가 오프라인이 되었을 때",
     "serverUp": "서버 복구",
-    "serverUpDesc": "미디어 서버가 다시 온라인이 되었을 때",
-    "violationFilters": "위반 필터",
     "minimumSeverity": "최소 심각도",
     "quietHours": "방해 금지 시간",
     "enableQuietHours": "방해 금지 시간 활성화",
