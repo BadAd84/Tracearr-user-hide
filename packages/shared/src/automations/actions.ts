@@ -2,13 +2,16 @@ import { z } from 'zod';
 import { nodeFieldsShape, automationConditionsSchema } from './conditions.js';
 import { type TriggerContext } from './triggers.js';
 
+export const SEND_TITLE_MAX = 200;
+export const SEND_BODY_MAX = 2000;
+
 export const sendActionSchema = z.object({
   ...nodeFieldsShape,
   type: z.literal('send'),
   to: z.array(z.uuid()).min(1),
   cooldown_minutes: z.number().int().nonnegative().optional(),
-  title: z.string().min(1).max(200).optional(),
-  body: z.string().min(1).max(2000).optional(),
+  title: z.string().min(1).max(SEND_TITLE_MAX).optional(),
+  body: z.string().min(1).max(SEND_BODY_MAX).optional(),
 });
 
 export const trustActionSchema = z
