@@ -54,7 +54,7 @@
     "showRemoved": "Mostra els eliminats",
     "noUsersFound": "No s'ha trobat cap usuari.",
     "searchPlaceholder": "Cerca d'usuaris...",
-    "selectAllUsers": "Selecciona els {{count}} usuaris",
+    "selectAllUsers_other": "Selecciona els {{count}} usuaris",
     "serversColumn": "Servidors",
     "resetTrustScore": "Restableix la puntuació de confiança",
     "resetTrustScoreTitle_one": "Restableix la puntuació de confiança de {{count}} usuari",
@@ -288,7 +288,7 @@
         "title": "S'estan generant dades històriques...",
         "fallbackBody": "S'estan creant instantànies a partir de l'historial de la biblioteca. Pot trigar uns quants minuts.",
         "progress": "{{processed}} de {{total}} biblioteques",
-        "snapshotsSuffix": " ({{count}} instantànies)"
+        "snapshotsSuffix_other": " ({{count}} instantànies)"
       },
       "multiServer": {
         "title": "Algunes biblioteques necessiten atenció",
@@ -311,7 +311,7 @@
     "versionsBackfill": {
       "banner": "Encara s'estan recollint les dades de versions de fitxer d'aquest servidor. Executeu una sincronització de la biblioteca per acabar.",
       "action": "Sincronitza ara",
-      "syncFailed": "La sincronització no s'ha pogut iniciar en {{count}} servidor(s). Comproveu els vostres permisos i l'estat del servidor.",
+      "syncFailed_other": "La sincronització no s'ha pogut iniciar en {{count}} servidor(s). Comproveu els vostres permisos i l'estat del servidor.",
       "syncStarted": "S'ha iniciat la sincronització de la biblioteca."
     }
   },
@@ -332,7 +332,7 @@
   "violations": {
     "title": "Incompliments",
     "tryAdjustingFilters": "Proveu d'ajustar els vostres filtres",
-    "selectAllViolations": "Seleccioneu tots els filtres d'incompliments de {{count}}",
+    "selectAllViolations_other": "Seleccioneu tots els filtres d'incompliments de {{count}}",
     "dismissViolation": "Descarta l'incompliment",
     "dismissViolationConfirm": "Segur que voleu descartar aquest incompliment? Això l'eliminarà permanentment del registre d'incompliments.",
     "dismissViolation_one": "Descarta {{count}} incompliment",
@@ -345,7 +345,7 @@
     "allRules": "Totes les regles",
     "filterPeople": "Persones",
     "allPeople": "Totes les persones",
-    "peopleSelectedCount": "{{count}} persones",
+    "peopleSelectedCount_other": "{{count}} persones",
     "personFilterPlaceholder": "Filtra per persona",
     "personFilterEmpty": "No s'ha trobat cap persona coincident",
     "personFilterError": "No s'han pogut carregar les persones",
@@ -372,7 +372,6 @@
       "conditionGroup": "Grup de condicions {{index}}",
       "matched": "{{matched}}/{{total}} coincidències",
       "actual": "Real",
-      "relatedSessions": "{{count}} sessió relacionada",
       "relatedSessions_one": "{{count}} sessió relacionada",
       "relatedSessions_other": "{{count}} sessions relacionades"
     }
@@ -556,7 +555,7 @@
       "searchPlaceholder": "Cerca…",
       "noMatches": "Cap coincidència",
       "clearSelection": "Neteja la selecció",
-      "selectedCount": "{{count}} seleccionats",
+      "selectedCount_other": "{{count}} seleccionats",
       "scope": {
         "label": "A qui s'aplica",
         "global": "Global",
@@ -1608,10 +1607,10 @@
         "unknown": "Ha fallat la connexió"
       },
       "connectionsReachable": "{{reachable}} de {{total}} connexions accessibles",
-      "connectionsAvailable": "{{count}} connexions disponibles",
+      "connectionsAvailable_other": "{{count}} connexions disponibles",
       "hideFiltered": "Amaga els filtrats",
       "showAll": "Mostra-ho tot",
-      "moreConnections": "+{{count}} connexions més",
+      "moreConnections_other": "+{{count}} connexions més",
       "connectingTo": "S'està connectant a {{name}}...",
       "ownerOnly": "Només el propietari pot gestionar els comptes de Plex enllaçats.",
       "noAccountsLinked": "No hi ha cap compte de Plex enllaçat",
@@ -1630,7 +1629,6 @@
     },
     "destinations": {
       "add": "Afegeix una destinació",
-      "alertsGoTo": "Les alertes van a {{count}} adreça",
       "alertsGoTo_other": "Les alertes van a {{count}} adreces",
       "builtinNote": "Integrat",
       "clearSecret": "Neteja",
@@ -1730,9 +1728,7 @@
         "push": "Push mòbil",
         "webToast": "Notificacions emergents del navegador"
       },
-      "usedBy": "Utilitzada per {{count}} automatització",
       "usedBy_other": "Utilitzada per {{count}} automatitzacions",
-      "usedByNewsletters": "Utilitzada per {{count}} butlletí",
       "usedByNewsletters_other": "Utilitzada per {{count}} butlletins",
       "violationsOff": "Incompliments desactivats",
       "violationsOn": "Incompliments activats",
@@ -1795,7 +1791,7 @@
     "title": "Compatibilitat de dispositius",
     "description": "Vegeu quins dispositius fan reproducció directa i quins transcodifiquen cada còdec.",
     "analyzedSessions": "Sessions analitzades",
-    "analyzedSessionsTooltip": "Sessions en combinacions de dispositiu + còdec amb un mínim de {{count}} sessions i un còdec conegut. Les combinacions poc freqüents i les sessions sense informació de còdec no es compten.",
+    "analyzedSessionsTooltip_other": "Sessions en combinacions de dispositiu + còdec amb un mínim de {{count}} sessions i un còdec conegut. Les combinacions poc freqüents i les sessions sense informació de còdec no es compten.",
     "directPlayRate": "Taxa de reproducció directa",
     "videoAndAudio": "Vídeo + àudio",
     "uniqueDevices": "Dispositius únics",
@@ -1932,11 +1928,11 @@
         "replacedEpisodes_other": "{{count}} episodis substituïts",
         "addedAgo": "afegit {{date}}",
         "addedCompactAgo": "afegit fa {{age}}",
-        "newEpisodesChip": "{{count}} de nous"
+        "newEpisodesChip_other": "{{count}} de nous"
       },
       "deadWeight": {
         "title": "Pes mort",
-        "summary": "{{count}} títols mai vistos · {{size}}",
+        "summary_other": "{{count}} títols mai vistos · {{size}}",
         "empty": "No hi ha res per recuperar: tot el que teniu a la biblioteca s'ha vist",
         "columns": {
           "poster": "Pòster",
@@ -2266,7 +2262,7 @@
       "linkSeerr": "Enllaça Seerr",
       "kpi": {
         "requested": "Sol·licitats",
-        "landedOf": "{{count}} arribats",
+        "landedOf_other": "{{count}} arribats",
         "watched": "Vist",
         "neverPlayed": "Mai reproduït",
         "ofLanded": "{{share}} dels arribats",

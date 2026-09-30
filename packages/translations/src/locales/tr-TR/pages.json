@@ -54,7 +54,6 @@
     "showRemoved": "",
     "noUsersFound": "",
     "searchPlaceholder": "",
-    "selectAllUsers": "",
     "serversColumn": "",
     "resetTrustScore": "",
     "resetTrustScoreTitle_one": "",
@@ -287,8 +286,7 @@
       "backfillRunning": {
         "title": "",
         "fallbackBody": "",
-        "progress": "",
-        "snapshotsSuffix": ""
+        "progress": ""
       },
       "multiServer": {
         "title": "",
@@ -311,7 +309,6 @@
     "versionsBackfill": {
       "banner": "",
       "action": "",
-      "syncFailed": "",
       "syncStarted": ""
     }
   },
@@ -332,7 +329,6 @@
   "violations": {
     "title": "",
     "tryAdjustingFilters": "",
-    "selectAllViolations": "",
     "dismissViolation": "",
     "dismissViolationConfirm": "",
     "dismissViolation_one": "",
@@ -345,7 +341,6 @@
     "allRules": "",
     "filterPeople": "",
     "allPeople": "",
-    "peopleSelectedCount": "",
     "personFilterPlaceholder": "",
     "personFilterEmpty": "",
     "personFilterError": "",
@@ -372,7 +367,6 @@
       "conditionGroup": "",
       "matched": "",
       "actual": "",
-      "relatedSessions": "",
       "relatedSessions_one": "",
       "relatedSessions_other": ""
     }
@@ -556,7 +550,6 @@
       "searchPlaceholder": "",
       "noMatches": "",
       "clearSelection": "",
-      "selectedCount": "",
       "scope": {
         "label": "",
         "global": "Herkes",
@@ -1608,10 +1601,8 @@
         "unknown": ""
       },
       "connectionsReachable": "",
-      "connectionsAvailable": "",
       "hideFiltered": "",
       "showAll": "",
-      "moreConnections": "",
       "connectingTo": "",
       "ownerOnly": "",
       "noAccountsLinked": "",
@@ -1630,7 +1621,6 @@
     },
     "destinations": {
       "add": "",
-      "alertsGoTo": "",
       "alertsGoTo_other": "",
       "builtinNote": "",
       "clearSecret": "",
@@ -1730,9 +1720,7 @@
         "push": "",
         "webToast": ""
       },
-      "usedBy": "",
       "usedBy_other": "",
-      "usedByNewsletters": "",
       "usedByNewsletters_other": "",
       "violationsOff": "",
       "violationsOn": "",
@@ -1795,7 +1783,6 @@
     "title": "",
     "description": "",
     "analyzedSessions": "",
-    "analyzedSessionsTooltip": "",
     "directPlayRate": "",
     "videoAndAudio": "",
     "uniqueDevices": "",
@@ -1931,12 +1918,10 @@
         "replacedEpisodes_one": "",
         "replacedEpisodes_other": "",
         "addedAgo": "eklendi {{date}}",
-        "addedCompactAgo": "",
-        "newEpisodesChip": ""
+        "addedCompactAgo": ""
       },
       "deadWeight": {
         "title": "",
-        "summary": "",
         "empty": "",
         "columns": {
           "poster": "",
@@ -2266,7 +2251,6 @@
       "linkSeerr": "",
       "kpi": {
         "requested": "",
-        "landedOf": "",
         "watched": "",
         "neverPlayed": "",
         "ofLanded": "",

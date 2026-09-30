@@ -122,7 +122,6 @@
       "size": "Op de schijf",
       "files": "Bestanden",
       "need": "Geschatte behoefte",
-      "needHint": "",
       "free": "Schijfruimte vrij maken",
       "freeOf": "van {{total}}",
       "floor": "Houd vrij",
@@ -257,7 +256,7 @@
     "enableMobileAccess": "Inschakelen mobiele toegang",
     "enabling": "Inschakelen...",
     "devicesConnected": "{{current}} van {{max}} apparaten verbonden",
-    "pendingTokens": "{{count}} hangende paar tokens",
+    "pendingTokens_other": "{{count}} hangende paar tokens",
     "addDevice": "Apparaat toevoegen",
     "disableMobileAccess": "Uitschakelen mobiele toegang",
     "revokeAllSessions": "Alles intrekken",
@@ -407,8 +406,8 @@
     "serverTimezoneHelp": "De tijdzone moet overeenkomen met de tijdzone die is geconfigureerd op uw mediaserver, niet met de tijdzone van uw browser. De tijdstempels voor afspeelrapportage worden opgeslagen in de lokale servertijd.",
     "importFullRange": "Importeer volledige historie",
     "importFullRangeHelp": "",
-    "overlapSkipped": "{{count}} overgeslagen vanwege overlapping",
-    "duplicates": "{{count}} duplicaten overgeslagen",
+    "overlapSkipped_other": "{{count}} overgeslagen vanwege overlapping",
+    "duplicates_other": "{{count}} duplicaten overgeslagen",
     "skipOverlap": "Overlappende record - de tijdstempel valt binnen de periode die Tracearr al bijhoudt voor deze server. Schakel 'volledige bereikimport' in om deze mee te nemen.",
     "skipDuplicatePlugin": "Dubbele record - reeds rechtstreeks geïmporteerd of eerder binnengekomen via een Jellystat import van dezelfde plugingegevens."
   },
@@ -463,7 +462,7 @@
   },
   "serverHealth": {
     "unreachable": "{{serverName}} is onbereikbaar",
-    "multipleUnreachable": "{{count}} servers onbereikbaar: {{serverNames}}"
+    "multipleUnreachable_other": "{{count}} servers onbereikbaar: {{serverNames}}"
   },
   "ipWarning": {
     "message": "Alle gebruikers lijken hetzelfde IP-adres of een lokaal IP te gebruiken. Dit kan invloed hebben op de regellogica voor locatie of IP-adressen.",
@@ -647,10 +646,8 @@
       },
       "windowSentence": {
         "fallback": "",
-        "fallbackLabel": "",
         "fixed": "",
-        "fixedAfter": "",
-        "fixedLabel": ""
+        "fixedAfter": ""
       },
       "windowMax": "",
       "days": "",
@@ -658,14 +655,12 @@
       "allServers": "",
       "searchServers": "",
       "noServers": "",
-      "serversSelected": "",
       "variantsNote": "",
       "serversHelp": "",
       "libraries": "",
       "allLibraries": "",
       "searchLibraries": "",
       "noLibraries": "",
-      "librariesSelected": "",
       "librariesHelp": "",
       "clear": "",
       "unknownLibrary": "",
@@ -686,20 +681,13 @@
           "albums": "",
           "mostPlayed": ""
         },
-        "labels": {
-          "movies": "",
-          "shows": "",
-          "seasons": "",
-          "music": "",
-          "mostWatched": ""
-        },
+        "labels": {},
         "musicHelp": "",
         "mostWatchedHelp": ""
       },
       "message": "",
       "senderName": "",
       "senderNameHelp": "",
-      "senderNameRequiredMulti": "",
       "previewVariant_one": "",
       "previewVariant_other": "",
       "variantHeading": "",
@@ -736,10 +724,8 @@
         "loadFailed": "",
         "willReceive": "",
         "excludedCount": "",
-        "notIncludable": "",
         "noAddress": "",
         "suppressedCount": "",
-        "joinedSinceLastSend": "",
         "newSinceLastSend": "",
         "manage": "",
         "manageHelp": "",
@@ -754,7 +740,6 @@
         },
         "selectAll": "",
         "selectPerson": "",
-        "selectedCount": "",
         "excludeSelected": "",
         "includeSelected": "",
         "noMatches": "",
@@ -774,7 +759,6 @@
         "include": "",
         "includeAction": "",
         "excludedHelp": "",
-        "notIncludableHelp": "",
         "excludedAfterSave": "",
         "includedAfterSave": "",
         "reasons": {
@@ -884,7 +868,6 @@
       "send": {
         "title": "",
         "previewing": "",
-        "summary": "",
         "nobody": "",
         "trimmed_one": "",
         "trimmed_other": "",
@@ -902,7 +885,6 @@
         "test": ""
       },
       "window": "",
-      "recipients": "",
       "recipientsEmpty": "",
       "finished": "",
       "open": "",
@@ -915,7 +897,6 @@
         "suppressed": "",
         "unknown": ""
       },
-      "attempts": "",
       "unknownHelp": "",
       "openSnapshot": "",
       "variant": "",

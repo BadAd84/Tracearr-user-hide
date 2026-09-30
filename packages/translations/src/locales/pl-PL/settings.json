@@ -122,7 +122,7 @@
       "size": "Na dysku",
       "files": "Plików",
       "need": "Szacunkowe zapotrzebowanie",
-      "needHint": "{{count}} plakatów × {{size}}",
+      "needHint_other": "{{count}} plakatów × {{size}}",
       "free": "Dostępne miejsce na dysku",
       "freeOf": "z {{total}}",
       "floor": "Utrzymuj wolne",
@@ -257,7 +257,7 @@
     "enableMobileAccess": "Włącz dostęp mobilny",
     "enabling": "Włączanie...",
     "devicesConnected": "Podłączono {{current}} z {{max}}",
-    "pendingTokens": "{{count}} oczekujących kodów parowania",
+    "pendingTokens_other": "{{count}} oczekujących kodów parowania",
     "addDevice": "Dodaj urządzenie",
     "disableMobileAccess": "Wyłącz dostęp mobilny",
     "revokeAllSessions": "Unieważnij wszystko",
@@ -407,8 +407,8 @@
     "serverTimezoneHelp": "Musi być zgodna ze strefą czasową skonfigurowaną na serwerze multimedialnym, a nie ze strefą czasową przeglądarki. Znaczniki czasu odtwarzania są przechowywane w czasie serwera lokalnego.",
     "importFullRange": "Importuj pełną historię",
     "importFullRangeHelp": "Odtwarzania rozpoczęte po dodaniu tego serwera do Tracearr nie są importowane. Domyślnie import zatrzymuje się również na najwcześniejszym odtworzeniu, jakie Tracearr posiada dla tego serwera, na przykład z importu Jellystat. Włącz tę funkcję, aby importować wszystko sprzed dodania serwera. Dokładne duplikaty nadal zostaną pominięte.",
-    "overlapSkipped": "{{count}} pominięto jako nakładające się",
-    "duplicates": "{{count}} duplikatów pominiętych",
+    "overlapSkipped_other": "{{count}} pominięto jako nakładające się",
+    "duplicates_other": "{{count}} duplikatów pominiętych",
     "skipOverlap": "Nakładający się wpis - znacznik czasu przypada w okresie, który Tracearr już śledzi dla tego serwera. Włącz import pełnego zakresu, aby go uwzględnić.",
     "skipDuplicatePlugin": "Zduplikowany rekord - został już zaimportowany bezpośrednio lub dotarł wcześniej poprzez import Jellystat tych samych danych wtyczki."
   },
@@ -463,7 +463,7 @@
   },
   "serverHealth": {
     "unreachable": "{{serverName}} jest nieosiągalny",
-    "multipleUnreachable": "{{count}} serwery nieosiągalne: {{serverNames}}"
+    "multipleUnreachable_other": "{{count}} serwery nieosiągalne: {{serverNames}}"
   },
   "ipWarning": {
     "message": "Wszyscy użytkownicy wydają się używać tego samego adresu IP lub IP sieci lokalnej. Może to mieć wpływ na logikę dla lokalizacji lub adresów IP opartą na regułach.",
@@ -647,10 +647,10 @@
       },
       "windowSentence": {
         "fallback": "Pierwszy e-mail uwzględnia ostatnie",
-        "fallbackLabel": "Pierwszy e-mail uwzględnia ostatnie {{count}} dni.",
+        "fallbackLabel_other": "Pierwszy e-mail uwzględnia ostatnie {{count}} dni.",
         "fixed": "Uwzględniaj ostatnie",
         "fixedAfter": "za każdym razem",
-        "fixedLabel": "Uwzględniaj ostatnie {{count}} dni za każdym razem."
+        "fixedLabel_other": "Uwzględniaj ostatnie {{count}} dni za każdym razem."
       },
       "windowMax": "Nigdy więcej niż 31 dni, niezależnie od wpisanej wartości.",
       "days": "dni",
@@ -658,14 +658,14 @@
       "allServers": "Wszystkie serwery",
       "searchServers": "Wyszukaj serwery",
       "noServers": "Brak pasujących serwerów",
-      "serversSelected": "{{count}} serwerów",
+      "serversSelected_other": "{{count}} serwerów",
       "variantsNote": "Wybiera zarówno tytuły, jak i osoby: otrzymują go tylko członkowie z kontem na tych serwerach. Osoby będące członkiem na kilku serwerach otrzymują jeden e-mail zawierający wszystkie z nich.",
       "serversHelp": "Otrzymują go tylko członkowie z kontem na tym serwerze.",
       "libraries": "Biblioteki",
       "allLibraries": "Wszystkie biblioteki",
       "searchLibraries": "Szukaj bibliotek",
       "noLibraries": "Brak pasujących bibliotek",
-      "librariesSelected": "{{count}} biblioteki",
+      "librariesSelected_other": "{{count}} biblioteki",
       "librariesHelp": "Ogranicza to, co znajdzie się w wiadomościach. Nie wpływa na to, kto je odbiera.",
       "clear": "Wyczyść",
       "unknownLibrary": "Nieznana biblioteka",
@@ -687,11 +687,11 @@
           "mostPlayed": "najczęściej odtwarzanych"
         },
         "labels": {
-          "movies": "Filmy, do {{count}} filmów",
-          "shows": "Seriale, do {{count}} seriali",
-          "seasons": "Seriale, do {{count}} sezonów na serial",
-          "music": "Muzyka, do {{count}} albumów",
-          "mostWatched": "Najczęściej oglądane, {{count}} najczęściej odtwarzanych"
+          "movies_other": "Filmy, do {{count}} filmów",
+          "shows_other": "Seriale, do {{count}} seriali",
+          "seasons_other": "Seriale, do {{count}} sezonów na serial",
+          "music_other": "Muzyka, do {{count}} albumów",
+          "mostWatched_other": "Najczęściej oglądane, {{count}} najczęściej odtwarzanych"
         },
         "musicHelp": "Liczona w albumach, współdzielona między artystami w kolejności, w jakiej zostały dodane.",
         "mostWatchedHelp": "Najczęściej odtwarzane media w wybranym przedziale czasowym, wraz z liczbą odtworzeń, niezależnie od tego, czy zostały dodane niedawno. Wszystkie pozostałe sekcje wyświetlają ostatnio dodane media."
@@ -699,7 +699,7 @@
       "message": "Wiadomość",
       "senderName": "Nazwa nadawcy",
       "senderNameHelp": "Nazwa nadawcy w polu Od i na końcu wiadomości e-mail. Pozostaw puste, by użyć {{name}}.",
-      "senderNameRequiredMulti": "Ten newsletter obejmuje {{count}} serwerów, więc nie ma jednej nazwy serwera, którą można by go podpisać. Wybierz nazwę.",
+      "senderNameRequiredMulti_other": "Ten newsletter obejmuje {{count}} serwerów, więc nie ma jednej nazwy serwera, którą można by go podpisać. Wybierz nazwę.",
       "previewVariant_one": "{{count}} osoba z kontem na {{servers}}",
       "previewVariant_other": "{{count}} osoby z kontem na {{servers}}",
       "variantHeading": "{{count}} z kontem na {{servers}}",
@@ -736,10 +736,10 @@
         "loadFailed": "Nie można załadować odbiorców.",
         "willReceive": "Otrzyma {{count}}",
         "excludedCount": "Wykluczono {{count}}",
-        "notIncludable": "{{count}} nie może zostać uwzględnionych",
+        "notIncludable_other": "{{count}} nie może zostać uwzględnionych",
         "noAddress": "Bez adresu e-mail {{count}}",
         "suppressedCount": "Wyciszone {{count}}",
-        "joinedSinceLastSend": "{{count}} odbiorców dołączyło od ostatniej wysyłki",
+        "joinedSinceLastSend_other": "{{count}} odbiorców dołączyło od ostatniej wysyłki",
         "newSinceLastSend": "Nowi od ostatniej wysyłki",
         "manage": "Zarządzaj odbiorcami ({{count}})",
         "manageHelp": "Wykluczenia i uwzględnienia powodują zmianę formularza. Zmiany nie są jednak zapisywane, dopóki nie naciśniesz Zapisz.",
@@ -754,7 +754,7 @@
         },
         "selectAll": "Wybierz wszystkie {{count}}",
         "selectPerson": "Wybierz {{name}}",
-        "selectedCount": "{{count}} wybrane",
+        "selectedCount_other": "{{count}} wybrane",
         "excludeSelected": "Wyklucz wybrane",
         "includeSelected": "Uwzględnij wybrane",
         "noMatches": "Nikt nie pasuje do wyszukiwania.",
@@ -774,7 +774,7 @@
         "include": "Uwzględnij {{name}} ponownie",
         "includeAction": "Uwzględnij",
         "excludedHelp": "Te osoby pozostają poza tym newsletterem, dopóki nie dodasz ich ponownie. Nie wpływa to na inne newslettery.",
-        "notIncludableHelp": "{{count}} więcej nie może zostać uwzględnionych, ponieważ są zbanowani, oczekujący lub nie są na wybranym serwerze.",
+        "notIncludableHelp_other": "{{count}} więcej nie może zostać uwzględnionych, ponieważ są zbanowani, oczekujący lub nie są na wybranym serwerze.",
         "excludedAfterSave": "Wykluczeni po zapisaniu",
         "includedAfterSave": "Uwzględnieni po zapisaniu",
         "reasons": {
@@ -884,7 +884,7 @@
       "send": {
         "title": "Wysłać teraz {{name}}?",
         "previewing": "Decydowanie, kto co otrzyma...",
-        "summary": "Wyślij do {{count}} adresatów: {{counts}} dodanych między {{start}} a {{end}}. Każda osoba otrzymuje własną kopię i widzi tylko swój własny adres.",
+        "summary_other": "Wyślij do {{count}} adresatów: {{counts}} dodanych między {{start}} a {{end}}. Każda osoba otrzymuje własną kopię i widzi tylko swój własny adres.",
         "nobody": "Żaden z {{missing}} członków nie posiada adresu, więc nie ma nic do wysłania.",
         "trimmed_one": "{{count}} element został przedstawiony jako \"+N więcej\", aby utrzymać wiadomość e-mail poniżej 102 KB, powyżej których Gmail ją przycina.",
         "trimmed_other": "{{count}} elementów zostało przedstawionych jako \"+N więcej\", aby utrzymać wiadomość e-mail poniżej 102 KB, powyżej których Gmail ją przycina.",
@@ -902,7 +902,7 @@
         "test": "Test"
       },
       "window": "{{start}} do {{end}}",
-      "recipients": "{{count}} odbiorców",
+      "recipients_other": "{{count}} odbiorców",
       "recipientsEmpty": "Odbiorcy pojawią się po rozpoczęciu wysyłania.",
       "finished": "Zakończono {{when}}",
       "open": "Otwórz wysyłkę z {{when}}",
@@ -915,7 +915,7 @@
         "suppressed": "Wyciszony",
         "unknown": "Nieznany"
       },
-      "attempts": "{{count}} prób",
+      "attempts_other": "{{count}} prób",
       "unknownHelp": "Serwer przestał odpowiadać po wysłaniu wiadomości; ponowna próba wysyłki nie będzie podejmowana automatycznie.",
       "openSnapshot": "Otwórz migawkę",
       "variant": "Członkowie {{servers}}",

@@ -113,8 +113,8 @@
     "userMayBeRemoved": "Cet utilisateur a peut-être été supprimé.",
     "noLocationsRecorded": "Aucun emplacement enregistré",
     "noDevicesRecorded": "Aucun appareil enregistré",
-    "moreLocations": "+{{count}} emplacements en plus",
-    "moreDevices": "+{{count}} appareils en plus",
+    "moreLocations_other": "+{{count}} emplacements en plus",
+    "moreDevices_other": "+{{count}} appareils en plus",
     "noViolations": "Aucune violation",
     "noTerminations": "Aucune interruption de lecture",
     "lastSeen": "",
@@ -137,8 +137,7 @@
     "allClear": "",
     "allServers": "",
     "noAlertsRecorded": "",
-    "noMatches": "",
-    "pendingCount": ""
+    "noMatches": ""
   },
   "history": {
     "adjustFilters": "Essayez d'ajuster vos filtres",
@@ -150,8 +149,7 @@
       "mediaType": "Type de média",
       "noCountries": "Aucun pays disponible",
       "noPlatforms": "Aucune plateforme disponible",
-      "noUsers": "Aucun utilisateur disponible",
-      "sectionSelected": ""
+      "noUsers": "Aucun utilisateur disponible"
     }
   },
   "users": {
@@ -184,11 +182,10 @@
   "a11y": {
     "selectServer": "Sélectionner le serveur",
     "alerts": "Alertes",
-    "alertsCount": "{{count}} alertes non lues",
+    "alertsCount_other": "{{count}} alertes non lues",
     "settings": "Paramètres",
     "trustScore": "Score de confiance : {{score}}",
     "decreaseTrustScore": "",
-    "filtersActive": "",
     "increaseTrustScore": "",
     "sortAscending": "",
     "sortDescending": ""

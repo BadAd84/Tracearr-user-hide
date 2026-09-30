@@ -113,8 +113,8 @@
     "userMayBeRemoved": "Dieser Benutzer wurde möglicherweise entfernt.",
     "noLocationsRecorded": "Keine Orte aufgezeichnet",
     "noDevicesRecorded": "Keine Geräte aufgezeichnet",
-    "moreLocations": "+{{count}} weitere Standorte",
-    "moreDevices": "+{{count}} weitere Geräte",
+    "moreLocations_other": "+{{count}} weitere Standorte",
+    "moreDevices_other": "+{{count}} weitere Geräte",
     "noViolations": "Keine Verstöße",
     "noTerminations": "Keine Stream-Terminierungen",
     "lastSeen": "",
@@ -137,8 +137,7 @@
     "allClear": "",
     "allServers": "",
     "noAlertsRecorded": "",
-    "noMatches": "",
-    "pendingCount": ""
+    "noMatches": ""
   },
   "history": {
     "adjustFilters": "Versuche die Filter anzupassen",
@@ -150,8 +149,7 @@
       "mediaType": "",
       "noCountries": "",
       "noPlatforms": "",
-      "noUsers": "",
-      "sectionSelected": ""
+      "noUsers": ""
     }
   },
   "users": {
@@ -184,11 +182,9 @@
   "a11y": {
     "selectServer": "",
     "alerts": "",
-    "alertsCount": "",
     "settings": "",
     "trustScore": "",
     "decreaseTrustScore": "",
-    "filtersActive": "",
     "increaseTrustScore": "",
     "sortAscending": "",
     "sortDescending": ""

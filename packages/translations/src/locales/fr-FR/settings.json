@@ -122,7 +122,7 @@
       "size": "Sur le disque",
       "files": "Fichiers",
       "need": "Besoin estimé",
-      "needHint": "{{count}} affiches × {{size}}",
+      "needHint_other": "{{count}} affiches × {{size}}",
       "free": "Disque libre",
       "freeOf": "sur {{total}}",
       "floor": "Garde libre",
@@ -257,7 +257,7 @@
     "enableMobileAccess": "Activer l'accès mobile",
     "enabling": "Activation...",
     "devicesConnected": "{{current}} des appareils {{max}} connectés",
-    "pendingTokens": "{{count}} token en attente",
+    "pendingTokens_other": "{{count}} token en attente",
     "addDevice": "Ajouter un appareil",
     "disableMobileAccess": "Désactiver l'accès mobile",
     "revokeAllSessions": "Révoquer tout",
@@ -407,8 +407,8 @@
     "serverTimezoneHelp": "Doit correspondre au fuseau horaire configuré sur l'hôte de votre serveur multimédia, et non au fuseau horaire de votre navigateur. Les horodatages des rapports de lecture sont stockés à l'heure du serveur local.",
     "importFullRange": "Importer l'historique complet",
     "importFullRangeHelp": "",
-    "overlapSkipped": "{{count}} ont été ignorés car ils se chevauchaient",
-    "duplicates": "Les doublons {{count}} ont été ignorés",
+    "overlapSkipped_other": "{{count}} ont été ignorés car ils se chevauchaient",
+    "duplicates_other": "Les doublons {{count}} ont été ignorés",
     "skipOverlap": "Recouvrement de l'enregistrement - l'horodatage tombe dans la période que Tracearr suit déjà pour ce serveur. Activez l'importation complète pour l'inclure.",
     "skipDuplicatePlugin": "Enregistrement en double - déjà importé directement ou arrivé plus tôt via une importation Jellystat des mêmes données de plugin."
   },
@@ -463,7 +463,7 @@
   },
   "serverHealth": {
     "unreachable": "{{serverName}} est inaccessible",
-    "multipleUnreachable": "{{count}} serveurs injoignables : {{serverNames}}"
+    "multipleUnreachable_other": "{{count}} serveurs injoignables : {{serverNames}}"
   },
   "ipWarning": {
     "message": "Tous les utilisateurs semblent utiliser la même adresse IP ou des IP locales. Cela peut affecter la logique des règles basées sur l'emplacement ou l'adresse IP.",
@@ -647,10 +647,8 @@
       },
       "windowSentence": {
         "fallback": "",
-        "fallbackLabel": "",
         "fixed": "",
-        "fixedAfter": "",
-        "fixedLabel": ""
+        "fixedAfter": ""
       },
       "windowMax": "",
       "days": "",
@@ -658,14 +656,12 @@
       "allServers": "",
       "searchServers": "",
       "noServers": "",
-      "serversSelected": "",
       "variantsNote": "",
       "serversHelp": "",
       "libraries": "",
       "allLibraries": "",
       "searchLibraries": "",
       "noLibraries": "",
-      "librariesSelected": "",
       "librariesHelp": "",
       "clear": "",
       "unknownLibrary": "",
@@ -686,20 +682,13 @@
           "albums": "",
           "mostPlayed": ""
         },
-        "labels": {
-          "movies": "",
-          "shows": "",
-          "seasons": "",
-          "music": "",
-          "mostWatched": ""
-        },
+        "labels": {},
         "musicHelp": "",
         "mostWatchedHelp": ""
       },
       "message": "",
       "senderName": "",
       "senderNameHelp": "",
-      "senderNameRequiredMulti": "",
       "previewVariant_one": "",
       "previewVariant_other": "",
       "variantHeading": "",
@@ -736,10 +725,8 @@
         "loadFailed": "",
         "willReceive": "",
         "excludedCount": "",
-        "notIncludable": "",
         "noAddress": "",
         "suppressedCount": "",
-        "joinedSinceLastSend": "",
         "newSinceLastSend": "",
         "manage": "",
         "manageHelp": "",
@@ -754,7 +741,6 @@
         },
         "selectAll": "",
         "selectPerson": "",
-        "selectedCount": "",
         "excludeSelected": "",
         "includeSelected": "",
         "noMatches": "",
@@ -774,7 +760,6 @@
         "include": "",
         "includeAction": "",
         "excludedHelp": "",
-        "notIncludableHelp": "",
         "excludedAfterSave": "",
         "includedAfterSave": "",
         "reasons": {
@@ -884,7 +869,6 @@
       "send": {
         "title": "",
         "previewing": "",
-        "summary": "",
         "nobody": "",
         "trimmed_one": "",
         "trimmed_other": "",
@@ -902,7 +886,6 @@
         "test": ""
       },
       "window": "",
-      "recipients": "",
       "recipientsEmpty": "",
       "finished": "",
       "open": "",
@@ -915,7 +898,6 @@
         "suppressed": "",
         "unknown": ""
       },
-      "attempts": "",
       "unknownHelp": "",
       "openSnapshot": "",
       "variant": "",

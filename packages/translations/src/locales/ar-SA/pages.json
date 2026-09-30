@@ -54,7 +54,7 @@
     "showRemoved": "",
     "noUsersFound": "لم يتم العثور على مستخدمين.",
     "searchPlaceholder": "البحث عن المستخدمين...",
-    "selectAllUsers": "حدد جميع المستخدمين {{count}}",
+    "selectAllUsers_other": "حدد جميع المستخدمين {{count}}",
     "serversColumn": "",
     "resetTrustScore": "إعادة تعيين نقاط الثقة",
     "resetTrustScoreTitle_one": "إعادة تعيين درجة الثقة للمستخدم {{count}}",
@@ -287,8 +287,7 @@
       "backfillRunning": {
         "title": "",
         "fallbackBody": "",
-        "progress": "",
-        "snapshotsSuffix": ""
+        "progress": ""
       },
       "multiServer": {
         "title": "",
@@ -311,7 +310,6 @@
     "versionsBackfill": {
       "banner": "",
       "action": "",
-      "syncFailed": "",
       "syncStarted": ""
     }
   },
@@ -332,7 +330,7 @@
   "violations": {
     "title": "المخالفات",
     "tryAdjustingFilters": "حاول ضبط الفلاتر الخاصة بك",
-    "selectAllViolations": "حدد جميع الخروقات {{count}} المطابقة للفلاتر",
+    "selectAllViolations_other": "حدد جميع الخروقات {{count}} المطابقة للفلاتر",
     "dismissViolation": "نبذ الانتهاك",
     "dismissViolationConfirm": "هل أنت متأكد من أنك تريد رفض هذا الانتهاك؟ سيؤدي هذا إلى إزالته من سجل الانتهاكات بشكل دائم.",
     "dismissViolation_one": "رفض انتهاك {{count}}",
@@ -345,7 +343,6 @@
     "allRules": "",
     "filterPeople": "",
     "allPeople": "",
-    "peopleSelectedCount": "",
     "personFilterPlaceholder": "",
     "personFilterEmpty": "",
     "personFilterError": "",
@@ -372,7 +369,6 @@
       "conditionGroup": "مجموعة الشروط {{index}}",
       "matched": "{{matched}}/{{total}} مطابقة",
       "actual": "فعلي",
-      "relatedSessions": "",
       "relatedSessions_one": "",
       "relatedSessions_other": ""
     }
@@ -556,7 +552,6 @@
       "searchPlaceholder": "",
       "noMatches": "",
       "clearSelection": "",
-      "selectedCount": "",
       "scope": {
         "label": "",
         "global": "",
@@ -1608,10 +1603,10 @@
         "unknown": ""
       },
       "connectionsReachable": "",
-      "connectionsAvailable": "تتوفر اتصالات {{count}}",
+      "connectionsAvailable_other": "تتوفر اتصالات {{count}}",
       "hideFiltered": "إخفاء الفلتر",
       "showAll": "إظهار الكل",
-      "moreConnections": "+{{count}} المزيد من الاتصالات",
+      "moreConnections_other": "+{{count}} المزيد من الاتصالات",
       "connectingTo": "جاري الاتصال بـ {{name}}...",
       "ownerOnly": "",
       "noAccountsLinked": "لا توجد حسابات Plex مرتبطة",
@@ -1630,7 +1625,6 @@
     },
     "destinations": {
       "add": "",
-      "alertsGoTo": "",
       "alertsGoTo_other": "",
       "builtinNote": "",
       "clearSecret": "",
@@ -1730,9 +1724,7 @@
         "push": "",
         "webToast": ""
       },
-      "usedBy": "",
       "usedBy_other": "",
-      "usedByNewsletters": "",
       "usedByNewsletters_other": "",
       "violationsOff": "",
       "violationsOn": "",
@@ -1795,7 +1787,6 @@
     "title": "توافق الجهاز",
     "description": "",
     "analyzedSessions": "",
-    "analyzedSessionsTooltip": "",
     "directPlayRate": "معدل اللعب المباشر",
     "videoAndAudio": "",
     "uniqueDevices": "أجهزة فريدة",
@@ -1931,12 +1922,10 @@
         "replacedEpisodes_one": "",
         "replacedEpisodes_other": "",
         "addedAgo": "أُضيف {{date}}",
-        "addedCompactAgo": "",
-        "newEpisodesChip": ""
+        "addedCompactAgo": ""
       },
       "deadWeight": {
         "title": "",
-        "summary": "",
         "empty": "",
         "columns": {
           "poster": "",
@@ -2266,7 +2255,6 @@
       "linkSeerr": "",
       "kpi": {
         "requested": "",
-        "landedOf": "",
         "watched": "",
         "neverPlayed": "",
         "ofLanded": "",

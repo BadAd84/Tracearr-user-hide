@@ -54,7 +54,7 @@
     "showRemoved": "Afficher les utilisateurs supprimés",
     "noUsersFound": "Aucun utilisateur trouvé.",
     "searchPlaceholder": "Rechercher des utilisateurs...",
-    "selectAllUsers": "Sélectionner les {{count}} utilisateurs",
+    "selectAllUsers_other": "Sélectionner les {{count}} utilisateurs",
     "serversColumn": "Serveurs",
     "resetTrustScore": "Réinitialiser le score de confiance",
     "resetTrustScoreTitle_one": "Réinitialiser le score de confiance pour {{count}} utilisateur",
@@ -288,7 +288,7 @@
         "title": "Génération des données historiques...",
         "fallbackBody": "Création d’instantanés à partir de l’historique de la bibliothèque. Cela peut prendre quelques minutes.",
         "progress": "{{processed}} sur {{total}} bibliothèques",
-        "snapshotsSuffix": " ({{count}} instantanés)"
+        "snapshotsSuffix_other": " ({{count}} instantanés)"
       },
       "multiServer": {
         "title": "Certaines bibliothèques nécessitent une attention",
@@ -311,7 +311,7 @@
     "versionsBackfill": {
       "banner": "Les données de la version du fichier sont toujours en cours de collecte pour ce serveur. Exécutez une synchronisation de la bibliothèque pour finir.",
       "action": "Synchroniser maintenant",
-      "syncFailed": "La synchronisation n'a pas pu démarrer sur {{count}} serveur(s). Vérifiez vos permissions et l'état du serveur.",
+      "syncFailed_other": "La synchronisation n'a pas pu démarrer sur {{count}} serveur(s). Vérifiez vos permissions et l'état du serveur.",
       "syncStarted": "Synchronisation de la bibliothèque démarrée."
     }
   },
@@ -332,7 +332,7 @@
   "violations": {
     "title": "Violations",
     "tryAdjustingFilters": "Essayez d'ajuster vos filtres",
-    "selectAllViolations": "Sélectionner les {{count}} violations correspondant aux filtres",
+    "selectAllViolations_other": "Sélectionner les {{count}} violations correspondant aux filtres",
     "dismissViolation": "Ignorer la violation",
     "dismissViolationConfirm": "Êtes-vous sûr de vouloir ignorer cette violation ? Elle sera définitivement supprimée du journal de violation.",
     "dismissViolation_one": "Ignorer {{count}} violation",
@@ -345,7 +345,7 @@
     "allRules": "Toutes les règles",
     "filterPeople": "Personne",
     "allPeople": "Toutes les personnes",
-    "peopleSelectedCount": "{{count}} personne",
+    "peopleSelectedCount_other": "{{count}} personne",
     "personFilterPlaceholder": "Filtrer par personne",
     "personFilterEmpty": "Aucune personne trouvée",
     "personFilterError": "Échec du chargement de la personne",
@@ -372,7 +372,6 @@
       "conditionGroup": "Groupe de conditions {{index}}",
       "matched": "{{matched}}/{{total}} correspond",
       "actual": "Réel",
-      "relatedSessions": "{{count}} sessions liées",
       "relatedSessions_one": "{{count}} session liée",
       "relatedSessions_other": "{{count}} sessions liées"
     }
@@ -556,7 +555,7 @@
       "searchPlaceholder": "Rechercher…",
       "noMatches": "Aucune correspondance",
       "clearSelection": "Effacer la sélection",
-      "selectedCount": "{{count}} sélectionnés",
+      "selectedCount_other": "{{count}} sélectionnés",
       "scope": {
         "label": "À qui cela s'applique",
         "global": "Tout le monde",
@@ -1608,10 +1607,10 @@
         "unknown": "Connexion échouée"
       },
       "connectionsReachable": "{{reachable}} connexions joignables sur {{total}}",
-      "connectionsAvailable": "{{count}} connexions disponibles",
+      "connectionsAvailable_other": "{{count}} connexions disponibles",
       "hideFiltered": "Masquer les éléments filtrés",
       "showAll": "Tout afficher",
-      "moreConnections": "Plus de {{count}} connexions supplémentaires",
+      "moreConnections_other": "Plus de {{count}} connexions supplémentaires",
       "connectingTo": "Connexion à {{name}} en cours...",
       "ownerOnly": "",
       "noAccountsLinked": "Aucun compte Plex lié pour le moment",
@@ -1630,7 +1629,6 @@
     },
     "destinations": {
       "add": "",
-      "alertsGoTo": "",
       "alertsGoTo_other": "",
       "builtinNote": "",
       "clearSecret": "",
@@ -1730,9 +1728,7 @@
         "push": "",
         "webToast": ""
       },
-      "usedBy": "",
       "usedBy_other": "",
-      "usedByNewsletters": "",
       "usedByNewsletters_other": "",
       "violationsOff": "",
       "violationsOn": "",
@@ -1795,7 +1791,7 @@
     "title": "Compatibilité de l'appareil",
     "description": "",
     "analyzedSessions": "Sessions analysées",
-    "analyzedSessionsTooltip": "Sessions correspondant à des combinaisons « appareil + codec » comportant au moins {{count}} sessions et dont le codec est connu. Les combinaisons rares et les sessions pour lesquelles aucune information sur le codec n'est disponible ne sont pas prises en compte.",
+    "analyzedSessionsTooltip_other": "Sessions correspondant à des combinaisons « appareil + codec » comportant au moins {{count}} sessions et dont le codec est connu. Les combinaisons rares et les sessions pour lesquelles aucune information sur le codec n'est disponible ne sont pas prises en compte.",
     "directPlayRate": "Taux de lecture directe",
     "videoAndAudio": "",
     "uniqueDevices": "Appareils uniques",
@@ -1932,11 +1928,10 @@
         "replacedEpisodes_other": "",
         "addedAgo": "ajouté {{date}}",
         "addedCompactAgo": "ajouté il y a {{age}}",
-        "newEpisodesChip": "{{count}} nouveau"
+        "newEpisodesChip_other": "{{count}} nouveau"
       },
       "deadWeight": {
         "title": "",
-        "summary": "",
         "empty": "",
         "columns": {
           "poster": "Affiche",
@@ -2266,7 +2261,6 @@
       "linkSeerr": "",
       "kpi": {
         "requested": "",
-        "landedOf": "",
         "watched": "",
         "neverPlayed": "",
         "ofLanded": "",

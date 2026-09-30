@@ -113,8 +113,8 @@
     "userMayBeRemoved": "Pot ser que aquest usuari s'hagi eliminat.",
     "noLocationsRecorded": "No hi ha cap ubicació registrada",
     "noDevicesRecorded": "No hi ha cap dispositiu registrat",
-    "moreLocations": "+{{count}} ubicacions més",
-    "moreDevices": "+{{count}} dispositius més",
+    "moreLocations_other": "+{{count}} ubicacions més",
+    "moreDevices_other": "+{{count}} dispositius més",
     "noViolations": "Cap incompliment",
     "noTerminations": "Cap transmissió finalitzada",
     "lastSeen": "Vist per últim cop {{relative}}",
@@ -138,7 +138,7 @@
     "allServers": "tots els servidors",
     "noAlertsRecorded": "Encara no s'ha registrat cap alerta.",
     "noMatches": "Cap alerta coincident",
-    "pendingCount": "{{count}} pendents"
+    "pendingCount_other": "{{count}} pendents"
   },
   "history": {
     "adjustFilters": "Proveu d'ajustar els filtres",
@@ -151,7 +151,7 @@
       "noCountries": "No hi ha cap país disponible",
       "noPlatforms": "No hi ha cap plataforma disponible",
       "noUsers": "No hi ha cap usuari disponible",
-      "sectionSelected": "{{section}}, {{count}} seleccionats"
+      "sectionSelected_other": "{{section}}, {{count}} seleccionats"
     }
   },
   "users": {
@@ -184,11 +184,11 @@
   "a11y": {
     "selectServer": "Selecciona el servidor",
     "alerts": "Alertes",
-    "alertsCount": "Alertes, {{count}} sense llegir",
+    "alertsCount_other": "Alertes, {{count}} sense llegir",
     "settings": "Configuració",
     "trustScore": "Puntuació de confiança {{score}}",
     "decreaseTrustScore": "Disminueix la puntuació de confiança",
-    "filtersActive": "Filtres, {{count}} actius",
+    "filtersActive_other": "Filtres, {{count}} actius",
     "increaseTrustScore": "Augmenta la puntuació de confiança",
     "sortAscending": "Ordenat de manera ascendent, toqueu per invertir",
     "sortDescending": "Ordenat de manera descendent, toqueu per invertir"

@@ -122,7 +122,6 @@
       "size": "",
       "files": "",
       "need": "",
-      "needHint": "",
       "free": "",
       "freeOf": "",
       "floor": "",
@@ -257,7 +256,7 @@
     "enableMobileAccess": "Habilitar acesso móvel",
     "enabling": "Habilitando...",
     "devicesConnected": "Dispositivos {{current}} do {{max}} conectados",
-    "pendingTokens": "{{count}} tokens de pares pendentes",
+    "pendingTokens_other": "{{count}} tokens de pares pendentes",
     "addDevice": "Adicionar dispositivo",
     "disableMobileAccess": "Desativar acesso móvel",
     "revokeAllSessions": "Revogar Todos",
@@ -407,8 +406,6 @@
     "serverTimezoneHelp": "",
     "importFullRange": "",
     "importFullRangeHelp": "",
-    "overlapSkipped": "",
-    "duplicates": "",
     "skipOverlap": "",
     "skipDuplicatePlugin": ""
   },
@@ -463,7 +460,7 @@
   },
   "serverHealth": {
     "unreachable": "{{serverName}} é inacessível",
-    "multipleUnreachable": "Servidores {{count}} inacessível: {{serverNames}}"
+    "multipleUnreachable_other": "Servidores {{count}} inacessível: {{serverNames}}"
   },
   "ipWarning": {
     "message": "Todos os usuários parecem estar usando o mesmo endereço IP ou IPs de rede locais. Isso pode afetar a lógica baseada em regras para endereços locais ou IP.",
@@ -647,10 +644,8 @@
       },
       "windowSentence": {
         "fallback": "",
-        "fallbackLabel": "",
         "fixed": "",
-        "fixedAfter": "",
-        "fixedLabel": ""
+        "fixedAfter": ""
       },
       "windowMax": "",
       "days": "",
@@ -658,14 +653,12 @@
       "allServers": "",
       "searchServers": "",
       "noServers": "",
-      "serversSelected": "",
       "variantsNote": "",
       "serversHelp": "",
       "libraries": "",
       "allLibraries": "",
       "searchLibraries": "",
       "noLibraries": "",
-      "librariesSelected": "",
       "librariesHelp": "",
       "clear": "",
       "unknownLibrary": "",
@@ -686,20 +679,13 @@
           "albums": "",
           "mostPlayed": ""
         },
-        "labels": {
-          "movies": "",
-          "shows": "",
-          "seasons": "",
-          "music": "",
-          "mostWatched": ""
-        },
+        "labels": {},
         "musicHelp": "",
         "mostWatchedHelp": ""
       },
       "message": "",
       "senderName": "",
       "senderNameHelp": "",
-      "senderNameRequiredMulti": "",
       "previewVariant_one": "",
       "previewVariant_other": "",
       "variantHeading": "",
@@ -736,10 +722,8 @@
         "loadFailed": "",
         "willReceive": "",
         "excludedCount": "",
-        "notIncludable": "",
         "noAddress": "",
         "suppressedCount": "",
-        "joinedSinceLastSend": "",
         "newSinceLastSend": "",
         "manage": "",
         "manageHelp": "",
@@ -754,7 +738,6 @@
         },
         "selectAll": "",
         "selectPerson": "",
-        "selectedCount": "",
         "excludeSelected": "",
         "includeSelected": "",
         "noMatches": "",
@@ -774,7 +757,6 @@
         "include": "",
         "includeAction": "",
         "excludedHelp": "",
-        "notIncludableHelp": "",
         "excludedAfterSave": "",
         "includedAfterSave": "",
         "reasons": {
@@ -884,7 +866,6 @@
       "send": {
         "title": "",
         "previewing": "",
-        "summary": "",
         "nobody": "",
         "trimmed_one": "",
         "trimmed_other": "",
@@ -902,7 +883,6 @@
         "test": ""
       },
       "window": "",
-      "recipients": "",
       "recipientsEmpty": "",
       "finished": "",
       "open": "",
@@ -915,7 +895,6 @@
         "suppressed": "",
         "unknown": ""
       },
-      "attempts": "",
       "unknownHelp": "",
       "openSnapshot": "",
       "variant": "",

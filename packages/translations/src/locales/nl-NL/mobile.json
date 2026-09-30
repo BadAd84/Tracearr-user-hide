@@ -113,8 +113,8 @@
     "userMayBeRemoved": "Deze gebruiker is mogelijk verwijderd.",
     "noLocationsRecorded": "Geen locaties geregistreerd",
     "noDevicesRecorded": "Geen apparaten geregistreerd",
-    "moreLocations": "+{{count}} meer locaties",
-    "moreDevices": "+{{count}} meer apparaten",
+    "moreLocations_other": "+{{count}} meer locaties",
+    "moreDevices_other": "+{{count}} meer apparaten",
     "noViolations": "Geen overtredingen",
     "noTerminations": "Geen stream stops",
     "lastSeen": "",
@@ -137,8 +137,7 @@
     "allClear": "",
     "allServers": "",
     "noAlertsRecorded": "",
-    "noMatches": "",
-    "pendingCount": ""
+    "noMatches": ""
   },
   "history": {
     "adjustFilters": "Probeer je filters aan te passen",
@@ -150,8 +149,7 @@
       "mediaType": "",
       "noCountries": "",
       "noPlatforms": "",
-      "noUsers": "",
-      "sectionSelected": ""
+      "noUsers": ""
     }
   },
   "users": {
@@ -184,11 +182,10 @@
   "a11y": {
     "selectServer": "Selecteer server",
     "alerts": "Waarschuwingen",
-    "alertsCount": "Waarschuwingen, {{count}} ongelezen",
+    "alertsCount_other": "Waarschuwingen, {{count}} ongelezen",
     "settings": "Instellingen",
     "trustScore": "",
     "decreaseTrustScore": "",
-    "filtersActive": "",
     "increaseTrustScore": "",
     "sortAscending": "",
     "sortDescending": ""

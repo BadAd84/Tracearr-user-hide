@@ -54,7 +54,7 @@
     "showRemoved": "Pokaż usunięte",
     "noUsersFound": "Nie znaleziono użytkowników.",
     "searchPlaceholder": "Szukaj użytkowników...",
-    "selectAllUsers": "Zaznacz wszystkich {{count}} użytkowników",
+    "selectAllUsers_other": "Zaznacz wszystkich {{count}} użytkowników",
     "serversColumn": "Serwery",
     "resetTrustScore": "Zresetuj wynik zaufania",
     "resetTrustScoreTitle_one": "Zresetuj wynik zaufania dla {{count}} Użytkownika",
@@ -288,7 +288,7 @@
         "title": "Generowanie danych historycznych...",
         "fallbackBody": "Tworzenie migawek z historii biblioteki. Może to potrwać kilka minut.",
         "progress": "{{processed}} z {{total}} bibliotek",
-        "snapshotsSuffix": " ({{count}} migawek)"
+        "snapshotsSuffix_other": " ({{count}} migawek)"
       },
       "multiServer": {
         "title": "Niektóre biblioteki wymagają uwagi",
@@ -311,7 +311,7 @@
     "versionsBackfill": {
       "banner": "Dane o wersjach plików są nadal zbierane dla tego serwera. Zsynchronizuj bibliotekę, aby ukończyć ten proces.",
       "action": "Synchronizuj teraz",
-      "syncFailed": "Nie udało się uruchomić synchronizacji na serwerach ({{count}}). Sprawdź swoje uprawnienia i status serwera.",
+      "syncFailed_other": "Nie udało się uruchomić synchronizacji na serwerach ({{count}}). Sprawdź swoje uprawnienia i status serwera.",
       "syncStarted": "Synchronizacja biblioteki została rozpoczęta."
     }
   },
@@ -332,7 +332,7 @@
   "violations": {
     "title": "Naruszenia",
     "tryAdjustingFilters": "Spróbuj dostosować swoje filtry",
-    "selectAllViolations": "Wybierz wszystkie {{count}} naruszenia pasujące do filtrów",
+    "selectAllViolations_other": "Wybierz wszystkie {{count}} naruszenia pasujące do filtrów",
     "dismissViolation": "Odrzuć Naruszenie",
     "dismissViolationConfirm": "Czy na pewno chcesz odrzucić to naruszenie? To spowoduje trwałe usunięcie go z dziennika naruszeń.",
     "dismissViolation_one": "Odrzuć {{count}} Naruszenie",
@@ -345,7 +345,7 @@
     "allRules": "Wszystkie reguły",
     "filterPeople": "Osoby",
     "allPeople": "Wszystkie osoby",
-    "peopleSelectedCount": "{{count}} osób",
+    "peopleSelectedCount_other": "{{count}} osób",
     "personFilterPlaceholder": "Filtruj wg osób",
     "personFilterEmpty": "Nie znaleziono pasujących użytkowników",
     "personFilterError": "Nie udało się załadować osób",
@@ -372,7 +372,6 @@
       "conditionGroup": "Grupa warunków {{index}}",
       "matched": "{{matched}}/{{total}} dopasowane",
       "actual": "Rzeczywisty",
-      "relatedSessions": "Sesja związana z {{count}}",
       "relatedSessions_one": "Sesja związana z {{count}}",
       "relatedSessions_other": "{{count}} sesji powiązanych"
     }
@@ -556,7 +555,7 @@
       "searchPlaceholder": "Szukaj…",
       "noMatches": "Brak wyników",
       "clearSelection": "Wyczyść zaznaczenie",
-      "selectedCount": "Zaznaczono: {{count}}",
+      "selectedCount_other": "Zaznaczono: {{count}}",
       "scope": {
         "label": "Kogo dotyczy",
         "global": "Wszyscy",
@@ -1608,10 +1607,10 @@
         "unknown": "Połączenie nieudane"
       },
       "connectionsReachable": "{{reachable}} z {{total}} połączeń osiągalnych",
-      "connectionsAvailable": "{{count}} dostępne połączenia",
+      "connectionsAvailable_other": "{{count}} dostępne połączenia",
       "hideFiltered": "Ukryj przefiltrowane",
       "showAll": "Pokaż wszystkie",
-      "moreConnections": "+{{count}} więcej połączeń",
+      "moreConnections_other": "+{{count}} więcej połączeń",
       "connectingTo": "Łączenie z {{name}}...",
       "ownerOnly": "Tylko właściciel może zarządzać powiązanymi kontami Plex.",
       "noAccountsLinked": "Brak powiązanych kont Plex",
@@ -1630,7 +1629,6 @@
     },
     "destinations": {
       "add": "Dodaj miejsce docelowe",
-      "alertsGoTo": "Powiadomienia są kierowane na {{count}} adres",
       "alertsGoTo_other": "Powiadomienia są kierowane do {{count}} adresów",
       "builtinNote": "Wbudowane",
       "clearSecret": "Wyczyść",
@@ -1730,9 +1728,7 @@
         "push": "Push mobilny",
         "webToast": "Powiadomienia w przeglądarce"
       },
-      "usedBy": "Używane przez {{count}} automatyzację",
       "usedBy_other": "Używane przez {{count}} automatyzacji",
-      "usedByNewsletters": "Używane przez {{count}} newsletter",
       "usedByNewsletters_other": "Używane przez {{count}} newsletterów",
       "violationsOff": "Naruszenia wyłączone",
       "violationsOn": "Naruszenia włączone",
@@ -1795,7 +1791,7 @@
     "title": "Kompatybilność urządzenia",
     "description": "Zobacz, które urządzenia bezpośrednio odtwarzają, a które transkodują każdy z kodeków.",
     "analyzedSessions": "Analizowane sesje",
-    "analyzedSessionsTooltip": "Sesje w kombinacjach urządzenie + kodek z co najmniej {{count}} sesjami i znanym kodekiem. Rzadkie kombinacje i sesje bez informacji o kodeku nie są brane pod uwagę.",
+    "analyzedSessionsTooltip_other": "Sesje w kombinacjach urządzenie + kodek z co najmniej {{count}} sesjami i znanym kodekiem. Rzadkie kombinacje i sesje bez informacji o kodeku nie są brane pod uwagę.",
     "directPlayRate": "Bezpośrednia szybkość odtwarzania",
     "videoAndAudio": "Obraz i dźwięk",
     "uniqueDevices": "Unikalne urządzenia",
@@ -1932,11 +1928,11 @@
         "replacedEpisodes_other": "{{count}} odcinków zastąpionych",
         "addedAgo": "dodano {{date}}",
         "addedCompactAgo": "dodano {{age}} temu",
-        "newEpisodesChip": "{{count}} nowych"
+        "newEpisodesChip_other": "{{count}} nowych"
       },
       "deadWeight": {
         "title": "Zbędna zawartość",
-        "summary": "{{count}} nieobejrzanych tytułów · {{size}}",
+        "summary_other": "{{count}} nieobejrzanych tytułów · {{size}}",
         "empty": "Brak treści do odzyskania — wszystko w Twojej bibliotece zostało obejrzane",
         "columns": {
           "poster": "Plakat",
@@ -2266,7 +2262,7 @@
       "linkSeerr": "Połącz Seerr",
       "kpi": {
         "requested": "Złożonych próśb",
-        "landedOf": "{{count}} trafiło do biblioteki",
+        "landedOf_other": "{{count}} trafiło do biblioteki",
         "watched": "Obejrzanych",
         "neverPlayed": "Nigdy nieodtworzone",
         "ofLanded": "{{share}} z tych w bibliotece",

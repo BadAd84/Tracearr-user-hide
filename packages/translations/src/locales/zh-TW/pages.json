@@ -54,7 +54,7 @@
     "showRemoved": "",
     "noUsersFound": "找不到使用者。",
     "searchPlaceholder": "搜尋使用者……",
-    "selectAllUsers": "選擇所有 {{count}} 個使用者",
+    "selectAllUsers_other": "選擇所有 {{count}} 個使用者",
     "serversColumn": "",
     "resetTrustScore": "重置信任評分",
     "resetTrustScoreTitle_one": "重置 {{count}} 位使用者的信任評分",
@@ -287,8 +287,7 @@
       "backfillRunning": {
         "title": "",
         "fallbackBody": "",
-        "progress": "",
-        "snapshotsSuffix": ""
+        "progress": ""
       },
       "multiServer": {
         "title": "",
@@ -311,7 +310,6 @@
     "versionsBackfill": {
       "banner": "",
       "action": "",
-      "syncFailed": "",
       "syncStarted": ""
     }
   },
@@ -332,7 +330,7 @@
   "violations": {
     "title": "違規",
     "tryAdjustingFilters": "嘗試調整篩選條件",
-    "selectAllViolations": "選擇所有符合篩選條件的 {{count}} 個違規項目",
+    "selectAllViolations_other": "選擇所有符合篩選條件的 {{count}} 個違規項目",
     "dismissViolation": "撤銷違規行為",
     "dismissViolationConfirm": "你確定你想要清除這個違規？這將永久從違規紀錄中移除。",
     "dismissViolation_one": "撤銷 {{count}} 個違規",
@@ -345,7 +343,6 @@
     "allRules": "",
     "filterPeople": "",
     "allPeople": "",
-    "peopleSelectedCount": "",
     "personFilterPlaceholder": "",
     "personFilterEmpty": "",
     "personFilterError": "",
@@ -372,7 +369,6 @@
       "conditionGroup": "",
       "matched": "",
       "actual": "",
-      "relatedSessions": "",
       "relatedSessions_one": "",
       "relatedSessions_other": ""
     }
@@ -556,7 +552,6 @@
       "searchPlaceholder": "",
       "noMatches": "",
       "clearSelection": "",
-      "selectedCount": "",
       "scope": {
         "label": "",
         "global": "",
@@ -1608,10 +1603,10 @@
         "unknown": ""
       },
       "connectionsReachable": "{{total}} 個其中 {{reachable}} 個可以連接",
-      "connectionsAvailable": "{{count}} 個可以連接",
+      "connectionsAvailable_other": "{{count}} 個可以連接",
       "hideFiltered": "隱藏已過濾",
       "showAll": "顯示所有",
-      "moreConnections": "+{{count}} 個更多連接",
+      "moreConnections_other": "+{{count}} 個更多連接",
       "connectingTo": "正在連接到 {{name}}……",
       "ownerOnly": "",
       "noAccountsLinked": "沒有已連接的 Plex 帳號",
@@ -1630,7 +1625,6 @@
     },
     "destinations": {
       "add": "",
-      "alertsGoTo": "",
       "alertsGoTo_other": "",
       "builtinNote": "",
       "clearSecret": "",
@@ -1730,9 +1724,7 @@
         "push": "",
         "webToast": ""
       },
-      "usedBy": "",
       "usedBy_other": "",
-      "usedByNewsletters": "",
       "usedByNewsletters_other": "",
       "violationsOff": "",
       "violationsOn": "",
@@ -1795,7 +1787,6 @@
     "title": "",
     "description": "",
     "analyzedSessions": "",
-    "analyzedSessionsTooltip": "",
     "directPlayRate": "",
     "videoAndAudio": "",
     "uniqueDevices": "",
@@ -1931,12 +1922,10 @@
         "replacedEpisodes_one": "",
         "replacedEpisodes_other": "",
         "addedAgo": "{{date}}新增",
-        "addedCompactAgo": "",
-        "newEpisodesChip": ""
+        "addedCompactAgo": ""
       },
       "deadWeight": {
         "title": "",
-        "summary": "",
         "empty": "",
         "columns": {
           "poster": "",
@@ -2266,7 +2255,6 @@
       "linkSeerr": "",
       "kpi": {
         "requested": "",
-        "landedOf": "",
         "watched": "",
         "neverPlayed": "",
         "ofLanded": "",

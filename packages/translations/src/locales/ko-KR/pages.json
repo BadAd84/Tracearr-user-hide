@@ -54,7 +54,7 @@
     "showRemoved": "삭제된 사용자 표시",
     "noUsersFound": "사용자를 찾을 수 없습니다.",
     "searchPlaceholder": "사용자 검색...",
-    "selectAllUsers": "사용자 {{count}}명 모두 선택",
+    "selectAllUsers_other": "사용자 {{count}}명 모두 선택",
     "serversColumn": "서버",
     "resetTrustScore": "신뢰 점수 초기화",
     "resetTrustScoreTitle_one": "사용자 {{count}}명의 신뢰 점수 초기화",
@@ -288,7 +288,7 @@
         "title": "기록 데이터 생성 중...",
         "fallbackBody": "라이브러리 기록에서 스냅샷을 생성합니다. 이 작업은 몇 분 정도 걸릴 수 있습니다.",
         "progress": "라이브러리 {{processed}}개 중 {{total}}개",
-        "snapshotsSuffix": "(스냅샷 {{count}}개)"
+        "snapshotsSuffix_other": "(스냅샷 {{count}}개)"
       },
       "multiServer": {
         "title": "일부 라이브러리에는 주의가 필요합니다",
@@ -311,7 +311,7 @@
     "versionsBackfill": {
       "banner": "이 서버에 대한 파일 버전 데이터가 아직 수집되고 있습니다. 완료하려면 라이브러리 동기화를 실행하세요.",
       "action": "지금 동기화",
-      "syncFailed": "{{count}}개의 서버에서 동기화를 시작하지 못했습니다. 권한과 서버 상태를 확인하세요.",
+      "syncFailed_other": "{{count}}개의 서버에서 동기화를 시작하지 못했습니다. 권한과 서버 상태를 확인하세요.",
       "syncStarted": "라이브러리 동기화가 시작되었습니다."
     }
   },
@@ -332,7 +332,7 @@
   "violations": {
     "title": "위반 내역",
     "tryAdjustingFilters": "필터를 조정해 보세요",
-    "selectAllViolations": "필터와 일치하는 위반 {{count}}건 모두 선택",
+    "selectAllViolations_other": "필터와 일치하는 위반 {{count}}건 모두 선택",
     "dismissViolation": "위반 해제",
     "dismissViolationConfirm": "이 위반을 해제할까요? 위반 로그에서 영구적으로 제거됩니다.",
     "dismissViolation_one": "위반 {{count}}건 해제",
@@ -345,7 +345,7 @@
     "allRules": "모든 규칙",
     "filterPeople": "사용자",
     "allPeople": "모든 사용자",
-    "peopleSelectedCount": "{{count}}명",
+    "peopleSelectedCount_other": "{{count}}명",
     "personFilterPlaceholder": "사용자별 필터",
     "personFilterEmpty": "일치하는 사용자가 없습니다.",
     "personFilterError": "알림 보내기",
@@ -372,7 +372,6 @@
       "conditionGroup": "조건 그룹 {{index}}",
       "matched": "{{matched}}/{{total}} 일치",
       "actual": "실제 값",
-      "relatedSessions": "관련 세션 {{count}}개",
       "relatedSessions_one": "관련 세션 {{count}}개",
       "relatedSessions_other": "관련 세션 {{count}}개"
     }
@@ -556,7 +555,7 @@
       "searchPlaceholder": "검색…",
       "noMatches": "일치하는 항목 없음",
       "clearSelection": "선택 취소",
-      "selectedCount": "{{count}}개 선택됨",
+      "selectedCount_other": "{{count}}개 선택됨",
       "scope": {
         "label": "하나의 서버",
         "global": "모두",
@@ -1608,10 +1607,10 @@
         "unknown": "연결 실패"
       },
       "connectionsReachable": "전체 {{total}}개 중 {{reachable}}개 연결 가능",
-      "connectionsAvailable": "사용 가능한 연결 {{count}}개",
+      "connectionsAvailable_other": "사용 가능한 연결 {{count}}개",
       "hideFiltered": "필터링된 항목 숨기기",
       "showAll": "모두 보기",
-      "moreConnections": "연결 {{count}}개 더 보기",
+      "moreConnections_other": "연결 {{count}}개 더 보기",
       "connectingTo": "{{name}}에 연결 중...",
       "ownerOnly": "소유자만 연결된 Plex 계정을 관리할 수 있습니다.",
       "noAccountsLinked": "연결된 Plex 계정이 없습니다",
@@ -1630,7 +1629,6 @@
     },
     "destinations": {
       "add": "알림 대상 추가",
-      "alertsGoTo": "알림 수신 주소 {{count}}개",
       "alertsGoTo_other": "알림 수신 주소 {{count}}개",
       "builtinNote": "내장",
       "clearSecret": "지우기",
@@ -1730,9 +1728,7 @@
         "push": "모바일 푸시",
         "webToast": "브라우저 알림"
       },
-      "usedBy": "{{count}}개의 자동화에서 사용됨",
       "usedBy_other": "{{count}}개의 자동화에서 사용됨",
-      "usedByNewsletters": "뉴스레터 {{count}}개에서 사용 중",
       "usedByNewsletters_other": "뉴스레터 {{count}}개에서 사용 중",
       "violationsOff": "위반 알림 꺼짐",
       "violationsOn": "위반 알림 켜짐",
@@ -1795,7 +1791,7 @@
     "title": "기기 호환성",
     "description": "",
     "analyzedSessions": "분석된 세션",
-    "analyzedSessionsTooltip": "최소 {{count}}개의 세션과 알려진 코덱이 포함된 장치 + 코덱 조합의 세션입니다. 코덱 정보가 없는 드문 조합과 세션은 계산되지 않습니다.",
+    "analyzedSessionsTooltip_other": "최소 {{count}}개의 세션과 알려진 코덱이 포함된 장치 + 코덱 조합의 세션입니다. 코덱 정보가 없는 드문 조합과 세션은 계산되지 않습니다.",
     "directPlayRate": "직접 재생 비율",
     "videoAndAudio": "",
     "uniqueDevices": "고유 기기",
@@ -1932,11 +1928,11 @@
         "replacedEpisodes_other": "에피소드 {{count}}개 교체됨",
         "addedAgo": "{{date}} 추가됨",
         "addedCompactAgo": "{{age}} 전에 추가됨",
-        "newEpisodesChip": "{{count}} 신규"
+        "newEpisodesChip_other": "{{count}} 신규"
       },
       "deadWeight": {
         "title": "장기 미시청 콘텐츠",
-        "summary": "시청하지 않은 타이틀 {{count}}개 · {{size}}",
+        "summary_other": "시청하지 않은 타이틀 {{count}}개 · {{size}}",
         "empty": "정리할 항목이 없습니다. 라이브러리의 모든 항목에 시청 기록이 있습니다.",
         "columns": {
           "poster": "포스터",
@@ -2266,7 +2262,7 @@
       "linkSeerr": "Seerr 연결",
       "kpi": {
         "requested": "요청됨",
-        "landedOf": "{{count}}개 추가됨",
+        "landedOf_other": "{{count}}개 추가됨",
         "watched": "시청함",
         "neverPlayed": "재생 기록 없음",
         "ofLanded": "추가된 항목 중 {{share}}",

@@ -54,7 +54,7 @@
     "showRemoved": "显示已删除",
     "noUsersFound": "未找到用户。",
     "searchPlaceholder": "搜索用户……",
-    "selectAllUsers": "选择所有{{count}}个用户",
+    "selectAllUsers_other": "选择所有{{count}}个用户",
     "serversColumn": "服务器",
     "resetTrustScore": "重置信任分数",
     "resetTrustScoreTitle_one": "重置{{count}}个用户的信任分数",
@@ -288,7 +288,7 @@
         "title": "生成历史数据……",
         "fallbackBody": "从知识库历史创建快照。这可能需要几分钟。",
         "progress": "{{processed}}/{{total}} 库",
-        "snapshotsSuffix": " ({{count}} 个快照)"
+        "snapshotsSuffix_other": " ({{count}} 个快照)"
       },
       "multiServer": {
         "title": "某些库需要关注",
@@ -311,7 +311,7 @@
     "versionsBackfill": {
       "banner": "正在为此服务器收集文件版本数据。运行库同步完成。",
       "action": "立即同步",
-      "syncFailed": "在 {{count}} 台服务器上同步启动失败(s),请检查您的权限和服务器状态。",
+      "syncFailed_other": "在 {{count}} 台服务器上同步启动失败(s),请检查您的权限和服务器状态。",
       "syncStarted": "库同步开始。"
     }
   },
@@ -332,7 +332,7 @@
   "violations": {
     "title": "违规",
     "tryAdjustingFilters": "尝试调整筛选条件",
-    "selectAllViolations": "选择所有符合筛选条件的{{count}}个违规项",
+    "selectAllViolations_other": "选择所有符合筛选条件的{{count}}个违规项",
     "dismissViolation": "消除违约行为",
     "dismissViolationConfirm": "你确定你想要清除这个违反？这将永久从违反日志中移除。",
     "dismissViolation_one": "清除 {{count}} 违规",
@@ -345,7 +345,7 @@
     "allRules": "所有规则",
     "filterPeople": "人员",
     "allPeople": "所有人",
-    "peopleSelectedCount": "{{count}} 人",
+    "peopleSelectedCount_other": "{{count}} 人",
     "personFilterPlaceholder": "按人筛选",
     "personFilterEmpty": "没有找到匹配的人",
     "personFilterError": "加载会话失败",
@@ -372,7 +372,6 @@
       "conditionGroup": "条件组{{index}}",
       "matched": "{{matched}}{{total}}匹配",
       "actual": "实际的",
-      "relatedSessions": "{{count}}相关会话",
       "relatedSessions_one": "{{count}}相关会话",
       "relatedSessions_other": "{{count}}相关会话"
     }
@@ -556,7 +555,6 @@
       "searchPlaceholder": "搜索……",
       "noMatches": "无匹配",
       "clearSelection": "清除选定内容",
-      "selectedCount": "",
       "scope": {
         "label": "这适用于",
         "global": "所有人",
@@ -1608,10 +1606,10 @@
         "unknown": "连接失败"
       },
       "connectionsReachable": "{{reachable}} 个 {{total}} 个连接可达",
-      "connectionsAvailable": "{{count}} 个可用连接",
+      "connectionsAvailable_other": "{{count}} 个可用连接",
       "hideFiltered": "隐藏已过滤",
       "showAll": "显示全部",
-      "moreConnections": "+{{count}} 个更多连接",
+      "moreConnections_other": "+{{count}} 个更多连接",
       "connectingTo": "正在连接到{{name}}……",
       "ownerOnly": "",
       "noAccountsLinked": "没有关联的Plex账户",
@@ -1630,7 +1628,6 @@
     },
     "destinations": {
       "add": "",
-      "alertsGoTo": "",
       "alertsGoTo_other": "",
       "builtinNote": "",
       "clearSecret": "",
@@ -1730,9 +1727,7 @@
         "push": "",
         "webToast": ""
       },
-      "usedBy": "",
       "usedBy_other": "",
-      "usedByNewsletters": "",
       "usedByNewsletters_other": "",
       "violationsOff": "",
       "violationsOn": "",
@@ -1795,7 +1790,6 @@
     "title": "设备兼容性",
     "description": "",
     "analyzedSessions": "",
-    "analyzedSessionsTooltip": "",
     "directPlayRate": "直播速率",
     "videoAndAudio": "",
     "uniqueDevices": "唯一设备",
@@ -1931,12 +1925,10 @@
         "replacedEpisodes_one": "",
         "replacedEpisodes_other": "",
         "addedAgo": "{{date}}添加",
-        "addedCompactAgo": "{{age}}前添加",
-        "newEpisodesChip": ""
+        "addedCompactAgo": "{{age}}前添加"
       },
       "deadWeight": {
         "title": "",
-        "summary": "",
         "empty": "没有什么可以恢复 - 您的知识库中的一切都已被观看了",
         "columns": {
           "poster": "海报",
@@ -2266,7 +2258,6 @@
       "linkSeerr": "Link Seerr",
       "kpi": {
         "requested": "已请求",
-        "landedOf": "",
         "watched": "已观看",
         "neverPlayed": "从未播放过",
         "ofLanded": "",

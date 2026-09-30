@@ -54,7 +54,7 @@
     "showRemoved": "",
     "noUsersFound": "Ingen brukere funnet.",
     "searchPlaceholder": "Søk etter brukere...",
-    "selectAllUsers": "Velg alle {{count}} brukere",
+    "selectAllUsers_other": "Velg alle {{count}} brukere",
     "serversColumn": "",
     "resetTrustScore": "Tilbakestill tillitssum",
     "resetTrustScoreTitle_one": "Tilbakestillingsresultatet for {{count}} Bruker",
@@ -287,8 +287,7 @@
       "backfillRunning": {
         "title": "",
         "fallbackBody": "",
-        "progress": "",
-        "snapshotsSuffix": ""
+        "progress": ""
       },
       "multiServer": {
         "title": "",
@@ -311,7 +310,6 @@
     "versionsBackfill": {
       "banner": "",
       "action": "",
-      "syncFailed": "",
       "syncStarted": ""
     }
   },
@@ -332,7 +330,7 @@
   "violations": {
     "title": "Brudd",
     "tryAdjustingFilters": "Prøv å justere filtrene dine",
-    "selectAllViolations": "Velg alle overtredelser av {{count}} som matcher filtre",
+    "selectAllViolations_other": "Velg alle overtredelser av {{count}} som matcher filtre",
     "dismissViolation": "Avvis brudd",
     "dismissViolationConfirm": "Er du sikker på at du vil avvise dette bruddet? Dette vil fjerne det fra overtredelsesloggen permanent.",
     "dismissViolation_one": "Avvis {{count}} Brudd",
@@ -345,7 +343,6 @@
     "allRules": "",
     "filterPeople": "",
     "allPeople": "",
-    "peopleSelectedCount": "",
     "personFilterPlaceholder": "",
     "personFilterEmpty": "",
     "personFilterError": "",
@@ -372,7 +369,6 @@
       "conditionGroup": "Tilstandsgruppe {{index}}",
       "matched": "{{matched}}/{{total}} matchet",
       "actual": "Faktisk",
-      "relatedSessions": "{{count}} relatert økt",
       "relatedSessions_one": "{{count}} relatert økt",
       "relatedSessions_other": "{{count}} relaterte økter"
     }
@@ -556,7 +552,6 @@
       "searchPlaceholder": "",
       "noMatches": "",
       "clearSelection": "",
-      "selectedCount": "",
       "scope": {
         "label": "",
         "global": "",
@@ -1608,10 +1603,10 @@
         "unknown": ""
       },
       "connectionsReachable": "{{reachable}} av {{total}} forbindelser tilgjengelig",
-      "connectionsAvailable": "{{count}} tilkoblinger tilgjengelig",
+      "connectionsAvailable_other": "{{count}} tilkoblinger tilgjengelig",
       "hideFiltered": "Skjul filtrerte",
       "showAll": "Vis alle",
-      "moreConnections": "+{{count}} flere tilkoblinger",
+      "moreConnections_other": "+{{count}} flere tilkoblinger",
       "connectingTo": "Kobler til {{name}}...",
       "ownerOnly": "",
       "noAccountsLinked": "Ingen Plex-kontoer koblet til",
@@ -1630,7 +1625,6 @@
     },
     "destinations": {
       "add": "",
-      "alertsGoTo": "",
       "alertsGoTo_other": "",
       "builtinNote": "",
       "clearSecret": "",
@@ -1730,9 +1724,7 @@
         "push": "",
         "webToast": ""
       },
-      "usedBy": "",
       "usedBy_other": "",
-      "usedByNewsletters": "",
       "usedByNewsletters_other": "",
       "violationsOff": "",
       "violationsOn": "",
@@ -1795,7 +1787,6 @@
     "title": "Enhetens kompatibilitet",
     "description": "",
     "analyzedSessions": "",
-    "analyzedSessionsTooltip": "",
     "directPlayRate": "Direkte spill-vurdering",
     "videoAndAudio": "",
     "uniqueDevices": "Unike enheter",
@@ -1931,12 +1922,10 @@
         "replacedEpisodes_one": "",
         "replacedEpisodes_other": "",
         "addedAgo": "lagt til {{date}}",
-        "addedCompactAgo": "",
-        "newEpisodesChip": ""
+        "addedCompactAgo": ""
       },
       "deadWeight": {
         "title": "",
-        "summary": "",
         "empty": "",
         "columns": {
           "poster": "",
@@ -2266,7 +2255,6 @@
       "linkSeerr": "",
       "kpi": {
         "requested": "",
-        "landedOf": "",
         "watched": "",
         "neverPlayed": "",
         "ofLanded": "",

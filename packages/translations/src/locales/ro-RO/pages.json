@@ -54,7 +54,7 @@
     "showRemoved": "",
     "noUsersFound": "Niciun utilizator găsit.",
     "searchPlaceholder": "Caută utilizatori...",
-    "selectAllUsers": "Selectați toți utilizatorii {{count}}",
+    "selectAllUsers_other": "Selectați toți utilizatorii {{count}}",
     "serversColumn": "",
     "resetTrustScore": "Resetează scorul de încredere",
     "resetTrustScoreTitle_one": "Resetează scorul de încredere pentru utilizatorul {{count}}",
@@ -287,8 +287,7 @@
       "backfillRunning": {
         "title": "",
         "fallbackBody": "",
-        "progress": "",
-        "snapshotsSuffix": ""
+        "progress": ""
       },
       "multiServer": {
         "title": "",
@@ -311,7 +310,6 @@
     "versionsBackfill": {
       "banner": "",
       "action": "",
-      "syncFailed": "",
       "syncStarted": ""
     }
   },
@@ -332,7 +330,7 @@
   "violations": {
     "title": "Incalcari",
     "tryAdjustingFilters": "Încercați să ajustați filtrele",
-    "selectAllViolations": "Selectați toate filtrele de încălcare {{count}}",
+    "selectAllViolations_other": "Selectați toate filtrele de încălcare {{count}}",
     "dismissViolation": "Respinge Încălcarea",
     "dismissViolationConfirm": "Sigur doriți să respingeți această încălcare? Acest lucru îl va elimina definitiv din jurnalul de încălcare a normelor.",
     "dismissViolation_one": "Respinge {{count}} Încălcare",
@@ -345,7 +343,6 @@
     "allRules": "",
     "filterPeople": "",
     "allPeople": "",
-    "peopleSelectedCount": "",
     "personFilterPlaceholder": "",
     "personFilterEmpty": "",
     "personFilterError": "",
@@ -372,7 +369,6 @@
       "conditionGroup": "",
       "matched": "{{matched}}/{{total}} corespondență",
       "actual": "Actuală",
-      "relatedSessions": "{{count}} sesiune legată de",
       "relatedSessions_one": "{{count}} sesiune legată de",
       "relatedSessions_other": "{{count}} sesiuni asociate"
     }
@@ -556,7 +552,6 @@
       "searchPlaceholder": "",
       "noMatches": "",
       "clearSelection": "",
-      "selectedCount": "",
       "scope": {
         "label": "",
         "global": "",
@@ -1608,10 +1603,10 @@
         "unknown": ""
       },
       "connectionsReachable": "{{reachable}} de {{total}} conexiuni accesibile",
-      "connectionsAvailable": "{{count}} conexiuni disponibile",
+      "connectionsAvailable_other": "{{count}} conexiuni disponibile",
       "hideFiltered": "Ascunde filtrate",
       "showAll": "Arată toate",
-      "moreConnections": "+{{count}} mai multe conexiuni",
+      "moreConnections_other": "+{{count}} mai multe conexiuni",
       "connectingTo": "Conectare la {{name}}...",
       "ownerOnly": "",
       "noAccountsLinked": "Niciun cont Plex legat",
@@ -1630,7 +1625,6 @@
     },
     "destinations": {
       "add": "",
-      "alertsGoTo": "",
       "alertsGoTo_other": "",
       "builtinNote": "",
       "clearSecret": "",
@@ -1730,9 +1724,7 @@
         "push": "",
         "webToast": ""
       },
-      "usedBy": "",
       "usedBy_other": "",
-      "usedByNewsletters": "",
       "usedByNewsletters_other": "",
       "violationsOff": "",
       "violationsOn": "",
@@ -1795,7 +1787,6 @@
     "title": "Compatibilitate dispozitiv",
     "description": "",
     "analyzedSessions": "",
-    "analyzedSessionsTooltip": "",
     "directPlayRate": "Rată de redare directă",
     "videoAndAudio": "",
     "uniqueDevices": "Dispozitive unice",
@@ -1931,12 +1922,10 @@
         "replacedEpisodes_one": "",
         "replacedEpisodes_other": "",
         "addedAgo": "adăugat {{date}}",
-        "addedCompactAgo": "",
-        "newEpisodesChip": ""
+        "addedCompactAgo": ""
       },
       "deadWeight": {
         "title": "",
-        "summary": "",
         "empty": "",
         "columns": {
           "poster": "",
@@ -2266,7 +2255,6 @@
       "linkSeerr": "",
       "kpi": {
         "requested": "",
-        "landedOf": "",
         "watched": "",
         "neverPlayed": "",
         "ofLanded": "",

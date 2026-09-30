@@ -122,7 +122,6 @@
       "size": "在磁盘上",
       "files": "文件",
       "need": "估计需要",
-      "needHint": "",
       "free": "",
       "freeOf": "",
       "floor": "保持闲置",
@@ -257,7 +256,7 @@
     "enableMobileAccess": "启用移动访问权限",
     "enabling": "启用...",
     "devicesConnected": "{{current}}of {{max}}已连接设备",
-    "pendingTokens": "{{count}}待处理的配的令牌",
+    "pendingTokens_other": "{{count}}待处理的配的令牌",
     "addDevice": "添加设备",
     "disableMobileAccess": "禁用移动访问权限",
     "revokeAllSessions": "全部取消",
@@ -407,8 +406,6 @@
     "serverTimezoneHelp": "必须匹配在您的媒体服务器主机上配置的时区，而不是您的浏览器的时区。播放报告时间戳保存在本地服务器时间。",
     "importFullRange": "导入完整历史",
     "importFullRangeHelp": "",
-    "overlapSkipped": "",
-    "duplicates": "",
     "skipOverlap": "重叠记录 - 时间戳属于此服务器已经追踪过的时间段内。启用全范围导入以包含它。",
     "skipDuplicatePlugin": "重复记录 - 已经直接导入或通过Jellstat导入相同的插件数据早期到达。"
   },
@@ -463,7 +460,7 @@
   },
   "serverHealth": {
     "unreachable": "{{serverName}} 无法访问",
-    "multipleUnreachable": "{{count}} 服务器无法访问：{{serverNames}}"
+    "multipleUnreachable_other": "{{count}} 服务器无法访问：{{serverNames}}"
   },
   "ipWarning": {
     "message": "所有用户似乎使用了相同的 IP 地址或本地网络 IP。这可能会影响到基于规则的位置或IP地址逻辑。",
@@ -647,10 +644,8 @@
       },
       "windowSentence": {
         "fallback": "",
-        "fallbackLabel": "",
         "fixed": "",
-        "fixedAfter": "",
-        "fixedLabel": ""
+        "fixedAfter": ""
       },
       "windowMax": "",
       "days": "",
@@ -658,14 +653,12 @@
       "allServers": "",
       "searchServers": "",
       "noServers": "",
-      "serversSelected": "",
       "variantsNote": "",
       "serversHelp": "",
       "libraries": "",
       "allLibraries": "",
       "searchLibraries": "",
       "noLibraries": "",
-      "librariesSelected": "",
       "librariesHelp": "",
       "clear": "",
       "unknownLibrary": "",
@@ -686,20 +679,13 @@
           "albums": "",
           "mostPlayed": ""
         },
-        "labels": {
-          "movies": "",
-          "shows": "",
-          "seasons": "",
-          "music": "",
-          "mostWatched": ""
-        },
+        "labels": {},
         "musicHelp": "",
         "mostWatchedHelp": ""
       },
       "message": "",
       "senderName": "",
       "senderNameHelp": "",
-      "senderNameRequiredMulti": "",
       "previewVariant_one": "",
       "previewVariant_other": "",
       "variantHeading": "",
@@ -736,10 +722,8 @@
         "loadFailed": "",
         "willReceive": "",
         "excludedCount": "",
-        "notIncludable": "",
         "noAddress": "",
         "suppressedCount": "",
-        "joinedSinceLastSend": "",
         "newSinceLastSend": "",
         "manage": "",
         "manageHelp": "",
@@ -754,7 +738,6 @@
         },
         "selectAll": "",
         "selectPerson": "",
-        "selectedCount": "",
         "excludeSelected": "",
         "includeSelected": "",
         "noMatches": "",
@@ -774,7 +757,6 @@
         "include": "",
         "includeAction": "",
         "excludedHelp": "",
-        "notIncludableHelp": "",
         "excludedAfterSave": "",
         "includedAfterSave": "",
         "reasons": {
@@ -884,7 +866,6 @@
       "send": {
         "title": "",
         "previewing": "",
-        "summary": "",
         "nobody": "",
         "trimmed_one": "",
         "trimmed_other": "",
@@ -902,7 +883,6 @@
         "test": ""
       },
       "window": "",
-      "recipients": "",
       "recipientsEmpty": "",
       "finished": "",
       "open": "",
@@ -915,7 +895,6 @@
         "suppressed": "",
         "unknown": ""
       },
-      "attempts": "",
       "unknownHelp": "",
       "openSnapshot": "",
       "variant": "",

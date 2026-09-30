@@ -54,7 +54,7 @@
     "showRemoved": "",
     "noUsersFound": "Nessun utente trovato.",
     "searchPlaceholder": "Cerca utenti...",
-    "selectAllUsers": "Seleziona tutti gli utenti {{count}}",
+    "selectAllUsers_other": "Seleziona tutti gli utenti {{count}}",
     "serversColumn": "",
     "resetTrustScore": "Reimposta Punteggio Di Fiducia",
     "resetTrustScoreTitle_one": "Reimposta il Punteggio di fiducia per l'utente {{count}}",
@@ -287,8 +287,7 @@
       "backfillRunning": {
         "title": "",
         "fallbackBody": "",
-        "progress": "",
-        "snapshotsSuffix": ""
+        "progress": ""
       },
       "multiServer": {
         "title": "",
@@ -311,7 +310,6 @@
     "versionsBackfill": {
       "banner": "",
       "action": "",
-      "syncFailed": "",
       "syncStarted": ""
     }
   },
@@ -332,7 +330,7 @@
   "violations": {
     "title": "Violazioni",
     "tryAdjustingFilters": "Prova a regolare i tuoi filtri",
-    "selectAllViolations": "Seleziona tutti i filtri corrispondenti a violazioni {{count}}",
+    "selectAllViolations_other": "Seleziona tutti i filtri corrispondenti a violazioni {{count}}",
     "dismissViolation": "Ignora La Violazione",
     "dismissViolationConfirm": "Sei sicuro di voler eliminare questa violazione? Questo la rimuoverà dal registro delle violazioni in modo permanente.",
     "dismissViolation_one": "Ignora La Violazione {{count}}",
@@ -345,7 +343,6 @@
     "allRules": "",
     "filterPeople": "",
     "allPeople": "",
-    "peopleSelectedCount": "",
     "personFilterPlaceholder": "",
     "personFilterEmpty": "",
     "personFilterError": "",
@@ -372,7 +369,6 @@
       "conditionGroup": "Gruppo Condizione {{index}}",
       "matched": "{{matched}}/{{total}} abbinato",
       "actual": "Effettivo",
-      "relatedSessions": "",
       "relatedSessions_one": "",
       "relatedSessions_other": ""
     }
@@ -556,7 +552,6 @@
       "searchPlaceholder": "",
       "noMatches": "",
       "clearSelection": "",
-      "selectedCount": "",
       "scope": {
         "label": "",
         "global": "",
@@ -1608,10 +1603,9 @@
         "unknown": ""
       },
       "connectionsReachable": "{{reachable}} di connessioni {{total}} raggiungibili",
-      "connectionsAvailable": "",
       "hideFiltered": "Nascondi filtrati",
       "showAll": "Mostra tutto",
-      "moreConnections": "+{{count}} altre connessioni",
+      "moreConnections_other": "+{{count}} altre connessioni",
       "connectingTo": "Connessione a {{name}}...",
       "ownerOnly": "",
       "noAccountsLinked": "Nessun Account Plex Collegato",
@@ -1630,7 +1624,6 @@
     },
     "destinations": {
       "add": "",
-      "alertsGoTo": "",
       "alertsGoTo_other": "",
       "builtinNote": "",
       "clearSecret": "",
@@ -1730,9 +1723,7 @@
         "push": "",
         "webToast": ""
       },
-      "usedBy": "",
       "usedBy_other": "",
-      "usedByNewsletters": "",
       "usedByNewsletters_other": "",
       "violationsOff": "",
       "violationsOn": "",
@@ -1795,7 +1786,6 @@
     "title": "Compatibilità Dispositivo",
     "description": "",
     "analyzedSessions": "",
-    "analyzedSessionsTooltip": "",
     "directPlayRate": "Tasso Di Riproduzione Diretta",
     "videoAndAudio": "",
     "uniqueDevices": "Dispositivi Unici",
@@ -1931,12 +1921,10 @@
         "replacedEpisodes_one": "",
         "replacedEpisodes_other": "",
         "addedAgo": "aggiunto {{date}}",
-        "addedCompactAgo": "",
-        "newEpisodesChip": ""
+        "addedCompactAgo": ""
       },
       "deadWeight": {
         "title": "",
-        "summary": "",
         "empty": "",
         "columns": {
           "poster": "",
@@ -2266,7 +2254,6 @@
       "linkSeerr": "",
       "kpi": {
         "requested": "",
-        "landedOf": "",
         "watched": "",
         "neverPlayed": "",
         "ofLanded": "",

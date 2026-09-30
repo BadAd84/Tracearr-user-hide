@@ -54,7 +54,7 @@
     "showRemoved": "Show verwijdert",
     "noUsersFound": "Geen gebruikers gevonden.",
     "searchPlaceholder": "Gebruikers zoeken...",
-    "selectAllUsers": "Alle {{count}} gebruikers selecteren",
+    "selectAllUsers_other": "Alle {{count}} gebruikers selecteren",
     "serversColumn": "",
     "resetTrustScore": "Vertrouwensscore herstellen",
     "resetTrustScoreTitle_one": "Vertrouwensscore voor {{count}} gebruiker herstellen",
@@ -287,8 +287,7 @@
       "backfillRunning": {
         "title": "Historische gegevens genereren...",
         "fallbackBody": "Er worden snapshots gemaakt van de bibliotheekgeschiedenis. Dit kan een paar minuten duren.",
-        "progress": "{{processed}} van {{total}} bibliotheken",
-        "snapshotsSuffix": ""
+        "progress": "{{processed}} van {{total}} bibliotheken"
       },
       "multiServer": {
         "title": "Sommige bibliotheken hebben aandacht nodig",
@@ -311,7 +310,7 @@
     "versionsBackfill": {
       "banner": "Er worden nog steeds versiegegevens van bestanden verzameld voor deze server. Voer een bibliotheeksynchronisatie uit om dit te voltooien.",
       "action": "Synchroniseer nu",
-      "syncFailed": "De synchronisatie is mislukt op {{count}} server(s). Controleer de machtigingen en de serverstatus.",
+      "syncFailed_other": "De synchronisatie is mislukt op {{count}} server(s). Controleer de machtigingen en de serverstatus.",
       "syncStarted": "Bibliotheeksynchronisatie gestart."
     }
   },
@@ -332,7 +331,7 @@
   "violations": {
     "title": "Overtredingen",
     "tryAdjustingFilters": "Probeer je filters aan te passen",
-    "selectAllViolations": "Alle {{count}} overtredingen selecteren die overeenkomen met filters",
+    "selectAllViolations_other": "Alle {{count}} overtredingen selecteren die overeenkomen met filters",
     "dismissViolation": "Overtreding negeren",
     "dismissViolationConfirm": "Weet je zeker dat je deze overtreding wilt negeren? Deze zal permanent uit het logboek worden verwijderd.",
     "dismissViolation_one": "{{count}} overtreding negeren",
@@ -345,7 +344,7 @@
     "allRules": "Alle regels",
     "filterPeople": "Mensen",
     "allPeople": "Alle mensen",
-    "peopleSelectedCount": "{{count}} mensen",
+    "peopleSelectedCount_other": "{{count}} mensen",
     "personFilterPlaceholder": "Filteren op persoon",
     "personFilterEmpty": "Geen overeenkomende personen gevonden",
     "personFilterError": "Het laden van de personen is mislukt",
@@ -372,7 +371,6 @@
       "conditionGroup": "Voorwaarde Groep {{index}}",
       "matched": "{{matched}}/{{total}} komt overeen",
       "actual": "Werkelijk",
-      "relatedSessions": "{{count}} gerelateerde sessie",
       "relatedSessions_one": "{{count}} gerelateerde sessie",
       "relatedSessions_other": "{{count}} gerelateerde sessies"
     }
@@ -556,7 +554,7 @@
       "searchPlaceholder": "",
       "noMatches": "Geen resultaten",
       "clearSelection": "Selectie wissen",
-      "selectedCount": "{{count}} geselecteerd",
+      "selectedCount_other": "{{count}} geselecteerd",
       "scope": {
         "label": "",
         "global": "",
@@ -1608,10 +1606,10 @@
         "unknown": "Verbinding mislukt"
       },
       "connectionsReachable": "{{reachable}} van {{total}} verbindingen bereikbaar",
-      "connectionsAvailable": "{{count}} verbindingen beschikbaar",
+      "connectionsAvailable_other": "{{count}} verbindingen beschikbaar",
       "hideFiltered": "Gefliterde verbergen",
       "showAll": "Alles weergeven",
-      "moreConnections": "+{{count}} meer connecties",
+      "moreConnections_other": "+{{count}} meer connecties",
       "connectingTo": "Verbinden met {{name}}...",
       "ownerOnly": "",
       "noAccountsLinked": "Geen Plex-accounts gekoppeld",
@@ -1630,7 +1628,6 @@
     },
     "destinations": {
       "add": "Bestemming toevoegen",
-      "alertsGoTo": "",
       "alertsGoTo_other": "",
       "builtinNote": "Ingebouwd",
       "clearSecret": "Maak leeg",
@@ -1730,9 +1727,7 @@
         "push": "",
         "webToast": ""
       },
-      "usedBy": "",
       "usedBy_other": "",
-      "usedByNewsletters": "",
       "usedByNewsletters_other": "",
       "violationsOff": "",
       "violationsOn": "",
@@ -1795,7 +1790,7 @@
     "title": "Compatibiliteit van apparaat",
     "description": "",
     "analyzedSessions": "Geanalyseerde sessies",
-    "analyzedSessionsTooltip": "Sessies in apparaat- + codeccombinaties met ten minste {{count}} sessies en een bekende codec. Zeldzame combinaties en sessies zonder codec-informatie worden niet meegeteld.",
+    "analyzedSessionsTooltip_other": "Sessies in apparaat- + codeccombinaties met ten minste {{count}} sessies en een bekende codec. Zeldzame combinaties en sessies zonder codec-informatie worden niet meegeteld.",
     "directPlayRate": "Directe Speelsnelheid",
     "videoAndAudio": "",
     "uniqueDevices": "Unieke apparaten",
@@ -1932,11 +1927,11 @@
         "replacedEpisodes_other": "",
         "addedAgo": "toegevoegd {{date}}",
         "addedCompactAgo": "toegevoegd {{age}} geleden",
-        "newEpisodesChip": "{{count}} nieuw"
+        "newEpisodesChip_other": "{{count}} nieuw"
       },
       "deadWeight": {
         "title": "",
-        "summary": "{{count}} titels die nog nooit zijn bekeken · {{size}}",
+        "summary_other": "{{count}} titels die nog nooit zijn bekeken · {{size}}",
         "empty": "Niets terug te vorderen - alles in je bibliotheek is bekeken",
         "columns": {
           "poster": "",
@@ -2266,7 +2261,6 @@
       "linkSeerr": "",
       "kpi": {
         "requested": "",
-        "landedOf": "",
         "watched": "",
         "neverPlayed": "",
         "ofLanded": "",

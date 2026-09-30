@@ -149,7 +149,8 @@
       "newsletterDuplicated": "Newsletter duplicated",
       "newsletterTestQueued": "Test queued to {{address}}",
       "newsletterSendQueued": "Send queued",
-      "newsletterRetryQueued": "Retrying {{count}} recipients",
+      "newsletterRetryQueued_one": "Retrying {{count}} recipient",
+      "newsletterRetryQueued_other": "Retrying {{count}} recipients",
       "brandingSaved": "Email branding saved",
       "suppressionAdded": "Address added to the suppression list",
       "suppressionRemoved": "Address removed from the suppression list"

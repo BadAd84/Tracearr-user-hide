@@ -149,7 +149,7 @@
       "newsletterDuplicated": "Butlletí duplicat",
       "newsletterTestQueued": "S'ha posat la prova a la cua cap a {{address}}",
       "newsletterSendQueued": "Enviament posat a la cua",
-      "newsletterRetryQueued": "S'està reintentant amb {{count}} destinataris",
+      "newsletterRetryQueued_other": "S'està reintentant amb {{count}} destinataris",
       "brandingSaved": "S'ha desat la imatge de marca del correu",
       "suppressionAdded": "S'ha afegit l'adreça a la llista de supressió",
       "suppressionRemoved": "S'ha tret l'adreça de la llista de supressió"

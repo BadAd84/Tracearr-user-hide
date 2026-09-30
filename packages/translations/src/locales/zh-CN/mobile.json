@@ -113,8 +113,8 @@
     "userMayBeRemoved": "该用户可能已被删除。",
     "noLocationsRecorded": "没有记录的位置",
     "noDevicesRecorded": "没有任何设备记录",
-    "moreLocations": "+{{count}} 个更多连接",
-    "moreDevices": "{{count}}",
+    "moreLocations_other": "+{{count}} 个更多连接",
+    "moreDevices_other": "{{count}}",
     "noViolations": "没有违反行为",
     "noTerminations": "没有流终止",
     "lastSeen": "",
@@ -137,8 +137,7 @@
     "allClear": "",
     "allServers": "",
     "noAlertsRecorded": "",
-    "noMatches": "",
-    "pendingCount": ""
+    "noMatches": ""
   },
   "history": {
     "adjustFilters": "尝试调整筛选条件",
@@ -150,8 +149,7 @@
       "mediaType": "",
       "noCountries": "",
       "noPlatforms": "",
-      "noUsers": "",
-      "sectionSelected": ""
+      "noUsers": ""
     }
   },
   "users": {
@@ -184,11 +182,10 @@
   "a11y": {
     "selectServer": "选择服务器",
     "alerts": "警告",
-    "alertsCount": "提醒，{{count}} 条未读",
+    "alertsCount_other": "提醒，{{count}} 条未读",
     "settings": "设置",
     "trustScore": "信任分数{{score}}",
     "decreaseTrustScore": "",
-    "filtersActive": "",
     "increaseTrustScore": "",
     "sortAscending": "",
     "sortDescending": ""

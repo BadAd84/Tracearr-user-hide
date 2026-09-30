@@ -54,7 +54,8 @@
     "showRemoved": "Show removed",
     "noUsersFound": "No users found.",
     "searchPlaceholder": "Search users...",
-    "selectAllUsers": "Select all {{count}} users",
+    "selectAllUsers_one": "Select {{count}} user",
+    "selectAllUsers_other": "Select all {{count}} users",
     "serversColumn": "Servers",
     "resetTrustScore": "Reset Trust Score",
     "resetTrustScoreTitle_one": "Reset Trust Score for {{count}} User",
@@ -288,7 +289,8 @@
         "title": "Generating historical data...",
         "fallbackBody": "Creating snapshots from library history. This may take a few minutes.",
         "progress": "{{processed}} of {{total}} libraries",
-        "snapshotsSuffix": " ({{count}} snapshots)"
+        "snapshotsSuffix_one": " ({{count}} snapshot)",
+        "snapshotsSuffix_other": " ({{count}} snapshots)"
       },
       "multiServer": {
         "title": "Some libraries need attention",
@@ -311,7 +313,8 @@
     "versionsBackfill": {
       "banner": "File version data is still being collected for this server. Run a library sync to finish.",
       "action": "Sync now",
-      "syncFailed": "Sync failed to start on {{count}} server(s). Check your permissions and server status.",
+      "syncFailed_one": "Sync failed to start on {{count}} server. Check your permissions and server status.",
+      "syncFailed_other": "Sync failed to start on {{count}} servers. Check your permissions and server status.",
       "syncStarted": "Library sync started."
     }
   },
@@ -332,7 +335,8 @@
   "violations": {
     "title": "Violations",
     "tryAdjustingFilters": "Try adjusting your filters",
-    "selectAllViolations": "Select all {{count}} violations matching filters",
+    "selectAllViolations_one": "Select the {{count}} violation matching filters",
+    "selectAllViolations_other": "Select all {{count}} violations matching filters",
     "dismissViolation": "Dismiss Violation",
     "dismissViolationConfirm": "Are you sure you want to dismiss this violation? This will remove it from the violation log permanently.",
     "dismissViolation_one": "Dismiss {{count}} Violation",
@@ -345,7 +349,8 @@
     "allRules": "All rules",
     "filterPeople": "People",
     "allPeople": "All people",
-    "peopleSelectedCount": "{{count}} people",
+    "peopleSelectedCount_one": "{{count}} person",
+    "peopleSelectedCount_other": "{{count}} people",
     "personFilterPlaceholder": "Filter by person",
     "personFilterEmpty": "No matching people found",
     "personFilterError": "Failed to load people",
@@ -372,7 +377,6 @@
       "conditionGroup": "Condition Group {{index}}",
       "matched": "{{matched}}/{{total}} matched",
       "actual": "Actual",
-      "relatedSessions": "{{count}} related session",
       "relatedSessions_one": "{{count}} related session",
       "relatedSessions_other": "{{count}} related sessions"
     }
@@ -556,7 +560,8 @@
       "searchPlaceholder": "Search…",
       "noMatches": "No matches",
       "clearSelection": "Clear selection",
-      "selectedCount": "{{count}} selected",
+      "selectedCount_one": "{{count}} selected",
+      "selectedCount_other": "{{count}} selected",
       "scope": {
         "label": "Who this applies to",
         "global": "Everyone",
@@ -1608,10 +1613,12 @@
         "unknown": "Connection failed"
       },
       "connectionsReachable": "{{reachable}} of {{total}} connections reachable",
-      "connectionsAvailable": "{{count}} connections available",
+      "connectionsAvailable_one": "{{count}} connection available",
+      "connectionsAvailable_other": "{{count}} connections available",
       "hideFiltered": "Hide filtered",
       "showAll": "Show all",
-      "moreConnections": "+{{count}} more connections",
+      "moreConnections_one": "+{{count}} more connection",
+      "moreConnections_other": "+{{count}} more connections",
       "connectingTo": "Connecting to {{name}}...",
       "ownerOnly": "Only the owner can manage linked Plex accounts.",
       "noAccountsLinked": "No Plex Accounts Linked",
@@ -1630,7 +1637,7 @@
     },
     "destinations": {
       "add": "Add destination",
-      "alertsGoTo": "Alerts go to {{count}} address",
+      "alertsGoTo_one": "Alerts go to {{count}} address",
       "alertsGoTo_other": "Alerts go to {{count}} addresses",
       "builtinNote": "Built in",
       "clearSecret": "Clear",
@@ -1730,9 +1737,9 @@
         "push": "Mobile push",
         "webToast": "Browser toasts"
       },
-      "usedBy": "Used by {{count}} automation",
+      "usedBy_one": "Used by {{count}} automation",
       "usedBy_other": "Used by {{count}} automations",
-      "usedByNewsletters": "Used by {{count}} newsletter",
+      "usedByNewsletters_one": "Used by {{count}} newsletter",
       "usedByNewsletters_other": "Used by {{count}} newsletters",
       "violationsOff": "Violations off",
       "violationsOn": "Violations on",
@@ -1795,7 +1802,8 @@
     "title": "Device Compatibility",
     "description": "See which devices direct play vs transcode each codec.",
     "analyzedSessions": "Analyzed Sessions",
-    "analyzedSessionsTooltip": "Sessions in device + codec combinations with at least {{count}} sessions and a known codec. Rare combinations and sessions with no codec info aren't counted.",
+    "analyzedSessionsTooltip_one": "Sessions in device + codec combinations with at least {{count}} session and a known codec. Rare combinations and sessions with no codec info aren't counted.",
+    "analyzedSessionsTooltip_other": "Sessions in device + codec combinations with at least {{count}} sessions and a known codec. Rare combinations and sessions with no codec info aren't counted.",
     "directPlayRate": "Direct Play Rate",
     "videoAndAudio": "Video + Audio",
     "uniqueDevices": "Unique Devices",
@@ -1932,11 +1940,13 @@
         "replacedEpisodes_other": "{{count}} episodes replaced",
         "addedAgo": "added {{date}}",
         "addedCompactAgo": "added {{age}} ago",
-        "newEpisodesChip": "{{count}} new"
+        "newEpisodesChip_one": "{{count}} new",
+        "newEpisodesChip_other": "{{count}} new"
       },
       "deadWeight": {
         "title": "Dead Weight",
-        "summary": "{{count}} never-watched titles · {{size}}",
+        "summary_one": "{{count}} never-watched title · {{size}}",
+        "summary_other": "{{count}} never-watched titles · {{size}}",
         "empty": "Nothing to reclaim - everything in your library has been watched",
         "columns": {
           "poster": "Poster",
@@ -2266,7 +2276,8 @@
       "linkSeerr": "Link Seerr",
       "kpi": {
         "requested": "Requested",
-        "landedOf": "{{count}} landed",
+        "landedOf_one": "{{count}} landed",
+        "landedOf_other": "{{count}} landed",
         "watched": "Watched",
         "neverPlayed": "Never played",
         "ofLanded": "{{share}} of landed",

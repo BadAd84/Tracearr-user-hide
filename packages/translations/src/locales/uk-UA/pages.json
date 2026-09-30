@@ -54,7 +54,7 @@
     "showRemoved": "",
     "noUsersFound": "Користувачів не знайдено.",
     "searchPlaceholder": "Пошук користувачів...",
-    "selectAllUsers": "Вибрати всіх користувачів {{count}}",
+    "selectAllUsers_other": "Вибрати всіх користувачів {{count}}",
     "serversColumn": "Сервери",
     "resetTrustScore": "Скинути рейтинг довіри",
     "resetTrustScoreTitle_one": "Скинути рейтинг довіри для {{count}} користувача",
@@ -287,8 +287,7 @@
       "backfillRunning": {
         "title": "",
         "fallbackBody": "",
-        "progress": "",
-        "snapshotsSuffix": ""
+        "progress": ""
       },
       "multiServer": {
         "title": "",
@@ -311,7 +310,6 @@
     "versionsBackfill": {
       "banner": "",
       "action": "",
-      "syncFailed": "",
       "syncStarted": ""
     }
   },
@@ -332,7 +330,7 @@
   "violations": {
     "title": "Порушення",
     "tryAdjustingFilters": "Спробуйте налаштувати фільтри",
-    "selectAllViolations": "Виберіть усі {{count}} порушень, що відповідають фільтрам",
+    "selectAllViolations_other": "Виберіть усі {{count}} порушень, що відповідають фільтрам",
     "dismissViolation": "Відхилити порушення",
     "dismissViolationConfirm": "Ви впевнені, що хочете відхилити це порушення? Це назавжди видалить його з журналу порушень.",
     "dismissViolation_one": "Відхилити {{count}} порушення",
@@ -345,7 +343,6 @@
     "allRules": "Всі правила",
     "filterPeople": "Люди",
     "allPeople": "Усі люди",
-    "peopleSelectedCount": "",
     "personFilterPlaceholder": "",
     "personFilterEmpty": "",
     "personFilterError": "",
@@ -372,7 +369,6 @@
       "conditionGroup": "Група умов {{index}}",
       "matched": "",
       "actual": "Актуальне",
-      "relatedSessions": "Сумісна сесія {{count}}",
       "relatedSessions_one": "Сумісна сесія {{count}}",
       "relatedSessions_other": ""
     }
@@ -556,7 +552,6 @@
       "searchPlaceholder": "",
       "noMatches": "",
       "clearSelection": "",
-      "selectedCount": "",
       "scope": {
         "label": "",
         "global": "",
@@ -1608,10 +1603,10 @@
         "unknown": ""
       },
       "connectionsReachable": "{{reachable}} зі списку контактів {{total}}",
-      "connectionsAvailable": "Доступні {{count}} з'єднання",
+      "connectionsAvailable_other": "Доступні {{count}} з'єднання",
       "hideFiltered": "Приховати фільтровані",
       "showAll": "Показати всі",
-      "moreConnections": "+{{count}} більше підключень",
+      "moreConnections_other": "+{{count}} більше підключень",
       "connectingTo": "Підключення до {{name}}...",
       "ownerOnly": "",
       "noAccountsLinked": "Немає пов'язаних облікових записів Plex",
@@ -1630,7 +1625,6 @@
     },
     "destinations": {
       "add": "",
-      "alertsGoTo": "",
       "alertsGoTo_other": "",
       "builtinNote": "",
       "clearSecret": "",
@@ -1730,9 +1724,7 @@
         "push": "",
         "webToast": ""
       },
-      "usedBy": "",
       "usedBy_other": "",
-      "usedByNewsletters": "",
       "usedByNewsletters_other": "",
       "violationsOff": "",
       "violationsOn": "",
@@ -1795,7 +1787,6 @@
     "title": "Сумісність пристроїв",
     "description": "",
     "analyzedSessions": "",
-    "analyzedSessionsTooltip": "",
     "directPlayRate": "Час безпоритви",
     "videoAndAudio": "",
     "uniqueDevices": "Унікальні пристрої",
@@ -1931,12 +1922,10 @@
         "replacedEpisodes_one": "",
         "replacedEpisodes_other": "",
         "addedAgo": "додано {{date}}",
-        "addedCompactAgo": "",
-        "newEpisodesChip": ""
+        "addedCompactAgo": ""
       },
       "deadWeight": {
         "title": "",
-        "summary": "",
         "empty": "",
         "columns": {
           "poster": "",
@@ -2266,7 +2255,6 @@
       "linkSeerr": "",
       "kpi": {
         "requested": "",
-        "landedOf": "",
         "watched": "",
         "neverPlayed": "",
         "ofLanded": "",

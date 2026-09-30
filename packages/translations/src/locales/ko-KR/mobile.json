@@ -113,8 +113,8 @@
     "userMayBeRemoved": "이 사용자는 삭제되었을 수 있습니다.",
     "noLocationsRecorded": "위치 기록이 없습니다",
     "noDevicesRecorded": "기기 기록이 없습니다",
-    "moreLocations": "위치 {{count}}곳 더 보기",
-    "moreDevices": "기기 {{count}}대 더 보기",
+    "moreLocations_other": "위치 {{count}}곳 더 보기",
+    "moreDevices_other": "기기 {{count}}대 더 보기",
     "noViolations": "위반이 없습니다",
     "noTerminations": "스트림 종료 기록이 없습니다",
     "lastSeen": "마지막으로 확인된 {{relative}}",
@@ -138,7 +138,7 @@
     "allServers": "모든 서버",
     "noAlertsRecorded": "아직 기록된 알림이 없습니다.",
     "noMatches": "일치하는 알림이 없습니다.",
-    "pendingCount": "대기 중 {{count}}개"
+    "pendingCount_other": "대기 중 {{count}}개"
   },
   "history": {
     "adjustFilters": "필터를 조정해 보세요",
@@ -151,7 +151,7 @@
       "noCountries": "사용 가능한 국가가 없습니다.",
       "noPlatforms": "사용 가능한 플랫폼이 없습니다.",
       "noUsers": "사용 가능한 사용자가 없습니다.",
-      "sectionSelected": "{{section}}, {{count}}개 선택됨"
+      "sectionSelected_other": "{{section}}, {{count}}개 선택됨"
     }
   },
   "users": {
@@ -184,11 +184,11 @@
   "a11y": {
     "selectServer": "서버 선택",
     "alerts": "알림",
-    "alertsCount": "알림, 읽지 않음 {{count}}개",
+    "alertsCount_other": "알림, 읽지 않음 {{count}}개",
     "settings": "설정",
     "trustScore": "신뢰 점수 {{score}}",
     "decreaseTrustScore": "신뢰 점수 낮추기",
-    "filtersActive": "활성 필터 {{count}}개",
+    "filtersActive_other": "활성 필터 {{count}}개",
     "increaseTrustScore": "신뢰 점수 높이기",
     "sortAscending": "오름차순으로 정렬됨. 탭하여 반대로 정렬",
     "sortDescending": "내림차순으로 정렬됨. 탭하여 반대로 정렬"

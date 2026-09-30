@@ -54,7 +54,7 @@
     "showRemoved": "",
     "noUsersFound": "Nenalezeni žádní uživatelé.",
     "searchPlaceholder": "Hledat uživatele...",
-    "selectAllUsers": "Vybrat všechny uživatele {{count}}",
+    "selectAllUsers_other": "Vybrat všechny uživatele {{count}}",
     "serversColumn": "",
     "resetTrustScore": "Resetovat důvěryhodné skóre",
     "resetTrustScoreTitle_one": "Obnovit důvěryhodné skóre pro uživatele {{count}}",
@@ -287,8 +287,7 @@
       "backfillRunning": {
         "title": "",
         "fallbackBody": "",
-        "progress": "",
-        "snapshotsSuffix": ""
+        "progress": ""
       },
       "multiServer": {
         "title": "",
@@ -311,7 +310,6 @@
     "versionsBackfill": {
       "banner": "",
       "action": "",
-      "syncFailed": "",
       "syncStarted": ""
     }
   },
@@ -332,7 +330,7 @@
   "violations": {
     "title": "Porušování",
     "tryAdjustingFilters": "Zkuste upravit filtry",
-    "selectAllViolations": "Vybrat všechny filtry porušení {{count}}",
+    "selectAllViolations_other": "Vybrat všechny filtry porušení {{count}}",
     "dismissViolation": "Zrušit porušení",
     "dismissViolationConfirm": "Jste si jisti, že chcete zrušit toto porušení? Toto je trvale odstraní z protokolu o porušení.",
     "dismissViolation_one": "Zrušit porušení {{count}}",
@@ -345,7 +343,6 @@
     "allRules": "",
     "filterPeople": "",
     "allPeople": "",
-    "peopleSelectedCount": "",
     "personFilterPlaceholder": "",
     "personFilterEmpty": "",
     "personFilterError": "",
@@ -372,7 +369,6 @@
       "conditionGroup": "Skupina podmínek {{index}}",
       "matched": "{{matched}}/{{total}} odpovídá",
       "actual": "Aktuální",
-      "relatedSessions": "Relace související s {{count}}",
       "relatedSessions_one": "Relace související s {{count}}",
       "relatedSessions_other": "Relace související s {{count}}"
     }
@@ -556,7 +552,6 @@
       "searchPlaceholder": "",
       "noMatches": "",
       "clearSelection": "",
-      "selectedCount": "",
       "scope": {
         "label": "",
         "global": "",
@@ -1608,10 +1603,10 @@
         "unknown": ""
       },
       "connectionsReachable": "{{reachable}} z {{total}} kontaktů dosažitelné",
-      "connectionsAvailable": "{{count}} připojení k dispozici",
+      "connectionsAvailable_other": "{{count}} připojení k dispozici",
       "hideFiltered": "Skrýt filtrované",
       "showAll": "Zobrazit vše",
-      "moreConnections": "+{{count}} další spojení",
+      "moreConnections_other": "+{{count}} další spojení",
       "connectingTo": "Připojuji se k {{name}}...",
       "ownerOnly": "",
       "noAccountsLinked": "Žádné Plex účty nejsou propojeny",
@@ -1630,7 +1625,6 @@
     },
     "destinations": {
       "add": "",
-      "alertsGoTo": "",
       "alertsGoTo_other": "",
       "builtinNote": "",
       "clearSecret": "",
@@ -1730,9 +1724,7 @@
         "push": "",
         "webToast": ""
       },
-      "usedBy": "",
       "usedBy_other": "",
-      "usedByNewsletters": "",
       "usedByNewsletters_other": "",
       "violationsOff": "",
       "violationsOn": "",
@@ -1795,7 +1787,6 @@
     "title": "Kompatibilita zařízení",
     "description": "",
     "analyzedSessions": "",
-    "analyzedSessionsTooltip": "",
     "directPlayRate": "Míra přímého přehrávání",
     "videoAndAudio": "",
     "uniqueDevices": "Unikátní zařízení",
@@ -1931,12 +1922,10 @@
         "replacedEpisodes_one": "",
         "replacedEpisodes_other": "",
         "addedAgo": "přidáno {{date}}",
-        "addedCompactAgo": "",
-        "newEpisodesChip": ""
+        "addedCompactAgo": ""
       },
       "deadWeight": {
         "title": "",
-        "summary": "",
         "empty": "",
         "columns": {
           "poster": "",
@@ -2266,7 +2255,6 @@
       "linkSeerr": "",
       "kpi": {
         "requested": "",
-        "landedOf": "",
         "watched": "",
         "neverPlayed": "",
         "ofLanded": "",

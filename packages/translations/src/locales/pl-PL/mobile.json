@@ -113,8 +113,8 @@
     "userMayBeRemoved": "Ten użytkownik mógł zostać usunięty.",
     "noLocationsRecorded": "Brak zarejestrowanych lokalizacji",
     "noDevicesRecorded": "Brak zarejestrowanych urządzeń",
-    "moreLocations": "+{{count}} więcej lokalizacji",
-    "moreDevices": "+{{count}} więcej urządzeń",
+    "moreLocations_other": "+{{count}} więcej lokalizacji",
+    "moreDevices_other": "+{{count}} więcej urządzeń",
     "noViolations": "Brak naruszeń",
     "noTerminations": "Brak przerwanych strumieni",
     "lastSeen": "Ostatnio widziany {{relative}}",
@@ -138,7 +138,7 @@
     "allServers": "wszystkie serwery",
     "noAlertsRecorded": "Nie zarejestrowano jeszcze żadnych powiadomień.",
     "noMatches": "Brak pasujących powiadomień",
-    "pendingCount": "{{count}} oczekujących"
+    "pendingCount_other": "{{count}} oczekujących"
   },
   "history": {
     "adjustFilters": "Spróbuj dostosować swoje filtry",
@@ -151,7 +151,7 @@
       "noCountries": "Brak dostępnych krajów",
       "noPlatforms": "Brak dostępnych platform",
       "noUsers": "Brak dostępnych użytkowników",
-      "sectionSelected": "{{section}}, {{count}} wybranych"
+      "sectionSelected_other": "{{section}}, {{count}} wybranych"
     }
   },
   "users": {
@@ -184,11 +184,11 @@
   "a11y": {
     "selectServer": "Wybierz serwer",
     "alerts": "Powiadomienia",
-    "alertsCount": "Powiadomienia, {{count}} nieprzeczytane",
+    "alertsCount_other": "Powiadomienia, {{count}} nieprzeczytane",
     "settings": "Ustawienia",
     "trustScore": "Poziom zaufania {{score}}",
     "decreaseTrustScore": "Zmniejsz poziom zaufania",
-    "filtersActive": "Filtry, {{count}} aktywne",
+    "filtersActive_other": "Filtry, {{count}} aktywne",
     "increaseTrustScore": "Zwiększ poziom zaufania",
     "sortAscending": "Posortowano rosnąco, stuknij, aby odwrócić",
     "sortDescending": "Posortowano malejąco, stuknij, aby odwrócić"

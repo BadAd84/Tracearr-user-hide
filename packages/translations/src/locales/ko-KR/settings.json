@@ -122,7 +122,7 @@
       "size": "디스크 사용량",
       "files": "파일 수",
       "need": "예상 필요 용량",
-      "needHint": "포스터 {{count}}개 × {{size}}",
+      "needHint_other": "포스터 {{count}}개 × {{size}}",
       "free": "남은 디스크 공간",
       "freeOf": "전체 {{total}} 중",
       "floor": "확보할 여유 공간",
@@ -257,7 +257,7 @@
     "enableMobileAccess": "모바일 접근 활성화",
     "enabling": "활성화 중...",
     "devicesConnected": "{{max}}대 중 {{current}}대 기기 연결됨",
-    "pendingTokens": "대기 중인 페어링 토큰 {{count}}개",
+    "pendingTokens_other": "대기 중인 페어링 토큰 {{count}}개",
     "addDevice": "기기 추가",
     "disableMobileAccess": "모바일 접근 비활성화",
     "revokeAllSessions": "모두 취소",
@@ -407,8 +407,8 @@
     "serverTimezoneHelp": "브라우저가 아닌 미디어 서버 호스트에 설정된 시간대와 일치해야 합니다. Playback Reporting의 타임스탬프는 서버 현지 시간으로 저장됩니다.",
     "importFullRange": "전체 기록 가져오기",
     "importFullRangeHelp": "이 서버를 Tracearr에 추가한 이후 시작된 재생 기록은 가져오지 않습니다. 기본적으로 가져오기는 Tracearr에 이미 있는 이 서버의 가장 이른 재생 기록(예: Jellystat에서 가져온 기록)에서도 중단됩니다. 서버 추가 이전의 모든 기록을 가져오려면 이 옵션을 켜세요. 정확히 중복되는 항목은 계속 건너뜁니다.",
-    "overlapSkipped": "기간이 겹쳐 {{count}}개 건너뜀",
-    "duplicates": "중복 {{count}}개 건너뜀",
+    "overlapSkipped_other": "기간이 겹쳐 {{count}}개 건너뜀",
+    "duplicates_other": "중복 {{count}}개 건너뜀",
     "skipOverlap": "기간이 겹치는 기록 - 타임스탬프가 Tracearr에서 이미 추적 중인 기간에 포함됩니다. 포함하려면 전체 기록 가져오기를 켜세요.",
     "skipDuplicatePlugin": "중복 기록 - 이미 직접 가져왔거나 같은 플러그인 데이터를 Jellystat에서 먼저 가져온 항목입니다."
   },
@@ -463,7 +463,7 @@
   },
   "serverHealth": {
     "unreachable": "{{serverName}}에 연결할 수 없습니다",
-    "multipleUnreachable": "{{count}}개 서버에 연결할 수 없습니다: {{serverNames}}"
+    "multipleUnreachable_other": "{{count}}개 서버에 연결할 수 없습니다: {{serverNames}}"
   },
   "ipWarning": {
     "message": "모든 사용자가 같은 IP 주소나 로컬 네트워크 IP를 사용하는 것으로 보입니다. 위치 또는 IP 주소 기반 규칙 로직에 영향을 줄 수 있습니다.",
@@ -647,10 +647,10 @@
       },
       "windowSentence": {
         "fallback": "첫 이메일의 조회 기간",
-        "fallbackLabel": "첫 이메일은 이전 {{count}}일을 조회합니다.",
+        "fallbackLabel_other": "첫 이메일은 이전 {{count}}일을 조회합니다.",
         "fixed": "이전 기간",
         "fixedAfter": "매번",
-        "fixedLabel": "매번 이전 {{count}}일을 조회합니다."
+        "fixedLabel_other": "매번 이전 {{count}}일을 조회합니다."
       },
       "windowMax": "설정값과 관계없이 최대 31일입니다.",
       "days": "일",
@@ -658,14 +658,14 @@
       "allServers": "모든 서버",
       "searchServers": "서버 검색",
       "noServers": "일치하는 서버가 없습니다.",
-      "serversSelected": "서버 {{count}}개",
+      "serversSelected_other": "서버 {{count}}개",
       "variantsNote": "이 설정으로 제목과 수신자가 모두 결정됩니다. 이 서버에 계정이 있는 구성원만 수신합니다. 여러 서버에 계정이 있는 사용자는 해당 서버의 내용을 모두 포함한 이메일 한 통을 받습니다.",
       "serversHelp": "이 서버에 계정이 있는 구성원만 수신합니다.",
       "libraries": "라이브러리",
       "allLibraries": "모든 라이브러리",
       "searchLibraries": "라이브러리 검색",
       "noLibraries": "일치하는 라이브러리가 없습니다.",
-      "librariesSelected": "라이브러리 {{count}}개",
+      "librariesSelected_other": "라이브러리 {{count}}개",
       "librariesHelp": "이메일에 표시할 항목만 제한하며 수신자는 변경하지 않습니다.",
       "clear": "지우기",
       "unknownLibrary": "알 수 없는 라이브러리",
@@ -687,11 +687,11 @@
           "mostPlayed": "가장 많이 재생됨"
         },
         "labels": {
-          "movies": "영화, 최대 {{count}}편",
-          "shows": "TV 프로그램, 최대 {{count}}개",
-          "seasons": "TV 프로그램, 각각 시즌 {{count}}개",
-          "music": "음악, 최대 {{count}}개 앨범",
-          "mostWatched": "가장 많이 시청함, 상위 {{count}}개"
+          "movies_other": "영화, 최대 {{count}}편",
+          "shows_other": "TV 프로그램, 최대 {{count}}개",
+          "seasons_other": "TV 프로그램, 각각 시즌 {{count}}개",
+          "music_other": "음악, 최대 {{count}}개 앨범",
+          "mostWatched_other": "가장 많이 시청함, 상위 {{count}}개"
         },
         "musicHelp": "앨범 단위로 계산하며 추가된 순서에 따라 아티스트 전체에서 공유됩니다.",
         "mostWatchedHelp": "조회 기간에 구성원이 가장 많이 재생한 항목을 신규 여부와 관계없이 재생 횟수와 함께 표시합니다. 다른 모든 섹션에는 추가된 항목이 표시됩니다."
@@ -699,7 +699,7 @@
       "message": "메시지",
       "senderName": "발신자 이름",
       "senderNameHelp": "보낸 사람 행과 이메일 끝에 표시할 이름입니다. 비워 두면 {{name}}을 사용합니다.",
-      "senderNameRequiredMulti": "이 뉴스레터는 {{count}}개 서버를 포함하므로 서명에 사용할 하나의 서버 이름이 없습니다. 이름을 선택하세요.",
+      "senderNameRequiredMulti_other": "이 뉴스레터는 {{count}}개 서버를 포함하므로 서명에 사용할 하나의 서버 이름이 없습니다. 이름을 선택하세요.",
       "previewVariant_one": "{{servers}}에 계정이 있는 사용자 {{count}}명",
       "previewVariant_other": "{{servers}}에 계정이 있는 사용자 {{count}}명",
       "variantHeading": "{{servers}}에 계정이 있는 사용자 {{count}}명",
@@ -736,10 +736,10 @@
         "loadFailed": "수신자를 불러오지 못했습니다.",
         "willReceive": "수신 {{count}}명",
         "excludedCount": "제외 {{count}}명",
-        "notIncludable": "포함할 수 없음 {{count}}명",
+        "notIncludable_other": "포함할 수 없음 {{count}}명",
         "noAddress": "이메일 주소 없음 {{count}}명",
         "suppressedCount": "발송 제외 {{count}}명",
-        "joinedSinceLastSend": "마지막 발송 이후 가입 {{count}}명",
+        "joinedSinceLastSend_other": "마지막 발송 이후 가입 {{count}}명",
         "newSinceLastSend": "마지막 발송 이후 신규",
         "manage": "수신자 관리 ({{count}})",
         "manageHelp": "제외와 포함은 양식만 변경합니다. 저장을 누르기 전까지 변경 사항은 저장되지 않습니다.",
@@ -754,7 +754,7 @@
         },
         "selectAll": "{{count}}명 모두 선택",
         "selectPerson": "{{name}} 선택",
-        "selectedCount": "{{count}}명 선택됨",
+        "selectedCount_other": "{{count}}명 선택됨",
         "excludeSelected": "선택 항목 제외",
         "includeSelected": "선택 항목 포함",
         "noMatches": "검색과 일치하는 사용자가 없습니다.",
@@ -774,7 +774,7 @@
         "include": "{{name}} 다시 포함",
         "includeAction": "포함",
         "excludedHelp": "다시 포함할 때까지 이 뉴스레터를 받지 않습니다. 다른 뉴스레터에는 영향을 주지 않습니다.",
-        "notIncludableHelp": "차단됨, 대기 중 또는 선택한 서버에 없음 등의 이유로 {{count}}명을 더 포함할 수 없습니다.",
+        "notIncludableHelp_other": "차단됨, 대기 중 또는 선택한 서버에 없음 등의 이유로 {{count}}명을 더 포함할 수 없습니다.",
         "excludedAfterSave": "저장 후 제외됨",
         "includedAfterSave": "저장 후 포함됨",
         "reasons": {
@@ -884,7 +884,7 @@
       "send": {
         "title": "지금 {{name}} 뉴스레터를 보낼까요?",
         "previewing": "수신자별 내용을 계산 중...",
-        "summary": "수신자 {{count}}명에게 발송: {{start}}~{{end}}에 {{counts}} 추가됨. 각 사용자는 자신의 사본만 받으며 자신의 주소만 볼 수 있습니다.",
+        "summary_other": "수신자 {{count}}명에게 발송: {{start}}~{{end}}에 {{counts}} 추가됨. 각 사용자는 자신의 사본만 받으며 자신의 주소만 볼 수 있습니다.",
         "nobody": "주소가 확인된 수신자가 없습니다({{missing}}명의 구성원에게 주소 없음). 보낼 항목이 없습니다.",
         "trimmed_one": "Gmail이 이메일을 자르는 기준인 102KB 이하로 유지하기 위해 항목 {{count}}개를 '+N개 더 보기' 행으로 표시합니다.",
         "trimmed_other": "Gmail이 이메일을 자르는 기준인 102KB 이하로 유지하기 위해 항목 {{count}}개를 '+N개 더 보기' 행으로 표시합니다.",
@@ -902,7 +902,7 @@
         "test": "테스트"
       },
       "window": "{{start}}~{{end}}",
-      "recipients": "수신자 {{count}}명",
+      "recipients_other": "수신자 {{count}}명",
       "recipientsEmpty": "발송이 시작되면 수신자가 표시됩니다.",
       "finished": "{{when}} 완료",
       "open": "{{when}}의 발송 열기",
@@ -915,7 +915,7 @@
         "suppressed": "발송 제외됨",
         "unknown": "알 수 없음"
       },
-      "attempts": "{{count}}회 시도",
+      "attempts_other": "{{count}}회 시도",
       "unknownHelp": "메시지 발송 후 서버가 응답을 중단했습니다. 자동으로 다시 시도하지 않습니다.",
       "openSnapshot": "스냅샷 열기",
       "variant": "{{servers}}의 구성원",

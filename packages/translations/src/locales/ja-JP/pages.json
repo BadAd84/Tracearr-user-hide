@@ -54,7 +54,7 @@
     "showRemoved": "",
     "noUsersFound": "ユーザーが見つかりませんでした。",
     "searchPlaceholder": "ユーザーを検索...",
-    "selectAllUsers": "すべての {{count}} ユーザーを選択",
+    "selectAllUsers_other": "すべての {{count}} ユーザーを選択",
     "serversColumn": "",
     "resetTrustScore": "信頼スコアをリセット",
     "resetTrustScoreTitle_one": "{{count}} ユーザーのトラストスコアをリセット",
@@ -287,8 +287,7 @@
       "backfillRunning": {
         "title": "",
         "fallbackBody": "",
-        "progress": "",
-        "snapshotsSuffix": ""
+        "progress": ""
       },
       "multiServer": {
         "title": "",
@@ -311,7 +310,6 @@
     "versionsBackfill": {
       "banner": "",
       "action": "",
-      "syncFailed": "",
       "syncStarted": ""
     }
   },
@@ -332,7 +330,7 @@
   "violations": {
     "title": "違反",
     "tryAdjustingFilters": "フィルターを調整してみてください",
-    "selectAllViolations": "すべての {{count}} 違反マッチングフィルターを選択",
+    "selectAllViolations_other": "すべての {{count}} 違反マッチングフィルターを選択",
     "dismissViolation": "違反を却下する",
     "dismissViolationConfirm": "この違反を却下してもよろしいですか？違反ログから完全に削除されます。",
     "dismissViolation_one": "{{count}} 違反を却下する",
@@ -345,7 +343,6 @@
     "allRules": "",
     "filterPeople": "",
     "allPeople": "",
-    "peopleSelectedCount": "",
     "personFilterPlaceholder": "",
     "personFilterEmpty": "",
     "personFilterError": "",
@@ -372,7 +369,6 @@
       "conditionGroup": "条件グループ {{index}}",
       "matched": "{{matched}}/{{total}} が一致しました",
       "actual": "実際：",
-      "relatedSessions": "{{count}} 関連セッション",
       "relatedSessions_one": "{{count}} 関連セッション",
       "relatedSessions_other": "{{count}} 関連セッション"
     }
@@ -556,7 +552,6 @@
       "searchPlaceholder": "",
       "noMatches": "",
       "clearSelection": "",
-      "selectedCount": "",
       "scope": {
         "label": "",
         "global": "",
@@ -1608,10 +1603,10 @@
         "unknown": ""
       },
       "connectionsReachable": "{{reachable}} / {{total}} コネクションに到達可能",
-      "connectionsAvailable": "{{count}} コネクションが利用可能です",
+      "connectionsAvailable_other": "{{count}} コネクションが利用可能です",
       "hideFiltered": "フィルターを隠す",
       "showAll": "すべて表示",
-      "moreConnections": "+{{count}} 他のコネクション",
+      "moreConnections_other": "+{{count}} 他のコネクション",
       "connectingTo": "{{name}} に接続中...",
       "ownerOnly": "",
       "noAccountsLinked": "プレックスアカウントがリンクされていません",
@@ -1630,7 +1625,6 @@
     },
     "destinations": {
       "add": "",
-      "alertsGoTo": "",
       "alertsGoTo_other": "",
       "builtinNote": "",
       "clearSecret": "",
@@ -1730,9 +1724,7 @@
         "push": "",
         "webToast": ""
       },
-      "usedBy": "",
       "usedBy_other": "",
-      "usedByNewsletters": "",
       "usedByNewsletters_other": "",
       "violationsOff": "",
       "violationsOn": "",
@@ -1795,7 +1787,6 @@
     "title": "デバイスの互換性",
     "description": "",
     "analyzedSessions": "",
-    "analyzedSessionsTooltip": "",
     "directPlayRate": "ダイレクトプレイレート",
     "videoAndAudio": "",
     "uniqueDevices": "ユニークなデバイス",
@@ -1931,12 +1922,10 @@
         "replacedEpisodes_one": "",
         "replacedEpisodes_other": "",
         "addedAgo": "{{date}}に追加",
-        "addedCompactAgo": "",
-        "newEpisodesChip": ""
+        "addedCompactAgo": ""
       },
       "deadWeight": {
         "title": "",
-        "summary": "",
         "empty": "",
         "columns": {
           "poster": "",
@@ -2266,7 +2255,6 @@
       "linkSeerr": "",
       "kpi": {
         "requested": "",
-        "landedOf": "",
         "watched": "",
         "neverPlayed": "",
         "ofLanded": "",

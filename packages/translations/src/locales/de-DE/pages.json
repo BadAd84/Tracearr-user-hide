@@ -54,7 +54,7 @@
     "showRemoved": "",
     "noUsersFound": "Keine Benutzer gefunden.",
     "searchPlaceholder": "Suche Benutzer...",
-    "selectAllUsers": "Alle {{count}} Benutzer auswählen",
+    "selectAllUsers_other": "Alle {{count}} Benutzer auswählen",
     "serversColumn": "",
     "resetTrustScore": "Vertrauensbewertung zurücksetzen",
     "resetTrustScoreTitle_one": "Vertrauensbewertung für {{count}} Benutzer zurücksetzen",
@@ -288,7 +288,7 @@
         "title": "Verlaufsdaten werden erstellt...",
         "fallbackBody": "Snapshots werden aus dem Bibliotheksverlauf erstellt. Dies kann einige Minuten dauern.",
         "progress": "{{processed}} von {{total}} Bibliotheken",
-        "snapshotsSuffix": " ({{count}} Snapshots)"
+        "snapshotsSuffix_other": " ({{count}} Snapshots)"
       },
       "multiServer": {
         "title": "Einige Bibliotheken benötigen Aufmerksamkeit",
@@ -311,7 +311,6 @@
     "versionsBackfill": {
       "banner": "",
       "action": "",
-      "syncFailed": "",
       "syncStarted": ""
     }
   },
@@ -332,7 +331,7 @@
   "violations": {
     "title": "Verstöße",
     "tryAdjustingFilters": "Versuchen Sie, Ihre Filter anzupassen",
-    "selectAllViolations": "Wählen Sie alle {{count}} Verstöße aus, die den Filtern entsprechen",
+    "selectAllViolations_other": "Wählen Sie alle {{count}} Verstöße aus, die den Filtern entsprechen",
     "dismissViolation": "Verstoß ablehnen",
     "dismissViolationConfirm": "Möchten Sie diesen Verstoß wirklich ignorieren? Er wird dadurch dauerhaft aus dem Verstoß-Protokoll entfernt..",
     "dismissViolation_one": "{{count}} Verstoß abweisen",
@@ -345,7 +344,6 @@
     "allRules": "",
     "filterPeople": "",
     "allPeople": "",
-    "peopleSelectedCount": "",
     "personFilterPlaceholder": "",
     "personFilterEmpty": "",
     "personFilterError": "",
@@ -372,7 +370,6 @@
       "conditionGroup": "",
       "matched": "{{matched}}/{{total}} übereinstimmen",
       "actual": "Aktuell",
-      "relatedSessions": "{{count}} verwandte Sitzung",
       "relatedSessions_one": "{{count}} verwandte Sitzung",
       "relatedSessions_other": "{{count}} ähnliche Sitzungen"
     }
@@ -556,7 +553,6 @@
       "searchPlaceholder": "",
       "noMatches": "",
       "clearSelection": "",
-      "selectedCount": "",
       "scope": {
         "label": "",
         "global": "",
@@ -1608,10 +1604,10 @@
         "unknown": "Verbindung fehlgeschlagen"
       },
       "connectionsReachable": "{{reachable}} von {{total}} Verbindungen erreichbar",
-      "connectionsAvailable": "{{count}} Verbindungen verfügbar",
+      "connectionsAvailable_other": "{{count}} Verbindungen verfügbar",
       "hideFiltered": "Gefilterte ausblenden",
       "showAll": "Alle anzeigen",
-      "moreConnections": "+{{count}} weitere Verbindungen",
+      "moreConnections_other": "+{{count}} weitere Verbindungen",
       "connectingTo": "Verbinde mit {{name}}...",
       "ownerOnly": "",
       "noAccountsLinked": "Keine Plex-Konten verknüpft",
@@ -1630,7 +1626,6 @@
     },
     "destinations": {
       "add": "",
-      "alertsGoTo": "",
       "alertsGoTo_other": "",
       "builtinNote": "",
       "clearSecret": "",
@@ -1730,9 +1725,7 @@
         "push": "",
         "webToast": ""
       },
-      "usedBy": "",
       "usedBy_other": "",
-      "usedByNewsletters": "",
       "usedByNewsletters_other": "",
       "violationsOff": "",
       "violationsOn": "",
@@ -1795,7 +1788,6 @@
     "title": "Gerätekompatibilität",
     "description": "",
     "analyzedSessions": "",
-    "analyzedSessionsTooltip": "",
     "directPlayRate": "",
     "videoAndAudio": "",
     "uniqueDevices": "Einzigartige Geräte",
@@ -1932,11 +1924,10 @@
         "replacedEpisodes_other": "",
         "addedAgo": "hinzugefügt {{date}}",
         "addedCompactAgo": "vor {{age}} hinzugefügt",
-        "newEpisodesChip": "{{count}} neu"
+        "newEpisodesChip_other": "{{count}} neu"
       },
       "deadWeight": {
         "title": "",
-        "summary": "",
         "empty": "",
         "columns": {
           "poster": "",
@@ -2266,7 +2257,6 @@
       "linkSeerr": "",
       "kpi": {
         "requested": "",
-        "landedOf": "",
         "watched": "",
         "neverPlayed": "",
         "ofLanded": "",

@@ -113,8 +113,6 @@
     "userMayBeRemoved": "",
     "noLocationsRecorded": "",
     "noDevicesRecorded": "",
-    "moreLocations": "",
-    "moreDevices": "",
     "noViolations": "",
     "noTerminations": "",
     "lastSeen": "",
@@ -137,8 +135,7 @@
     "allClear": "",
     "allServers": "",
     "noAlertsRecorded": "",
-    "noMatches": "",
-    "pendingCount": ""
+    "noMatches": ""
   },
   "history": {
     "adjustFilters": "",
@@ -150,8 +147,7 @@
       "mediaType": "",
       "noCountries": "",
       "noPlatforms": "",
-      "noUsers": "",
-      "sectionSelected": ""
+      "noUsers": ""
     }
   },
   "users": {
@@ -184,11 +180,9 @@
   "a11y": {
     "selectServer": "",
     "alerts": "",
-    "alertsCount": "",
     "settings": "",
     "trustScore": "",
     "decreaseTrustScore": "",
-    "filtersActive": "",
     "increaseTrustScore": "",
     "sortAscending": "",
     "sortDescending": ""

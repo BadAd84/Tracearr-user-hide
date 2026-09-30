@@ -54,7 +54,7 @@
     "showRemoved": "",
     "noUsersFound": "Käyttäjiä ei löytynyt.",
     "searchPlaceholder": "Etsi käyttäjiä...",
-    "selectAllUsers": "Valitse kaikki {{count}} käyttäjää",
+    "selectAllUsers_other": "Valitse kaikki {{count}} käyttäjää",
     "serversColumn": "",
     "resetTrustScore": "Nollaa Trust Pisteet",
     "resetTrustScoreTitle_one": "Nollaa Trust-pisteet käyttäjälle {{count}}",
@@ -287,8 +287,7 @@
       "backfillRunning": {
         "title": "",
         "fallbackBody": "",
-        "progress": "",
-        "snapshotsSuffix": ""
+        "progress": ""
       },
       "multiServer": {
         "title": "",
@@ -311,7 +310,6 @@
     "versionsBackfill": {
       "banner": "",
       "action": "",
-      "syncFailed": "",
       "syncStarted": ""
     }
   },
@@ -332,7 +330,7 @@
   "violations": {
     "title": "Rikkomukset",
     "tryAdjustingFilters": "Yritä muuttaa suodattimia",
-    "selectAllViolations": "Valitse kaikki {{count}} rikkomistapausta vastaavat suodattimet",
+    "selectAllViolations_other": "Valitse kaikki {{count}} rikkomistapausta vastaavat suodattimet",
     "dismissViolation": "Hylkää Rikkominen",
     "dismissViolationConfirm": "Oletko varma, että haluat hylätä tämän rikkomuksen? Tämä poistaa sen rikkomuslokista pysyvästi.",
     "dismissViolation_one": "Hylkää {{count}} Väkivalta",
@@ -345,7 +343,6 @@
     "allRules": "",
     "filterPeople": "",
     "allPeople": "",
-    "peopleSelectedCount": "",
     "personFilterPlaceholder": "",
     "personFilterEmpty": "",
     "personFilterError": "",
@@ -372,7 +369,6 @@
       "conditionGroup": "Ehtoryhmä {{index}}",
       "matched": "",
       "actual": "Todellinen",
-      "relatedSessions": "{{count}} liittyvä istunto",
       "relatedSessions_one": "{{count}} liittyvä istunto",
       "relatedSessions_other": "{{count}} aiheeseen liittyvää istuntoa"
     }
@@ -556,7 +552,6 @@
       "searchPlaceholder": "",
       "noMatches": "",
       "clearSelection": "",
-      "selectedCount": "",
       "scope": {
         "label": "",
         "global": "",
@@ -1608,10 +1603,10 @@
         "unknown": ""
       },
       "connectionsReachable": "",
-      "connectionsAvailable": "{{count}} yhteyttä saatavilla",
+      "connectionsAvailable_other": "{{count}} yhteyttä saatavilla",
       "hideFiltered": "Piilota suodatettu",
       "showAll": "Näytä kaikki",
-      "moreConnections": "+{{count}} lisää yhteyksiä",
+      "moreConnections_other": "+{{count}} lisää yhteyksiä",
       "connectingTo": "Yhdistetään {{name}} tiedostoon...",
       "ownerOnly": "",
       "noAccountsLinked": "Ei Ole Ole Yhdistetty Plex Tilejä",
@@ -1630,7 +1625,6 @@
     },
     "destinations": {
       "add": "",
-      "alertsGoTo": "",
       "alertsGoTo_other": "",
       "builtinNote": "",
       "clearSecret": "",
@@ -1730,9 +1724,7 @@
         "push": "",
         "webToast": ""
       },
-      "usedBy": "",
       "usedBy_other": "",
-      "usedByNewsletters": "",
       "usedByNewsletters_other": "",
       "violationsOff": "",
       "violationsOn": "",
@@ -1795,7 +1787,6 @@
     "title": "Laitteen Yhteensopivuus",
     "description": "",
     "analyzedSessions": "",
-    "analyzedSessionsTooltip": "",
     "directPlayRate": "Suora Toistomaksu",
     "videoAndAudio": "",
     "uniqueDevices": "Yksilölliset Laitteet",
@@ -1931,12 +1922,10 @@
         "replacedEpisodes_one": "",
         "replacedEpisodes_other": "",
         "addedAgo": "lisätty {{date}}",
-        "addedCompactAgo": "",
-        "newEpisodesChip": ""
+        "addedCompactAgo": ""
       },
       "deadWeight": {
         "title": "",
-        "summary": "",
         "empty": "",
         "columns": {
           "poster": "",
@@ -2266,7 +2255,6 @@
       "linkSeerr": "",
       "kpi": {
         "requested": "",
-        "landedOf": "",
         "watched": "",
         "neverPlayed": "",
         "ofLanded": "",
