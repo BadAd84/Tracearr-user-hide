@@ -7,7 +7,7 @@ import { and, eq, isNull } from 'drizzle-orm';
 import { REDIS_KEYS, WS_EVENTS } from '@tracearr/shared';
 import { db } from '../db/client.js';
 import { servers, sessions } from '../db/schema.js';
-import { scheduleAutoSync } from '../jobs/librarySyncQueue.js';
+import { rebuildAutoSyncSchedules } from '../jobs/librarySyncQueue.js';
 import { publishServersChanged } from '../jobs/poller/database.js';
 import { forceStopSessions } from '../jobs/poller/index.js';
 import { clearServerDownState } from '../jobs/sseProcessor.js';
@@ -21,7 +21,7 @@ const logger = createLogger('HistoricalServers');
 /** The queue may not be up (boot, Redis outage); the switch must not fail on it. */
 async function rescheduleSyncs(): Promise<void> {
   try {
-    await scheduleAutoSync();
+    await rebuildAutoSyncSchedules();
   } catch (error) {
     logger.warn('Library auto-sync reschedule failed', { error });
   }
@@ -49,6 +49,8 @@ async function clearPendingSessions(serverId: string): Promise<void> {
 }
 
 export async function markServerHistorical(server: ServerRow): Promise<ServerRow> {
+  if (server.historicalAt) return server;
+
   const active = await db
     .select()
     .from(sessions)
@@ -85,6 +87,8 @@ export async function markServerHistorical(server: ServerRow): Promise<ServerRow
 }
 
 export async function resumeServer(server: ServerRow): Promise<ServerRow> {
+  if (!server.historicalAt) return server;
+
   const [updated] = await db
     .update(servers)
     .set({ historicalAt: null, updatedAt: new Date() })

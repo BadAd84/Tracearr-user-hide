@@ -23,7 +23,7 @@ import { sseManager } from '../services/sseManager.js';
 import { getCacheService } from '../services/cache.js';
 import { markServerHistorical, resumeServer } from '../services/historicalServers.js';
 import { liveServerCondition, HISTORICAL_EDIT_MESSAGE } from '../services/liveServers.js';
-import { scheduleAutoSync, enqueueLibrarySync } from '../jobs/librarySyncQueue.js';
+import { rebuildAutoSyncSchedules, enqueueLibrarySync } from '../jobs/librarySyncQueue.js';
 import { publishServersChanged } from '../jobs/poller/database.js';
 import { readServerIdentity } from '../services/serverIdentity.js';
 import { rearmImportedHistoryLink } from '../services/settings.js';
@@ -207,7 +207,7 @@ export const serverRoutes: FastifyPluginAsync = async (app) => {
     }
 
     await publishServersChanged();
-    scheduleAutoSync().catch((error: unknown) => {
+    rebuildAutoSyncSchedules().catch((error: unknown) => {
       app.log.error(
         { err: error, serverId: server.id },
         'Auto-sync schedule failed for new server'

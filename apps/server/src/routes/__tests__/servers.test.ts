@@ -71,6 +71,7 @@ vi.mock('../../services/cache.js', () => ({
 
 vi.mock('../../jobs/librarySyncQueue.js', () => ({
   enqueueLibrarySync: vi.fn().mockResolvedValue(undefined),
+  rebuildAutoSyncSchedules: vi.fn().mockResolvedValue(undefined),
   scheduleAutoSync: vi.fn().mockResolvedValue(undefined),
 }));
 
@@ -101,7 +102,7 @@ vi.mock('../../services/settings.js', () => ({
 
 import type { SQL } from 'drizzle-orm';
 import { db } from '../../db/client.js';
-import { scheduleAutoSync } from '../../jobs/librarySyncQueue.js';
+import { rebuildAutoSyncSchedules, scheduleAutoSync } from '../../jobs/librarySyncQueue.js';
 import { markServerHistorical, resumeServer } from '../../services/historicalServers.js';
 import { renderSql } from '../../test/helpers.js';
 import { rearmImportedHistoryLink } from '../../services/settings.js';
@@ -412,7 +413,7 @@ describe('Server Routes', () => {
       expect(rearmImportedHistoryLink).toHaveBeenCalledWith({ keepProviderPass: false });
     });
 
-    it('schedules the library auto-sync for the new server', async () => {
+    it('rebuilds the sync schedules for the new server without queuing a boot sync', async () => {
       app = await buildTestApp(ownerUser);
       vi.mocked(PlexClient.getAccountInfo).mockResolvedValue({
         id: 'plex-account-123',
@@ -447,7 +448,8 @@ describe('Server Routes', () => {
       });
 
       expect(response.statusCode).toBe(201);
-      expect(scheduleAutoSync).toHaveBeenCalledTimes(1);
+      expect(rebuildAutoSyncSchedules).toHaveBeenCalledTimes(1);
+      expect(scheduleAutoSync).not.toHaveBeenCalled();
     });
 
     it('creates a new Jellyfin server for owner', async () => {

@@ -54,8 +54,8 @@ vi.mock('../../jobs/poller/index.js', () => ({
   }),
 }));
 vi.mock('../../jobs/librarySyncQueue.js', () => ({
-  scheduleAutoSync: vi.fn(async () => {
-    calls.push('scheduleAutoSync');
+  rebuildAutoSyncSchedules: vi.fn(async () => {
+    calls.push('rebuildAutoSyncSchedules');
   }),
 }));
 vi.mock('../../jobs/poller/database.js', () => ({
@@ -97,7 +97,7 @@ vi.mock('../cache.js', () => ({
 }));
 
 import { forceStopSessions } from '../../jobs/poller/index.js';
-import { scheduleAutoSync } from '../../jobs/librarySyncQueue.js';
+import { rebuildAutoSyncSchedules } from '../../jobs/librarySyncQueue.js';
 import { renderSql } from '../../test/helpers.js';
 import type { ServerRow } from '../liveServers.js';
 import { markServerHistorical, resumeServer } from '../historicalServers.js';
@@ -118,7 +118,7 @@ describe('markServerHistorical', () => {
       'update',
       'publishServersChanged',
       'refresh',
-      'scheduleAutoSync',
+      'rebuildAutoSyncSchedules',
       `invalidate:${REDIS_KEYS.SERVER_HEALTH('srv-1')}`,
       'resetServerFailCount',
       `invalidate:${REDIS_KEYS.SERVER_CONNECTION('srv-1')}`,
@@ -131,6 +131,17 @@ describe('markServerHistorical', () => {
       serverName: 'Attic',
     });
     expect(updated.historicalAt).toBeInstanceOf(Date);
+  });
+
+  it('does nothing for a server that is already historical', async () => {
+    const historical = { ...row, historicalAt: new Date('2026-09-01T00:00:00Z') };
+
+    const result = await markServerHistorical(historical);
+
+    expect(result).toBe(historical);
+    expect(calls).toEqual([]);
+    expect(mockSet).not.toHaveBeenCalled();
+    expect(publish).not.toHaveBeenCalled();
   });
 
   it('force-stops every active session on the server, however recently it was seen', async () => {
@@ -171,7 +182,7 @@ describe('markServerHistorical', () => {
   });
 
   it('still completes when the sync reschedule fails', async () => {
-    vi.mocked(scheduleAutoSync).mockRejectedValueOnce(
+    vi.mocked(rebuildAutoSyncSchedules).mockRejectedValueOnce(
       new Error('Library sync queue not initialized')
     );
 
@@ -186,6 +197,13 @@ describe('resumeServer', () => {
     calls.length = 0;
   });
 
+  it('does nothing for a server that is already live', async () => {
+    const result = await resumeServer(row);
+
+    expect(result).toBe(row);
+    expect(calls).toEqual([]);
+  });
+
   it('clears the flag and rebuilds without writing health or publishing a banner', async () => {
     const updated = await resumeServer({ ...row, historicalAt: new Date('2026-09-01T00:00:00Z') });
 
@@ -194,7 +212,7 @@ describe('resumeServer', () => {
       'clearServerDownState',
       'publishServersChanged',
       'refresh',
-      'scheduleAutoSync',
+      'rebuildAutoSyncSchedules',
     ]);
     expect(mockSet.mock.calls[0]?.[0]).toMatchObject({ historicalAt: null });
     expect(publish).not.toHaveBeenCalled();

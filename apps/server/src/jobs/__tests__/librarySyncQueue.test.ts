@@ -88,6 +88,7 @@ import {
   getAllActiveLibrarySyncs,
   hasPendingLibrarySync,
   scheduleAutoSync,
+  rebuildAutoSyncSchedules,
   shutdownLibrarySyncQueue,
   startLibrarySyncWorker,
   invalidateLibraryCaches,
@@ -322,6 +323,32 @@ describe('scheduleAutoSync - boot sync pending-job check', () => {
       { serverId: 'srv-1', triggeredBy: 'scheduled' },
       expect.objectContaining({ jobId: 'scheduled-srv-1' })
     );
+  });
+
+  it('rebuilds only the schedulers and never queues a boot sync', async () => {
+    mockGetJobSchedulers.mockResolvedValue([{ key: 'old' }]);
+
+    await rebuildAutoSyncSchedules();
+
+    expect(mockRemoveJobScheduler).toHaveBeenCalledWith('old');
+    expect(mockQueueAdd).toHaveBeenCalledTimes(1);
+    expect(mockQueueAdd).toHaveBeenCalledWith(
+      'auto-sync-srv-1',
+      expect.anything(),
+      expect.anything()
+    );
+    expect(mockQueueGetJobs).not.toHaveBeenCalled();
+  });
+
+  it('leaves no schedulers when no live server remains', async () => {
+    mockGetJobSchedulers.mockResolvedValue([{ key: 'old' }]);
+    mockDbServers.mockResolvedValue([]);
+
+    await rebuildAutoSyncSchedules();
+    await scheduleAutoSync();
+
+    expect(mockRemoveJobScheduler).toHaveBeenCalledTimes(2);
+    expect(mockQueueAdd).not.toHaveBeenCalled();
   });
 
   it('still queues boot sync when the only delayed job is the scheduler placeholder it just planted', async () => {
