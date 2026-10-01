@@ -1732,6 +1732,36 @@ describe('Mobile Routes', () => {
       expect(body.success).toBe(true);
     });
 
+    it('returns 409 with the resume message when the server is historical', async () => {
+      app = await buildTestApp({ ...createMobileUser(), serverIds: [serverId] });
+
+      vi.mocked(db.select).mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi
+              .fn()
+              .mockResolvedValue([
+                { id: sessionId, serverId, serverUserId: randomUUID(), state: 'playing' },
+              ]),
+          }),
+        }),
+      } as never);
+      vi.mocked(terminateSession).mockResolvedValue({
+        success: false,
+        error: 'Server is historical',
+        outcome: 'server_historical',
+      } as never);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: `/mobile/streams/${sessionId}/terminate`,
+        payload: {},
+      });
+
+      expect(response.statusCode).toBe(409);
+      expect(response.json().message).toBe('Resume this server to end its streams');
+    });
+
     it('returns 403 for viewer trying to terminate', async () => {
       const viewerMobileUser = createMobileViewerUser(serverId);
       app = await buildTestApp(viewerMobileUser);

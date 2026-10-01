@@ -83,9 +83,11 @@ export function Dashboard() {
     !singleServer.historicalAt &&
     (singleIsPlex || (serverStats?.length ?? 0) > 0);
 
+  const liveSelected = selectedServers.filter((s) => !s.historicalAt);
+
   // Plex measures bandwidth; Jellyfin/Emby have no source for it
   const showBandwidthChart =
-    singleIsPlex || (isMultiServer && selectedServers.some((s) => s.type === 'plex'));
+    singleIsPlex || (isMultiServer && liveSelected.some((s) => s.type === 'plex'));
   const singleProcessLabel = singleServer
     ? { plex: 'Plex Media Server', jellyfin: 'Jellyfin', emby: 'Emby' }[singleServer.type]
     : undefined;
@@ -102,7 +104,7 @@ export function Dashboard() {
     (s) => s.statistics.length > 0 || s.bandwidth.length > 0
   );
   const showMultiServerResources =
-    isMultiServer && (hasAnyMultiData || selectedServers.some((s) => s.type === 'plex'));
+    isMultiServer && (hasAnyMultiData || liveSelected.some((s) => s.type === 'plex'));
 
   const seriesMeta = useCallback(
     (serverId: string) => {

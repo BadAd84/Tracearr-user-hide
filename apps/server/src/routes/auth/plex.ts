@@ -44,6 +44,7 @@ import {
 } from '../../services/mediaServer/plex/connectionTest.js';
 // Token encryption removed - tokens now stored in plain text (DB is localhost-only)
 import { syncServer } from '../../services/sync.js';
+import { rebuildAutoSyncSchedules } from '../../jobs/librarySyncQueue.js';
 import { getUserById } from '../../services/userService.js';
 import { isClaimCodeEnabled, validateClaimCode } from '../../utils/claimCode.js';
 
@@ -575,6 +576,13 @@ export const plexRoutes: FastifyPluginAsync = async (app) => {
 
       app.log.info({ serverId: newServer.id, serverName }, 'Additional Plex server added');
 
+      rebuildAutoSyncSchedules().catch((error: unknown) => {
+        app.log.error(
+          { err: error, serverId: newServer.id },
+          'Auto-sync schedule failed for new Plex server'
+        );
+      });
+
       // Auto-sync server users and libraries in background
       syncServer(newServer.id, { syncUsers: true, syncLibraries: true })
         .then((result) => {
@@ -1001,7 +1009,6 @@ export const plexRoutes: FastifyPluginAsync = async (app) => {
         return reply.notFound('Plex account not found');
       }
 
-      // Check if this account has live servers connected
       const [liveCount] = await db
         .select({ count: count() })
         .from(servers)

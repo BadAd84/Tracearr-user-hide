@@ -193,4 +193,33 @@ describe('Dashboard', () => {
 
     expect(multiLiveStats).toHaveBeenCalledWith(['a'], true);
   });
+
+  it('shows no server resources section when the only Plex server is historical', () => {
+    mockUseDashboardStats.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: false,
+      error: null,
+      refetch: vi.fn(),
+    } as unknown as ReturnType<typeof useDashboardStats>);
+    mockUseActiveSessions.mockReturnValue({
+      data: [],
+      isError: false,
+      error: null,
+      refetch: vi.fn(),
+    } as unknown as ReturnType<typeof useActiveSessions>);
+    mockUseServer.mockReturnValue({
+      selectedServerIds: ['a', 'b'],
+      selectedServers: [
+        { id: 'a', name: 'Old Plex', type: 'plex', historicalAt: '2026-09-01T12:00:00.000Z' },
+        { id: 'b', name: 'Attic', type: 'jellyfin', historicalAt: null },
+      ],
+      isMultiServer: true,
+      selectedServerId: null,
+    } as unknown as ReturnType<typeof useServer>);
+
+    renderDashboard();
+
+    expect(screen.queryByText('dashboard.serverResources')).not.toBeInTheDocument();
+  });
 });

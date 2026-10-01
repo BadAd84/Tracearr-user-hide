@@ -78,6 +78,10 @@ vi.mock('../../../services/sync.js', () => ({
   syncServer: vi.fn(),
 }));
 
+vi.mock('../../../jobs/librarySyncQueue.js', () => ({
+  rebuildAutoSyncSchedules: vi.fn().mockResolvedValue(undefined),
+}));
+
 vi.mock('../../../services/userService.js', () => ({
   getUserById: vi.fn(),
   getOwnerUser: vi.fn(),
@@ -98,6 +102,7 @@ import { db } from '../../../db/client.js';
 import { getUserById } from '../../../services/userService.js';
 import { PlexClient } from '../../../services/mediaServer/index.js';
 import { syncServer } from '../../../services/sync.js';
+import { rebuildAutoSyncSchedules } from '../../../jobs/librarySyncQueue.js';
 import { publishServersChanged } from '../../../jobs/poller/database.js';
 import { renderSql } from '../../../test/helpers.js';
 import { reconcilePlexAccountToken } from '../../../services/plexAccounts.js';
@@ -546,6 +551,8 @@ describe('Plex Auth Routes', () => {
       // Mock insert
       const insertChain = mockDbInsert([newServer]);
 
+      vi.mocked(rebuildAutoSyncSchedules).mockResolvedValue(undefined);
+
       // Mock sync
       vi.mocked(syncServer).mockResolvedValue({
         usersAdded: 5,
@@ -571,6 +578,7 @@ describe('Plex Auth Routes', () => {
       const body = response.json();
       expect(body.server.id).toBe(newServerId);
       expect(body.success).toBe(true);
+      expect(rebuildAutoSyncSchedules).toHaveBeenCalledTimes(1);
 
       // The resolved account owns the new row: its token and its id, not a
       // token copied off some other server with no account attribution.
