@@ -3,6 +3,14 @@
   "date": "2026-09-28",
   "changes": [
     {
+      "type": "new",
+      "text": "a send action can set its own title and body with variables, defaults and if blocks, and previews each destination"
+    },
+    {
+      "type": "new",
+      "text": "a send action can set a priority for Pushover, Gotify and ntfy, replacing each one's built-in level"
+    },
+    {
       "type": "fix",
       "text": "Server Resources on the dashboard no longer fails to load for Plex servers with a long bandwidth history",
       "refs": ["#1255"]
