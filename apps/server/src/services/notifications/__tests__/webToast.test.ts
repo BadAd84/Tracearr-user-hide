@@ -9,10 +9,6 @@ vi.mock('../../cache.js', () => ({ getPubSubService: vi.fn() }));
 
 const destination = { id: 'dest-toast', name: 'Browser toast' };
 const systemCtx: RenderContext = { destination, source: { kind: 'system' } };
-const ruleCtx: RenderContext = {
-  destination,
-  source: { kind: 'rule', title: 'Rule fired', message: 'Too many streams' },
-};
 const newDevice = {
   type: 'new_device',
   payload: {
@@ -112,18 +108,6 @@ describe('webToastType.render', () => {
 
   it('renders nothing for a system violation', async () => {
     expect(await render({ type: 'violation', payload: violation })).toEqual({});
-  });
-
-  it('renders a rule violation as a toast', async () => {
-    expect(await render({ type: 'violation', payload: violation }, ruleCtx)).toEqual({
-      toast: {
-        title: 'Rule fired',
-        message: 'Too many streams',
-        automationId: 'rule-456',
-        automationName: 'Test Rule',
-        severity: 'high',
-      },
-    });
   });
 
   it('toasts an automation-sourced stream start with the automation behind it', async () => {

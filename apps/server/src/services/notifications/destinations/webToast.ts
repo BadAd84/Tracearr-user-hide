@@ -10,17 +10,6 @@ export interface ToastRendered {
 
 /** The automation is the gate: only its own sends toast, and every event type does. */
 function toastFor(event: NotificationEvent, source: NotificationSource): NotificationToast | null {
-  if (source.kind === 'rule') {
-    // Pre-automation jobs still in the queue at upgrade; only ever violation-shaped.
-    if (event.type !== 'violation') return null;
-    return {
-      title: source.title,
-      message: source.message,
-      automationId: event.payload.rule.id,
-      automationName: event.payload.rule.name,
-      severity: event.payload.severity,
-    };
-  }
   if (source.kind !== 'automation') return null;
   const payload = toNotificationPayload(event, source);
   return {

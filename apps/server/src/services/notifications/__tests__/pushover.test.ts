@@ -167,16 +167,6 @@ describe('pushoverType.render', () => {
     expect(message.message).toContain('latest 0.3.0');
     expect(message.priority).toBe('-1');
   });
-
-  it('uses the rule source title for a rule send', async () => {
-    const message = await render(
-      { type: 'violation', payload: violation },
-      { destination, source: { kind: 'rule', title: 'Rule fired', message: 'Too many streams' } }
-    );
-
-    expect(message.title).toBe('Rule fired');
-    expect(message.message).toBe('User Test User triggered Test Rule (Warning severity)');
-  });
 });
 
 describe('pushoverType.deliver', () => {

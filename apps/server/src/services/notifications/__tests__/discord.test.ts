@@ -206,16 +206,6 @@ describe('discordType.render', () => {
     expect(embed.description).toContain('Jellyfin: ');
     expect(embed.description).toContain('latest 0.3.0');
   });
-
-  it('uses the rule source title for a rule send', async () => {
-    const embed = await render(
-      { type: 'violation', payload: violation },
-      { destination, source: { kind: 'rule', title: 'Rule fired', message: 'Too many streams' } }
-    );
-
-    expect(embed.title).toBe('Rule fired');
-    expect(fieldNames(embed)).toEqual(['User', 'Rule', 'Severity']);
-  });
 });
 
 describe('discordType.deliver', () => {

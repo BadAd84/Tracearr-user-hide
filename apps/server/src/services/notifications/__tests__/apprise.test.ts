@@ -163,16 +163,6 @@ describe('appriseType.render', () => {
     expect(message.body).toContain('latest 0.3.0');
     expect(message.type).toBe('warning');
   });
-
-  it('uses the rule source title for a rule send', async () => {
-    const message = await render(
-      { type: 'violation', payload: violation },
-      { destination, source: { kind: 'rule', title: 'Rule fired', message: 'Too many streams' } }
-    );
-
-    expect(message.title).toBe('Rule fired');
-    expect(message.body).toBe('User Test User triggered Test Rule (Warning severity)');
-  });
 });
 
 describe('appriseType.deliver', () => {

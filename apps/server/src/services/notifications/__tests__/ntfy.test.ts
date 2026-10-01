@@ -166,16 +166,6 @@ describe('ntfyType.render', () => {
     expect(message.priority).toBe(3);
   });
 
-  it('uses the rule source title for a rule send', async () => {
-    const message = await render(
-      { type: 'violation', payload: violation },
-      { destination, source: { kind: 'rule', title: 'Rule fired', message: 'Too many streams' } }
-    );
-
-    expect(message.title).toBe('Rule fired');
-    expect(message.message).toBe('User Test User triggered Test Rule (Warning severity)');
-  });
-
   it('falls back to the tracearr topic when the config topic is empty', async () => {
     const message = await ntfyType.render(
       { type: 'violation', payload: violation },
