@@ -160,7 +160,7 @@
     "apiKeyPlaceholder": "Wprowadź swój klucz API",
     "connectServer": "Połącz z serwerem",
     "removeServer": "Usuń serwer",
-    "removeServerConfirm": "Czy na pewno chcesz usunąć ten serwer? Wszystkie powiązane dane sesji zostaną zachowane, ale nie będziesz mógł monitorować nowych sesji z tego serwera.",
+    "removeServerConfirm": "Usunąć ten serwer? Jego sesje, historia oglądania, użytkownicy i biblioteki zostaną usunięte z Tracearr i nie będzie można ich odzyskać.",
     "editServer": "Edytuj serwer",
     "editServerDesc": "Aktualizuj nazwę serwera lub adres URL połączenia.",
     "serverColor": "Kolor serwera",

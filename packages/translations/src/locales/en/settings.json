@@ -158,7 +158,7 @@
     "apiKeyPlaceholder": "Enter your API key",
     "connectServer": "Connect Server",
     "removeServer": "Remove Server",
-    "removeServerConfirm": "Are you sure you want to remove this server? All associated session data will be retained, but you won't be able to monitor new sessions from this server.",
+    "removeServerConfirm": "Remove this server? Its sessions, watch history, users and libraries are deleted from Tracearr and can't be recovered.",
     "editServer": "Edit Server",
     "editServerDesc": "Update the server name, connection URL or API key.",
     "serverColor": "Server Color",
