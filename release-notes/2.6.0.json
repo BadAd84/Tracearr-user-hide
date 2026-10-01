@@ -1,6 +1,14 @@
 {
-  "version": "2.5.2",
+  "version": "2.6.0",
   "date": "2026-09-28",
+  "headline": "Your own notification text, and priority for Pushover, Gotify and ntfy",
+  "highlights": [
+    {
+      "title": "Write your own notifications",
+      "body": "A send action can set its own title and body, using the trigger's variables, a fallback for empty values, and lines that only show when a value is there. The builder previews the message for each destination you picked, cut to that destination's limits. Sends to Pushover, Gotify and ntfy can also pick a priority, from silent to urgent.",
+      "docs": "https://docs.tracearr.com/configuration/automations"
+    }
+  ],
   "changes": [
     {
       "type": "new",
