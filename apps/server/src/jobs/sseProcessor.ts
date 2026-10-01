@@ -727,7 +727,13 @@ async function handleProgress(event: {
       sessionKey: notification.sessionKey,
     });
 
-    if (!existingSession) {
+    // An autoplayed next item reuses the sessionKey; its position must not land
+    // on the old row. The next playing tick takes the full path and handles it.
+    if (
+      !existingSession ||
+      existingSession.mediaType === 'live' ||
+      existingSession.ratingKey !== notification.ratingKey
+    ) {
       return;
     }
 

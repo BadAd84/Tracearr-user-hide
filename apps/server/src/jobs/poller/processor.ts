@@ -99,6 +99,7 @@ import type {
   PendingSessionData,
   PendingSessionOutcome,
   PollerConfig,
+  ProcessedSession,
   ResolvePendingSessionInput,
   ServerProcessingResult,
   ServerWithToken,
@@ -551,6 +552,14 @@ async function pruneMissedPollTracking(
 // Server Session Processing
 // ============================================================================
 
+/** Plex buffering maps to 'playing'; the session keeps its last playing or paused state. */
+function stateThroughBuffering(
+  current: 'playing' | 'paused' | 'stopped',
+  processed: ProcessedSession
+): 'playing' | 'paused' {
+  return processed.buffering && current !== 'stopped' ? current : processed.state;
+}
+
 /**
  * Confirm or update a Redis-only pending session. Pending sessions are
  * invisible to cachedSessionKeys, so both poll branches must call this
@@ -579,10 +588,11 @@ async function resolvePendingSession(
 
   const { updatedData, isConfirmed } = updatePendingSession(
     pendingSession,
-    processed.state,
+    stateThroughBuffering(pendingSession.currentState, processed),
     processed.progressMs,
     Date.now()
   );
+  updatedData.processed = { ...updatedData.processed, buffering: processed.buffering };
 
   if (!isConfirmed) {
     await cacheService.setPendingSession(server.id, pendingKey, updatedData);
@@ -1258,7 +1268,7 @@ async function processServerSessions(
                   geo,
                   server,
                   overrides: {
-                    state: processed.state,
+                    state: stateThroughBuffering(existing.state, processed),
                     lastPausedAt: existing.lastPausedAt,
                     pausedDurationMs: existing.pausedDurationMs ?? 0,
                     watched: existing.watched ?? false,
@@ -1601,10 +1611,7 @@ async function processServerSessions(
           }
 
           const previousState = existingSession.state;
-          const newState =
-            processed.buffering && existingSession.state !== 'stopped'
-              ? existingSession.state
-              : processed.state;
+          const newState = stateThroughBuffering(existingSession.state, processed);
           const now = new Date();
 
           // Check if transcode state changed (e.g., user changed quality mid-stream)

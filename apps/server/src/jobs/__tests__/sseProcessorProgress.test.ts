@@ -325,6 +325,25 @@ describe('SSE Processor - repeat playing ticks take the throttled progress path'
     );
   });
 
+  it('writes nothing when a buffering tick carries a different ratingKey than the row', async () => {
+    mockSseManager.emit('plex:session:progress', {
+      serverId: SERVER_ID,
+      notification: playingNotification(10_000, {
+        state: 'buffering',
+        ratingKey: '2002',
+        key: '/library/metadata/2002',
+      }),
+    });
+
+    await vi.waitFor(() => {
+      expect(mockFindActiveSession).toHaveBeenCalled();
+    });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(mockCacheService.updateActiveSession).not.toHaveBeenCalled();
+    expect(mockDb.update).not.toHaveBeenCalled();
+  });
+
   it('persists a watched transition immediately even mid-throttle-window', async () => {
     await emitPlayingTick(10_000);
     expect(mockDb.update).toHaveBeenCalledTimes(1);

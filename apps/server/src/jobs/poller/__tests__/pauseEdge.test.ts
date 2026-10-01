@@ -141,6 +141,8 @@ vi.mock('../violations.js', () => ({ broadcastViolations: vi.fn() }));
 
 import { initializePoller, triggerServerPoll } from '../processor.js';
 import { getActiveAutomations } from '../database.js';
+import { updatePendingSession } from '../pendingConfirmation.js';
+import { buildPendingActiveSession } from '../sessionLifecycle.js';
 
 const EXISTING_SESSION_ID = 'session-1';
 
@@ -291,5 +293,38 @@ describe('poller pause edge', () => {
     await triggerServerPoll('server-1');
 
     expect(mockDispatch).not.toHaveBeenCalled();
+  });
+
+  it('keeps a paused pending session paused while Plex reports buffering', async () => {
+    const pending = {
+      id: 'pending-1',
+      currentState: 'paused',
+      processed: processedSession({ state: 'paused', buffering: false }),
+    };
+    vi.mocked(updatePendingSession).mockReturnValue({
+      updatedData: pending,
+      isConfirmed: false,
+    } as unknown as ReturnType<typeof updatePendingSession>);
+    mockMapMediaSession.mockReturnValue(processedSession({ state: 'playing', buffering: true }));
+    initializePoller(
+      {
+        getAllActiveSessions: vi.fn().mockResolvedValue([]),
+        getPendingSession: vi.fn().mockResolvedValue(pending),
+        setPendingSession: vi.fn(),
+      } as unknown as Parameters<typeof initializePoller>[0],
+      { publish: vi.fn(), subscribe: vi.fn() } as unknown as Parameters<typeof initializePoller>[1]
+    );
+
+    await triggerServerPoll('server-1');
+
+    expect(updatePendingSession).toHaveBeenCalledWith(
+      pending,
+      'paused',
+      20_000,
+      expect.any(Number)
+    );
+    expect(buildPendingActiveSession).toHaveBeenCalledWith(
+      expect.objectContaining({ processed: expect.objectContaining({ buffering: true }) })
+    );
   });
 });

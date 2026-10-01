@@ -401,7 +401,7 @@ export class PlexEventSource extends EventEmitter {
       if ('status' in errorObj) {
         errorMessage += ` (status: ${errorObj.status})`;
       }
-      if ('code' in errorObj) {
+      if (errorObj.code !== undefined) {
         errorMessage += ` (status: ${errorObj.code})`;
       }
     }

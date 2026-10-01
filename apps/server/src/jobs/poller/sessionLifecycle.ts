@@ -309,6 +309,7 @@ export function buildPendingActiveSession(pendingData: PendingSessionData): Acti
 
     // State
     state: pendingData.currentState,
+    buffering: processed.buffering,
 
     // Media metadata
     mediaType: processed.mediaType,
