@@ -27,6 +27,7 @@ import {
 } from '../services/librarySync.js';
 import { syncServer } from '../services/sync.js';
 import { getPubSubService } from '../services/cache.js';
+import { isLiveServer, liveServers } from '../services/liveServers.js';
 import { enqueueMaintenanceJob, maybeEnqueueMaintenanceJob } from './maintenanceQueue.js';
 import { enqueueImagePrecache } from './imagePrecacheQueue.js';
 import { resolvePrecachePass } from './precachePassPolicy.js';
@@ -232,6 +233,11 @@ export function startLibrarySyncWorker(): void {
           `[LibrarySync] Skipping job ${job.id} - sync already in progress for server ${serverId}`
         );
         return { skipped: true, reason: 'sync already in progress' };
+      }
+
+      if (!(await isLiveServer(serverId))) {
+        console.log(`[LibrarySync] Skipping job ${job.id} - server ${serverId} is historical`);
+        return { skipped: true, reason: 'server historical' };
       }
 
       // Mark as active
@@ -565,8 +571,8 @@ export async function scheduleAutoSync(): Promise<void> {
     throw new Error('Library sync queue not initialized');
   }
 
-  // Query all servers from database
-  const allServers = await db.select({ id: servers.id, name: servers.name }).from(servers);
+  // Query live servers from database
+  const allServers = await liveServers();
 
   if (allServers.length === 0) {
     console.log('[LibrarySync] No servers found - skipping auto-sync scheduling');

@@ -60,6 +60,8 @@ export interface Server {
   /** What the server reports running, and the newest release the update checker saw. */
   version?: string | null;
   latestVersion?: string | null;
+  /** When Tracearr stopped contacting this server. Null, or absent on older payloads, while it is live. */
+  historicalAt?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }

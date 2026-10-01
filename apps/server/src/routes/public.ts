@@ -52,6 +52,7 @@ import { getDashboardStats } from '../services/dashboardStats.js';
 import { buildAvatarUrl, buildPosterUrl } from '../services/imageProxy.js';
 import { terminateSession } from '../services/termination.js';
 import { getCurrentVersion } from '../utils/buildInfo.js';
+import { serverOrderBy } from '../utils/serverOrder.js';
 import { generateOpenAPIDocument } from './public.openapi.js';
 import {
   queryConcurrentStreams,
@@ -189,7 +190,7 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
     const allServers = await db
       .select({ id: servers.id, name: servers.name })
       .from(servers)
-      .orderBy(servers.displayOrder);
+      .orderBy(...serverOrderBy());
 
     if (allServers.length > 0) {
       const serverIds = allServers.map((s) => s.id);
@@ -234,7 +235,7 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
         type: servers.type,
       })
       .from(servers)
-      .orderBy(servers.displayOrder);
+      .orderBy(...serverOrderBy());
 
     // Get cached health state and active sessions
     const cacheService = getCacheService();
