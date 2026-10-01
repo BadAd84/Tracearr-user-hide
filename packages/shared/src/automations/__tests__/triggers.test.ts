@@ -95,6 +95,7 @@ describe('template variables', () => {
   it('resolves the old names to the new ones and leaves the rest alone', () => {
     expect(resolveVariable('current')).toBe('installedVersion');
     expect(resolveVariable('latest')).toBe('latestVersion');
+    expect(resolveVariable('toString')).toBe('toString');
     expect(resolveVariable('user.username')).toBe('user.username');
   });
 

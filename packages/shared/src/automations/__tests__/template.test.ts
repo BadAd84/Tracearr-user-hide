@@ -147,3 +147,20 @@ describe('fitText', () => {
     expect(fitText('a\\\\bcd', { max: 4, unit: 'chars' })).toBe('a\\\\…');
   });
 });
+
+describe('a plain-object lookup', () => {
+  const lookup = (name: string) => values[name];
+  const keep = (value: string) => value;
+
+  it('renders prototype names as empty through the parser path', () => {
+    expect(renderText('[{{ constructor }}]', lookup, keep)).toBe('[]');
+    expect(renderText('{% if toString %}x{% else %}y{% endif %}', lookup, keep)).toBe('y');
+    const parsed = parseTemplate('[{{ valueOf }}]');
+    if (!parsed.ok) throw new Error('did not parse');
+    expect(renderTemplate(parsed.nodes, lookup, keep)).toBe('[]');
+  });
+
+  it('renders prototype names as empty through the legacy path', () => {
+    expect(renderText('{{constructor}} {%', lookup, keep)).toBe(' {%');
+  });
+});

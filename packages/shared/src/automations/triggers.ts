@@ -178,7 +178,7 @@ export const VARIABLE_ALIASES: Readonly<Record<string, TemplateVariable>> = {
 };
 
 export function resolveVariable(name: string): string {
-  return VARIABLE_ALIASES[name] ?? name;
+  return Object.hasOwn(VARIABLE_ALIASES, name) ? (VARIABLE_ALIASES[name] ?? name) : name;
 }
 
 /** The release that first shipped a trigger; one not listed has been there since 2.2.0. */

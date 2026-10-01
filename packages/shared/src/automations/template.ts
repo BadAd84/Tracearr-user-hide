@@ -179,6 +179,11 @@ export function templateVariables(nodes: readonly TemplateNode[]): string[] {
   return [...names];
 }
 
+/** A plain-object lookup answers prototype names with functions; those render as nothing. */
+function stringOrEmpty(value: unknown): string {
+  return typeof value === 'string' ? value : '';
+}
+
 /** Template text is copied as written; every inserted value, default text included, is escaped. */
 export function renderTemplate(
   nodes: readonly TemplateNode[],
@@ -191,7 +196,7 @@ export function renderTemplate(
       out += node.value;
       continue;
     }
-    const value = lookup(node.name) ?? '';
+    const value = stringOrEmpty(lookup(node.name));
     const empty = value.trim() === '';
     if (node.kind === 'output') {
       out += escape(empty && node.fallback !== undefined ? node.fallback : value);
@@ -213,7 +218,9 @@ export function renderText(
 ): string {
   const parsed = parseTemplate(text);
   if (parsed.ok) return renderTemplate(parsed.nodes, lookup, escape);
-  return text.replace(LEGACY_VARIABLE, (_match, name: string) => escape(lookup(name) ?? ''));
+  return text.replace(LEGACY_VARIABLE, (_match, name: string) =>
+    escape(stringOrEmpty(lookup(name)))
+  );
 }
 
 const ELLIPSIS = '…';
