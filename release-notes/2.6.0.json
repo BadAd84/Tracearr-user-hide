@@ -1,6 +1,6 @@
 {
   "version": "2.6.0",
-  "date": "2026-09-30",
+  "date": "2026-10-01",
   "headline": "Your own notification text and priority, plus historical servers",
   "highlights": [
     {
@@ -46,6 +46,10 @@
     {
       "type": "fix",
       "text": "the remove-server warning now says the server's history is deleted; it used to say history was kept"
+    },
+    {
+      "type": "fix",
+      "text": "a newly added server gets its 12-hourly library sync right away instead of after the next restart"
     }
   ]
 }
