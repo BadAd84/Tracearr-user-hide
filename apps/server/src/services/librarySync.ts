@@ -139,11 +139,13 @@ const FLAT_LIBRARY_TYPES = new Set(['movie', 'movies']);
 /**
  * Bump a server type's version when its listing query changes shape. A library
  * stamped with an older version gets one forced full scan, so items the old
- * query left out come back without anyone running a manual sync. Plex is at 2
- * because its listing started storing plex_guid.
+ * query left out come back without anyone running a manual sync. Plex is at 3
+ * and the other servers at 2: Plex's listing started storing plex_guid, and
+ * every parse now reads the Atmos and edition fields, which existing copies
+ * only pick up through a full scan.
  */
 function libraryScanVersionFor(serverType: ServerType): number {
-  return serverType === 'plex' ? 2 : 1;
+  return serverType === 'plex' ? 3 : 2;
 }
 
 // Auto-handoff throttles for the compressed-history identity backfill. The

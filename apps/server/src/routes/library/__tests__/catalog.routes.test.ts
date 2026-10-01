@@ -254,6 +254,23 @@ describe('buildCatalogPageQuery', () => {
     expect(params).toContain(50 * 1024 ** 3);
   });
 
+  it('show Atmos filter checks audio_atmos on episode versions', () => {
+    const { sql } = renderSql(
+      buildCatalogPageQuery({
+        type: 'show',
+        sort: 'title',
+        offset: 0,
+        ...baseFilterParams,
+        atmos: true,
+        pageSize: 60,
+      })
+    );
+    const text = normalize(sql);
+    expect(text).toContain('em.show_media_id = m.id');
+    expect(text).toContain('AND v.audio_atmos');
+    expect(text).not.toContain('liva.audio_atmos');
+  });
+
   it('show pages decorate copies with episode-derived resolution and size', () => {
     const { sql } = renderSql(
       buildCatalogPageQuery({

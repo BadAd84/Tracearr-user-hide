@@ -474,7 +474,7 @@ export const sessions = pgTable(
     // ============ Detailed JSONB Fields ============
     // Source video: bitrate, framerate, dynamicRange, aspectRatio, profile, level, colorSpace, colorDepth
     sourceVideoDetails: jsonb('source_video_details').$type<SourceVideoDetails>(),
-    // Source audio: bitrate, channelLayout, language, sampleRate
+    // Source audio: bitrate, channelLayout, language, sampleRate, profile, atmos
     sourceAudioDetails: jsonb('source_audio_details').$type<SourceAudioDetails>(),
     // Stream video: bitrate, width, height, framerate, dynamicRange
     streamVideoDetails: jsonb('stream_video_details').$type<StreamVideoDetails>(),

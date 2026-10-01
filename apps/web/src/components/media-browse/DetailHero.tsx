@@ -263,10 +263,9 @@ export function DetailHero({
         ? { label: t('media.shows.title'), href: '/media/browse?type=shows' }
         : null;
 
+  const activeAvailability = (availability ?? []).filter((a) => a.removedAt == null);
   const editionTitles = new Set(
-    (availability ?? [])
-      .filter((a) => a.removedAt == null)
-      .flatMap((a) => a.versions.map((v) => v.editionTitle ?? ''))
+    activeAvailability.flatMap((a) => a.versions.map((v) => v.editionTitle ?? ''))
   );
   const [sharedEdition] = editionTitles.size === 1 ? editionTitles : [];
 
@@ -281,8 +280,6 @@ export function DetailHero({
       : null,
     data?.genres && data.genres.length > 0 ? data.genres.join(', ') : null,
   ]);
-
-  const activeAvailability = (availability ?? []).filter((a) => a.removedAt == null);
 
   if (!hasTitle) {
     if (isError) {
