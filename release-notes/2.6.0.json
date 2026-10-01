@@ -50,6 +50,18 @@
     {
       "type": "fix",
       "text": "a newly added server gets its 12-hourly library sync right away instead of after the next restart"
+    },
+    {
+      "type": "fix",
+      "text": "the Tautulli import includes plays from archived users and libraries"
+    },
+    {
+      "type": "fix",
+      "text": "imported-history linking no longer stalls on Tautulli 2.18.0 to 2.18.2 when history rows lack metadata"
+    },
+    {
+      "type": "fix",
+      "text": "the Tautulli import reports ungrouped plays and rows without metadata as skipped, not as active sessions or errors"
     }
   ]
 }

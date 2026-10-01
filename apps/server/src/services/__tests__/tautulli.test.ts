@@ -642,6 +642,31 @@ describe('TautulliService.getGuidsByRatingKey', () => {
     expect(params.get('grouping')).toBe('0');
     expect(params.get('include_activity')).toBe('0');
     expect(params.get('length')).toBe('100000');
+    expect(params.get('include_archived')).toBe('1');
+  });
+
+  it('skips a row Tautulli has no metadata for and keeps the rest of the batch', async () => {
+    respondWith([
+      historyRow({ rating_key: 101 }),
+      historyRow({ rating_key: null, guid: null, reference_id: 7009 }),
+    ]);
+
+    const service = new TautulliService('http://localhost:8181', 'api-key');
+    const history = await service.getGuidsByRatingKey(['101']);
+
+    expect(history?.get('101')).toEqual({
+      guids: new Set(['plex://episode/aaa?lang=en']),
+      referenceIds: new Set(['7001']),
+    });
+  });
+
+  it('accepts fewer rows than Tautulli counted, as 2.18 returns for rows without metadata', async () => {
+    respondWith([historyRow({})], { recordsFiltered: 2 });
+
+    const service = new TautulliService('http://localhost:8181', 'api-key');
+    const history = await service.getGuidsByRatingKey(['101']);
+
+    expect(history?.get('101')?.referenceIds).toEqual(new Set(['7001']));
   });
 
   it('drops live rows and rows that are not movies or episodes, guids and reference ids alike', async () => {
@@ -703,13 +728,13 @@ describe('TautulliService.getGuidsByRatingKey', () => {
     );
   });
 
-  it('returns null on an error result and when fewer rows came back than matched', async () => {
+  it('returns null on an error result and on a full page that may have been cut', async () => {
     const service = new TautulliService('http://localhost:8181', 'api-key');
 
     respondWith([historyRow({})], { result: 'error' });
     await expect(service.getGuidsByRatingKey(['101'])).resolves.toBeNull();
 
-    respondWith([historyRow({})], { recordsFiltered: 2 });
+    respondWith(Array.from({ length: 100000 }, () => historyRow({})));
     await expect(service.getGuidsByRatingKey(['101'])).resolves.toBeNull();
   });
 });
@@ -2255,8 +2280,10 @@ describe('TautulliService.importHistory cutoff and safe updates', () => {
     });
   }
 
-  function makeRecord(overrides: Partial<TautulliHistoryRecord> = {}): TautulliHistoryRecord {
-    return { ...REAL_MOVIE_RECORD, ...overrides };
+  function makeRecord(
+    overrides: { [K in keyof TautulliHistoryRecord]?: TautulliHistoryRecord[K] | null } = {}
+  ): TautulliHistoryRecord {
+    return { ...REAL_MOVIE_RECORD, ...overrides } as TautulliHistoryRecord;
   }
 
   function makeExisting(overrides: Partial<ExistingSession> = {}): ExistingSession {
@@ -2313,6 +2340,44 @@ describe('TautulliService.importHistory cutoff and safe updates', () => {
       String(call[0]).includes('cmd=get_history')
     );
     expect(historyCall?.[0]).toContain('grouping=1');
+  });
+
+  it('asks for archived users and libraries and leaves current activity out', async () => {
+    mockFetch = mockTautulliFetch([], 0);
+    global.fetch = mockFetch as typeof global.fetch;
+
+    await TautulliService.importHistory(SERVER_ID);
+
+    const historyCall = mockFetch.mock.calls.find((call: unknown[]) =>
+      String(call[0]).includes('cmd=get_history')
+    );
+    expect(historyCall?.[0]).toContain('include_archived=1');
+    expect(historyCall?.[0]).toContain('include_activity=0');
+  });
+
+  it('counts the plays of a nameless group Tautulli never grouped instead of treating it as activity', async () => {
+    mockFetch = mockTautulliFetch(
+      [makeRecord({ reference_id: null, row_id: 5, group_count: 3, group_ids: '5,6,7' })],
+      1
+    );
+    global.fetch = mockFetch as typeof global.fetch;
+
+    const result = await TautulliService.importHistory(SERVER_ID);
+
+    expect(result.imported).toBe(0);
+    expect(result.skipped).toBe(1);
+    expect(result.message).toContain('3 plays Tautulli never grouped');
+  });
+
+  it('skips a record Tautulli has no metadata for instead of counting an error', async () => {
+    mockFetch = mockTautulliFetch([makeRecord({ full_title: null, title: null })], 1);
+    global.fetch = mockFetch as typeof global.fetch;
+
+    const result = await TautulliService.importHistory(SERVER_ID);
+
+    expect(result.errors).toBe(0);
+    expect(result.skipped).toBe(1);
+    expect(result.message).toContain('1 without metadata in Tautulli');
   });
 
   it('aborts with an error result when the server has no tracking cutoff', async () => {

@@ -44,6 +44,7 @@ import {
 import { markImportedServerLocations } from './serverLocations.js';
 import { getSettings, rearmImportedHistoryLink } from './settings.js';
 
+const GUID_HISTORY_LENGTH = 100000;
 const PAGE_SIZE = 5000; // Larger batches = fewer API calls (tested up to 10k, scales linearly)
 const REQUEST_TIMEOUT_MS = 30000; // 30 seconds
 const MAX_RETRIES = 3;
@@ -216,7 +217,9 @@ const TautulliGuidHistoryResponseSchema = z.object({
 });
 
 const TautulliGuidHistoryRowSchema = z.object({
-  rating_key: z.union([z.number(), z.string()]).transform(String),
+  rating_key: z
+    .union([z.number(), z.string(), z.null()])
+    .transform((v) => (v === null ? null : String(v))),
   live: z.number().nullable(),
   media_type: z.string(),
   guid: z.string().nullable(),
@@ -556,6 +559,8 @@ export class TautulliService {
         order_column: 'date',
         order_dir: 'desc',
         grouping: 1,
+        include_activity: 0,
+        include_archived: 1,
       },
       TautulliHistoryResponseSchema
     );
@@ -579,8 +584,8 @@ export class TautulliService {
   /**
    * Raw guids and reference ids Tautulli recorded for each rating key, from
    * non-live movie and episode history rows. Null when the answer may be
-   * incomplete: an error result, a row that does not parse, or fewer rows
-   * returned than matched.
+   * incomplete: an error result, a row that does not parse, or a full page,
+   * which may have been cut.
    */
   async getGuidsByRatingKey(
     ratingKeys: string[]
@@ -591,13 +596,14 @@ export class TautulliService {
         rating_key: ratingKeys.join(','),
         grouping: 0,
         include_activity: 0,
-        length: 100000,
+        include_archived: 1,
+        length: GUID_HISTORY_LENGTH,
       },
       TautulliGuidHistoryResponseSchema
     );
     const { data } = result.response;
     if (result.response.result !== 'success' || !data) return null;
-    if (data.data.length !== data.recordsFiltered) return null;
+    if (data.data.length >= GUID_HISTORY_LENGTH) return null;
 
     const requested = new Set(ratingKeys);
     const history = new Map<string, { guids: Set<string>; referenceIds: Set<string> }>();
@@ -613,7 +619,7 @@ export class TautulliService {
       } = row.data;
       // Tautulli filters on session_history.rating_key but reports
       // session_history_metadata.rating_key, so check the key it reports.
-      if (!requested.has(ratingKey)) continue;
+      if (ratingKey === null || !requested.has(ratingKey)) continue;
       if (live !== 0 || (mediaType !== 'movie' && mediaType !== 'episode')) continue;
       const entry = history.get(ratingKey) ?? { guids: new Set(), referenceIds: new Set() };
       // A row without a guid still counts, so its key cannot look unanimous.
@@ -874,6 +880,8 @@ export class TautulliService {
     let skipped = 0;
     let errors = 0;
     let alreadyTracked = 0;
+    let ungrouped = 0;
+    let noMetadata = 0;
     let page = 0;
     const failedPages: number[] = [];
 
@@ -923,6 +931,13 @@ export class TautulliService {
       // Validate records individually - skip bad records instead of failing entire page
       const validRecords: TautulliHistoryRecord[] = [];
       for (const raw of rawRecords) {
+        if ((raw as { full_title?: unknown } | null)?.full_title === null) {
+          skipped++;
+          noMetadata++;
+          progress.skippedRecords++;
+          progress.processedRecords++;
+          continue;
+        }
         const parsed = TautulliHistoryRecordSchema.safeParse(raw);
         if (parsed.success) {
           validRecords.push(parsed.data);
@@ -1023,11 +1038,10 @@ export class TautulliService {
             continue;
           }
 
-          // Skip records without reference_id (active/in-progress sessions)
           if (record.reference_id === null) {
             skipped++;
             progress.skippedRecords++;
-            progress.activeSessionRecords++;
+            ungrouped += record.group_count ?? 1;
             continue;
           }
 
@@ -1523,6 +1537,14 @@ export class TautulliService {
           ? `${skipped} skipped (${alreadyTracked} started after this server was added to Tracearr)`
           : `${skipped} skipped`
       );
+    }
+    if (ungrouped > 0) {
+      parts.push(
+        `${ungrouped} plays Tautulli never grouped (fixed in Tautulli after 2.18.2; re-import once upgraded)`
+      );
+    }
+    if (noMetadata > 0) {
+      parts.push(`${noMetadata} without metadata in Tautulli`);
     }
     if (errors > 0) parts.push(`${errors} errors`);
     if (failedPages.length > 0) {
