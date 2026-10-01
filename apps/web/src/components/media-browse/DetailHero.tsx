@@ -263,8 +263,16 @@ export function DetailHero({
         ? { label: t('media.shows.title'), href: '/media/browse?type=shows' }
         : null;
 
+  const editionTitles = new Set(
+    (availability ?? [])
+      .filter((a) => a.removedAt == null)
+      .flatMap((a) => a.versions.map((v) => v.editionTitle ?? ''))
+  );
+  const [sharedEdition] = editionTitles.size === 1 ? editionTitles : [];
+
   const metaLine = joinMeta([
     year != null ? String(year) : null,
+    sharedEdition,
     data?.seasonCount != null
       ? t('media.detail.hero.meta.seasons', { count: data.seasonCount })
       : null,

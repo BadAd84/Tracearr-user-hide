@@ -1595,6 +1595,8 @@ export const libraryItemVersions = pgTable(
     videoDynamicRange: varchar('video_dynamic_range', { length: 20 }),
     audioCodec: varchar('audio_codec', { length: 50 }),
     audioChannels: integer('audio_channels'),
+    audioAtmos: boolean('audio_atmos').notNull().default(false),
+    editionTitle: varchar('edition_title', { length: 100 }),
     container: varchar('container', { length: 50 }),
     bitrate: integer('bitrate'), // kbps
 

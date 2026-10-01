@@ -10,6 +10,7 @@ import {
   parseNumber,
   parseBoolean,
   parseOptionalString,
+  parseOptionalBoundedString,
   parseOptionalNumber,
   parseArray,
   parseSelectedArrayElement,
@@ -17,6 +18,7 @@ import {
 } from '../../../utils/parsing.js';
 import { normalizeStreamDecisions } from '../../../utils/transcodeNormalizer.js';
 import { normalizePlexGuid } from '../../../utils/plexGuid.js';
+import { isAtmos } from '../../../utils/codecNormalizer.js';
 import type {
   MediaSession,
   MediaUser,
@@ -284,6 +286,10 @@ function extractSourceAudioDetails(stream: Record<string, unknown> | undefined):
 
   const sampleRate = parseOptionalNumber(stream.samplingRate);
   if (sampleRate) details.sampleRate = sampleRate;
+
+  const profile = parseOptionalString(stream.profile);
+  if (profile) details.profile = profile;
+  if (isAtmos(profile)) details.atmos = true;
 
   return { codec, channels, details };
 }
@@ -610,6 +616,10 @@ export function parseMediaMetadataResponse(
 
     const sampleRate = parseOptionalNumber(audioStream.samplingRate);
     if (sampleRate) sourceAudioDetails.sampleRate = sampleRate;
+
+    const profile = parseOptionalString(audioStream.profile);
+    if (profile) sourceAudioDetails.profile = profile;
+    if (isAtmos(profile)) sourceAudioDetails.atmos = true;
   }
 
   return {
@@ -1632,6 +1642,8 @@ function parseLibraryItem(item: Record<string, unknown>): MediaLibraryItem {
       videoCodec: parseOptionalString(media.videoCodec)?.toUpperCase(),
       audioCodec: parseOptionalString(media.audioCodec)?.toUpperCase(),
       audioChannels: parseOptionalNumber(media.audioChannels),
+      audioAtmos: isAtmos(parseOptionalString(media.audioProfile)),
+      editionTitle: parseOptionalBoundedString(item.editionTitle, 100) || undefined,
       container: parseOptionalString(media.container)?.toLowerCase(),
       bitrate: parseOptionalNumber(media.bitrate),
       fileSize: versionSize,

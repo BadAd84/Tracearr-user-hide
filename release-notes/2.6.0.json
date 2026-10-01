@@ -30,11 +30,23 @@
     },
     {
       "type": "new",
-      "text": "the now playing bar shows how far ahead the transcoder is, like the Plex dashboard, and says Buffering when a Plex client stalls"
+      "text": "the now playing bar shows how far ahead the transcoder is and says Buffering when a Plex client stalls"
     },
     {
       "type": "new",
       "text": "history hides trailers unless you pick the Trailers type"
+    },
+    {
+      "type": "new",
+      "text": "stream details and library copies show Dolby Atmos, with an Atmos filter in the library after the next sync"
+    },
+    {
+      "type": "new",
+      "text": "library copies show the Plex edition, like Extended Cut or Theatrical Cut"
+    },
+    {
+      "type": "fix",
+      "text": "Plex DTS and DTS-HD MA group with other servers' DTS in the codec breakdown instead of showing as DCA"
     },
     {
       "type": "fix",

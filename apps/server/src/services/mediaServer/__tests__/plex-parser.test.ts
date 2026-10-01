@@ -351,6 +351,39 @@ describe('Plex Session Parser', () => {
     });
   });
 
+  describe('parseSession audio profile', () => {
+    it('flags Atmos from the audio stream profile', () => {
+      const session = parseSession({
+        sessionKey: '1',
+        ratingKey: '2',
+        title: 'Episode',
+        type: 'episode',
+        duration: 1000,
+        viewOffset: 0,
+        User: { id: '1', title: 'John' },
+        Player: { title: 'TV', machineIdentifier: 'm', state: 'playing' },
+        Media: [
+          {
+            Part: [
+              {
+                Stream: [
+                  {
+                    streamType: 2,
+                    codec: 'eac3',
+                    profile: 'dolby digital plus + dolby atmos',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      expect(session.quality.sourceAudioDetails?.atmos).toBe(true);
+      expect(session.quality.sourceAudioDetails?.profile).toBe('dolby digital plus + dolby atmos');
+    });
+  });
+
   describe('parseSessionsResponse', () => {
     it('should parse full MediaContainer response', () => {
       const response = {
@@ -1602,6 +1635,28 @@ describe('Plex Library Item Parser', () => {
       expect(item.container).toBe('mkv');
       expect(item.filePath).toBe('/movies/Inception/Inception (2010).mkv');
       expect(item.thumbPath).toBe('/library/metadata/12345/thumb/1700000000');
+    });
+
+    it('reads Atmos from the media audio profile and the edition from the item', () => {
+      const response = {
+        MediaContainer: {
+          Metadata: [
+            {
+              ratingKey: '1',
+              title: 'Aliens',
+              type: 'movie',
+              addedAt: 1609459200,
+              editionTitle: 'Extended Cut',
+              Media: [{ id: 5, audioCodec: 'truehd', audioProfile: 'dolby truehd + dolby atmos' }],
+            },
+          ],
+        },
+      };
+
+      const version = parseLibraryItemsResponse(response)[0]!.versions?.[0];
+
+      expect(version?.audioAtmos).toBe(true);
+      expect(version?.editionTitle).toBe('Extended Cut');
     });
 
     it('leaves thumbPath undefined when the item has no thumb', () => {

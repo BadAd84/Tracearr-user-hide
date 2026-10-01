@@ -340,6 +340,8 @@ export interface SourceAudioDetails {
   channelLayout?: string;
   language?: string;
   sampleRate?: number;
+  profile?: string;
+  atmos?: boolean;
 }
 
 /** Stream video details after transcode */
@@ -2739,6 +2741,8 @@ export interface MediaVersionEntry {
   videoCodec: string | null;
   audioCodec: string | null;
   dynamicRange: string | null;
+  audioAtmos?: boolean;
+  editionTitle?: string | null;
   container: string | null;
   fileSize: number | null;
 }

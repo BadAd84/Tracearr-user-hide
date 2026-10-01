@@ -256,6 +256,8 @@ export interface MediaItemVersion {
   videoDynamicRange?: string;
   audioCodec?: string;
   audioChannels?: number;
+  audioAtmos?: boolean;
+  editionTitle?: string;
   container?: string;
   /** kbps */
   bitrate?: number;

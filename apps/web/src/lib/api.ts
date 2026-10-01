@@ -1621,6 +1621,7 @@ class ApiClient {
       pageSize?: number;
       libraryKey?: string;
       hdr?: boolean;
+      atmos?: boolean;
       sizeGbMin?: number;
       sizeGbMax?: number;
     }) => {
@@ -1643,6 +1644,7 @@ class ApiClient {
       if (params.pageSize) searchParams.set('pageSize', String(params.pageSize));
       if (params.libraryKey) searchParams.set('libraryKey', params.libraryKey);
       if (params.hdr) searchParams.set('hdr', 'true');
+      if (params.atmos) searchParams.set('atmos', 'true');
       if (params.sizeGbMin !== undefined) searchParams.set('sizeGbMin', String(params.sizeGbMin));
       if (params.sizeGbMax !== undefined) searchParams.set('sizeGbMax', String(params.sizeGbMax));
       return this.request<CatalogResponse>(`/library/catalog?${searchParams.toString()}`);
@@ -1660,6 +1662,7 @@ class ApiClient {
       sort?: 'title' | 'added' | 'year' | 'plays' | 'watch_time' | 'viewers';
       libraryKey?: string;
       hdr?: boolean;
+      atmos?: boolean;
       sizeGbMin?: number;
       sizeGbMax?: number;
     }) => {
@@ -1680,6 +1683,7 @@ class ApiClient {
       if (params.sort) searchParams.set('sort', params.sort);
       if (params.libraryKey) searchParams.set('libraryKey', params.libraryKey);
       if (params.hdr) searchParams.set('hdr', 'true');
+      if (params.atmos) searchParams.set('atmos', 'true');
       if (params.sizeGbMin !== undefined) searchParams.set('sizeGbMin', String(params.sizeGbMin));
       if (params.sizeGbMax !== undefined) searchParams.set('sizeGbMax', String(params.sizeGbMax));
       return this.request<CatalogLettersResponse>(
