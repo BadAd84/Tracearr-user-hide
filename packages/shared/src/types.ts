@@ -510,6 +510,8 @@ export interface ActiveSession extends Session {
   canTerminate: boolean;
   /** True while the session is an unconfirmed pending entry; absent once confirmed. */
   pending?: boolean;
+  /** Plex only: the client is buffering; state keeps the last playing or paused value. */
+  buffering?: boolean;
 }
 
 export interface SessionSegment {
@@ -1168,6 +1170,9 @@ export interface LibrarySyncProgress {
   error?: string;
 }
 
+/** Why the poller marked a server down, when it knows; absent for unreachable. */
+export type ServerDownReason = 'unauthorized';
+
 // WebSocket event types
 export interface ServerToClientEvents {
   'session:started': (session: ActiveSession) => void;
@@ -1183,7 +1188,11 @@ export interface ServerToClientEvents {
   'library:sync:progress': (progress: LibrarySyncProgress) => void;
   'tasks:updated': (tasks: RunningTask[]) => void;
   'version:update': (data: { current: string; latest: string; releaseUrl: string }) => void;
-  'server:down': (data: { serverId: string; serverName: string }) => void;
+  'server:down': (data: {
+    serverId: string;
+    serverName: string;
+    reason?: ServerDownReason;
+  }) => void;
   'server:up': (data: { serverId: string; serverName: string }) => void;
   'server:connection': (status: ServerConnectionStatus) => void;
   'notification:toast': (data: NotificationToast) => void;

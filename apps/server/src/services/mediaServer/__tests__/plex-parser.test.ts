@@ -381,6 +381,35 @@ describe('Plex Session Parser', () => {
       expect(sessions[1]!.sessionKey).toBe('2');
     });
 
+    it('drops theme music and non-trailer extras, keeps trailers and prerolls', () => {
+      const base = {
+        User: { id: '1', title: 'User1' },
+        Player: { title: 'TV', machineIdentifier: 'dev1' },
+      };
+      const response = {
+        MediaContainer: {
+          Metadata: [
+            {
+              ...base,
+              sessionKey: '1',
+              title: 'Theme',
+              type: 'track',
+              guid: 'library://abc/item/1',
+            },
+            { ...base, sessionKey: '2', title: 'Movie', type: 'movie' },
+            { ...base, sessionKey: '3', title: 'Featurette', type: 'clip', extraType: 10 },
+            { ...base, sessionKey: '4', title: 'Trailer', type: 'clip', extraType: 1 },
+            { ...base, sessionKey: '5', title: 'Preroll', type: 'clip', guid: 'prerolls://x' },
+          ],
+        },
+      };
+
+      const sessions = parseSessionsResponse(response);
+
+      expect(sessions.map((s) => s.sessionKey)).toEqual(['2', '4', '5']);
+      expect(sessions.filter((s) => s.media.type === 'trailer')).toHaveLength(2);
+    });
+
     it('should return empty array when MediaContainer has no Metadata (no active sessions)', () => {
       expect(parseSessionsResponse({ MediaContainer: {} })).toEqual([]);
     });

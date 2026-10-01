@@ -62,6 +62,18 @@
     {
       "type": "fix",
       "text": "the Tautulli import reports ungrouped plays and rows without metadata as skipped, not as active sessions or errors"
+    },
+    {
+      "type": "fix",
+      "text": "a Plex client buffering while paused no longer fires resume automations or cuts pause rules short"
+    },
+    {
+      "type": "fix",
+      "text": "Plex theme music and extras other than trailers are no longer recorded as plays"
+    },
+    {
+      "type": "fix",
+      "text": "trailers and prerolls no longer count toward concurrent-stream rules"
     }
   ]
 }

@@ -281,4 +281,15 @@ describe('poller pause edge', () => {
     const types = mockDispatch.mock.calls.map((c) => (c[0] as { type: string }).type);
     expect(types).not.toContain('session.paused');
   });
+
+  it('keeps a paused row paused while Plex reports buffering', async () => {
+    mockBatchFindActiveSessionsByComposite.mockResolvedValue(
+      new Map([['server-user-1::1001', [existingSessionRow({ state: 'paused' })]]])
+    );
+    mockMapMediaSession.mockReturnValue(processedSession({ state: 'playing', buffering: true }));
+
+    await triggerServerPoll('server-1');
+
+    expect(mockDispatch).not.toHaveBeenCalled();
+  });
 });

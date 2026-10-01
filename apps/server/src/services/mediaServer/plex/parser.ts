@@ -868,6 +868,20 @@ export function parseSession(
 }
 
 /**
+ * Theme music plays as a library:// track, and extras other than trailers
+ * (featurettes, deleted scenes) carry an extraType other than 1. Neither is a
+ * view; Jellyfin and Emby drop the same items. Prerolls and clips with no
+ * extraType stay and map to 'trailer'.
+ */
+function isUntrackedItem(item: Record<string, unknown>): boolean {
+  const guid = parseString(item.guid);
+  if (guid.startsWith('library://')) return true;
+  if (parseString(item.type) !== 'clip' || guid.startsWith('prerolls://')) return false;
+  const extraType = parseOptionalNumber(item.extraType);
+  return extraType !== undefined && extraType !== 1;
+}
+
+/**
  * Parse Plex sessions API response
  *
  * @param data - Raw response from /status/sessions
@@ -887,7 +901,10 @@ export function parseSessionsResponse(
     throw new Error('Unexpected Plex sessions response: missing MediaContainer');
   }
   const metadata = container.MediaContainer.Metadata;
-  return parseArray(metadata, (item) => {
+  const tracked = Array.isArray(metadata)
+    ? metadata.filter((item) => !isUntrackedItem(item as Record<string, unknown>))
+    : metadata;
+  return parseArray(tracked, (item) => {
     const session = item as Record<string, unknown>;
     const ratingKey = parseString(session.ratingKey);
 
@@ -902,6 +919,22 @@ export function parseSessionsResponse(
 
     return parseSession(session, originalMedia);
   });
+}
+
+/** Narrow a /status/sessions response to one sessionKey, leaving the input untouched. */
+export function keepSession(data: unknown, sessionKey: string): unknown {
+  const container = data as { MediaContainer?: { Metadata?: unknown[] } };
+  const metadata = container?.MediaContainer?.Metadata;
+  if (!Array.isArray(metadata)) return data;
+  return {
+    ...container,
+    MediaContainer: {
+      ...container.MediaContainer,
+      Metadata: metadata.filter(
+        (item) => parseString((item as Record<string, unknown>).sessionKey) === sessionKey
+      ),
+    },
+  };
 }
 
 /**
