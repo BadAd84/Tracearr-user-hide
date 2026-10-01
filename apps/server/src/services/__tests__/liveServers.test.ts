@@ -21,6 +21,7 @@ vi.mock('../../db/client.js', () => ({
 import { renderSql } from '../../test/helpers.js';
 import {
   HISTORICAL_EDIT_MESSAGE,
+  HISTORICAL_IMPORT_MESSAGE,
   ServerHistoricalError,
   isLiveRow,
   isLiveServer,
@@ -59,5 +60,6 @@ describe('liveServers', () => {
     expect(error.serverId).toBe('srv-1');
     expect(error.name).toBe('ServerHistoricalError');
     expect(HISTORICAL_EDIT_MESSAGE).toBe('Resume this server to change its address or key');
+    expect(HISTORICAL_IMPORT_MESSAGE).toBe('Resume this server to import into it');
   });
 });

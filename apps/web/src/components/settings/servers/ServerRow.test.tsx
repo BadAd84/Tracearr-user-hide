@@ -117,18 +117,28 @@ describe('ServerRow', () => {
   it('offers Mark as historical on a live row and Resume on a historical one', async () => {
     const user = userEvent.setup();
     const onSetHistorical = vi.fn();
-    const { unmount } = renderRow({ onSetHistorical });
+    const { unmount } = renderRow({ onSetHistorical, isOwner: true });
 
     await user.click(screen.getByRole('button', { name: 'servers.moreActions' }));
     await user.click(await screen.findByRole('menuitem', { name: 'servers.markHistorical' }));
     expect(onSetHistorical).toHaveBeenCalledWith(true);
     unmount();
 
-    renderRow({ server: server({ historicalAt: '2026-09-01T12:00:00.000Z' }), onSetHistorical });
+    renderRow({
+      server: server({ historicalAt: '2026-09-01T12:00:00.000Z' }),
+      onSetHistorical,
+      isOwner: true,
+    });
     await user.click(screen.getByRole('button', { name: 'servers.moreActions' }));
     await user.click(await screen.findByRole('menuitem', { name: 'servers.resume' }));
     expect(onSetHistorical).toHaveBeenLastCalledWith(false);
     expect(screen.getByRole('button', { name: 'common:actions.remove' })).toBeInTheDocument();
+  });
+
+  it('hides the historical menu from a non-owner', () => {
+    renderRow({ isOwner: false });
+
+    expect(screen.queryByRole('button', { name: 'servers.moreActions' })).not.toBeInTheDocument();
   });
 
   it('says nothing about realtime for a Plex server', () => {

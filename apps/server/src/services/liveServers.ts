@@ -12,6 +12,8 @@ export type ServerRow = typeof servers.$inferSelect;
 
 export const HISTORICAL_EDIT_MESSAGE = 'Resume this server to change its address or key';
 
+export const HISTORICAL_IMPORT_MESSAGE = 'Resume this server to import into it';
+
 export const liveServerCondition = isNull(servers.historicalAt);
 
 export function isLiveRow(row: { historicalAt?: Date | null }): boolean {

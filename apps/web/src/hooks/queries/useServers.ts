@@ -102,7 +102,6 @@ export function useSetServerHistorical() {
     mutationFn: ({ id, historical }: { id: string; historical: boolean }) =>
       api.servers.setHistorical(id, historical),
     onSuccess: (server, { historical }) => {
-      void queryClient.invalidateQueries({ queryKey: ['servers', 'list'] });
       void queryClient.invalidateQueries({ queryKey: ['plex-accounts'] });
       const key = historical ? 'serverMarkedHistorical' : 'serverResumed';
       toast.success(t(`toast.success.${key}.title`), {
@@ -111,6 +110,9 @@ export function useSetServerHistorical() {
     },
     onError: (error: Error) => {
       toast.error(t('toast.error.serverHistoricalFailed'), { description: error.message });
+    },
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: ['servers', 'list'] });
     },
   });
 }

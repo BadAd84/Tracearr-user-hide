@@ -51,13 +51,6 @@ async function clearPendingSessions(serverId: string): Promise<void> {
 export async function markServerHistorical(server: ServerRow): Promise<ServerRow> {
   if (server.historicalAt) return server;
 
-  const active = await db
-    .select()
-    .from(sessions)
-    .where(and(eq(sessions.serverId, server.id), isNull(sessions.stoppedAt)));
-  await forceStopSessions(active);
-  await clearPendingSessions(server.id);
-
   const [updated] = await db
     .update(servers)
     .set({ historicalAt: new Date(), updatedAt: new Date() })
@@ -66,6 +59,14 @@ export async function markServerHistorical(server: ServerRow): Promise<ServerRow
   if (!updated) throw new Error(`Server ${server.id} vanished while being marked historical`);
 
   await publishServersChanged();
+
+  const active = await db
+    .select()
+    .from(sessions)
+    .where(and(eq(sessions.serverId, server.id), isNull(sessions.stoppedAt)));
+  await forceStopSessions(active);
+  await clearPendingSessions(server.id);
+
   await sseManager.refresh();
   await rescheduleSyncs();
 

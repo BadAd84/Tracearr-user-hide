@@ -130,6 +130,10 @@ export async function reverifyKillCondition(
   }
   const targetRow = { ...targetFound, isLocal: isLocalSession(targetFound) };
 
+  if (targetRow.server.historicalAt) {
+    return { outcome: 'skipped_condition_cleared', skipReason: 'server_historical' };
+  }
+
   if (targetRow.stoppedAt) {
     // A retry only happens after a prior attempt of this exact job got past
     // termination and then threw (e.g. storeActionResults failing) - forceStopped
@@ -142,10 +146,6 @@ export async function reverifyKillCondition(
       return { outcome: 'killed' };
     }
     return { outcome: 'skipped_already_stopped' };
-  }
-
-  if (targetRow.server.historicalAt) {
-    return { outcome: 'skipped_condition_cleared', skipReason: 'server_historical' };
   }
 
   const [ruleRow] = await db.select().from(automations).where(eq(automations.id, ruleId)).limit(1);

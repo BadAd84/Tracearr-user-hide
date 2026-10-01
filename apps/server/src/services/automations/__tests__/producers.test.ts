@@ -520,6 +520,17 @@ describe('server and install producers', () => {
     expect(seen).toEqual([]);
   });
 
+  it('publishes no banner and dispatches nothing from the poller row for a historical server', async () => {
+    mockGetActiveAutomations.mockResolvedValue([automation([node('server.down')])]);
+    mockIsLiveServer.mockResolvedValue(false);
+    const seen = captureEvents('server.down');
+
+    await dispatchServerHealth('server.down', server, new Date());
+
+    expect(mockPublish).not.toHaveBeenCalled();
+    expect(seen).toEqual([]);
+  });
+
   it('publishes the health banner with no automation listening, from the row and from the id', async () => {
     await dispatchServerHealth('server.down', server, new Date());
     await dispatchServerHealthById('server.up', 'server-1', new Date());

@@ -281,6 +281,7 @@ export function Connections() {
                   isSwitching={setHistorical.isPending && setHistorical.variables?.id === server.id}
                   isSyncing={syncServer.isPending && syncServer.variables === server.id}
                   isDraggable={isOwner}
+                  isOwner={isOwner}
                   requestService={
                     isOwner && !requestServicesLoading
                       ? { service: requestServices?.find((s) => s.serverId === server.id) }

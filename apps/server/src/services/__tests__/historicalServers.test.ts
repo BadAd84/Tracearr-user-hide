@@ -114,9 +114,9 @@ describe('markServerHistorical', () => {
     const updated = await markServerHistorical(row);
 
     expect(calls).toEqual([
-      'forceStop',
       'update',
       'publishServersChanged',
+      'forceStop',
       'refresh',
       'rebuildAutoSyncSchedules',
       `invalidate:${REDIS_KEYS.SERVER_HEALTH('srv-1')}`,

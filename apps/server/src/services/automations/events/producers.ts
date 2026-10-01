@@ -217,6 +217,7 @@ export async function dispatchServerHealth(
   at: Date
 ): Promise<void> {
   await guarded(type, async () => {
+    if (!(await isLiveServer(server.id))) return;
     await publishServerHealth(type, server);
     const rules = await serverListeningRules(type, server.id);
     if (!rules) return;

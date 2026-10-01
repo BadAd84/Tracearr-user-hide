@@ -164,6 +164,27 @@ describe('reverifyKillCondition', () => {
     expect(mockTerminateSession).not.toHaveBeenCalled();
   });
 
+  it('skips a retry as server_historical when the switch force-stopped the target meanwhile', async () => {
+    const target = makeSessionRow({ stoppedAt: new Date(), forceStopped: true });
+    mockSessionFindFirst.mockResolvedValue({
+      ...target,
+      server: { ...(target.server as object), historicalAt: new Date('2026-09-01T00:00:00Z') },
+    });
+
+    const result = await reverifyKillCondition({
+      triggeringSessionId: target.id as string,
+      targetSessionId: target.id as string,
+      serverId: target.serverId as string,
+      ruleId: randomUUID(),
+      isRetry: true,
+    });
+
+    expect(result).toEqual({
+      outcome: 'skipped_condition_cleared',
+      skipReason: 'server_historical',
+    });
+  });
+
   it('returns skipped_already_stopped when the session row is gone', async () => {
     mockSessionFindFirst.mockResolvedValue(undefined);
 

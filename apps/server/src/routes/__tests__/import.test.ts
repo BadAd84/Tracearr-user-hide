@@ -197,7 +197,7 @@ describe('Import Routes', () => {
       });
 
       expect(response.statusCode).toBe(409);
-      expect(response.json().message).toBe('Resume this server to change its address or key');
+      expect(response.json().message).toBe('Resume this server to import into it');
       expect(syncServer).not.toHaveBeenCalled();
     });
 

@@ -52,6 +52,7 @@ export function ServerRow({
   isSyncing,
   isSwitching,
   isDraggable,
+  isOwner,
   requestService,
 }: {
   server: Server;
@@ -63,6 +64,7 @@ export function ServerRow({
   isSyncing?: boolean;
   isSwitching?: boolean;
   isDraggable?: boolean;
+  isOwner?: boolean;
   requestService?: { service: RequestService | undefined } | undefined;
 }) {
   const { t } = useTranslation(['settings', 'common']);
@@ -204,23 +206,25 @@ export function ServerRow({
               <RefreshCw className={cn(isSyncing && 'animate-spin')} />
               {t('common:actions.sync')}
             </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  aria-label={t('servers.moreActions')}
-                  disabled={isSwitching}
-                >
-                  <MoreHorizontal />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onSelect={() => onSetHistorical(!historical)}>
-                  {historical ? t('servers.resume') : t('servers.markHistorical')}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {isOwner && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label={t('servers.moreActions')}
+                    disabled={isSwitching}
+                  >
+                    <MoreHorizontal />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onSelect={() => onSetHistorical(!historical)}>
+                    {historical ? t('servers.resume') : t('servers.markHistorical')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
             <TooltipIconButton
               label={t('common:actions.remove')}
               icon={Trash2}

@@ -21,7 +21,7 @@ import {
 import { importPlaybackReporting } from '../services/playbackReporting.js';
 import { getPubSubService } from '../services/cache.js';
 import { syncServer } from '../services/sync.js';
-import { HISTORICAL_EDIT_MESSAGE } from '../services/liveServers.js';
+import { HISTORICAL_IMPORT_MESSAGE } from '../services/liveServers.js';
 import { JellyfinClient, EmbyClient } from '../services/mediaServer/index.js';
 import { db } from '../db/client.js';
 import { servers } from '../db/schema.js';
@@ -78,7 +78,7 @@ export const importRoutes: FastifyPluginAsync = async (app) => {
       return reply.notFound('Server not found');
     }
     if (server.historicalAt) {
-      return reply.conflict(HISTORICAL_EDIT_MESSAGE);
+      return reply.conflict(HISTORICAL_IMPORT_MESSAGE);
     }
 
     // Sync server users first to ensure we have all users before importing history
@@ -342,7 +342,7 @@ export const importRoutes: FastifyPluginAsync = async (app) => {
       return reply.badRequest('Jellystat import only supports Jellyfin/Emby servers');
     }
     if (server.historicalAt) {
-      return reply.conflict(HISTORICAL_EDIT_MESSAGE);
+      return reply.conflict(HISTORICAL_IMPORT_MESSAGE);
     }
 
     const backupPath = await saveJellystatUpload(data.file);
@@ -510,7 +510,7 @@ export const importRoutes: FastifyPluginAsync = async (app) => {
       return reply.badRequest('Playback Reporting import only supports Jellyfin/Emby servers');
     }
     if (server.historicalAt) {
-      return reply.conflict(HISTORICAL_EDIT_MESSAGE);
+      return reply.conflict(HISTORICAL_IMPORT_MESSAGE);
     }
 
     try {
@@ -596,7 +596,7 @@ export const importRoutes: FastifyPluginAsync = async (app) => {
         return reply.badRequest('Playback Reporting import only supports Jellyfin/Emby servers');
       }
       if (server.historicalAt) {
-        return reply.conflict(HISTORICAL_EDIT_MESSAGE);
+        return reply.conflict(HISTORICAL_IMPORT_MESSAGE);
       }
 
       const clientConfig = {
