@@ -29,9 +29,10 @@ import {
 } from '@tracearr/shared';
 import { db } from '../../db/client.js';
 import { servers, serverUsers, plexAccounts } from '../../db/schema.js';
-import { invalidateServersCache } from '../../jobs/poller/database.js';
+import { invalidateServersCache, publishServersChanged } from '../../jobs/poller/database.js';
 import { reconcilePlexAccountToken } from '../../services/plexAccounts.js';
 import { sseManager } from '../../services/sseManager.js';
+import { liveServerCondition } from '../../services/liveServers.js';
 import { PlexClient } from '../../services/mediaServer/index.js';
 import {
   testSingleConnection,
@@ -82,7 +83,10 @@ type PlexTokenSource =
  *
  * Both fallbacks order by creation so the choice does not drift between calls.
  */
-async function resolvePlexToken(userId: string, accountId?: string): Promise<PlexTokenSource> {
+export async function resolvePlexToken(
+  userId: string,
+  accountId?: string
+): Promise<PlexTokenSource> {
   const accountColumns = {
     id: plexAccounts.id,
     plexToken: plexAccounts.plexToken,
@@ -124,7 +128,7 @@ async function resolvePlexToken(userId: string, accountId?: string): Promise<Ple
   const [oldestServer] = await db
     .select({ token: servers.token })
     .from(servers)
-    .where(eq(servers.type, 'plex'))
+    .where(and(eq(servers.type, 'plex'), liveServerCondition))
     .orderBy(servers.createdAt)
     .limit(1);
 
@@ -392,7 +396,8 @@ export const plexRoutes: FastifyPluginAsync = async (app) => {
           const existingPlexServers = await db
             .select({ token: servers.token })
             .from(servers)
-            .where(eq(servers.type, 'plex'))
+            .where(and(eq(servers.type, 'plex'), liveServerCondition))
+            .orderBy(servers.createdAt)
             .limit(1);
           if (existingPlexServers.length > 0) {
             plexToken = existingPlexServers[0]!.token;
@@ -681,6 +686,10 @@ export const plexRoutes: FastifyPluginAsync = async (app) => {
             SELECT COUNT(*)::int FROM servers
             WHERE servers.plex_account_id = plex_accounts.id
           ), 0)`,
+          liveServerCount: sql<number>`COALESCE((
+            SELECT COUNT(*)::int FROM servers
+            WHERE servers.plex_account_id = plex_accounts.id AND servers.historical_at IS NULL
+          ), 0)`,
         })
         .from(plexAccounts)
         .where(eq(plexAccounts.userId, user.id))
@@ -695,6 +704,7 @@ export const plexRoutes: FastifyPluginAsync = async (app) => {
           plexThumbnail: a.plexThumbnail,
           allowLogin: a.allowLogin,
           serverCount: a.serverCount,
+          liveServerCount: a.liveServerCount,
           createdAt: a.createdAt,
         })),
         clientIdentifier: getPlexClientIdentifier(),
@@ -785,6 +795,7 @@ export const plexRoutes: FastifyPluginAsync = async (app) => {
             plexThumbnail: newAccount.plexThumbnail,
             allowLogin: newAccount.allowLogin,
             serverCount: 0, // New account has no servers yet
+            liveServerCount: 0,
             createdAt: newAccount.createdAt,
           },
         };
@@ -875,6 +886,10 @@ export const plexRoutes: FastifyPluginAsync = async (app) => {
 
       const verified: ReauthorizedServer[] = await Promise.all(
         reconciled.map(async (server) => {
+          // The token is stored for when it is resumed; a historical server is never contacted.
+          if (server.historicalAt) {
+            return { id: server.id, name: server.name, status: server.status, ok: true };
+          }
           let ok = false;
           try {
             const adminCheck = await PlexClient.verifyServerAdmin(authResult.token, server.url);
@@ -914,6 +929,10 @@ export const plexRoutes: FastifyPluginAsync = async (app) => {
         .select({ count: count() })
         .from(servers)
         .where(eq(servers.plexAccountId, account.id));
+      const [liveServerCount] = await db
+        .select({ count: count() })
+        .from(servers)
+        .where(and(eq(servers.plexAccountId, account.id), liveServerCondition));
 
       return {
         account: {
@@ -924,6 +943,7 @@ export const plexRoutes: FastifyPluginAsync = async (app) => {
           plexThumbnail: authResult.thumb,
           allowLogin: account.allowLogin,
           serverCount: serverCount?.count ?? 0,
+          liveServerCount: liveServerCount?.count ?? 0,
           createdAt: account.createdAt,
         },
         servers: results,
@@ -972,15 +992,15 @@ export const plexRoutes: FastifyPluginAsync = async (app) => {
         return reply.notFound('Plex account not found');
       }
 
-      // Check if this account has servers connected
-      const [serverCount] = await db
+      // Check if this account has live servers connected
+      const [liveCount] = await db
         .select({ count: count() })
         .from(servers)
-        .where(eq(servers.plexAccountId, id));
+        .where(and(eq(servers.plexAccountId, id), liveServerCondition));
 
-      if (serverCount && serverCount.count > 0) {
+      if (liveCount && liveCount.count > 0) {
         return reply.badRequest(
-          `Cannot unlink this Plex account. Please delete the ${serverCount.count} server(s) connected through this account first.`
+          `Cannot unlink this Plex account. Delete the ${liveCount.count} live server(s) connected through this account, or mark them historical, first.`
         );
       }
 
@@ -999,6 +1019,10 @@ export const plexRoutes: FastifyPluginAsync = async (app) => {
           );
         }
       }
+
+      // Historical servers keep their history but lose the link; a later reauthorize adopts them by identifier.
+      await db.update(servers).set({ plexAccountId: null }).where(eq(servers.plexAccountId, id));
+      await publishServersChanged();
 
       // Delete the account
       await db.delete(plexAccounts).where(eq(plexAccounts.id, id));

@@ -1735,6 +1735,7 @@ export interface PlexAccount {
   plexThumbnail: string | null;
   allowLogin: boolean; // Whether this account can be used for authentication
   serverCount: number; // Number of Tracearr servers linked to this account
+  liveServerCount: number; // Those still contacted; historical servers no longer block unlinking
   createdAt: Date;
 }
 

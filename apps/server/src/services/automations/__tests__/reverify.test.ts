@@ -142,6 +142,28 @@ describe('reverifyKillCondition', () => {
     } as never);
   });
 
+  it('skips with server_historical before reading the rule when the target server is historical', async () => {
+    const target = makeSessionRow();
+    mockSessionFindFirst.mockResolvedValue({
+      ...target,
+      server: { ...(target.server as object), historicalAt: new Date('2026-09-01T00:00:00Z') },
+    });
+
+    const result = await reverifyKillCondition({
+      triggeringSessionId: target.id as string,
+      targetSessionId: target.id as string,
+      serverId: target.serverId as string,
+      ruleId: randomUUID(),
+    });
+
+    expect(result).toEqual({
+      outcome: 'skipped_condition_cleared',
+      skipReason: 'server_historical',
+    });
+    expect(mockDbSelect).not.toHaveBeenCalled();
+    expect(mockTerminateSession).not.toHaveBeenCalled();
+  });
+
   it('returns skipped_already_stopped when the session row is gone', async () => {
     mockSessionFindFirst.mockResolvedValue(undefined);
 

@@ -339,3 +339,43 @@ describe('GET /api/v1/public/activity', () => {
     expect(body.period).toBe('month');
   });
 });
+
+describe('GET /api/v1/public/health', () => {
+  let app: FastifyInstance;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  afterEach(async () => {
+    await app.close();
+  });
+
+  it('reports a historical server as historical and offline, with exactly the documented keys', async () => {
+    const live = randomUUID();
+    const gone = randomUUID();
+    vi.mocked(db.select).mockReturnValue(
+      queryChain(vi.fn, [
+        { id: live, name: 'Attic', type: 'jellyfin', historicalAt: null },
+        {
+          id: gone,
+          name: 'Old Plex',
+          type: 'plex',
+          historicalAt: new Date('2026-09-01T00:00:00Z'),
+        },
+      ])
+    );
+    app = await buildTestApp();
+
+    const response = await app.inject({ method: 'GET', url: '/api/v1/public/health' });
+
+    expect(response.statusCode).toBe(200);
+    const servers = response.json().servers as Record<string, unknown>[];
+    expect(servers.map((s) => Object.keys(s).sort())).toEqual([
+      ['activeStreams', 'historical', 'id', 'name', 'online', 'type'],
+      ['activeStreams', 'historical', 'id', 'name', 'online', 'type'],
+    ]);
+    expect(servers[0]).toMatchObject({ id: live, online: true, historical: false });
+    expect(servers[1]).toMatchObject({ id: gone, online: false, historical: true });
+  });
+});

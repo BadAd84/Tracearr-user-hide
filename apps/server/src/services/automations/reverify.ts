@@ -144,6 +144,10 @@ export async function reverifyKillCondition(
     return { outcome: 'skipped_already_stopped' };
   }
 
+  if (targetRow.server.historicalAt) {
+    return { outcome: 'skipped_condition_cleared', skipReason: 'server_historical' };
+  }
+
   const [ruleRow] = await db.select().from(automations).where(eq(automations.id, ruleId)).limit(1);
   if (!ruleRow || !ruleRow.isActive || !ruleRow.conditions) {
     return { outcome: 'skipped_rule_gone' };

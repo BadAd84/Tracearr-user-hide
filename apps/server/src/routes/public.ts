@@ -233,6 +233,7 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
         id: servers.id,
         name: servers.name,
         type: servers.type,
+        historicalAt: servers.historicalAt,
       })
       .from(servers)
       .orderBy(...serverOrderBy());
@@ -245,16 +246,19 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
     const serverStatus = await Promise.all(
       allServers.map(async (server) => {
         const serverActiveStreams = activeSessions.filter((s) => s.serverId === server.id).length;
+        const historical = server.historicalAt !== null;
         // Use cached health state set by the poller (null = unknown/not yet checked)
-        const cachedHealth = cacheService ? await cacheService.getServerHealth(server.id) : null;
+        const cachedHealth =
+          cacheService && !historical ? await cacheService.getServerHealth(server.id) : null;
         // Consider online if explicitly healthy, or unknown (null) with benefit of doubt
-        const online = cachedHealth !== false;
+        const online = !historical && cachedHealth !== false;
 
         return {
           id: server.id,
           name: server.name,
           type: server.type,
           online,
+          historical,
           activeStreams: serverActiveStreams,
         };
       })
