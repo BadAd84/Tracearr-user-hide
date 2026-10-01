@@ -21,6 +21,14 @@ vi.mock('@/hooks/queries', () => ({
   useActiveSessions: vi.fn(),
 }));
 
+const { multiLiveStats } = vi.hoisted(() => ({
+  multiLiveStats: vi.fn((_ids: string[], _enabled: boolean) => ({
+    series: [],
+    clockSkewMs: 0,
+    isLoading: false,
+  })),
+}));
+
 // Not typechecked against the real module - keep in sync by hand
 vi.mock('@/hooks/queries/useServers', () => ({
   useServerLiveStats: () => ({
@@ -31,7 +39,7 @@ vi.mock('@/hooks/queries/useServers', () => ({
     clockSkewMs: 0,
     isLoading: false,
   }),
-  useMultiServerLiveStats: () => ({ series: [], clockSkewMs: 0, isLoading: false }),
+  useMultiServerLiveStats: (ids: string[], enabled: boolean) => multiLiveStats(ids, enabled),
 }));
 
 vi.mock('@/components/charts/ServerResourceCharts', () => ({
@@ -155,5 +163,34 @@ describe('Dashboard', () => {
     await userEvent.click(screen.getByRole('button', { name: /try again/i }));
     expect(refetchStats).toHaveBeenCalled();
     expect(refetchSessions).toHaveBeenCalled();
+  });
+
+  it('polls live stats only for the live servers in a multi-server view', () => {
+    mockUseDashboardStats.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: false,
+      error: null,
+      refetch: vi.fn(),
+    } as unknown as ReturnType<typeof useDashboardStats>);
+    mockUseActiveSessions.mockReturnValue({
+      data: [],
+      isError: false,
+      error: null,
+      refetch: vi.fn(),
+    } as unknown as ReturnType<typeof useActiveSessions>);
+    mockUseServer.mockReturnValue({
+      selectedServerIds: ['a', 'b'],
+      selectedServers: [
+        { id: 'a', name: 'Attic', type: 'plex', historicalAt: null },
+        { id: 'b', name: 'Old', type: 'jellyfin', historicalAt: '2026-09-01T12:00:00.000Z' },
+      ],
+      isMultiServer: true,
+      selectedServerId: null,
+    } as unknown as ReturnType<typeof useServer>);
+
+    renderDashboard();
+
+    expect(multiLiveStats).toHaveBeenCalledWith(['a'], true);
   });
 });

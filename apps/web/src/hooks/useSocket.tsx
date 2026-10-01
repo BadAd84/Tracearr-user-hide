@@ -174,6 +174,12 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         void queryClient.invalidateQueries({ queryKey: ['sessions', 'active'] });
         void queryClient.invalidateQueries({ queryKey: ['tasks', 'running'] });
         void queryClient.invalidateQueries({ queryKey: ['stats', 'dashboard'] });
+        api.servers
+          .health()
+          .then((servers) => {
+            setUnhealthyServers(servers.map((s) => ({ ...s, since: new Date() })));
+          })
+          .catch(() => undefined);
       }
       hasConnectedRef.current = true;
     });

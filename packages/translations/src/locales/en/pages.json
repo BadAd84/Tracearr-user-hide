@@ -679,6 +679,7 @@
         "personPlaceholder": "Select person",
         "personHelper": "Matches this person on every server they have an account on.",
         "noServers": "No servers connected yet.",
+        "historicalNote": "This server is historical. Triggers that need it live, like stream, server and update events, won't fire until it's resumed.",
         "enforceAcrossServers": "Act on their streams on any of their servers",
         "enforceAcrossServersDescription": "Acts on the person's sessions on any of their servers, not only the one that triggered it. Off by default."
       },
@@ -1737,7 +1738,7 @@
       "serversConnected_other": "{{count}} servers connected",
       "unlinkAccount": "Unlink this Plex account",
       "reauthorizeAccount": "Reauthorize this Plex account",
-      "deleteServersFirst": "Delete connected servers first to unlink this account",
+      "deleteServersFirst": "Delete the live servers connected through this account, or mark them historical, first",
       "unlinkPlexAccount": "Unlink Plex Account",
       "unlinkConfirm": "Are you sure you want to unlink this Plex account? You won't be able to add servers from this account until you link it again."
     },
