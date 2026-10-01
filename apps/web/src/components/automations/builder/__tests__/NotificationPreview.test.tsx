@@ -123,7 +123,7 @@ describe('NotificationPreview', () => {
   it('shows the uncapped count with thousands separators when the body is cut', () => {
     render(<NotificationPreview body={'b'.repeat(4310)} to={['d-discord']} />);
     expect(screen.getByText(/4,310 \/ 4,096/)).toBeInTheDocument();
-    expect(screen.getByRole('status')).toHaveTextContent('cut to fit');
+    expect(screen.getByText(/cut to fit/).tagName).toBe('OUTPUT');
   });
 
   it('names Tracearr as the source of an empty field', () => {
@@ -146,5 +146,30 @@ describe('NotificationPreview', () => {
   it('says the values are samples', () => {
     render(<NotificationPreview body="hi" to={[]} />);
     expect(screen.getByText(/sample values, for example alex as the user/)).toBeInTheDocument();
+  });
+
+  it('keeps an empty status region in the counter while within the limit', () => {
+    const { container } = render(<NotificationPreview body="hi" to={['d-push']} />);
+    const outputs = container.querySelectorAll('output');
+    expect(outputs.length).toBeGreaterThan(0);
+    outputs.forEach((output) => expect(output).toBeEmptyDOMElement());
+  });
+
+  it('says the webhook leaves an empty field out', () => {
+    render(<NotificationPreview body="hi" to={['d-hook']} />);
+    expect(
+      screen.getByText("Not sent. The payload carries the event's own data.")
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Tracearr's default for this event")).not.toBeInTheDocument();
+  });
+
+  it('collapses each run of newlines in the email subject to one space, as the server does', () => {
+    render(<NotificationPreview title={'a \nb'} to={['d-email']} />);
+    expect(screen.getByText('a  b', { normalizer: (text) => text })).toBeInTheDocument();
+  });
+
+  it('counts a blank field as zero', () => {
+    render(<NotificationPreview body="   " to={['d-push']} />);
+    expect(screen.getByText('0 / 1,024')).toBeInTheDocument();
   });
 });

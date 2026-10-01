@@ -16,9 +16,10 @@ export function fieldData(
 ): FieldData {
   const fitted = limit ? fitText(sent, limit) : sent;
   const out = profile.escape === 'discordMarkdown' ? fitted.replace(DISCORD_ESCAPED, '$1') : fitted;
+  const text = out.trim() === '' ? undefined : out;
   return {
-    text: out.trim() === '' ? undefined : out,
-    used: limit ? textSize(sent, limit.unit) : 0,
+    text,
+    used: limit && text !== undefined ? textSize(sent, limit.unit) : 0,
     limit,
   };
 }

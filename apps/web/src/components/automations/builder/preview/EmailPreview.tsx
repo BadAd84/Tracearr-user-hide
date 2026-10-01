@@ -10,7 +10,7 @@ interface EmailPreviewProps {
 
 export function EmailPreview({ title, message }: EmailPreviewProps) {
   const { t } = useTranslation('pages');
-  const subject = { ...title, text: title.text?.replace(/\s*\r?\n\s*/g, ' ') };
+  const subject = { ...title, text: title.text?.replace(/[\r\n]+/g, ' ') };
   return (
     <div className="space-y-2">
       <dl className="space-y-2">

@@ -405,7 +405,8 @@
       "previewCountBytes": "{{used, number}} / {{max, number}} bytes",
       "previewCut": "cut to fit",
       "previewPriority": "Priority: {{priority}}",
-      "previewEscapeHint": "Counts Discord's escape characters"
+      "previewEscapeHint": "Counts Discord's escape characters",
+      "webhookNotSent": "Not sent. The payload carries the event's own data."
     },
     "priorities": {
       "automatic": "Automatic",

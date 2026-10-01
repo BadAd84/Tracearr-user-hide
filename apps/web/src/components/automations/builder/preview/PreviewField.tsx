@@ -22,7 +22,7 @@ export function Counter({ data, className }: { data: FieldData; className?: stri
           : 'automations.message.previewCount',
         { used: data.used, max: data.limit.max }
       )}
-      {over && <output>, {t('automations.message.previewCut')}</output>}
+      <output>{over && `, ${t('automations.message.previewCut')}`}</output>
     </span>
   );
 }
