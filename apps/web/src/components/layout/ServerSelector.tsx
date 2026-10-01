@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { MultiSelectList, type MultiSelectOption } from '@/components/ui/multi-select';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { MediaServerIcon } from '@/components/icons/MediaServerIcon';
+import { liveFirst } from '@/lib/servers';
 
 export function ServerSelector() {
   const { t } = useTranslation('common');
@@ -22,8 +23,7 @@ export function ServerSelector() {
     isFetching,
   } = useServer();
 
-  // The API already lists live servers first; a stable sort keeps that when a page reorders them.
-  const ordered = [...servers].sort((a, b) => Number(!!a.historicalAt) - Number(!!b.historicalAt));
+  const ordered = liveFirst(servers);
 
   if (isLoading || (ordered.length === 0 && isFetching)) {
     return (

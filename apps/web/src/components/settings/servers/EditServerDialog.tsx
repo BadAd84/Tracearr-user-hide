@@ -76,7 +76,7 @@ export function EditServerDialog({
   const [locationsSeededFor, setLocationsSeededFor] = useState<string | null>(null);
 
   const { data: connectionsData, isLoading: isLoadingConnections } = usePlexServerConnections(
-    isPlexServer ? server?.id : undefined
+    isPlexServer && !locked ? server?.id : undefined
   );
 
   // Re-seed from the server prop each time the dialog opens for one, rather than in an

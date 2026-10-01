@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import type { Server } from '@tracearr/shared';
 import { Badge } from '@/components/ui/badge';
+import { liveFirst } from '@/lib/servers';
 import { cn } from '@/lib/utils';
 import { MediaServerIcon } from '@/components/icons/MediaServerIcon';
 import {
@@ -31,8 +32,7 @@ export function ServerSelect({
   className,
 }: ServerSelectProps) {
   const { t } = useTranslation('common');
-  // The API already lists live servers first; a stable sort keeps that when a page reorders them.
-  const ordered = [...servers].sort((a, b) => Number(!!a.historicalAt) - Number(!!b.historicalAt));
+  const ordered = liveFirst(servers);
   const selected = ordered.find((server) => server.id === value);
 
   return (

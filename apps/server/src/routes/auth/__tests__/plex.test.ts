@@ -921,6 +921,36 @@ describe('Plex Auth Routes', () => {
       expect(body.server.connections[0].port).toBe(9999);
     });
 
+    it('answers 409 for a historical server without contacting plex.tv or the server', async () => {
+      app = await buildTestApp(ownerUser);
+      const serverId = randomUUID();
+      const selectMock = {
+        from: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        limit: vi.fn().mockResolvedValue([
+          {
+            id: serverId,
+            token: 'srv-tok',
+            name: 'Old',
+            url: 'http://192.168.1.100:32400',
+            machineIdentifier: 'mid-abc',
+            historicalAt: new Date('2026-09-01T12:00:00.000Z'),
+          },
+        ]),
+      };
+      vi.mocked(db.select).mockReturnValue(selectMock as never);
+
+      const response = await app.inject({
+        method: 'GET',
+        url: `/plex/server-connections/${serverId}`,
+      });
+
+      expect(response.statusCode).toBe(409);
+      expect(response.json().message).toBe('Resume this server to change its address or key');
+      expect(PlexClient.getServers).not.toHaveBeenCalled();
+      expect(mockFetch).not.toHaveBeenCalled();
+    });
+
     it('does NOT inject when saved URL matches a plex.tv connection', async () => {
       app = await buildTestApp(ownerUser);
 

@@ -662,5 +662,7 @@ describe('EditServerDialog', () => {
 
     expect(screen.queryByText('plex server selector')).not.toBeInTheDocument();
     expect(screen.getByDisplayValue('http://jelly.local:8096')).toBeDisabled();
+    expect(usePlexServerConnections).toHaveBeenLastCalledWith(undefined);
+    expect(screen.queryByText('servers.discoveringConnections')).not.toBeInTheDocument();
   });
 });

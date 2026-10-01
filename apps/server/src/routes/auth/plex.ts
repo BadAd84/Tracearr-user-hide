@@ -32,7 +32,11 @@ import { servers, serverUsers, plexAccounts } from '../../db/schema.js';
 import { invalidateServersCache, publishServersChanged } from '../../jobs/poller/database.js';
 import { reconcilePlexAccountToken } from '../../services/plexAccounts.js';
 import { sseManager } from '../../services/sseManager.js';
-import { liveServerCondition } from '../../services/liveServers.js';
+import {
+  HISTORICAL_EDIT_MESSAGE,
+  isLiveRow,
+  liveServerCondition,
+} from '../../services/liveServers.js';
 import { PlexClient } from '../../services/mediaServer/index.js';
 import {
   testSingleConnection,
@@ -253,6 +257,7 @@ export const plexRoutes: FastifyPluginAsync = async (app) => {
           name: servers.name,
           url: servers.url,
           machineIdentifier: servers.machineIdentifier,
+          historicalAt: servers.historicalAt,
         })
         .from(servers)
         .where(eq(servers.id, serverId))
@@ -263,6 +268,10 @@ export const plexRoutes: FastifyPluginAsync = async (app) => {
       }
 
       const existingServer = serverRows[0]!;
+
+      if (!isLiveRow(existingServer)) {
+        return reply.conflict(HISTORICAL_EDIT_MESSAGE);
+      }
 
       // Fetch servers from plex.tv
       let plexServers;
