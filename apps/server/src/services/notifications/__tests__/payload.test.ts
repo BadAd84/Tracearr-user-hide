@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { TRIGGERS, type TriggerType, type ViolationWithDetails } from '@tracearr/shared';
-import type { NotificationEvent } from '../events.js';
 import { createMockActiveSession } from '../../../test/fixtures.js';
 import { PayloadBuilders, toNotificationPayload } from '../types.js';
+import type { NotificationEvent } from '../events.js';
 
 const system = { kind: 'system' } as const;
 

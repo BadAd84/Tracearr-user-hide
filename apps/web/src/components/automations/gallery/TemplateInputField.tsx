@@ -284,6 +284,7 @@ export function TemplateInputField({
         const text = typeof value === 'string' ? value : '';
         const sendSlot = sendTextSlotForInput(definition, input.key);
         if (sendSlot) {
+          const max = sendSlot === 'body' ? SEND_BODY_MAX : SEND_TITLE_MAX;
           return (
             <NotificationTextField
               id={controlId}
@@ -297,7 +298,7 @@ export function TemplateInputField({
                 }))
               )}
               multiline={sendSlot === 'body'}
-              maxLength={sendSlot === 'body' ? SEND_BODY_MAX : SEND_TITLE_MAX}
+              maxLength={Math.min(input.maxLength ?? max, max)}
               invalid={invalid}
             />
           );

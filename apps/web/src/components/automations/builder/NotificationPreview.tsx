@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   DESTINATION_TEXT_PROFILES,
@@ -9,6 +10,7 @@ import {
   fitText,
   renderText,
   resolveVariable,
+  textSize,
   type DestinationKind,
   type DestinationTextProfile,
   type TextLimit,
@@ -30,45 +32,51 @@ const PLAIN: DestinationTextProfile = {
 
 const samples: Record<string, string> = VARIABLE_SAMPLES;
 const lookup = (name: string) => samples[resolveVariable(name)];
-const identity = (value: string) => value;
-const sizeOf = (text: string, unit: TextLimit['unit']) =>
-  unit === 'bytes' ? new TextEncoder().encode(text).length : [...text].length;
+const DISCORD_ESCAPED = /\\([\\*_~`|>#\-[\]()])/g;
+
+/** Fits the text the way the server does, after escaping, then drops the escapes Discord hides. */
+function shown(sent: string, profile: DestinationTextProfile, limit: TextLimit | null) {
+  const fitted = limit ? fitText(sent, limit) : sent;
+  const out = profile.escape === 'discordMarkdown' ? fitted.replace(DISCORD_ESCAPED, '$1') : fitted;
+  return out.trim() === '' ? undefined : out;
+}
 
 /** The text as it would arrive, rendered from sample values in the browser. */
 export function NotificationPreview({ title, body, to }: NotificationPreviewProps) {
   const { t } = useTranslation('pages');
   const { data: destinations } = useDestinations();
-  const kinds = [
-    ...new Set(
-      (destinations ?? [])
-        .filter((destination) => to.includes(destination.id))
-        .map((destination) => destination.type)
-        .filter((kind): kind is Exclude<DestinationKind, 'json_webhook'> => kind !== 'json_webhook')
-    ),
-  ];
+  const [picked, setPicked] = useState<string>();
+  const chosen = new Set(
+    (destinations ?? [])
+      .filter((destination) => to.includes(destination.id))
+      .map((destination) => destination.type)
+  );
+  const kinds = [...chosen].filter(
+    (kind): kind is Exclude<DestinationKind, 'json_webhook'> => kind !== 'json_webhook'
+  );
   const tabs: { key: string; label: string; profile: DestinationTextProfile }[] =
     kinds.length === 0
-      ? [{ key: 'plain', label: t('automations.message.plainTab'), profile: PLAIN }]
+      ? [
+          {
+            key: 'plain',
+            label: t('automations.message.plainTab'),
+            profile: chosen.has('json_webhook') ? DESTINATION_TEXT_PROFILES.json_webhook : PLAIN,
+          },
+        ]
       : kinds.map((kind) => ({
           key: kind,
           label: t(`settings.destinations.types.${DESTINATION_TYPES[kind].label}`),
           profile: DESTINATION_TEXT_PROFILES[kind],
         }));
   const first = tabs[0]?.key ?? 'plain';
-
-  const show = (text: string | undefined, limit: TextLimit | null) => {
-    if (text === undefined) return undefined;
-    const rendered = renderText(text, lookup, identity);
-    const out = limit ? fitText(rendered, limit) : rendered;
-    return out.trim() === '' ? undefined : out;
-  };
+  const active = tabs.some((tab) => tab.key === picked) ? picked : first;
 
   return (
     <div className="space-y-2">
       <p className="text-muted-foreground text-xs font-medium">
         {t('automations.message.preview')}
       </p>
-      <Tabs defaultValue={first}>
+      <Tabs value={active} onValueChange={setPicked}>
         <TabsList>
           {tabs.map((tab) => (
             <TabsTrigger key={tab.key} value={tab.key}>
@@ -77,9 +85,11 @@ export function NotificationPreview({ title, body, to }: NotificationPreviewProp
           ))}
         </TabsList>
         {tabs.map((tab) => {
-          const shownTitle = show(title, tab.profile.title);
-          const shownBody = show(body, tab.profile.body);
-          const sent = body === undefined ? '' : renderText(body, lookup, escapeFor(tab.profile));
+          const escape = escapeFor(tab.profile);
+          const sentTitle = title === undefined ? '' : renderText(title, lookup, escape);
+          const sentBody = body === undefined ? '' : renderText(body, lookup, escape);
+          const shownTitle = shown(sentTitle, tab.profile, tab.profile.title);
+          const shownBody = shown(sentBody, tab.profile, tab.profile.body);
           const limit = tab.profile.body;
           return (
             <TabsContent
@@ -100,7 +110,7 @@ export function NotificationPreview({ title, body, to }: NotificationPreviewProp
               {limit && (
                 <p className="text-muted-foreground mt-2 text-right text-xs tabular-nums">
                   {t('automations.message.previewCount', {
-                    used: Math.min(sizeOf(sent, limit.unit), limit.max),
+                    used: Math.min(textSize(sentBody, limit.unit), limit.max),
                     max: limit.max,
                     unit:
                       limit.unit === 'bytes'

@@ -226,17 +226,17 @@ export function renderText(
 const ELLIPSIS = '…';
 const encoder = new TextEncoder();
 
-function sizeOf(text: string, unit: TextLimit['unit']): number {
-  return unit === 'bytes' ? encoder.encode(text).length : [...text].length;
+export function textSize(text: string, unit: TextLimit['unit']): number {
+  return unit === 'bytes' ? encoder.encode(text).length : Array.from(text).length;
 }
 
 export function fitText(text: string, limit: TextLimit): string {
-  if (sizeOf(text, limit.unit) <= limit.max) return text;
-  const budget = limit.max - sizeOf(ELLIPSIS, limit.unit);
+  if (textSize(text, limit.unit) <= limit.max) return text;
+  const budget = limit.max - textSize(ELLIPSIS, limit.unit);
   let kept = '';
   let used = 0;
   for (const char of text) {
-    const size = sizeOf(char, limit.unit);
+    const size = textSize(char, limit.unit);
     if (used + size > budget) break;
     kept += char;
     used += size;

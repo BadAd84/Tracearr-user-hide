@@ -4,7 +4,7 @@
   "changes": [
     {
       "type": "new",
-      "text": "a send action can set its own title and body with variables, defaults and if blocks, and previews each destination"
+      "text": "a send action can set its own title and body with variables, defaults and if blocks, with a preview per destination"
     },
     {
       "type": "new",

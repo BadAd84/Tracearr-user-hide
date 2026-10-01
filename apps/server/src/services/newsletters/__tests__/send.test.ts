@@ -293,7 +293,7 @@ describe('runNewsletter', () => {
     expect(firstSnapshot().html).toMatch(/What&#x27;s new on Basement \(\w{3} \d{1,2}, \d{4}\) 1/);
   });
 
-  it('keeps subject text the template grammar rejects as it was written', async () => {
+  it('renders a subject the grammar rejects the way the old substitution did', async () => {
     store.getNewsletter.mockResolvedValue({
       ...NEWSLETTER,
       subject: '{{server_name}} {{ oops }} {%',

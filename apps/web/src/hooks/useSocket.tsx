@@ -296,7 +296,8 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             ? toast.warning
             : toast.info;
       toastFn(data.title, {
-        description: <span className="whitespace-pre-line">{data.message}</span>,
+        description: data.message,
+        descriptionClassName: 'whitespace-pre-line',
         duration: 10000,
       });
     });

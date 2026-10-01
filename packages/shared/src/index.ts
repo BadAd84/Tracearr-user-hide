@@ -425,6 +425,7 @@ export {
   renderTemplate,
   renderText,
   fitText,
+  textSize,
   VARIABLE_ALIASES,
   VARIABLE_SAMPLES,
   resolveVariable,
