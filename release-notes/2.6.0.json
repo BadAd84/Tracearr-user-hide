@@ -19,6 +19,11 @@
       "text": "a send action can set a priority for Pushover, Gotify and ntfy, replacing each one's built-in level"
     },
     {
+      "type": "new",
+      "text": "a server can be marked historical: Tracearr stops contacting it and keeps its history, users and libraries",
+      "docs": "https://docs.tracearr.com/configuration/servers"
+    },
+    {
       "type": "fix",
       "text": "Server Resources on the dashboard no longer fails to load for Plex servers with a long bandwidth history",
       "refs": ["#1255"]
@@ -32,6 +37,10 @@
       "type": "fix",
       "text": "merging users keeps the name of the one you kept, and only accounts a merge brought in offer Split",
       "refs": ["#1263"]
+    },
+    {
+      "type": "fix",
+      "text": "the remove-server warning now says the server's history is deleted; it used to say history was kept"
     }
   ]
 }
