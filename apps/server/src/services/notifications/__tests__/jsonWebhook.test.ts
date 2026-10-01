@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { ViolationWithDetails } from '@tracearr/shared';
+import type { NotificationPriority, ViolationWithDetails } from '@tracearr/shared';
 import { createMockActiveSession } from '../../../test/fixtures.js';
 import { jsonWebhookType, type JsonWebhookBody } from '../destinations/jsonWebhook.js';
 import type { NotificationEvent } from '../events.js';
@@ -319,7 +319,9 @@ const newsletterSend = {
   },
 } as const;
 
-const automationCtx = (over: { title?: string; body?: string } = {}): RenderContext => ({
+const automationCtx = (
+  over: { title?: string; body?: string; priority?: NotificationPriority } = {}
+): RenderContext => ({
   destination,
   source: { kind: 'automation', automationId: 'a-1', automationName: 'Now playing', ...over },
 });
@@ -372,5 +374,14 @@ describe('jsonWebhookType.render with an automation source', () => {
     const body = await render(newsletterSend, automationCtx());
     expect(body.event).toBe('newsletter_send');
     expect(body.data).toEqual(newsletterSend.payload);
+  });
+
+  it('keeps the send priority out of the automation object', async () => {
+    const body = await render(
+      { type: 'session_started', payload: session },
+      automationCtx({ priority: 'urgent' })
+    );
+    expect(body.automation).toEqual({ id: 'a-1', name: 'Now playing' });
+    expect(body.automation).not.toHaveProperty('priority');
   });
 });

@@ -312,10 +312,13 @@ describe('gotifyType.render with an automation source', () => {
 
   it('sends values as written', async () => {
     const message = await render(
-      { type: 'session_started', payload: session },
-      automationCtx({ body: '**{{ user.username }}**' })
+      {
+        type: 'session_started',
+        payload: createMockActiveSession({ mediaTitle: 'a_b (2024) - x' }),
+      },
+      automationCtx({ body: '**{{ session.mediaTitle }}**' })
     );
-    expect(message.message).toBe(`**${session.user.username}**`);
+    expect(message.message).toBe('**a_b (2024) - x**');
   });
 
   it('maps every send priority and keeps the event priority without one', async () => {

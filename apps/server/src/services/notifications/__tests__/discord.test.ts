@@ -534,15 +534,36 @@ describe('discord text handling', () => {
     vi.unstubAllGlobals();
   });
 
+  const userNamed = (username: string) => ({
+    id: 'su-1',
+    username,
+    thumbUrl: null,
+    identityName: null,
+  });
+
   it('escapes inserted values but not the template text', async () => {
     const embed = await render(
-      { type: 'session_started', payload: session },
+      {
+        type: 'session_started',
+        payload: createMockActiveSession({
+          mediaTitle: 'a_b (2024) - x',
+          user: userNamed('bob*_'),
+        }),
+      },
       automationCtx({ body: '**{{ user.username }}** said {{ session.mediaTitle }}' })
     );
-    const escape = (value: string) => value.replace(/[\\*_~`|>#\-[\]()]/g, '\\$&');
-    expect(embed.description).toBe(
-      `**${escape(session.user.username)}** said ${escape(session.mediaTitle)}`
+    expect(embed.description).toBe('**bob\\*\\_** said a\\_b \\(2024\\) \\- x');
+  });
+
+  it('leaves a url inside an inserted value alone and escapes the text around it', async () => {
+    const embed = await render(
+      {
+        type: 'session_started',
+        payload: createMockActiveSession({ mediaTitle: 'a_b https://x.test/a_b(1) c-d' }),
+      },
+      automationCtx({ body: '{{ session.mediaTitle }}' })
     );
+    expect(embed.description).toBe('a\\_b https://x.test/a_b(1) c\\-d');
   });
 
   it('omits a blank description on every embed', () => {

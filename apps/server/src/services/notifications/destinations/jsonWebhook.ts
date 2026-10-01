@@ -212,7 +212,9 @@ function buildFlat(
 
 function build(payload: NotificationPayload): JsonWebhookBody {
   const body = bodyOf(payload);
-  return payload.automation ? { ...body, automation: payload.automation } : body;
+  if (!payload.automation) return body;
+  const { priority: _priority, ...automation } = payload.automation;
+  return { ...body, automation };
 }
 
 function bodyOf(payload: NotificationPayload): JsonWebhookBody {
