@@ -89,7 +89,9 @@ export function registerHistoryRoutes(app: FastifyInstance, routeConfig: RouteCo
       if (imdbId) conditions.push(sql`s.imdb_id = ${imdbId}`);
       if (tmdbId !== undefined) conditions.push(sql`s.tmdb_id = ${tmdbId}`);
       if (tvdbId !== undefined) conditions.push(sql`s.tvdb_id = ${tvdbId}`);
-      if (mediaType) conditions.push(sql`s.media_type = ${mediaType}`);
+      conditions.push(
+        mediaType ? sql`s.media_type = ${mediaType}` : sql`s.media_type <> 'trailer'`
+      );
       if (since) conditions.push(sql`s.started_at >= ${since}`);
       if (until) conditions.push(sql`s.started_at <= ${until}`);
 

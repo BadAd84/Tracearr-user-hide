@@ -1,5 +1,6 @@
 import type {
   Server,
+  ServerDownReason,
   UserRole,
   ServerUserWithIdentity,
   ServerUserDetail,
@@ -771,7 +772,7 @@ class ApiClient {
       }>(`/servers/${id}/live-stats`),
     health: async () => {
       const response = await this.request<{
-        data: { serverId: string; serverName: string }[];
+        data: { serverId: string; serverName: string; reason?: ServerDownReason }[];
       }>('/servers/health');
       return response.data;
     },

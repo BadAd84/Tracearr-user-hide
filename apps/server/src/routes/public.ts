@@ -696,7 +696,7 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
     const conditions: ReturnType<typeof sql>[] = [];
     if (serverId) conditions.push(sql`s.server_id = ${serverId}`);
     if (state) conditions.push(sql`s.state = ${state}`);
-    if (mediaType) conditions.push(sql`s.media_type = ${mediaType}`);
+    conditions.push(mediaType ? sql`s.media_type = ${mediaType}` : sql`s.media_type <> 'trailer'`);
     if (startDate) {
       const startUTC = toStartOfDayUTC(startDate, timezone);
       conditions.push(sql`s.started_at >= ${startUTC}`);

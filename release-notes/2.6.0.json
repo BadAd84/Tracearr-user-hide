@@ -29,6 +29,18 @@
       "docs": "https://docs.tracearr.com/configuration/servers"
     },
     {
+      "type": "new",
+      "text": "the now playing bar shows how far ahead the transcoder is, like the Plex dashboard, and says Buffering when a Plex client stalls"
+    },
+    {
+      "type": "new",
+      "text": "history hides trailers unless you pick the Trailers type"
+    },
+    {
+      "type": "fix",
+      "text": "the server banner says when a server rejected Tracearr's token instead of calling it unreachable"
+    },
+    {
       "type": "fix",
       "text": "Server Resources on the dashboard no longer fails to load for Plex servers with a long bandwidth history",
       "refs": ["#1255"]

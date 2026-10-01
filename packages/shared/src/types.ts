@@ -368,9 +368,12 @@ export interface TranscodeInfo {
   hwEncoding?: string;
   speed?: number;
   throttled?: boolean;
-  /** Percent of the file transcoded so far (0-100) */
+  /**
+   * Plex: share of the runtime this transcode job has produced since it started (0-100), not a
+   * position. Jellyfin: the server's CompletionPercentage, whose meaning is unverified.
+   */
   progress?: number;
-  /** Seconds of media the transcoder has ready past the start */
+  /** Seconds from the file start that the transcoder has ready (Plex only; Jellyfin sends none) */
   maxOffsetAvailable?: number;
   reasons?: string[];
 }
