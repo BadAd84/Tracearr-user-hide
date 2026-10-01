@@ -457,6 +457,7 @@ const executeSend: ActionExecutor = async (
     ...(typedAction.title !== undefined && { title: typedAction.title }),
     ...(typedAction.body !== undefined && { body: typedAction.body }),
     ...(defaultBody !== undefined && { defaultBody }),
+    ...(typedAction.priority !== undefined && { priority: typedAction.priority }),
   };
 
   const enqueued = await currentDeps.enqueueAutomationNotification({ to, event, source });

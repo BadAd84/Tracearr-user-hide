@@ -12,7 +12,7 @@ vi.mock('../mediaLinks.js', () => ({
 }));
 
 import { createMockActiveSession } from '../../../test/fixtures.js';
-import { discordType, type DiscordEmbed } from '../destinations/discord.js';
+import { discordType, fitEmbed, type DiscordEmbed } from '../destinations/discord.js';
 import type { NotificationEvent } from '../events.js';
 import type { RenderContext } from '../destinations/types.js';
 
@@ -526,5 +526,65 @@ describe('discordType media embeds', () => {
     );
 
     expect(mockProxyImage).not.toHaveBeenCalled();
+  });
+});
+
+describe('discord text handling', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('escapes inserted values but not the template text', async () => {
+    const embed = await render(
+      { type: 'session_started', payload: session },
+      automationCtx({ body: '**{{ user.username }}** said {{ session.mediaTitle }}' })
+    );
+    const escape = (value: string) => value.replace(/[\\*_~`|>#\-[\]()]/g, '\\$&');
+    expect(embed.description).toBe(
+      `**${escape(session.user.username)}** said ${escape(session.mediaTitle)}`
+    );
+  });
+
+  it('omits a blank description on every embed', () => {
+    expect(fitEmbed({ title: 'Server Back Online', description: '', color: 1 })).toEqual({
+      title: 'Server Back Online',
+      color: 1,
+    });
+  });
+
+  it('cuts title and description to their limits', () => {
+    const embed = fitEmbed({ title: 't'.repeat(300), description: 'd'.repeat(5000), color: 1 });
+    expect([...embed.title]).toHaveLength(256);
+    expect([...(embed.description ?? '')]).toHaveLength(4096);
+  });
+
+  it('keeps the whole embed within 6000 characters by cutting the description', () => {
+    const fields = Array.from({ length: 5 }, (_, i) => ({
+      name: `f${i}`,
+      value: 'v'.repeat(1000),
+      inline: false,
+    }));
+    const embed = fitEmbed({
+      title: 'Title',
+      description: 'd'.repeat(4000),
+      color: 1,
+      fields,
+      footer: { text: 'Tracearr' },
+    });
+    const total =
+      embed.title.length +
+      (embed.description?.length ?? 0) +
+      (embed.fields ?? []).reduce((sum, f) => sum + f.name.length + f.value.length, 0) +
+      (embed.footer?.text.length ?? 0) +
+      (embed.author?.name.length ?? 0);
+    expect(total).toBeLessThanOrEqual(6000);
+  });
+
+  it('turns mentions off on every post', async () => {
+    const f = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
+    vi.stubGlobal('fetch', f);
+    await discordType.deliver({ embed: { title: 'x', color: 1 } }, config, deliverCtx);
+    const body = JSON.parse(f.mock.calls[0]?.[1].body);
+    expect(body.allowed_mentions).toEqual({ parse: [] });
   });
 });

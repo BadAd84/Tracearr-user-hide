@@ -2,6 +2,7 @@ import type {
   ActiveSession,
   NewsletterSendTrigger,
   NotificationEventType,
+  NotificationPriority,
   ViolationWithDetails,
 } from '@tracearr/shared';
 import type { MediaQuality } from '../automations/types.js';
@@ -174,4 +175,5 @@ export type NotificationSource =
       title?: string;
       body?: string;
       defaultBody?: string;
+      priority?: NotificationPriority;
     };

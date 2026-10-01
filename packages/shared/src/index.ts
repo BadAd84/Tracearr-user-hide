@@ -380,6 +380,7 @@ export type {
   ParseResult,
   TextLimit,
   TemplateVariable,
+  NotificationPriority,
 } from './automations/index.js';
 
 // Automation constants and schemas
@@ -430,6 +431,7 @@ export {
   variablesFor,
   SEND_TITLE_MAX,
   SEND_BODY_MAX,
+  NOTIFICATION_PRIORITIES,
   TEMPLATE_GROUPS,
   TEMPLATE_SCHEMA_VERSION,
   TEMPLATE_MIN_SERVER_VERSION,

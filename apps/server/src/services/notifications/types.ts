@@ -12,7 +12,12 @@ import {
   qualityText,
   episodeHeadline,
 } from './formatters/media.js';
-import type { ViolationWithDetails, ActiveSession, NotificationEventType } from '@tracearr/shared';
+import type {
+  ViolationWithDetails,
+  ActiveSession,
+  NotificationEventType,
+  NotificationPriority,
+} from '@tracearr/shared';
 import type { MediaQuality } from '../automations/types.js';
 import type {
   MediaEventPayload,
@@ -170,7 +175,13 @@ export interface NotificationPayload {
   imageUrl?: string;
 
   /** The automation whose send produced this, with whatever text it overrode already rendered. */
-  automation?: { id: string; name: string; title?: string; message?: string };
+  automation?: {
+    id: string;
+    name: string;
+    title?: string;
+    message?: string;
+    priority?: NotificationPriority;
+  };
 }
 
 /**
@@ -624,6 +635,7 @@ export function toNotificationPayload(
       name: source.automationName,
       ...(title !== undefined && { title }),
       ...(message !== undefined && { message }),
+      ...(source.priority !== undefined && { priority: source.priority }),
     },
   };
 }

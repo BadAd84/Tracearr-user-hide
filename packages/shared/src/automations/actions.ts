@@ -5,6 +5,9 @@ import { type TriggerContext } from './triggers.js';
 export const SEND_TITLE_MAX = 200;
 export const SEND_BODY_MAX = 2000;
 
+export const NOTIFICATION_PRIORITIES = ['lowest', 'low', 'normal', 'high', 'urgent'] as const;
+export type NotificationPriority = (typeof NOTIFICATION_PRIORITIES)[number];
+
 export const sendActionSchema = z.object({
   ...nodeFieldsShape,
   type: z.literal('send'),
@@ -12,6 +15,7 @@ export const sendActionSchema = z.object({
   cooldown_minutes: z.number().int().nonnegative().optional(),
   title: z.string().min(1).max(SEND_TITLE_MAX).optional(),
   body: z.string().min(1).max(SEND_BODY_MAX).optional(),
+  priority: z.enum(NOTIFICATION_PRIORITIES).optional(),
 });
 
 export const trustActionSchema = z

@@ -282,6 +282,12 @@ describe('Action Executor Registry', () => {
     });
 
     describe('send', () => {
+      it('carries the send priority onto the source', async () => {
+        const context = createMockContext({ violationId: 'v1' });
+        await executeAction(context, { type: 'send', to: ['d1'], priority: 'urgent' });
+        expect(enqueueCall().source).toMatchObject({ priority: 'urgent' });
+      });
+
       it('builds a violation event with the rule severity and real ids and names the automation', async () => {
         const context = createMockContext({ violationId: 'v1' });
         const action: SendAction = { type: 'send', to: ['d1', 'd2'], body: 'over the limit' };

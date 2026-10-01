@@ -230,6 +230,17 @@ describe('webToastType.render', () => {
   });
 });
 
+describe('webToastType.render text limits', () => {
+  it('cuts the toast text to the profile limits', async () => {
+    const rendered = await render(
+      { type: 'session_started', payload: session },
+      automationCtx({ title: 't'.repeat(300), body: 'b'.repeat(2500) })
+    );
+    expect([...(rendered.toast?.title ?? '')]).toHaveLength(200);
+    expect([...(rendered.toast?.message ?? '')]).toHaveLength(2000);
+  });
+});
+
 describe('webToastType.deliver', () => {
   const publish = vi.fn().mockResolvedValue(undefined);
   const mockGetPubSubService = vi.mocked(getPubSubService);

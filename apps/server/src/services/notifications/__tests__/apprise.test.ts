@@ -87,6 +87,7 @@ describe('appriseType.render', () => {
       title: 'Violation Detected',
       body: 'User Test User triggered Test Rule (Warning severity)',
       type: 'warning',
+      format: 'text',
     });
   });
 
@@ -106,6 +107,7 @@ describe('appriseType.render', () => {
       title: 'Stream Started',
       body: 'testuser started watching Test Movie - 2024',
       type: 'info',
+      format: 'text',
     });
   });
 
@@ -116,6 +118,7 @@ describe('appriseType.render', () => {
       title: 'Stream Ended',
       body: 'testuser finished watching Test Movie - 2024 (1h 2m)',
       type: 'info',
+      format: 'text',
     });
   });
 
@@ -129,6 +132,7 @@ describe('appriseType.render', () => {
       title: 'Server Offline',
       body: 'Plex Server is not responding',
       type: 'failure',
+      format: 'text',
     });
   });
 
@@ -142,6 +146,7 @@ describe('appriseType.render', () => {
       title: 'Server Online',
       body: 'Plex Server is back online',
       type: 'success',
+      format: 'text',
     });
   });
 
@@ -174,6 +179,7 @@ describe('appriseType.deliver', () => {
     title: 'Server Offline',
     body: 'Plex Server is not responding',
     type: 'failure',
+    format: 'text',
   };
 
   it('posts the message as json', async () => {
@@ -206,6 +212,7 @@ describe('appriseType.deliver', () => {
       title: 'Test Notification',
       body: 'This is a test notification from Tracearr',
       type: 'info',
+      format: 'text',
     });
   });
 });
@@ -310,5 +317,10 @@ describe('appriseType.render with an automation source', () => {
     const message = await render(newsletterSend, automationCtx());
     expect(message.title).toBe('Newsletter partly sent');
     expect(message.body).toBe('Weekly reached only part of its 42 recipients');
+  });
+
+  it('declares the body as plain text so Apprise escapes it per service', async () => {
+    const message = await render({ type: 'session_started', payload: session }, automationCtx());
+    expect(message.format).toBe('text');
   });
 });

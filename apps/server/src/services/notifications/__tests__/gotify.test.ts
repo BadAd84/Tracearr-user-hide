@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { ViolationWithDetails } from '@tracearr/shared';
+import type { NotificationPriority, ViolationWithDetails } from '@tracearr/shared';
 import { createMockActiveSession } from '../../../test/fixtures.js';
 import { gotifyType, type GotifyMessage } from '../destinations/gotify.js';
 import type { NotificationEvent } from '../events.js';
@@ -259,7 +259,9 @@ const newsletterSend = {
   },
 } as const;
 
-const automationCtx = (over: { title?: string; body?: string } = {}): RenderContext => ({
+const automationCtx = (
+  over: { title?: string; body?: string; priority?: NotificationPriority } = {}
+): RenderContext => ({
   destination,
   source: { kind: 'automation', automationId: 'a-1', automationName: 'Now playing', ...over },
 });
@@ -306,5 +308,26 @@ describe('gotifyType.render with an automation source', () => {
     const message = await render(newsletterSend, automationCtx());
     expect(message.title).toBe('Newsletter partly sent');
     expect(message.message).toBe('Weekly reached only part of its 42 recipients');
+  });
+
+  it('sends values as written', async () => {
+    const message = await render(
+      { type: 'session_started', payload: session },
+      automationCtx({ body: '**{{ user.username }}**' })
+    );
+    expect(message.message).toBe(`**${session.user.username}**`);
+  });
+
+  it('maps every send priority and keeps the event priority without one', async () => {
+    const expected = { lowest: 0, low: 2, normal: 5, high: 8, urgent: 10 } as const;
+    for (const [priority, value] of Object.entries(expected)) {
+      const message = await render(
+        { type: 'session_started', payload: session },
+        automationCtx({ priority: priority as keyof typeof expected })
+      );
+      expect(message.priority).toBe(value);
+    }
+    const automatic = await render({ type: 'session_started', payload: session }, automationCtx());
+    expect(automatic.priority).toBe(3);
   });
 });
