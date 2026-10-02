@@ -24,7 +24,7 @@ import {
   type HistoryFilters,
 } from '@/hooks/queries';
 import { useServer } from '@/hooks/useServer';
-import type { SessionWithDetails } from '@tracearr/shared';
+import { PLAYBACK_DECISIONS, type SessionWithDetails } from '@tracearr/shared';
 
 // Local storage key for column visibility
 const COLUMN_VISIBILITY_KEY = 'tracearr-history-columns';
@@ -100,11 +100,10 @@ function parseFiltersFromUrl(searchParams: URLSearchParams): HistoryFilters {
     filters.state = state;
   }
 
-  const transcodeDecisions = parseCommaSeparated(searchParams.get('transcodeDecisions'), [
-    'directplay',
-    'copy',
-    'transcode',
-  ] as const);
+  const transcodeDecisions = parseCommaSeparated(
+    searchParams.get('transcodeDecisions'),
+    PLAYBACK_DECISIONS
+  );
   if (transcodeDecisions) filters.transcodeDecisions = transcodeDecisions;
 
   const network = searchParams.get('network');

@@ -153,6 +153,7 @@ import type {
   TemplateDefinition,
   TemplateEnvelope,
   TemplateInput,
+  QualityStats,
 } from '@tracearr/shared';
 
 // Re-export shared types needed by frontend components
@@ -1212,15 +1213,7 @@ class ApiClient {
     },
     quality: async (timeRange?: StatsTimeRange, serverIds?: string[]) => {
       const params = this.buildStatsParamsMulti(timeRange ?? { period: 'month' }, serverIds);
-      return this.request<{
-        directPlay: number;
-        directStream: number;
-        transcode: number;
-        total: number;
-        directPlayPercent: number;
-        directStreamPercent: number;
-        transcodePercent: number;
-      }>(`/stats/quality?${params.toString()}`);
+      return this.request<QualityStats>(`/stats/quality?${params.toString()}`);
     },
     topUsers: async (timeRange?: StatsTimeRange, serverIds?: string[]) => {
       const params = this.buildStatsParamsMulti(timeRange ?? { period: 'month' }, serverIds);
@@ -1265,6 +1258,7 @@ class ApiClient {
           direct: number;
           directStream: number;
           transcode: number;
+          audioTranscode: number;
         }[];
       }>(`/stats/concurrent?${params.toString()}`);
       return response.data;

@@ -42,7 +42,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TimeRangePicker, type TimeRangeValue } from '@/components/ui/time-range-picker';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import type { HistoryFilters } from '@/hooks/queries/useHistory';
-import { PLAYBACK_DECISION_LABEL_KEYS, type HistoryFilterOptions } from '@tracearr/shared';
+import { PLAYBACK_DECISION_ICONS } from '@/lib/playbackBadge';
+import {
+  PLAYBACK_DECISIONS,
+  PLAYBACK_DECISION_LABEL_KEYS,
+  type HistoryFilterOptions,
+} from '@tracearr/shared';
 
 // Column definitions for visibility toggle
 export const HISTORY_COLUMNS = [
@@ -594,23 +599,9 @@ export function HistoryFiltersBar({
                 </Badge>
               ) : null}
             </DropdownMenuLabel>
-            {[
-              {
-                value: 'directplay' as const,
-                label: t(PLAYBACK_DECISION_LABEL_KEYS.directplay),
-                icon: MonitorPlay,
-              },
-              {
-                value: 'copy' as const,
-                label: t(PLAYBACK_DECISION_LABEL_KEYS.copy),
-                icon: MonitorPlay,
-              },
-              {
-                value: 'transcode' as const,
-                label: t(PLAYBACK_DECISION_LABEL_KEYS.transcode),
-                icon: Zap,
-              },
-            ].map(({ value, label, icon: Icon }) => {
+            {PLAYBACK_DECISIONS.map((value) => {
+              const Icon = PLAYBACK_DECISION_ICONS[value];
+              const label = t(PLAYBACK_DECISION_LABEL_KEYS[value]);
               const isSelected = filters.transcodeDecisions?.includes(value) ?? false;
               return (
                 <DropdownMenuCheckboxItem

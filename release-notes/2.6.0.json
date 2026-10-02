@@ -45,6 +45,10 @@
       "text": "library copies show the Plex edition, like Extended Cut or Theatrical Cut"
     },
     {
+      "type": "new",
+      "text": "sessions that transcode only the audio show as Audio Transcode in badges, charts and filters, apart from Transcode"
+    },
+    {
       "type": "improved",
       "text": "Docker images are about 690 MB smaller, and updates download only the layers that changed, not the whole image"
     },
@@ -82,6 +86,14 @@
     {
       "type": "fix",
       "text": "a newly added server gets its 12-hourly library sync right away instead of after the next restart"
+    },
+    {
+      "type": "fix",
+      "text": "the history Quality filter matches the badges; it used to check only the video stream"
+    },
+    {
+      "type": "fix",
+      "text": "the Tautulli import's stream details keep audio-only transcodes apart instead of counting them as video transcodes"
     },
     {
       "type": "fix",

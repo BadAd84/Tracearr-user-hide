@@ -6,6 +6,28 @@ describe('playbackDecision', () => {
     expect(playbackDecision({ isTranscode: true, videoDecision: 'copy' })).toBe('transcode');
   });
 
+  it('is an audio transcode when only the audio transcodes', () => {
+    expect(
+      playbackDecision({ isTranscode: true, videoDecision: 'copy', audioDecision: 'transcode' })
+    ).toBe('audio_transcode');
+    expect(
+      playbackDecision({ isTranscode: true, videoDecision: null, audioDecision: 'transcode' })
+    ).toBe('audio_transcode');
+  });
+
+  it('is a transcode when the video transcodes, whatever the audio does', () => {
+    expect(
+      playbackDecision({
+        isTranscode: true,
+        videoDecision: 'transcode',
+        audioDecision: 'transcode',
+      })
+    ).toBe('transcode');
+    expect(
+      playbackDecision({ isTranscode: true, videoDecision: 'transcode', audioDecision: 'copy' })
+    ).toBe('transcode');
+  });
+
   it('is a direct stream when either stream is copied', () => {
     expect(playbackDecision({ videoDecision: 'copy', audioDecision: 'directplay' })).toBe('copy');
     expect(playbackDecision({ videoDecision: 'directplay', audioDecision: 'copy' })).toBe('copy');

@@ -895,8 +895,9 @@ export {
   type DynamicRangeToken,
 } from './dynamicRange.js';
 
-// Playback decision (Direct Play, Direct Stream, Transcode)
+// Playback decision (Direct Play, Direct Stream, Audio Transcode, Transcode)
 export {
+  PLAYBACK_DECISIONS,
   PLAYBACK_DECISION_LABEL_KEYS,
   playbackDecision,
   type PlaybackDecision,
