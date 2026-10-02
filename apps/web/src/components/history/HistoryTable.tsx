@@ -385,10 +385,18 @@ export const HistoryTableRow = memo(
                       {t(PLAYBACK_DECISION_LABEL_KEYS[decision])}
                     </Badge>
                     {isBurnIn && (
-                      <Badge variant="warning" className="gap-1 text-xs">
-                        <Subtitles className="h-3 w-3" />
-                        {t('playback.burnIn')}
-                      </Badge>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Badge
+                            variant="warning"
+                            className="px-1.5 text-xs"
+                            aria-label={t('playback.burnIn')}
+                          >
+                            <Subtitles className="h-3 w-3" />
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>{t('playback.burnIn')}</TooltipContent>
+                      </Tooltip>
                     )}
                   </div>
                 );
