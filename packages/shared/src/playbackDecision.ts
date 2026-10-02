@@ -1,3 +1,5 @@
+import type { SubtitleInfo, TranscodeInfo } from './types.js';
+
 export type PlaybackDecision = 'directplay' | 'copy' | 'audio_transcode' | 'transcode';
 
 export const PLAYBACK_DECISIONS = [
@@ -35,4 +37,21 @@ export function playbackDecision(session: PlaybackDecisionInput): PlaybackDecisi
   return session.videoDecision === 'copy' || session.audioDecision === 'copy'
     ? 'copy'
     : 'directplay';
+}
+
+export interface SubtitleBurnInInput {
+  subtitleInfo?: Pick<SubtitleInfo, 'decision'> | null;
+  transcodeInfo?: Pick<TranscodeInfo, 'reasons'> | null;
+}
+
+/**
+ * Plex marks the subtitle stream `burn`; Jellyfin and Emby only list a subtitle
+ * transcode reason, and only when the server decides to burn in, not when the
+ * user forces it.
+ */
+export function isSubtitleBurnIn(session: SubtitleBurnInInput): boolean {
+  return (
+    session.subtitleInfo?.decision === 'burn' ||
+    (session.transcodeInfo?.reasons?.includes('SubtitleCodecNotSupported') ?? false)
+  );
 }

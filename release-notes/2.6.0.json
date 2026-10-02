@@ -49,6 +49,10 @@
       "text": "sessions that transcode only the audio show as Audio Transcode in badges, charts and filters, apart from Transcode"
     },
     {
+      "type": "new",
+      "text": "subtitle burn-in shows on stream badges, filters history and works as an automation condition"
+    },
+    {
       "type": "improved",
       "text": "Docker images are about 690 MB smaller, and updates download only the layers that changed, not the whole image"
     },

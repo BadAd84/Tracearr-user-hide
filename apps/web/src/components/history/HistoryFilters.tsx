@@ -12,6 +12,7 @@ import {
   Radio,
   Clapperboard,
   MonitorPlay,
+  Subtitles,
   Zap,
   X,
   Search,
@@ -271,6 +272,14 @@ export function HistoryFiltersBar({
             ? `${decisionLabels.length} selected`
             : decisionLabels.join(', '),
         icon: filters.transcodeDecisions.includes('transcode') ? Zap : MonitorPlay,
+      });
+    }
+    if (filters.subtitleBurnIn) {
+      active.push({
+        key: 'subtitleBurnIn',
+        label: 'Quality',
+        value: t('playback.burnIn'),
+        icon: Subtitles,
       });
     }
     if (filters.network) {
@@ -624,6 +633,16 @@ export function HistoryFiltersBar({
                 </DropdownMenuCheckboxItem>
               );
             })}
+            <DropdownMenuCheckboxItem
+              checked={filters.subtitleBurnIn === true}
+              onCheckedChange={(checked) =>
+                onFiltersChange({ ...filters, subtitleBurnIn: checked ? true : undefined })
+              }
+              onSelect={(e) => e.preventDefault()}
+            >
+              <Subtitles className="mr-2 h-4 w-4" />
+              {t('playback.burnIn')}
+            </DropdownMenuCheckboxItem>
 
             <DropdownMenuSeparator />
             <DropdownMenuLabel>Network</DropdownMenuLabel>

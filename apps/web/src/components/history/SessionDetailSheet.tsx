@@ -35,6 +35,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Clapperboard,
+  Subtitles,
 } from 'lucide-react';
 import { cn, getCountryName, getMediaDisplay, getSessionProgress } from '@/lib/utils';
 import { imageProxyUrl } from '@/lib/api';
@@ -524,7 +525,7 @@ function SessionContent({ session }: { session: SessionWithDetails | ActiveSessi
           icon={Gauge}
           title="Stream Details"
           badge={(() => {
-            const { decision, Icon, variant } = playbackBadge(session);
+            const { decision, Icon, variant, isBurnIn } = playbackBadge(session);
             const content = (
               <>
                 <Icon className="h-3 w-3" />
@@ -532,7 +533,7 @@ function SessionContent({ session }: { session: SessionWithDetails | ActiveSessi
               </>
             );
 
-            return (
+            const decisionBadge = (
               <Badge variant={variant} className="gap-1 text-xs">
                 {session.isTranscode && hasTranscodeReason ? (
                   <TooltipProvider>
@@ -549,6 +550,17 @@ function SessionContent({ session }: { session: SessionWithDetails | ActiveSessi
                   content
                 )}
               </Badge>
+            );
+
+            if (!isBurnIn) return decisionBadge;
+            return (
+              <span className="flex items-center gap-1">
+                {decisionBadge}
+                <Badge variant="warning" className="gap-1 text-xs">
+                  <Subtitles className="h-3 w-3" />
+                  {t('playback.burnIn')}
+                </Badge>
+              </span>
             );
           })()}
         >

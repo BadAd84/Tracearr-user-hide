@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Monitor, Smartphone, Tablet, Tv, Play, Pause, Server, X } from 'lucide-react';
+import { Monitor, Smartphone, Tablet, Tv, Play, Pause, Server, Subtitles, X } from 'lucide-react';
 import { getAvatarUrl } from '@/components/users/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -169,14 +169,24 @@ export function NowPlayingCard({ session, onClick }: NowPlayingCardProps) {
               <div className="flex shrink-0 items-center gap-1.5">
                 {/* Quality badge - icon only with tooltip */}
                 {(() => {
-                  const { decision, Icon, variant, isHwTranscode } = playbackBadge(session);
+                  const { decision, Icon, variant, isHwTranscode, isBurnIn } =
+                    playbackBadge(session);
                   const label = isHwTranscode
                     ? t('playback.hwTranscode')
                     : t(PLAYBACK_DECISION_LABEL_KEYS[decision]);
 
                   return (
-                    <Badge variant={variant} className="h-6 w-6 justify-center p-0" title={label}>
+                    <Badge
+                      variant={variant}
+                      className="relative h-6 w-6 justify-center overflow-visible p-0"
+                      title={isBurnIn ? `${label} · ${t('playback.burnIn')}` : label}
+                    >
                       <Icon className="h-3.5 w-3.5" />
+                      {isBurnIn && (
+                        <span className="bg-card absolute -right-1 -bottom-1 flex h-3.5 w-3.5 items-center justify-center rounded-full">
+                          <Subtitles className="text-warning h-2.5 w-2.5" />
+                        </span>
+                      )}
                     </Badge>
                   );
                 })()}

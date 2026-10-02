@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { playbackDecision } from '../playbackDecision.js';
+import { isSubtitleBurnIn, playbackDecision } from '../playbackDecision.js';
 
 describe('playbackDecision', () => {
   it('is a transcode whenever the session transcodes, whatever the stream decisions say', () => {
@@ -38,5 +38,24 @@ describe('playbackDecision', () => {
       'directplay'
     );
     expect(playbackDecision({ isTranscode: null, videoDecision: null })).toBe('directplay');
+  });
+});
+
+describe('isSubtitleBurnIn', () => {
+  it('reads the Plex subtitle decision and the Jellyfin/Emby transcode reason', () => {
+    expect(isSubtitleBurnIn({ subtitleInfo: { decision: 'burn' } })).toBe(true);
+    expect(
+      isSubtitleBurnIn({
+        transcodeInfo: { reasons: ['ContainerNotSupported', 'SubtitleCodecNotSupported'] },
+      })
+    ).toBe(true);
+  });
+
+  it('is false for copied subtitles, other reasons, or no data', () => {
+    expect(isSubtitleBurnIn({ subtitleInfo: { decision: 'copy' } })).toBe(false);
+    expect(isSubtitleBurnIn({ transcodeInfo: { reasons: ['AudioCodecNotSupported'] } })).toBe(
+      false
+    );
+    expect(isSubtitleBurnIn({ subtitleInfo: null, transcodeInfo: null })).toBe(false);
   });
 });

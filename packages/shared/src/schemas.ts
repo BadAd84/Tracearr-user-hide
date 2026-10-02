@@ -411,6 +411,7 @@ export const historyQuerySchema = z.object({
   network: z.enum(['local', 'remote']).optional(),
 
   transcodeDecisions: commaSeparatedArray(z.enum(PLAYBACK_DECISIONS)),
+  subtitleBurnIn: booleanStringSchema.optional(),
 
   // Status filters
   watched: booleanStringSchema.optional(), // 85%+ completion

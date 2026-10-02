@@ -41,7 +41,7 @@ import { representativeAccountOrderSql } from '../utils/representativeAccount.js
 import { compareNames } from '../utils/collation.js';
 import { serverOrderBy } from '../utils/serverOrder.js';
 import { isLocalSession, localSessionSql } from '../utils/localSession.js';
-import { playbackDecisionSql } from '../utils/playbackDecisionSql.js';
+import { playbackDecisionSql, subtitleBurnInSql } from '../utils/playbackDecisionSql.js';
 import { terminateSession } from '../services/termination.js';
 import { getCacheService } from '../services/cache.js';
 
@@ -94,6 +94,7 @@ function buildHistoryFilterConditions(
     geoRegion,
     network,
     transcodeDecisions,
+    subtitleBurnIn,
     watched,
     excludeShortSessions,
   } = params;
@@ -204,6 +205,8 @@ function buildHistoryFilterConditions(
 
   // Status filters
   if (watched !== undefined) conditions.push(sql`s.watched = ${watched}`);
+  if (subtitleBurnIn !== undefined)
+    conditions.push(subtitleBurnIn ? subtitleBurnInSql('s') : sql`NOT ${subtitleBurnInSql('s')}`);
   if (excludeShortSessions) conditions.push(sql`s.short_session = false`);
 
   return { conditions, whereClause: buildWhereClause(conditions) };

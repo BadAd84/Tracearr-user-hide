@@ -312,6 +312,7 @@ function appendHistoryFilterParams(
   if (params.transcodeDecisions?.length)
     searchParams.set('transcodeDecisions', params.transcodeDecisions.join(','));
   if (params.watched !== undefined) searchParams.set('watched', String(params.watched));
+  if (params.subtitleBurnIn) searchParams.set('subtitleBurnIn', 'true');
   if (params.excludeShortSessions) searchParams.set('excludeShortSessions', 'true');
 }
 

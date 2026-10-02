@@ -899,9 +899,11 @@ export {
 export {
   PLAYBACK_DECISIONS,
   PLAYBACK_DECISION_LABEL_KEYS,
+  isSubtitleBurnIn,
   playbackDecision,
   type PlaybackDecision,
   type PlaybackDecisionInput,
+  type SubtitleBurnInInput,
 } from './playbackDecision.js';
 
 // Trust score levels

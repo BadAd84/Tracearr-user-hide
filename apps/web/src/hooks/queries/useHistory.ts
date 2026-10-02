@@ -26,6 +26,7 @@ export interface HistoryFilters {
   network?: 'local' | 'remote';
   transcodeDecisions?: PlaybackDecision[];
   watched?: boolean;
+  subtitleBurnIn?: boolean;
   excludeShortSessions?: boolean;
   orderBy?: 'startedAt' | 'durationMs' | 'mediaTitle';
   orderDir?: 'asc' | 'desc';

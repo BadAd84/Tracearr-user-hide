@@ -143,6 +143,7 @@ function parseFiltersFromUrl(searchParams: URLSearchParams): HistoryFilters {
   const watched = searchParams.get('watched');
   if (watched === 'true') filters.watched = true;
   if (watched === 'false') filters.watched = false;
+  if (searchParams.get('subtitleBurnIn') === 'true') filters.subtitleBurnIn = true;
 
   const orderBy = searchParams.get('orderBy');
   if (orderBy === 'startedAt' || orderBy === 'durationMs' || orderBy === 'mediaTitle') {
@@ -175,6 +176,7 @@ function filtersToUrlParams(filters: HistoryFilters): URLSearchParams {
   if (filters.endDate) params.set('endDate', filters.endDate.toISOString());
   if (!filters.startDate && !filters.endDate) params.set('period', 'all');
   if (filters.watched !== undefined) params.set('watched', String(filters.watched));
+  if (filters.subtitleBurnIn) params.set('subtitleBurnIn', 'true');
   if (filters.orderBy && filters.orderBy !== 'startedAt') params.set('orderBy', filters.orderBy);
   if (filters.orderDir && filters.orderDir !== 'desc') params.set('orderDir', filters.orderDir);
 

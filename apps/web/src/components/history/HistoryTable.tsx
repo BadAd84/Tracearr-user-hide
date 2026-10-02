@@ -19,6 +19,7 @@ import {
   Globe,
   Clock,
   Clapperboard,
+  Subtitles,
 } from 'lucide-react';
 import { TableCell, TableHead, TableRow } from '@/components/ui/table';
 import { DATA_TABLE_VIEWPORT_MAX_HEIGHT } from '@/components/ui/data-table';
@@ -376,12 +377,20 @@ export const HistoryTableRow = memo(
           {columnVisibility.quality && (
             <TableCell className={COLUMN_WIDTHS.quality}>
               {(() => {
-                const { decision, Icon, variant } = playbackBadge(session);
+                const { decision, Icon, variant, isBurnIn } = playbackBadge(session);
                 return (
-                  <Badge variant={variant} className="gap-1 text-xs">
-                    <Icon className="h-3 w-3" />
-                    {t(PLAYBACK_DECISION_LABEL_KEYS[decision])}
-                  </Badge>
+                  <div className="flex items-center gap-1">
+                    <Badge variant={variant} className="gap-1 text-xs">
+                      <Icon className="h-3 w-3" />
+                      {t(PLAYBACK_DECISION_LABEL_KEYS[decision])}
+                    </Badge>
+                    {isBurnIn && (
+                      <Badge variant="warning" className="gap-1 text-xs">
+                        <Subtitles className="h-3 w-3" />
+                        {t('playback.burnIn')}
+                      </Badge>
+                    )}
+                  </div>
                 );
               })()}
             </TableCell>
