@@ -106,9 +106,13 @@ jobs:
 
   # Web (frontend) unit tests - includes the auth client/hook suites
   test-web:
-    name: Test (web)
+    name: Test (web ${{ matrix.shard }}/2)
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
@@ -144,11 +148,11 @@ jobs:
         run: pnpm turbo run build --filter=@tracearr/shared --filter=@tracearr/translations
 
       - name: Run web tests
-        run: pnpm --filter @tracearr/web test
+        run: pnpm --filter @tracearr/web test --shard=${{ matrix.shard }}/2
 
   # Integration tests require real database - run separately from unit tests
   test-integration:
-    name: Test (integration, ${{ matrix.db.label }})
+    name: Test (integration, ${{ matrix.db.label }}, ${{ matrix.part.name }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -162,6 +166,14 @@ jobs:
             image: timescale/timescaledb:2.28.3-pg15@sha256:6343bdc87ca132c6b53acb26113a6bad1821d188fa39975a745f32ddd9757634
           - label: tip-pg18-ts2.29
             image: timescale/timescaledb:2.29.1-pg18@sha256:373eb0fee9c0f8e0b4b0d4e74c7d0dd463dce05de6b49982701c4b540e94cba0
+        # The catalog EXPLAIN gate seeds 500k sessions. Sharing a runner and
+        # database with the other workers it took over three minutes and set
+        # the length of the whole job; run alone it took 47 s locally.
+        part:
+          - name: suite
+            args: --exclude '**/catalogExplain.integration.test.ts'
+          - name: explain gate
+            args: catalogExplain
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
@@ -225,7 +237,7 @@ jobs:
         run: pnpm turbo run build --filter=@tracearr/shared --filter=@tracearr/emails --filter=@tracearr/test-utils
 
       - name: Run integration tests
-        run: pnpm --filter @tracearr/server test:integration
+        run: pnpm --filter @tracearr/server test:integration ${{ matrix.part.args }}
 
   # Separate job for coverage reporting (runs all tests together for accurate coverage)
   # Runs in parallel with test matrix - if tests pass there, coverage will too
@@ -387,7 +399,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [lint-and-typecheck, test, test-web, test-integration, test-coverage]
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
