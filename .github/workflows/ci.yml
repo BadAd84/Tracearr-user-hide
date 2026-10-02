@@ -303,9 +303,14 @@ jobs:
 
   # E2E tests run Playwright against real servers with a real database
   test-e2e:
-    name: Test (E2E)
+    name: Test (E2E ${{ matrix.shard }}/3)
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # Each shard gets its own database and repeats the setup projects it depends on
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
@@ -365,23 +370,42 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright browsers
-        run: pnpm --filter @tracearr/e2e exec playwright install --with-deps chromium
+      - name: Get Playwright version
+        id: playwright
+        run: echo "version=$(pnpm --filter @tracearr/e2e exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
 
-      - name: Build dependencies
-        run: pnpm turbo run build --filter=@tracearr/shared --filter=@tracearr/translations --filter=@tracearr/test-utils --filter=@tracearr/emails
+      # Headless runs only need the headless shell, so the full Chrome build is never downloaded
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}-shell
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter @tracearr/e2e exec playwright install --with-deps --only-shell chromium
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter @tracearr/e2e exec playwright install-deps chromium
+
+      - name: Build server and web
+        run: pnpm turbo run build --filter=@tracearr/server --filter=@tracearr/web --filter=@tracearr/test-utils
 
       - name: Create .env file
         run: cp .env.example .env
 
       - name: Run E2E tests
-        run: pnpm --filter @tracearr/e2e test:e2e
+        run: pnpm --filter @tracearr/e2e test:e2e --shard=${{ matrix.shard }}/3
+        env:
+          E2E_BUILD: 1
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: always()
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.shard }}
           path: apps/e2e/playwright-report/
           retention-days: 7
           if-no-files-found: warn
@@ -390,7 +414,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: failure()
         with:
-          name: playwright-test-results
+          name: playwright-test-results-${{ matrix.shard }}
           path: apps/e2e/test-results/
           retention-days: 7
           if-no-files-found: warn
