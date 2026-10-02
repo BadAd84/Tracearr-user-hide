@@ -156,7 +156,6 @@ export function findStreamByType(
 
 /**
  * Derive dynamic range from video stream color attributes
- * Following Tautulli's approach for HDR detection
  * @internal Exported for unit testing
  */
 export function deriveDynamicRange(stream: Record<string, unknown>): string {
