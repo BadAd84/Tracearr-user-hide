@@ -38,11 +38,15 @@
     },
     {
       "type": "new",
-      "text": "stream details and library copies show Dolby Atmos, with a library filter, once the first sync after updating finishes"
+      "text": "stream details and library copies show Dolby Atmos, with a library filter"
     },
     {
       "type": "new",
       "text": "library copies show the Plex edition, like Extended Cut or Theatrical Cut"
+    },
+    {
+      "type": "note",
+      "text": "the first library sync after updating is a full scan on every server"
     },
     {
       "type": "fix",

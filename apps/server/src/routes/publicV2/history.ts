@@ -34,7 +34,9 @@ export function registerHistoryRoutes(app: FastifyInstance, routeConfig: RouteCo
         imdb_id: z.string().min(1).max(20).optional(),
         tmdb_id: z.coerce.number().int().optional(),
         tvdb_id: z.coerce.number().int().optional(),
-        media_type: z.enum(['movie', 'episode', 'track', 'live', 'photo', 'unknown']).optional(),
+        media_type: z
+          .enum(['movie', 'episode', 'track', 'live', 'photo', 'trailer', 'unknown'])
+          .optional(),
         watched: booleanStringSchema.optional(),
         since: z.coerce.date().optional(),
         until: z.coerce.date().optional(),

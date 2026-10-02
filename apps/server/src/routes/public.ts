@@ -672,7 +672,9 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
     const querySchema = paginationSchema.extend({
       serverId: z.uuid().optional(),
       state: z.enum(['playing', 'paused', 'stopped']).optional(),
-      mediaType: z.enum(['movie', 'episode', 'track', 'live', 'photo', 'unknown']).optional(),
+      mediaType: z
+        .enum(['movie', 'episode', 'track', 'live', 'photo', 'trailer', 'unknown'])
+        .optional(),
       startDate: z.coerce.date().optional(),
       endDate: z.coerce.date().optional(),
       timezone: timezoneSchema,
