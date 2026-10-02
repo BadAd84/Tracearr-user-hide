@@ -102,9 +102,20 @@ jobs:
 
   # Integration tests require real database - run separately from unit tests
   test-integration:
-    name: Test (integration)
+    name: Test (integration, ${{ matrix.part.name }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # Same split as ci.yml: the catalog EXPLAIN gate on its own, the rest in two halves
+    strategy:
+      fail-fast: false
+      matrix:
+        part:
+          - name: suite 1/2
+            args: --exclude '**/catalogExplain.integration.test.ts' --shard=1/2
+          - name: suite 2/2
+            args: --exclude '**/catalogExplain.integration.test.ts' --shard=2/2
+          - name: explain gate
+            args: catalogExplain
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
@@ -166,7 +177,7 @@ jobs:
         run: pnpm turbo run build --filter=@tracearr/shared --filter=@tracearr/emails --filter=@tracearr/test-utils
 
       - name: Run integration tests
-        run: pnpm --filter @tracearr/server test:integration
+        run: pnpm --filter @tracearr/server test:integration ${{ matrix.part.args }}
 
   release-notes:
     name: Release Notes
