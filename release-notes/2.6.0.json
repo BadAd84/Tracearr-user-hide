@@ -57,6 +57,10 @@
       "text": "Docker images are about 690 MB smaller, and updates download only the layers that changed, not the whole image"
     },
     {
+      "type": "improved",
+      "text": "the Emby realtime setup dialog installs Tracearr SSE from Emby's plugin catalog instead of a release zip"
+    },
+    {
       "type": "note",
       "text": "the first library sync after updating is a full scan on every server"
     },
@@ -134,6 +138,14 @@
     {
       "type": "fix",
       "text": "a slow plex.tv or media server no longer stalls library syncs, adding a server or Plex sign-in for minutes"
+    },
+    {
+      "type": "fix",
+      "text": "count text in languages like Polish, Russian and Arabic no longer switches to English for some numbers"
+    },
+    {
+      "type": "security",
+      "text": "the image proxy only fetches poster and avatar paths, not any request on the media server with its token"
     }
   ]
 }
