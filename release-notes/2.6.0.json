@@ -102,6 +102,10 @@
     {
       "type": "fix",
       "text": "trailers and prerolls no longer count toward concurrent-stream rules"
+    },
+    {
+      "type": "fix",
+      "text": "trailers and prerolls no longer set off stream automations, so a preroll sends no stream started notification of its own"
     }
   ]
 }
