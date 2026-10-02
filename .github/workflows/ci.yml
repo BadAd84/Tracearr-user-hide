@@ -168,10 +168,13 @@ jobs:
             image: timescale/timescaledb:2.29.1-pg18@sha256:373eb0fee9c0f8e0b4b0d4e74c7d0dd463dce05de6b49982701c4b540e94cba0
         # The catalog EXPLAIN gate seeds 500k sessions. Sharing a runner and
         # database with the other workers it took over three minutes and set
-        # the length of the whole job; run alone it took 47 s locally.
+        # the length of the whole job; run alone it took 47 s locally. The rest
+        # is split in two because on pg15 it still took over three minutes.
         part:
-          - name: suite
-            args: --exclude '**/catalogExplain.integration.test.ts'
+          - name: suite 1/2
+            args: --exclude '**/catalogExplain.integration.test.ts' --shard=1/2
+          - name: suite 2/2
+            args: --exclude '**/catalogExplain.integration.test.ts' --shard=2/2
           - name: explain gate
             args: catalogExplain
     env:
