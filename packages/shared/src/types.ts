@@ -1048,8 +1048,8 @@ export interface TautulliImportResult {
   success: boolean;
   imported: number;
   updated: number;
-  /** Number of sessions linked via referenceId (resume chain detection) */
-  linked: number;
+  /** No longer set; kept for clients built against older versions */
+  linked?: number;
   skipped: number;
   errors: number;
   message: string;

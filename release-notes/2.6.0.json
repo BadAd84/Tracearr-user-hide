@@ -93,6 +93,10 @@
     },
     {
       "type": "fix",
+      "text": "a Tautulli re-import after Regroup history removes the merged plays instead of counting their watch time twice"
+    },
+    {
+      "type": "fix",
       "text": "a Plex client buffering while paused no longer fires resume automations or cuts pause rules short"
     },
     {
