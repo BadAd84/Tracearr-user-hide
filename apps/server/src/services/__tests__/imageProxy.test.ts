@@ -38,6 +38,7 @@ vi.mock('../imageCacheGuard.js', () => ({
 }));
 
 import { readFile, writeFile, rename, stat, unlink, mkdir } from 'node:fs/promises';
+import { SsrfBlockedError } from '../../utils/ssrf.js';
 import sharp from 'sharp';
 import { db } from '../../db/client.js';
 import { cacheWriteAllowed } from '../imageCacheGuard.js';
@@ -220,6 +221,30 @@ describe('proxyImage cache-miss pipeline', () => {
     fetchSpy.mockRestore();
   });
 
+  it('returns the placeholder for a historical server without fetching', async () => {
+    mockSelectChain([
+      {
+        id: 'server-h',
+        type: 'plex',
+        url: 'http://localhost:32400',
+        token: 'token',
+        historicalAt: new Date('2026-09-01T00:00:00Z'),
+      },
+    ]);
+
+    const result = await proxyImage({
+      serverId: randomUUID(),
+      imagePath: '/library/metadata/1/thumb/1',
+      width: 240,
+      height: 360,
+    });
+
+    expect(result.contentType).toBe('image/svg+xml');
+    expect(result.cached).toBe(false);
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(vi.mocked(writeFile)).not.toHaveBeenCalled();
+  });
+
   it('writes atomically: tmp path named after the pid, written before the rename into place', async () => {
     mockSelectChain([
       { id: 'server-1', type: 'plex', url: 'http://localhost:32400', token: 'token' },
@@ -298,6 +323,39 @@ describe('proxyImage cache-miss pipeline', () => {
     );
   });
 
+  it('applies EXIF orientation before the tag is dropped, so a phone photo avatar stays upright', async () => {
+    // Stored red-over-blue, tagged "rotate 180": displayed as blue over red
+    const pixels = Buffer.alloc(8 * 8 * 3);
+    for (let i = 0; i < 64; i++) pixels.set(i < 32 ? [255, 0, 0] : [0, 0, 255], i * 3);
+    const tagged = await sharp(pixels, { raw: { width: 8, height: 8, channels: 3 } })
+      .jpeg()
+      .withMetadata({ orientation: 3 })
+      .toBuffer();
+    fetchSpy.mockResolvedValue(
+      new Response(tagged, { status: 200, headers: { 'content-type': 'image/jpeg' } })
+    );
+    mockSelectChain([
+      { id: 'server-4', type: 'jellyfin', url: 'http://localhost:8096', token: 'token' },
+    ]);
+
+    const result = await proxyImage({
+      serverId: randomUUID(),
+      imagePath: '/Users/abc/Images/Primary',
+      width: 40,
+      height: 40,
+      fallback: 'avatar',
+    });
+
+    const { data } = await sharp(result.data)
+      .extract({ left: 0, top: 0, width: 1, height: 1 })
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    expect(data[2]).toBeGreaterThan(200);
+    expect(data[0]).toBeLessThan(60);
+
+    await vi.waitFor(() => expect(vi.mocked(db.update)).toHaveBeenCalledTimes(1));
+  });
+
   it('falls back to the SVG placeholder with a short, non-immutable cacheControl and drains the body on an upstream HTTP error', async () => {
     mockSelectChain([
       { id: 'server-8', type: 'plex', url: 'http://localhost:32400', token: 'token' },
@@ -320,6 +378,23 @@ describe('proxyImage cache-miss pipeline', () => {
     // Both upstream candidates (server-resized, then original) hit the same
     // erroring mock, and each drains its body.
     expect(cancel).toHaveBeenCalledTimes(2);
+  });
+
+  it('returns the degraded placeholder for a path outside the image routes without fetching', async () => {
+    mockSelectChain([
+      { id: 'server-9', type: 'plex', url: 'http://localhost:32400', token: 'token' },
+    ]);
+
+    const result = await proxyImage({
+      serverId: randomUUID(),
+      imagePath: '/library/sections',
+      width: 240,
+      height: 360,
+    });
+
+    expect(result.contentType).toBe('image/svg+xml');
+    expect(result.cacheControl).toBe('public, max-age=15');
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   it('with lqip, races the miss against the LQIP placeholder once the semaphore wait timeout elapses', async () => {
@@ -546,11 +621,11 @@ describe('buildUpstreamRequest', () => {
 
   it('emby landscape resize constrains the long axis via maxWidth', () => {
     const server = { ...baseServer, type: 'emby' } as never;
-    const { imageUrl, headers } = buildUpstreamRequest(server, '/emby/Items/9/Images/Backdrop', {
+    const { imageUrl, headers } = buildUpstreamRequest(server, '/Items/9/Images/Primary', {
       width: 500,
       height: 280,
     });
-    expect(imageUrl).toBe('http://media:1234/emby/Items/9/Images/Backdrop?maxWidth=500&quality=90');
+    expect(imageUrl).toBe('http://media:1234/Items/9/Images/Primary?maxWidth=500&quality=90');
     expect(headers['X-Emby-Token']).toBe('tok123');
   });
 
@@ -563,6 +638,43 @@ describe('buildUpstreamRequest', () => {
     expect(imageUrl).toBe(
       'http://media:1234/Items/abc/Images/Primary?tag=5&maxHeight=360&quality=90'
     );
+  });
+
+  describe('path allowlist', () => {
+    it('rejects a plex path outside library image routes', () => {
+      const server = { ...baseServer, type: 'plex' } as never;
+      expect(() => buildUpstreamRequest(server, '/library/sections')).toThrow(SsrfBlockedError);
+      expect(() => buildUpstreamRequest(server, '/:/scrobble?key=1')).toThrow(SsrfBlockedError);
+      expect(() => buildUpstreamRequest(server, '/library/metadata/1/thumb/2?download=1')).toThrow(
+        SsrfBlockedError
+      );
+    });
+
+    it('rejects a jellyfin or emby path outside the Items and Users image routes', () => {
+      const jf = { ...baseServer, type: 'jellyfin' } as never;
+      const emby = { ...baseServer, type: 'emby' } as never;
+      expect(() => buildUpstreamRequest(jf, '/System/Info')).toThrow(SsrfBlockedError);
+      expect(() => buildUpstreamRequest(emby, '/Items/9/Download')).toThrow(SsrfBlockedError);
+    });
+
+    it('accepts every image shape Tracearr stores', () => {
+      const plex = { ...baseServer, type: 'plex' } as never;
+      const jf = { ...baseServer, type: 'jellyfin' } as never;
+      const emby = { ...baseServer, type: 'emby' } as never;
+      const hex = '0123456789abcdef0123456789abcdef';
+      expect(() => buildUpstreamRequest(plex, '/library/metadata/12/thumb/34')).not.toThrow();
+      expect(() =>
+        buildUpstreamRequest(plex, '/library/metadata/12/thumb/34', { width: 240, height: 360 })
+      ).not.toThrow();
+      expect(() =>
+        buildUpstreamRequest(jf, `/Items/${hex}/Images/Primary?tag=${hex}`)
+      ).not.toThrow();
+      expect(() => buildUpstreamRequest(jf, `/Users/${hex}/Images/Primary`)).not.toThrow();
+      expect(() =>
+        buildUpstreamRequest(emby, `/Items/9/Images/Primary?tag=${hex}_1`)
+      ).not.toThrow();
+      expect(() => buildUpstreamRequest(emby, '/Items/9/Images/Primary')).not.toThrow();
+    });
   });
 
   describe('origin pinning', () => {
@@ -599,10 +711,9 @@ describe('buildUpstreamRequest', () => {
       expect(imageUrl).toBe('https://jf.example.com/Items/abc/Images/Primary');
     });
 
-    it('treats a protocol-relative path as a path on the configured host', () => {
+    it('rejects a protocol-relative path', () => {
       const server = { ...portless, type: 'jellyfin' } as never;
-      const { imageUrl } = buildUpstreamRequest(server, '//evil.test/x');
-      expect(new URL(imageUrl).host).toBe('jf.example.com');
+      expect(() => buildUpstreamRequest(server, '//evil.test/x')).toThrow(SsrfBlockedError);
     });
   });
 });

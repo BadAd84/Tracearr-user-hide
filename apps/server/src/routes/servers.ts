@@ -10,8 +10,10 @@ import {
   reorderServersSchema,
   updateServerSchema,
   pickServerColor,
+  setServerHistoricalSchema,
   PUBLIC_URL_PLEX_MESSAGE,
   type ServerConnectionStatus,
+  type ServerDownReason,
 } from '@tracearr/shared';
 import { db } from '../db/client.js';
 import { servers, plexAccounts } from '../db/schema.js';
@@ -20,7 +22,9 @@ import { getServerLiveStats, getServerResourceStats } from '../services/serverLi
 import { syncServer } from '../services/sync.js';
 import { sseManager } from '../services/sseManager.js';
 import { getCacheService } from '../services/cache.js';
-import { enqueueLibrarySync } from '../jobs/librarySyncQueue.js';
+import { markServerHistorical, resumeServer } from '../services/historicalServers.js';
+import { liveServerCondition, HISTORICAL_EDIT_MESSAGE } from '../services/liveServers.js';
+import { rebuildAutoSyncSchedules, enqueueLibrarySync } from '../jobs/librarySyncQueue.js';
 import { publishServersChanged } from '../jobs/poller/database.js';
 import { readServerIdentity } from '../services/serverIdentity.js';
 import { rearmImportedHistoryLink } from '../services/settings.js';
@@ -48,6 +52,7 @@ export const serverRoutes: FastifyPluginAsync = async (app) => {
         color: servers.color,
         version: servers.version,
         latestVersion: servers.latestVersion,
+        historicalAt: servers.historicalAt,
         createdAt: servers.createdAt,
         updatedAt: servers.updatedAt,
       })
@@ -192,6 +197,7 @@ export const serverRoutes: FastifyPluginAsync = async (app) => {
         url: servers.url,
         publicUrl: servers.publicUrl,
         color: servers.color,
+        historicalAt: servers.historicalAt,
         createdAt: servers.createdAt,
         updatedAt: servers.updatedAt,
       });
@@ -202,6 +208,12 @@ export const serverRoutes: FastifyPluginAsync = async (app) => {
     }
 
     await publishServersChanged();
+    rebuildAutoSyncSchedules().catch((error: unknown) => {
+      app.log.error(
+        { err: error, serverId: server.id },
+        'Auto-sync schedule failed for new server'
+      );
+    });
 
     if (server.type === 'plex') {
       await rearmImportedHistoryLink({ keepProviderPass: false });
@@ -300,6 +312,7 @@ export const serverRoutes: FastifyPluginAsync = async (app) => {
         url: server.url,
         publicUrl: server.publicUrl,
         color: server.color,
+        historicalAt: server.historicalAt,
         createdAt: server.createdAt,
         updatedAt: server.updatedAt,
       };
@@ -307,6 +320,9 @@ export const serverRoutes: FastifyPluginAsync = async (app) => {
 
     const urlChanging = newUrl !== undefined && server.url !== newUrl;
     const keyChanging = newApiKey !== undefined && server.token !== newApiKey;
+    if (server.historicalAt && (urlChanging || keyChanging)) {
+      return reply.conflict(HISTORICAL_EDIT_MESSAGE);
+    }
     const targetUrl = newUrl ?? server.url;
     const token = newApiKey ?? server.token;
 
@@ -420,6 +436,7 @@ export const serverRoutes: FastifyPluginAsync = async (app) => {
         url: servers.url,
         publicUrl: servers.publicUrl,
         color: servers.color,
+        historicalAt: servers.historicalAt,
         createdAt: servers.createdAt,
         updatedAt: servers.updatedAt,
       });
@@ -580,6 +597,10 @@ export const serverRoutes: FastifyPluginAsync = async (app) => {
       return reply.notFound('Server not found');
     }
 
+    if (serverRows[0]?.historicalAt) {
+      return reply.conflict('Resume this server to sync it');
+    }
+
     try {
       const result = await syncServer(id, { syncUsers: true, syncLibraries: true });
 
@@ -615,6 +636,51 @@ export const serverRoutes: FastifyPluginAsync = async (app) => {
   });
 
   /**
+   * POST /servers/:id/historical - Stop contacting a server (historical: true) or resume it.
+   * Marking force-stops its streams; history, users and libraries stay.
+   */
+  app.post('/:id/historical', { preHandler: [app.authenticate] }, async (request, reply) => {
+    const params = serverIdParamSchema.safeParse(request.params);
+    if (!params.success) {
+      return reply.badRequest('Invalid server ID');
+    }
+
+    const body = setServerHistoricalSchema.safeParse(request.body);
+    if (!body.success) {
+      return reply.badRequest(body.error.issues[0]?.message ?? 'Invalid request body');
+    }
+
+    if (request.user.role !== 'owner') {
+      return reply.forbidden('Only server owners can change whether a server is historical');
+    }
+
+    const [server] = await db.select().from(servers).where(eq(servers.id, params.data.id)).limit(1);
+    if (!server) {
+      return reply.notFound('Server not found');
+    }
+
+    const updated = body.data.historical
+      ? await markServerHistorical(server)
+      : await resumeServer(server);
+
+    return {
+      id: updated.id,
+      name: updated.name,
+      type: updated.type,
+      url: updated.url,
+      publicUrl: updated.publicUrl,
+      machineIdentifier: updated.machineIdentifier,
+      displayOrder: updated.displayOrder,
+      color: updated.color,
+      version: updated.version,
+      latestVersion: updated.latestVersion,
+      historicalAt: updated.historicalAt,
+      createdAt: updated.createdAt,
+      updatedAt: updated.updatedAt,
+    };
+  });
+
+  /**
    * GET /servers/:id/statistics - Get server resource statistics (CPU, RAM)
    * On-demand endpoint for dashboard - data is not stored
    * Plex only (undocumented /statistics/resources endpoint). /live-stats covers every server type.
@@ -642,6 +708,10 @@ export const serverRoutes: FastifyPluginAsync = async (app) => {
     // Reads Plex's own statistics endpoint; Jellyfin and Emby are served by /live-stats
     if (server.type !== 'plex') {
       return reply.badRequest('Server statistics are only available for Plex servers');
+    }
+
+    if (server.historicalAt) {
+      return { serverId: id, data: [], fetchedAt: new Date().toISOString() };
     }
 
     const data = await getServerResourceStats(app.redis, server);
@@ -680,6 +750,18 @@ export const serverRoutes: FastifyPluginAsync = async (app) => {
       return reply.notFound('Server not found');
     }
 
+    if (server.historicalAt) {
+      return {
+        serverId: id,
+        statistics: [],
+        bandwidth: [],
+        bandwidthSamples: [],
+        bandwidthAccounts: [],
+        bandwidthDevices: [],
+        fetchedAt: new Date().toISOString(),
+      };
+    }
+
     const stats = await getServerLiveStats(app.redis, server);
 
     // Per-account/device attribution names other users' accounts; the charts
@@ -710,11 +792,12 @@ export const serverRoutes: FastifyPluginAsync = async (app) => {
         name: servers.name,
       })
       .from(servers)
-      .where(buildServerAccessCondition(authUser, servers.id))
+      .where(and(buildServerAccessCondition(authUser, servers.id), liveServerCondition))
       .orderBy(...serverOrderBy());
 
     const cacheService = getCacheService();
-    const unhealthyServers: { serverId: string; serverName: string }[] = [];
+    const unhealthyServers: { serverId: string; serverName: string; reason?: ServerDownReason }[] =
+      [];
 
     if (cacheService) {
       for (const server of serverList) {
@@ -722,7 +805,12 @@ export const serverRoutes: FastifyPluginAsync = async (app) => {
         // null means unknown (not yet checked), true means healthy
         // Only include servers explicitly marked as unhealthy (false)
         if (isHealthy === false) {
-          unhealthyServers.push({ serverId: server.id, serverName: server.name });
+          const reason = await cacheService.getServerDownReason(server.id);
+          unhealthyServers.push({
+            serverId: server.id,
+            serverName: server.name,
+            ...(reason && { reason }),
+          });
         }
       }
     }
@@ -747,7 +835,7 @@ export const serverRoutes: FastifyPluginAsync = async (app) => {
         type: servers.type,
       })
       .from(servers)
-      .where(buildServerAccessCondition(authUser, servers.id));
+      .where(and(buildServerAccessCondition(authUser, servers.id), liveServerCondition));
 
     const cacheService = getCacheService();
     const result: ServerConnectionStatus[] = [];

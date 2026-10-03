@@ -31,7 +31,7 @@ registry.registerComponent('securitySchemes', 'bearerAuth', {
 // ============================================================================
 
 const ServerTypeEnum = z.enum(['plex', 'jellyfin', 'emby']);
-const MediaTypeEnum = z.enum(['movie', 'episode', 'track', 'live', 'photo', 'unknown']);
+const MediaTypeEnum = z.enum(['movie', 'episode', 'track', 'live', 'photo', 'trailer', 'unknown']);
 const PlaybackStateEnum = z.enum(['playing', 'paused', 'stopped']);
 const SeverityEnum = z.enum(['low', 'warning', 'high']);
 const UserRoleEnum = z.enum(['owner', 'admin', 'viewer', 'member', 'disabled', 'pending']);
@@ -232,6 +232,10 @@ const ServerStatus = z
     name: z.string().openapi({ example: 'Main Plex Server' }),
     type: ServerTypeEnum,
     online: z.boolean(),
+    historical: z.boolean().openapi({
+      description:
+        'Tracearr no longer contacts this server; online is false while it is historical',
+    }),
     activeStreams: z.number().int().openapi({ example: 3 }),
   })
   .openapi('ServerStatus');
@@ -371,7 +375,17 @@ const ConcurrentDataPoint = z.object({
   total: z.number().int().openapi({ example: 7 }),
   direct: z.number().int().openapi({ description: 'Direct play streams', example: 4 }),
   directStream: z.number().int().openapi({ description: 'Direct stream (remux)', example: 1 }),
-  transcode: z.number().int().openapi({ example: 2 }),
+  transcode: z
+    .number()
+    .int()
+    .openapi({ description: 'Every transcode, audio-only ones included', example: 2 }),
+  audioTranscode: z
+    .number()
+    .int()
+    .openapi({
+      description: 'Of the transcodes, those where only the audio is transcoded',
+      example: 1,
+    }),
 });
 
 const DayOfWeekDataPoint = z.object({
@@ -394,11 +408,22 @@ const QualityBreakdown = z
   .object({
     directPlay: z.number().int().openapi({ example: 234 }),
     directStream: z.number().int().openapi({ example: 56 }),
-    transcode: z.number().int().openapi({ example: 120 }),
+    transcode: z
+      .number()
+      .int()
+      .openapi({ description: 'Every transcode, audio-only ones included', example: 120 }),
+    audioTranscode: z
+      .number()
+      .int()
+      .openapi({
+        description: 'Of the transcodes, those where only the audio is transcoded',
+        example: 45,
+      }),
     total: z.number().int().openapi({ example: 410 }),
     directPlayPercent: z.number().int().openapi({ description: 'Rounded percentage', example: 57 }),
     directStreamPercent: z.number().int().openapi({ example: 14 }),
     transcodePercent: z.number().int().openapi({ example: 29 }),
+    audioTranscodePercent: z.number().int().openapi({ example: 11 }),
   })
   .openapi('QualityBreakdown');
 
@@ -497,6 +522,13 @@ const ServerStreamSummary = z
     ...ServerInfo.shape,
     total: z.number().int().openapi({ example: 3 }),
     transcodes: z.number().int().openapi({ example: 1 }),
+    audioTranscodes: z
+      .number()
+      .int()
+      .openapi({
+        description: 'Of the transcodes, those where only the audio is transcoded',
+        example: 0,
+      }),
     directStreams: z.number().int().openapi({ example: 1 }),
     directPlays: z.number().int().openapi({ example: 1 }),
     totalBitrate: z.string().openapi({ example: '22.5 Mbps' }),
@@ -507,6 +539,13 @@ const StreamsSummary = z
   .object({
     total: z.number().int().openapi({ example: 5 }),
     transcodes: z.number().int().openapi({ example: 2 }),
+    audioTranscodes: z
+      .number()
+      .int()
+      .openapi({
+        description: 'Of the transcodes, those where only the audio is transcoded',
+        example: 1,
+      }),
     directStreams: z.number().int().openapi({ example: 1 }),
     directPlays: z.number().int().openapi({ example: 2 }),
     totalBitrate: z.string().openapi({ example: '45.2 Mbps' }),
@@ -718,7 +757,9 @@ registry.registerPath({
 const HistoryQuery = PaginationQuery.extend({
   serverId: ServerIdParam.optional().openapi({ description: 'Filter by server' }),
   state: PlaybackStateEnum.optional(),
-  mediaType: MediaTypeEnum.optional(),
+  mediaType: MediaTypeEnum.optional().openapi({
+    description: 'Filter by media type. Trailers are left out unless you ask for trailer',
+  }),
   startDate: z.coerce.date().optional().openapi({
     description: 'Sessions on or after this date (start of day in timezone)',
   }),

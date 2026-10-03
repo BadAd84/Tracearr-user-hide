@@ -53,6 +53,8 @@ import { buildAvatarUrl, buildPosterUrl } from '../services/imageProxy.js';
 import { terminateSession } from '../services/termination.js';
 import { hiddenSessionConditions, withoutHiddenSessions } from '../fork/hiddenUsers.js'; // fork: hide users
 import { getCurrentVersion } from '../utils/buildInfo.js';
+import { serverOrderBy } from '../utils/serverOrder.js';
+import { countStreams } from '../utils/streamCounts.js';
 import { generateOpenAPIDocument } from './public.openapi.js';
 import {
   queryConcurrentStreams,
@@ -190,7 +192,7 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
     const allServers = await db
       .select({ id: servers.id, name: servers.name })
       .from(servers)
-      .orderBy(servers.displayOrder);
+      .orderBy(...serverOrderBy());
 
     if (allServers.length > 0) {
       const serverIds = allServers.map((s) => s.id);
@@ -233,9 +235,10 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
         id: servers.id,
         name: servers.name,
         type: servers.type,
+        historicalAt: servers.historicalAt,
       })
       .from(servers)
-      .orderBy(servers.displayOrder);
+      .orderBy(...serverOrderBy());
 
     // Get cached health state and active sessions
     const cacheService = getCacheService();
@@ -247,16 +250,19 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
     const serverStatus = await Promise.all(
       allServers.map(async (server) => {
         const serverActiveStreams = activeSessions.filter((s) => s.serverId === server.id).length;
+        const historical = server.historicalAt !== null;
         // Use cached health state set by the poller (null = unknown/not yet checked)
-        const cachedHealth = cacheService ? await cacheService.getServerHealth(server.id) : null;
+        const cachedHealth =
+          cacheService && !historical ? await cacheService.getServerHealth(server.id) : null;
         // Consider online if explicitly healthy, or unknown (null) with benefit of doubt
-        const online = cachedHealth !== false;
+        const online = !historical && cachedHealth !== false;
 
         return {
           id: server.id,
           name: server.name,
           type: server.type,
           online,
+          historical,
           activeStreams: serverActiveStreams,
         };
       })
@@ -395,75 +401,21 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
           platform: session.platform,
         }));
 
-    const categorizeStream = (session: (typeof activeSessions)[0]) => {
-      // Transcode if either video or audio is being transcoded
-      if (session.isTranscode) return 'transcode';
-      // Direct stream if either video or audio is 'copy' (container remux)
-      if (session.videoDecision === 'copy' || session.audioDecision === 'copy')
-        return 'directStream';
-      // Otherwise it's direct play
-      return 'directPlay';
-    };
-
-    let transcodeCount = 0;
-    let directStreamCount = 0;
-    let directPlayCount = 0;
-    let totalBitrate = 0;
-
-    for (const session of activeSessions) {
-      const category = categorizeStream(session);
-      if (category === 'transcode') transcodeCount++;
-      else if (category === 'directStream') directStreamCount++;
-      else directPlayCount++;
-      if (session.bitrate) totalBitrate += session.bitrate;
-    }
-
-    const serverBreakdown: Record<
-      string,
-      {
-        serverId: string;
-        serverName: string;
-        total: number;
-        transcodes: number;
-        directStreams: number;
-        directPlays: number;
-        bitrateKbps: number;
-      }
-    > = {};
-
-    for (const session of activeSessions) {
-      let serverStats = serverBreakdown[session.serverId];
-      if (!serverStats) {
-        serverStats = {
-          serverId: session.serverId,
-          serverName: session.server.name,
-          total: 0,
-          transcodes: 0,
-          directStreams: 0,
-          directPlays: 0,
-          bitrateKbps: 0,
-        };
-        serverBreakdown[session.serverId] = serverStats;
-      }
-      const category = categorizeStream(session);
-      serverStats.total++;
-      if (category === 'transcode') serverStats.transcodes++;
-      else if (category === 'directStream') serverStats.directStreams++;
-      else serverStats.directPlays++;
-      if (session.bitrate) serverStats.bitrateKbps += session.bitrate;
-    }
+    const { overall, byServer } = countStreams(activeSessions);
 
     const summary = {
-      total: activeSessions.length,
-      transcodes: transcodeCount,
-      directStreams: directStreamCount,
-      directPlays: directPlayCount,
-      totalBitrate: formatBitrate(totalBitrate),
-      byServer: Object.values(serverBreakdown).map((s) => ({
+      total: overall.total,
+      transcodes: overall.transcodes,
+      audioTranscodes: overall.audioTranscodes,
+      directStreams: overall.directStreams,
+      directPlays: overall.directPlays,
+      totalBitrate: formatBitrate(overall.bitrateKbps),
+      byServer: byServer.map((s) => ({
         serverId: s.serverId,
         serverName: s.serverName,
         total: s.total,
         transcodes: s.transcodes,
+        audioTranscodes: s.audioTranscodes,
         directStreams: s.directStreams,
         directPlays: s.directPlays,
         totalBitrate: formatBitrate(s.bitrateKbps),
@@ -672,7 +624,9 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
     const querySchema = paginationSchema.extend({
       serverId: z.uuid().optional(),
       state: z.enum(['playing', 'paused', 'stopped']).optional(),
-      mediaType: z.enum(['movie', 'episode', 'track', 'live', 'photo', 'unknown']).optional(),
+      mediaType: z
+        .enum(['movie', 'episode', 'track', 'live', 'photo', 'trailer', 'unknown'])
+        .optional(),
       startDate: z.coerce.date().optional(),
       endDate: z.coerce.date().optional(),
       timezone: timezoneSchema,
@@ -696,7 +650,7 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
     const conditions: ReturnType<typeof sql>[] = [];
     if (serverId) conditions.push(sql`s.server_id = ${serverId}`);
     if (state) conditions.push(sql`s.state = ${state}`);
-    if (mediaType) conditions.push(sql`s.media_type = ${mediaType}`);
+    conditions.push(mediaType ? sql`s.media_type = ${mediaType}` : sql`s.media_type <> 'trailer'`);
     if (startDate) {
       const startUTC = toStartOfDayUTC(startDate, timezone);
       conditions.push(sql`s.started_at >= ${startUTC}`);
@@ -1000,6 +954,7 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
         direct: r.direct,
         directStream: r.directStream,
         transcode: r.transcode,
+        audioTranscode: r.audioTranscode,
       })),
       byDayOfWeek,
       byHourOfDay,
@@ -1065,6 +1020,10 @@ export const publicRoutes: FastifyPluginAsync = async (app) => {
         trigger: 'manual',
         reason,
       });
+
+      if (result.outcome === 'server_historical') {
+        return reply.conflict('Resume this server to end its streams');
+      }
 
       if (!result.success) {
         return reply.internalServerError(result.error ?? 'Failed to terminate session');
