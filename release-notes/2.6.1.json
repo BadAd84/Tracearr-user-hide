@@ -1,0 +1,15 @@
+{
+  "version": "2.6.1",
+  "date": "2026-10-03",
+  "changes": [
+    {
+      "type": "fix",
+      "text": "Proxmox installs and upgrades get the stream map again instead of failing on a deleted Protomaps build"
+    },
+    {
+      "type": "fix",
+      "text": "the public API's watched-media keeps season and episode numbers for watched episodes deleted from the server",
+      "refs": ["#1283"]
+    }
+  ]
+}
