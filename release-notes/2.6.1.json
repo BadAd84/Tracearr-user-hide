@@ -10,6 +10,10 @@
       "type": "fix",
       "text": "the public API's watched-media keeps season and episode numbers for watched episodes deleted from the server",
       "refs": ["#1283"]
+    },
+    {
+      "type": "fix",
+      "text": "now playing labels trailers, so a trailer Plex names after its movie no longer looks like the movie"
     }
   ]
 }
