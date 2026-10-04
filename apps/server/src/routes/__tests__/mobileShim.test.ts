@@ -22,6 +22,7 @@ import Fastify, { type FastifyInstance } from 'fastify';
 import sensible from '@fastify/sensible';
 import cookie from '@fastify/cookie';
 import { randomUUID } from 'node:crypto';
+import type { SQL } from 'drizzle-orm';
 
 const clientFloor = vi.hoisted(() => ({ value: null as string | null }));
 
@@ -64,6 +65,7 @@ import { getAuth } from '../../lib/auth.js';
 import { getSetting } from '../../services/settings.js';
 import { mobileSessions, mobileTokens, users, servers, authSessions } from '../../db/schema.js';
 import { hashSha256 } from '../../utils/hash.js';
+import { renderSql } from '../../test/helpers.js';
 import authPlugin, { loadJwtRevokeSettings } from '../../plugins/auth.js';
 import { mobileRoutes } from '../mobile.js';
 import { registerErrorHandler } from '../../utils/errors.js';
@@ -489,6 +491,165 @@ describe('mobile better auth shim', () => {
       headers: { authorization: `Bearer ${BA_TOKEN}` },
     });
     expect(res.statusCode).toBe(401);
+  });
+
+  describe('legacy pairing swap', () => {
+    const LEGACY_TOKEN = 'legacy-refresh-token';
+    const LEGACY_HASH = hashSha256(LEGACY_TOKEN);
+    const OWNER_ROW = { id: OWNER_ID, username: 'owner', role: 'owner' };
+
+    function legacyRow() {
+      return baMobileSessionRow({ betterAuthSessionId: null, refreshTokenHash: LEGACY_HASH });
+    }
+
+    function storedRefreshKey() {
+      mockRedis.get.mockImplementation(async (key: string) =>
+        key.includes(`mobile_refresh:${LEGACY_HASH}`)
+          ? JSON.stringify({ userId: OWNER_ID, deviceId: DEVICE_ID })
+          : null
+      );
+    }
+
+    function updateReturning(rows: unknown[]) {
+      const where = vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue(rows) });
+      const set = vi.fn().mockReturnValue({ where });
+      vi.mocked(db.update).mockReturnValue({ set } as never);
+      return { set, where };
+    }
+
+    function refreshLegacy() {
+      return app.inject({
+        method: 'POST',
+        url: '/mobile/refresh',
+        payload: { refreshToken: LEGACY_TOKEN },
+      });
+    }
+
+    it('swaps a legacy token for a better auth session', async () => {
+      app = await buildTestApp();
+      storedRefreshKey();
+      const row = legacyRow();
+      routeSelects(
+        new Map<unknown, unknown[]>([
+          [users, [OWNER_ROW]],
+          [mobileSessions, [row]],
+        ])
+      );
+      const { set, where } = updateReturning([{ id: row.id }]);
+      const multi = {
+        expire: vi.fn().mockReturnThis(),
+        setex: vi.fn().mockReturnThis(),
+        del: vi.fn().mockReturnThis(),
+        exec: vi.fn().mockResolvedValue([]),
+      };
+      mockRedis.multi.mockReturnValueOnce(multi);
+
+      const res = await refreshLegacy();
+
+      expect(res.statusCode).toBe(200);
+      expect(res.json()).toEqual({ accessToken: BA_TOKEN, refreshToken: BA_TOKEN });
+      expect(createSession).toHaveBeenCalledWith(OWNER_ID);
+      expect(set).toHaveBeenCalledWith({
+        betterAuthSessionId: BA_SESSION_ID,
+        refreshTokenHash: hashSha256(BA_TOKEN),
+        previousRefreshTokenHash: LEGACY_HASH,
+        lastSeenAt: expect.any(Date),
+      });
+      const condition = renderSql(where.mock.calls[0]![0] as SQL);
+      expect(condition.sql).toBe(
+        '(mobile_sessions.id = $1 and mobile_sessions.refresh_token_hash = $2)'
+      );
+      expect(condition.params).toEqual([row.id, LEGACY_HASH]);
+      expect(multi.expire).toHaveBeenCalledWith(`tracearr:mobile_refresh:${LEGACY_HASH}`, 90);
+      expect(multi.setex).toHaveBeenCalledWith(
+        `tracearr:mobile_refresh:${hashSha256(BA_TOKEN)}`,
+        90 * 24 * 60 * 60,
+        JSON.stringify({ userId: OWNER_ID, deviceId: DEVICE_ID })
+      );
+      expect(multi.del).toHaveBeenCalledWith(`tracearr:mobile:blacklist:${DEVICE_ID}`);
+      expect(deleteSession).not.toHaveBeenCalled();
+    });
+
+    it('answers a legacy token inside its grace window with the current token', async () => {
+      app = await buildTestApp();
+      storedRefreshKey();
+      routeSelects(
+        new Map<unknown, unknown[]>([
+          [users, [OWNER_ROW]],
+          [mobileSessions, [baMobileSessionRow({ previousRefreshTokenHash: LEGACY_HASH })]],
+          [authSessions, [{ token: BA_TOKEN }]],
+        ])
+      );
+
+      const res = await refreshLegacy();
+
+      expect(res.statusCode).toBe(200);
+      expect(res.json()).toEqual({ accessToken: BA_TOKEN, refreshToken: BA_TOKEN });
+      expect(getSession).not.toHaveBeenCalled();
+      expect(createSession).not.toHaveBeenCalled();
+    });
+
+    it('answers a legacy token past its grace window with AUTH_002', async () => {
+      app = await buildTestApp();
+      routeSelects(new Map<unknown, unknown[]>([[mobileSessions, []]]));
+
+      const res = await refreshLegacy();
+
+      expect(res.statusCode).toBe(401);
+      expect(res.json().code).toBe('AUTH_002');
+      expect(createSession).not.toHaveBeenCalled();
+    });
+
+    it('drops its own session and returns the winner token when it loses the race', async () => {
+      app = await buildTestApp();
+      storedRefreshKey();
+      const row = legacyRow();
+      const sessionReads = [
+        [row],
+        [{ betterAuthSessionId: 'winner-session-id', previousRefreshTokenHash: LEGACY_HASH }],
+      ];
+      vi.mocked(db.select).mockImplementation((() => ({
+        from: (table: unknown) => {
+          if (table === users) return chainFor([OWNER_ROW]);
+          if (table === authSessions) return chainFor([{ token: 'winner-token' }]);
+          return chainFor(sessionReads.shift() ?? []);
+        },
+      })) as never);
+      updateReturning([]);
+
+      const res = await refreshLegacy();
+
+      expect(res.statusCode).toBe(200);
+      expect(res.json()).toEqual({ accessToken: 'winner-token', refreshToken: 'winner-token' });
+      expect(createSession).toHaveBeenCalledTimes(1);
+      expect(deleteSession).toHaveBeenCalledTimes(1);
+      expect(deleteSession).toHaveBeenCalledWith(BA_TOKEN);
+      expect(db.delete).toHaveBeenCalledTimes(1);
+      expect(mockRedis.multi).not.toHaveBeenCalled();
+    });
+
+    it('answers AUTH_002 when the row changed under it for another reason', async () => {
+      app = await buildTestApp();
+      storedRefreshKey();
+      const sessionReads = [
+        [legacyRow()],
+        [{ betterAuthSessionId: 'repaired-session-id', previousRefreshTokenHash: null }],
+      ];
+      vi.mocked(db.select).mockImplementation((() => ({
+        from: (table: unknown) => {
+          if (table === users) return chainFor([OWNER_ROW]);
+          if (table === authSessions) return chainFor([{ token: 'repaired-token' }]);
+          return chainFor(sessionReads.shift() ?? []);
+        },
+      })) as never);
+      updateReturning([]);
+
+      const res = await refreshLegacy();
+
+      expect(res.statusCode).toBe(401);
+      expect(res.json().code).toBe('AUTH_002');
+      expect(deleteSession).toHaveBeenCalledWith(BA_TOKEN);
+    });
   });
 
   describe('failure codes', () => {

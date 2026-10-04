@@ -1397,55 +1397,36 @@ describe('Mobile Routes', () => {
   });
 
   describe('POST /mobile/refresh', () => {
-    it('refreshes mobile JWT with valid refresh token', async () => {
+    it('moves a legacy pairing onto a better auth session', async () => {
       app = await buildTestApp(null);
 
+      const userId = randomUUID();
       mockRedis.eval.mockResolvedValue(1); // Rate limit OK
-      mockRedis.get.mockResolvedValue(
-        JSON.stringify({ userId: randomUUID(), deviceId: 'device-123' })
-      );
+      mockRedis.get.mockResolvedValue(JSON.stringify({ userId, deviceId: 'device-123' }));
 
-      const mockUser = { id: randomUUID(), username: 'owner', role: 'owner' };
-      const mockSession = createMockSession();
+      const mockUser = { id: userId, username: 'owner', role: 'owner' };
+      const mockSession = { ...createMockSession(), userId, betterAuthSessionId: null };
 
       let selectCallCount = 0;
       vi.mocked(db.select).mockImplementation(() => {
         selectCallCount++;
-        if (selectCallCount === 1) {
-          // User query
-          return {
-            from: vi.fn().mockReturnValue({
-              where: vi.fn().mockReturnValue({
-                limit: vi.fn().mockResolvedValue([mockUser]),
-              }),
+        const rows = selectCallCount === 1 ? [mockUser] : [mockSession];
+        return {
+          from: vi.fn().mockReturnValue({
+            where: vi.fn().mockReturnValue({
+              limit: vi.fn().mockResolvedValue(rows),
             }),
-          } as never;
-        } else if (selectCallCount === 2) {
-          // Session query
-          return {
-            from: vi.fn().mockReturnValue({
-              where: vi.fn().mockReturnValue({
-                limit: vi.fn().mockResolvedValue([mockSession]),
-              }),
-            }),
-          } as never;
-        } else {
-          // Servers query
-          return {
-            from: vi.fn().mockResolvedValue([{ id: randomUUID() }]),
-          } as never;
-        }
+          }),
+        } as never;
       });
 
       vi.mocked(db.update).mockReturnValue({
         set: vi.fn().mockReturnValue({
-          where: vi.fn().mockResolvedValue(undefined),
+          where: vi.fn().mockReturnValue({
+            returning: vi.fn().mockResolvedValue([{ id: mockSession.id }]),
+          }),
         }),
       } as never);
-
-      mockJwt.sign.mockReturnValue('new.jwt.token');
-      mockRedis.del.mockResolvedValue(1);
-      mockRedis.setex.mockResolvedValue('OK');
 
       const response = await app.inject({
         method: 'POST',
@@ -1454,9 +1435,10 @@ describe('Mobile Routes', () => {
       });
 
       expect(response.statusCode).toBe(200);
-      const body = response.json();
-      expect(body.accessToken).toBe('new.jwt.token');
-      expect(body.refreshToken).toBeDefined();
+      expect(response.json()).toEqual({
+        accessToken: 'ba-session-token',
+        refreshToken: 'ba-session-token',
+      });
     });
 
     it('rejects when user no longer valid', async () => {

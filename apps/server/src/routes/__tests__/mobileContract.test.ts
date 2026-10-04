@@ -286,25 +286,24 @@ describe('mobile contract freeze', () => {
             }),
           }),
         } as never;
-      } else if (selectCallCount === 2) {
-        return {
-          from: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-              limit: vi.fn().mockResolvedValue([mockSession]),
-            }),
-          }),
-        } as never;
       }
-      return { from: vi.fn().mockResolvedValue([{ id: randomUUID() }]) } as never;
+      return {
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            limit: vi.fn().mockResolvedValue([mockSession]),
+          }),
+        }),
+      } as never;
     });
 
     vi.mocked(db.update).mockReturnValue({
       set: vi.fn().mockReturnValue({
-        where: vi.fn().mockResolvedValue(undefined),
+        where: vi.fn().mockReturnValue({
+          returning: vi.fn().mockResolvedValue([{ id: mockSession.id }]),
+        }),
       }),
     } as never);
 
-    mockJwt.sign.mockReturnValue('new.jwt.token');
     mockRedis.del.mockResolvedValue(1);
     mockRedis.setex.mockResolvedValue('OK');
 
