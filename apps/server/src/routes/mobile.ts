@@ -254,16 +254,17 @@ async function swapLegacyPairing(
       MOBILE_REFRESH_TTL,
       JSON.stringify({ userId: session.userId, deviceId: session.deviceId })
     )
-    .del(REDIS_KEYS.MOBILE_BLACKLISTED_TOKEN(session.deviceId))
     .exec();
 
   return { accessToken: baSession.token, refreshToken: baSession.token };
 }
 
 // Shared by the settings endpoints below and the owner-only debug wipe.
+// Deletes the row itself, so callers' own later deletes find nothing.
 export async function revokeMobileDeviceSession(
   redis: Redis,
   session: {
+    id: string;
     deviceId: string;
     refreshTokenHash: string;
     previousRefreshTokenHash: string | null;
@@ -271,25 +272,36 @@ export async function revokeMobileDeviceSession(
   }
 ): Promise<void> {
   await redis.setex(
-    REDIS_KEYS.MOBILE_REVOKED_TOKEN(session.refreshTokenHash),
-    MOBILE_REVOKED_TTL,
-    '1'
-  );
-  if (session.previousRefreshTokenHash) {
-    await redis.setex(
-      REDIS_KEYS.MOBILE_REVOKED_TOKEN(session.previousRefreshTokenHash),
-      MOBILE_REVOKED_TTL,
-      '1'
-    );
-  }
-  await redis.setex(
     REDIS_KEYS.MOBILE_BLACKLISTED_TOKEN(session.deviceId),
     MOBILE_BLACKLIST_TTL,
     '1'
   );
+
+  // The caller read the row earlier. Deleting it under its row lock orders the
+  // revoke against a racing legacy swap: either the swap finds no row and drops
+  // the session it made, or it committed first and the returned row names that
+  // session.
+  const [current] = await db
+    .delete(mobileSessions)
+    .where(eq(mobileSessions.id, session.id))
+    .returning();
+  const revoked = current ?? session;
+
+  await redis.setex(
+    REDIS_KEYS.MOBILE_REVOKED_TOKEN(revoked.refreshTokenHash),
+    MOBILE_REVOKED_TTL,
+    '1'
+  );
+  if (revoked.previousRefreshTokenHash) {
+    await redis.setex(
+      REDIS_KEYS.MOBILE_REVOKED_TOKEN(revoked.previousRefreshTokenHash),
+      MOBILE_REVOKED_TTL,
+      '1'
+    );
+  }
   disconnectMobileDevice(session.deviceId);
-  await deleteSessionRefreshTokens(redis, session);
-  await revokeBetterAuthSession(session.betterAuthSessionId);
+  await deleteSessionRefreshTokens(redis, revoked);
+  await revokeBetterAuthSession(revoked.betterAuthSessionId);
 }
 
 // Named like the @fastify/sensible errors these replaced, so the body only gains a code.
@@ -796,6 +808,16 @@ export const mobileRoutes: FastifyPluginAsync = async (app) => {
         const serverId = primaryServer?.id || '';
         const serverType = primaryServer?.type || 'plex';
 
+        // Re-read the device row under lock: a legacy refresh may have swapped
+        // it onto a Better Auth session since the unlocked read above, and that
+        // session must be the one revoked below.
+        const [lockedSession] = await tx
+          .select()
+          .from(mobileSessions)
+          .where(eq(mobileSessions.deviceId, deviceId))
+          .for('update')
+          .limit(1);
+
         // Create the Better Auth session that backs this pairing. Both the
         // access and refresh tokens are the opaque BA session token; the
         // refresh lookup path keeps working because the row still stores
@@ -809,9 +831,9 @@ export const mobileRoutes: FastifyPluginAsync = async (app) => {
         let oldHash: string | undefined;
 
         // Create or update session
-        if (existingSession.length > 0) {
+        if (lockedSession) {
           // Update existing session - save old hash for cleanup outside transaction
-          oldHash = existingSession[0]!.refreshTokenHash;
+          oldHash = lockedSession.refreshTokenHash;
 
           await tx
             .update(mobileSessions)
@@ -825,7 +847,7 @@ export const mobileRoutes: FastifyPluginAsync = async (app) => {
               lastSeenAt: new Date(),
               userId: owner.id,
             })
-            .where(eq(mobileSessions.id, existingSession[0]!.id));
+            .where(eq(mobileSessions.id, lockedSession.id));
         } else {
           // Create new session - link to the owner user who generated the pairing token
           await tx.insert(mobileSessions).values({
@@ -857,7 +879,7 @@ export const mobileRoutes: FastifyPluginAsync = async (app) => {
           serverType,
           serverIds,
           oldRefreshTokenHash: oldHash,
-          oldBetterAuthSessionId: existingSession[0]?.betterAuthSessionId ?? null,
+          oldBetterAuthSessionId: lockedSession?.betterAuthSessionId ?? null,
         };
       });
     } catch (err) {

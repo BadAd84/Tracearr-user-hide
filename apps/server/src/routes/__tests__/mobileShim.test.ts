@@ -165,6 +165,16 @@ function routeSelects(rowsByTable: Map<unknown, unknown[]>) {
   })) as never);
 }
 
+// Revoke deletes the row with .where().returning(); other deletes await .where().
+function deleteReturning(rows: unknown[]) {
+  const where = vi.fn(() => ({
+    returning: () => Promise.resolve(rows),
+    then: (resolve: (v: unknown) => unknown, reject?: (e: unknown) => unknown) =>
+      Promise.resolve(undefined).then(resolve, reject),
+  }));
+  vi.mocked(db.delete).mockReturnValue({ where } as never);
+}
+
 function createMockToken() {
   return {
     id: randomUUID(),
@@ -228,9 +238,7 @@ describe('mobile better auth shim', () => {
         where: vi.fn().mockResolvedValue(undefined),
       }),
     } as never);
-    vi.mocked(db.delete).mockReturnValue({
-      where: vi.fn().mockResolvedValue(undefined),
-    } as never);
+    deleteReturning([]);
   });
 
   afterEach(async () => {
@@ -566,7 +574,8 @@ describe('mobile better auth shim', () => {
         90 * 24 * 60 * 60,
         JSON.stringify({ userId: OWNER_ID, deviceId: DEVICE_ID })
       );
-      expect(multi.del).toHaveBeenCalledWith(`tracearr:mobile:blacklist:${DEVICE_ID}`);
+      // A revoke racing this swap sets the blacklist; the swap must never clear it.
+      expect(multi.del).not.toHaveBeenCalled();
       expect(deleteSession).not.toHaveBeenCalled();
     });
 
@@ -626,6 +635,120 @@ describe('mobile better auth shim', () => {
       expect(deleteSession).toHaveBeenCalledWith(BA_TOKEN);
       expect(db.delete).toHaveBeenCalledTimes(1);
       expect(mockRedis.multi).not.toHaveBeenCalled();
+    });
+
+    it('a revoke that read the legacy row still kills the session a racing swap made', async () => {
+      app = await buildTestApp();
+      const legacy = legacyRow();
+      routeSelects(
+        new Map<unknown, unknown[]>([
+          [servers, [{ id: SERVER_ID }]],
+          [mobileSessions, [legacy]],
+          [authSessions, [{ token: BA_TOKEN }]],
+        ])
+      );
+      // The swap committed between the revoke's read and its delete.
+      deleteReturning([
+        {
+          ...legacy,
+          betterAuthSessionId: BA_SESSION_ID,
+          refreshTokenHash: hashSha256(BA_TOKEN),
+          previousRefreshTokenHash: LEGACY_HASH,
+        },
+      ]);
+
+      const res = await app.inject({
+        method: 'DELETE',
+        url: `/mobile/sessions/${legacy.id}`,
+        headers: { authorization: `Bearer ${WEB_TOKEN}` },
+      });
+
+      expect(res.statusCode).toBe(200);
+      expect(deleteSession).toHaveBeenCalledWith(BA_TOKEN);
+      const thirtyDays = 30 * 24 * 60 * 60;
+      expect(mockRedis.setex).toHaveBeenCalledWith(
+        `tracearr:mobile:revoked:${hashSha256(BA_TOKEN)}`,
+        thirtyDays,
+        '1'
+      );
+      expect(mockRedis.setex).toHaveBeenCalledWith(
+        `tracearr:mobile:revoked:${LEGACY_HASH}`,
+        thirtyDays,
+        '1'
+      );
+      expect(mockRedis.setex).toHaveBeenCalledWith(
+        `tracearr:mobile:blacklist:${DEVICE_ID}`,
+        expect.any(Number),
+        '1'
+      );
+      expect(mockRedis.del).toHaveBeenCalledWith(`tracearr:mobile_refresh:${hashSha256(BA_TOKEN)}`);
+    });
+
+    it('a re-pair revokes the session a racing swap made, read under lock', async () => {
+      app = await buildTestApp();
+      // The unlocked read before the transaction still sees the legacy row.
+      routeSelects(
+        new Map<unknown, unknown[]>([
+          [mobileSessions, [legacyRow()]],
+          [authSessions, [{ token: 'swap-token' }]],
+        ])
+      );
+      const swapped = {
+        ...legacyRow(),
+        betterAuthSessionId: 'swap-session-id',
+        refreshTokenHash: hashSha256('swap-token'),
+        previousRefreshTokenHash: LEGACY_HASH,
+      };
+      const txRows = new Map<unknown, unknown[]>([
+        [mobileTokens, [createMockToken()]],
+        [users, [OWNER_ROW]],
+        [servers, [{ id: SERVER_ID, name: 'MyServer', type: 'plex' }]],
+        [mobileSessions, [swapped]],
+      ]);
+      const lockedTables: unknown[] = [];
+      vi.mocked(db.transaction).mockImplementation(async (callback) => {
+        const tx = {
+          execute: vi.fn().mockResolvedValue(undefined),
+          select: vi.fn().mockImplementation(() => ({
+            from: (table: unknown) => {
+              const rows = txRows.get(table) ?? [];
+              return {
+                orderBy: () => chainFor(rows),
+                where: () => ({
+                  limit: () => Promise.resolve(rows),
+                  for: (mode: string) => {
+                    if (mode === 'update') lockedTables.push(table);
+                    return chainFor(rows);
+                  },
+                }),
+              };
+            },
+          })),
+          insert: vi.fn().mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) }),
+          update: vi.fn().mockReturnValue({
+            set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }),
+          }),
+        };
+        return callback(tx as never);
+      });
+
+      const res = await app.inject({
+        method: 'POST',
+        url: '/mobile/pair',
+        payload: {
+          token: 'trr_mob_validtokenvalue12345678901234567890',
+          deviceName: 'Test Phone',
+          deviceId: DEVICE_ID,
+          platform: 'ios',
+        },
+      });
+
+      expect(res.statusCode).toBe(200);
+      expect(lockedTables).toContain(mobileSessions);
+      expect(deleteSession).toHaveBeenCalledWith('swap-token');
+      expect(mockRedis.del).toHaveBeenCalledWith(
+        `tracearr:mobile_refresh:${hashSha256('swap-token')}`
+      );
     });
 
     it('answers AUTH_002 when the row changed under it for another reason', async () => {

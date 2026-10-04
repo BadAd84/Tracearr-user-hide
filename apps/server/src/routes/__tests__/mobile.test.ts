@@ -94,6 +94,24 @@ function createMultiMock() {
   return chain;
 }
 
+// db.delete() as both the revoke path (.where().returning()) and the routes'
+// own deletes (awaited directly or after .where()) use it.
+function deleteResult(rows: unknown[] = []) {
+  const settle = (resolve: (v: unknown) => unknown, reject?: (e: unknown) => unknown) =>
+    Promise.resolve(undefined).then(resolve, reject);
+  return {
+    where: () => ({ returning: () => Promise.resolve(rows), then: settle }),
+    then: settle,
+  };
+}
+
+// Pair's in-transaction device row read: .where().for('update').limit()
+function lockedDeviceRead(rows: unknown[]) {
+  return {
+    from: () => ({ where: () => ({ for: () => ({ limit: () => Promise.resolve(rows) }) }) }),
+  };
+}
+
 const mockRedis = {
   get: vi.fn(),
   set: vi.fn(),
@@ -613,7 +631,7 @@ describe('Mobile Routes', () => {
       });
       vi.mocked(db.delete).mockImplementation(() => {
         callOrder.push('delete');
-        return Promise.resolve() as never;
+        return deleteResult() as never;
       });
 
       mockRedis.del.mockResolvedValue(1);
@@ -628,7 +646,8 @@ describe('Mobile Routes', () => {
       expect(body.success).toBe(true);
       expect(setSetting).toHaveBeenCalledWith('mobileEnabled', false);
       expect(mockRedis.del).toHaveBeenCalled();
-      expect(callOrder).toEqual(['revoke', 'revoke', 'delete', 'delete']);
+      // Blacklist, row delete, tombstone, then the bulk session and token deletes
+      expect(callOrder).toEqual(['revoke', 'delete', 'revoke', 'delete', 'delete']);
     });
 
     it('rejects non-owner access with 403', async () => {
@@ -669,7 +688,7 @@ describe('Mobile Routes', () => {
       });
       vi.mocked(db.delete).mockImplementation(() => {
         callOrder.push('delete');
-        return Promise.resolve() as never;
+        return deleteResult() as never;
       });
 
       mockRedis.del.mockResolvedValue(1);
@@ -688,7 +707,15 @@ describe('Mobile Routes', () => {
       expect(mockRedis.del).toHaveBeenCalledTimes(2);
       expect(disconnectMobileDevice).toHaveBeenCalledWith('device-aaa');
       expect(disconnectMobileDevice).toHaveBeenCalledWith('device-bbb');
-      expect(callOrder).toEqual(['revoke', 'revoke', 'revoke', 'revoke', 'delete']);
+      expect(callOrder).toEqual([
+        'revoke',
+        'delete',
+        'revoke',
+        'revoke',
+        'delete',
+        'revoke',
+        'delete',
+      ]);
     });
 
     it('handles empty sessions gracefully', async () => {
@@ -698,7 +725,7 @@ describe('Mobile Routes', () => {
         from: vi.fn().mockResolvedValue([]),
       } as never);
 
-      vi.mocked(db.delete).mockReturnValue(Promise.resolve() as never);
+      vi.mocked(db.delete).mockReturnValue(deleteResult() as never);
 
       const response = await app.inject({
         method: 'DELETE',
@@ -745,7 +772,7 @@ describe('Mobile Routes', () => {
       });
       vi.mocked(db.delete).mockImplementation(() => {
         callOrder.push('delete');
-        return { where: vi.fn().mockResolvedValue(undefined) } as never;
+        return deleteResult() as never;
       });
 
       mockRedis.del.mockResolvedValue(1);
@@ -758,7 +785,8 @@ describe('Mobile Routes', () => {
       expect(response.statusCode).toBe(200);
       const body = response.json();
       expect(body.success).toBe(true);
-      expect(callOrder).toEqual(['revoke', 'revoke', 'delete']);
+      // Blacklist, row delete under lock, tombstone, then the handler's own no-op delete
+      expect(callOrder).toEqual(['revoke', 'delete', 'revoke', 'delete']);
       // Should blacklist the device
       expect(mockRedis.setex).toHaveBeenCalledWith(
         expect.stringContaining('mobile:blacklist:device-xyz'),
@@ -786,9 +814,7 @@ describe('Mobile Routes', () => {
           }),
         }),
       } as never);
-      vi.mocked(db.delete).mockReturnValue({
-        where: vi.fn().mockResolvedValue(undefined),
-      } as never);
+      vi.mocked(db.delete).mockReturnValue(deleteResult() as never);
       mockRedis.setex.mockResolvedValue('OK');
       mockRedis.del.mockResolvedValue(1);
 
@@ -1013,8 +1039,12 @@ describe('Mobile Routes', () => {
             // Call 1: mobileTokens lookup with .where().for().limit()
             // Call 2: users lookup with .where().limit()
             // Call 3: servers lookup (id, type) - ends at .orderBy()
+            // Call 4: device row re-read under lock - not paired yet
             if (txSelectCallCount === 3) {
               return { from: vi.fn().mockReturnValue({ orderBy: serverOrderBy }) };
+            }
+            if (txSelectCallCount === 4) {
+              return lockedDeviceRead([]);
             }
             return {
               from: vi.fn().mockImplementation(() => ({
@@ -1359,6 +1389,15 @@ describe('Mobile Routes', () => {
                     .mockResolvedValue([{ id: mockServerId, name: 'Server', type: 'plex' }]),
                 }),
               };
+            }
+            if (txSelectCallCount === 4) {
+              return lockedDeviceRead([
+                {
+                  id: existingSessionId,
+                  refreshTokenHash: oldRefreshHash,
+                  betterAuthSessionId: null,
+                },
+              ]);
             }
             return {
               from: vi.fn().mockReturnValue({
