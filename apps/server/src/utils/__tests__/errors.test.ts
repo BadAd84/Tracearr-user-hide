@@ -31,6 +31,7 @@ import {
   ValidationError,
   AuthenticationError,
   ForbiddenError,
+  MobileAuthError,
   NotFoundError,
   ConflictError,
   RateLimitError,
@@ -252,6 +253,19 @@ describe('ForbiddenError', () => {
     const error = new ForbiddenError('Admin access required');
 
     expect(error.message).toBe('Admin access required');
+  });
+});
+
+describe('MobileAuthError', () => {
+  it('sends the status text as error and carries the code', () => {
+    expect(
+      new MobileAuthError('Session has been revoked', 401, ErrorCodes.DEVICE_REVOKED).toJSON()
+    ).toEqual({
+      statusCode: 401,
+      error: 'Unauthorized',
+      message: 'Session has been revoked',
+      code: 'AUTH_005',
+    });
   });
 });
 
