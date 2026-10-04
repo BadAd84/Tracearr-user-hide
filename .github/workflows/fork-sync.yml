@@ -36,12 +36,13 @@ jobs:
           upstream=https://github.com/connorgallopo/Tracearr.git
           tag=$(git ls-remote --tags --refs "$upstream" 'v*' | sed 's#.*refs/tags/##' |
             grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
-          git fetch --no-tags "$upstream" "refs/tags/$tag:refs/tags/$tag"
-          if git merge-base --is-ancestor "$tag" HEAD; then
+          # Separate ref: the fork publishes its own release tags with the same names
+          git fetch --no-tags "$upstream" "+refs/tags/$tag:refs/upstream/$tag"
+          if git merge-base --is-ancestor "refs/upstream/$tag" HEAD; then
             echo "Already on upstream $tag."
             exit 0
           fi
-          git merge --no-edit -m "Merge upstream $tag" "$tag"
+          git merge --no-edit -m "Merge upstream $tag" "refs/upstream/$tag"
           echo "merged=true" >> "$GITHUB_OUTPUT"
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
 

@@ -1,5 +1,6 @@
-# Fork: publish ghcr.io/<owner>/tracearr-user-hide :latest and :supervised.
-# Run by Fork sync after it merges a new upstream release, or by hand.
+# Fork: publish ghcr.io/<owner>/tracearr-user-hide images and a matching GitHub
+# release. Tags follow upstream: :latest, :X.Y.Z, :X.Y, :X and :supervised,
+# :supervised-X.Y.Z. Run by Fork sync after it merges an upstream release, or by hand.
 name: Fork image
 
 on:
@@ -22,8 +23,10 @@ jobs:
         include:
           - file: ./docker/Dockerfile
             tag: latest
+            versioned: X.Y.Z X.Y X
           - file: ./docker/Dockerfile.supervised
             tag: supervised
+            versioned: supervised-X.Y.Z
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -33,13 +36,24 @@ jobs:
       - name: Resolve image name and version
         id: info
         run: |
-          echo "image=ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+          image=ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "image=${image}" >> "$GITHUB_OUTPUT"
           echo "short=$(git rev-parse --short=7 HEAD)" >> "$GITHUB_OUTPUT"
           echo "date=$(git log -1 --format=%cI)" >> "$GITHUB_OUTPUT"
           # Newest upstream release in this tree, so the update notice stays accurate
-          git fetch --no-tags https://github.com/connorgallopo/Tracearr.git '+refs/tags/v*:refs/tags/v*'
-          version=$(git describe --tags --abbrev=0 --match 'v[0-9]*' HEAD)
+          git fetch --no-tags https://github.com/connorgallopo/Tracearr.git '+refs/tags/v*:refs/upstream-tags/v*'
+          version=$(git for-each-ref --merged HEAD --sort=-v:refname --format='%(refname:lstrip=2)' refs/upstream-tags | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -1)
           echo "version=${version#v}" >> "$GITHUB_OUTPUT"
+          IFS=. read -r major minor patch <<< "${version#v}"
+          {
+            echo 'tags<<EOF'
+            echo "${image}:${{ matrix.tag }}"
+            for t in ${{ matrix.versioned }}; do
+              t=${t/X.Y.Z/$major.$minor.$patch}; t=${t/X.Y/$major.$minor}; t=${t/X/$major}
+              echo "${image}:${t}"
+            done
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
 
       - uses: ./.github/actions/fetch-basemap
 
@@ -57,7 +71,7 @@ jobs:
           file: ${{ matrix.file }}
           platforms: linux/amd64
           push: true
-          tags: ${{ steps.info.outputs.image }}:${{ matrix.tag }}
+          tags: ${{ steps.info.outputs.tags }}
           labels: org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
           cache-from: type=gha,scope=${{ matrix.tag }}
           cache-to: type=gha,mode=max,scope=${{ matrix.tag }}
@@ -67,3 +81,35 @@ jobs:
             APP_COMMIT=${{ steps.info.outputs.short }}
             APP_BUILD_DATE=${{ steps.info.outputs.date }}
             CACHE_BUST=${{ steps.info.outputs.short }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Create or update the release for this upstream version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          git fetch --no-tags https://github.com/connorgallopo/Tracearr.git '+refs/tags/v*:refs/upstream-tags/v*'
+          version=$(git for-each-ref --merged HEAD --sort=-v:refname --format='%(refname:lstrip=2)' refs/upstream-tags | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -1)
+          image=ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          notes="Upstream [${version}](https://github.com/connorgallopo/Tracearr/releases/tag/${version}) with the hide-users patch.
+
+          - \`${image}:${version#v}\` / \`${image}:latest\`
+          - \`${image}:supervised-${version#v}\` / \`${image}:supervised\`"
+          if gh release view "$version" >/dev/null 2>&1; then
+            # A rebuild of the same version: move the tag to what was just built
+            git tag -f "$version" HEAD
+            git push -f origin "refs/tags/$version"
+            gh release edit "$version" --notes "$notes" --latest
+          else
+            gh release create "$version" --target "$(git rev-parse HEAD)" --title "$version" --notes "$notes" --latest
+          fi
