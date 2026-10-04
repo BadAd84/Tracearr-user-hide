@@ -90,21 +90,22 @@ export class ForbiddenError extends AppError {
   }
 }
 
-const MOBILE_AUTH_REASON = {
-  401: 'Unauthorized',
-  403: 'Forbidden',
-  426: 'Upgrade Required',
-  503: 'Service Unavailable',
+const MOBILE_AUTH_ERROR_NAME = {
+  401: 'UnauthorizedError',
+  403: 'ForbiddenError',
+  426: 'UpgradeRequiredError',
+  503: 'ServiceUnavailableError',
 } as const;
 
 /**
  * Mobile auth failure with a code the app can branch on.
- * The name is the HTTP reason phrase, so the body's `error` is the status text.
+ * The names are the http-errors class names @fastify/sensible produces, so the
+ * body's `error` stays what these responses sent before they carried a code.
  */
 export class MobileAuthError extends AppError {
-  constructor(message: string, statusCode: keyof typeof MOBILE_AUTH_REASON, code: ErrorCode) {
+  constructor(message: string, statusCode: keyof typeof MOBILE_AUTH_ERROR_NAME, code: ErrorCode) {
     super(message, statusCode, code);
-    this.name = MOBILE_AUTH_REASON[statusCode];
+    this.name = MOBILE_AUTH_ERROR_NAME[statusCode];
     Object.setPrototypeOf(this, MobileAuthError.prototype);
   }
 }
