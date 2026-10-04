@@ -21,7 +21,7 @@
 
 import type { FastifyPluginAsync } from 'fastify';
 import { randomBytes } from 'crypto';
-import { eq, and, gt, isNull, or, sql } from 'drizzle-orm';
+import { eq, and, gt, isNull, sql } from 'drizzle-orm';
 import { Expo } from 'expo-server-sdk';
 import type { Redis } from 'ioredis';
 import { z } from 'zod';
@@ -47,9 +47,11 @@ import {
   authSessions,
 } from '../db/schema.js';
 import { getAuth } from '../lib/auth.js';
+import { assertMobileClientSupported, failClosed } from '../plugins/auth.js';
 import { terminateSession } from '../services/termination.js';
 import { getSetting, setSetting } from '../services/settings.js';
 import { compareNames } from '../utils/collation.js';
+import { AppError, ErrorCodes, MobileAuthError } from '../utils/errors.js';
 import { hashSha256 } from '../utils/hash.js';
 import { hasServerAccess } from '../utils/serverFiltering.js';
 import { serverOrderBy } from '../utils/serverOrder.js';
@@ -94,6 +96,10 @@ const MOBILE_ACCESS_EXPIRY = '24h';
 
 // TTL for blacklisted tokens (must match MOBILE_ACCESS_EXPIRY)
 const MOBILE_BLACKLIST_TTL = 24 * 60 * 60; // 24 hours in seconds
+
+// Revoke tombstones outlive any Better Auth session the token could still name
+// (session.expiresIn in lib/auth.ts)
+const MOBILE_REVOKED_TTL = 30 * 24 * 60 * 60; // 30 days in seconds
 
 // Schemas
 const DEVICE_SECRET_LENGTH_MESSAGE = 'must be 32 to 64 characters';
@@ -195,6 +201,18 @@ export async function revokeMobileDeviceSession(
   }
 ): Promise<void> {
   await redis.setex(
+    REDIS_KEYS.MOBILE_REVOKED_TOKEN(session.refreshTokenHash),
+    MOBILE_REVOKED_TTL,
+    '1'
+  );
+  if (session.previousRefreshTokenHash) {
+    await redis.setex(
+      REDIS_KEYS.MOBILE_REVOKED_TOKEN(session.previousRefreshTokenHash),
+      MOBILE_REVOKED_TTL,
+      '1'
+    );
+  }
+  await redis.setex(
     REDIS_KEYS.MOBILE_BLACKLISTED_TOKEN(session.deviceId),
     MOBILE_BLACKLIST_TTL,
     '1'
@@ -202,6 +220,13 @@ export async function revokeMobileDeviceSession(
   disconnectMobileDevice(session.deviceId);
   await deleteSessionRefreshTokens(redis, session);
   await revokeBetterAuthSession(session.betterAuthSessionId);
+}
+
+// Named like the @fastify/sensible errors these replaced, so the body only gains a code.
+function pushTokenBadRequest(message: string): AppError {
+  return Object.assign(new AppError(message, 400, ErrorCodes.VALIDATION_ERROR), {
+    name: 'BadRequestError',
+  });
 }
 
 async function listPairedDevices(): Promise<MobileSession[]> {
@@ -603,6 +628,7 @@ export const mobileRoutes: FastifyPluginAsync = async (app) => {
     if (!body.success) {
       return reply.badRequest('Invalid pairing request');
     }
+    assertMobileClientSupported(request);
 
     const { token, deviceName, deviceId, platform, deviceSecret } = body.data;
 
@@ -870,6 +896,7 @@ export const mobileRoutes: FastifyPluginAsync = async (app) => {
     if (!body.success) {
       return reply.badRequest('Invalid refresh request');
     }
+    assertMobileClientSupported(request);
 
     const { refreshToken } = body.data;
     const refreshTokenHash = hashSha256(refreshToken);
@@ -882,52 +909,48 @@ export const mobileRoutes: FastifyPluginAsync = async (app) => {
     if (stored) {
       ({ userId, deviceId } = JSON.parse(stored) as { userId: string; deviceId: string });
     } else {
-      // Redis miss - check DB
+      // Redis miss - check DB. A previous token is only honoured while its
+      // Redis grace key exists, so the fallback matches the current hash only.
       const dbSession = await db
         .select()
         .from(mobileSessions)
-        .where(
-          or(
-            eq(mobileSessions.refreshTokenHash, refreshTokenHash),
-            eq(mobileSessions.previousRefreshTokenHash, refreshTokenHash)
-          )
-        )
+        .where(eq(mobileSessions.refreshTokenHash, refreshTokenHash))
         .limit(1);
 
       if (dbSession.length === 0) {
-        return reply.unauthorized('Invalid or expired refresh token');
+        if (await app.redis.get(REDIS_KEYS.MOBILE_REVOKED_TOKEN(refreshTokenHash))) {
+          throw new MobileAuthError('Session has been revoked', 401, ErrorCodes.DEVICE_REVOKED);
+        }
+        throw new MobileAuthError(
+          'Invalid or expired refresh token',
+          401,
+          ErrorCodes.INVALID_TOKEN
+        );
       }
 
       const session = dbSession[0]!;
       userId = session.userId;
       deviceId = session.deviceId;
 
-      // Short TTL for grace-period replays
-      const isGracePeriodReplay = session.previousRefreshTokenHash === refreshTokenHash;
-      const reconstructTtl = isGracePeriodReplay ? REFRESH_TOKEN_GRACE_PERIOD : MOBILE_REFRESH_TTL;
-
       // Reconstruct Redis entry
       try {
         await app.redis.setex(
           REDIS_KEYS.MOBILE_REFRESH_TOKEN(refreshTokenHash),
-          reconstructTtl,
+          MOBILE_REFRESH_TTL,
           JSON.stringify({ userId, deviceId })
         );
       } catch (err) {
         app.log.warn({ err, deviceId }, 'Failed to reconstruct mobile refresh token in Redis');
       }
 
-      app.log.info(
-        { deviceId, gracePeriod: isGracePeriodReplay },
-        'Recovered mobile refresh token from DB after Redis miss'
-      );
+      app.log.info({ deviceId }, 'Recovered mobile refresh token from DB after Redis miss');
     }
 
     // Verify user still exists and is owner
     const userRow = await db.select().from(users).where(eq(users.id, userId)).limit(1);
     if (userRow.length === 0 || userRow[0]!.role !== 'owner') {
       await app.redis.del(REDIS_KEYS.MOBILE_REFRESH_TOKEN(refreshTokenHash));
-      return reply.unauthorized('User no longer valid');
+      throw new MobileAuthError('User no longer valid', 401, ErrorCodes.INVALID_TOKEN);
     }
 
     const user = userRow[0]!;
@@ -941,7 +964,12 @@ export const mobileRoutes: FastifyPluginAsync = async (app) => {
 
     if (sessionRow.length === 0) {
       await app.redis.del(REDIS_KEYS.MOBILE_REFRESH_TOKEN(refreshTokenHash));
-      return reply.unauthorized('Session has been revoked');
+      const revoked = await app.redis.get(REDIS_KEYS.MOBILE_REVOKED_TOKEN(refreshTokenHash));
+      throw new MobileAuthError(
+        'Session has been revoked',
+        401,
+        revoked ? ErrorCodes.DEVICE_REVOKED : ErrorCodes.INVALID_TOKEN
+      );
     }
 
     // Better Auth backed pairing: the token is the BA session token, so
@@ -949,12 +977,13 @@ export const mobileRoutes: FastifyPluginAsync = async (app) => {
     // and return it unrotated in both fields.
     if (sessionRow[0]!.betterAuthSessionId) {
       const headers = new Headers({ authorization: `Bearer ${refreshToken}` });
-      // fail closed on lookup errors
-      const baSession = await getAuth()
-        .api.getSession({ headers })
-        .catch(() => null);
+      const baSession = await failClosed(() => getAuth().api.getSession({ headers }));
       if (!baSession) {
-        return reply.unauthorized('Invalid or expired refresh token');
+        throw new MobileAuthError(
+          'Invalid or expired refresh token',
+          401,
+          ErrorCodes.TOKEN_EXPIRED
+        );
       }
 
       await db
@@ -1056,10 +1085,10 @@ export const mobileRoutes: FastifyPluginAsync = async (app) => {
   /**
    * POST /mobile/push-token - Register/update Expo push token for notifications
    */
-  app.post('/push-token', { preHandler: [app.requireMobile] }, async (request, reply) => {
+  app.post('/push-token', { preHandler: [app.requireMobile] }, async (request) => {
     const body = pushTokenSchema.safeParse(request.body);
     if (!body.success) {
-      return reply.badRequest(`Invalid push token: ${firstIssueMessage(body.error)}`);
+      throw pushTokenBadRequest(`Invalid push token: ${firstIssueMessage(body.error)}`);
     }
 
     const { expoPushToken, deviceSecret } = body.data;
@@ -1067,7 +1096,9 @@ export const mobileRoutes: FastifyPluginAsync = async (app) => {
 
     // Ensure we have deviceId from JWT (required for mobile tokens)
     if (!authUser.deviceId) {
-      return reply.badRequest('Invalid mobile token: missing deviceId. Please re-pair the device.');
+      throw pushTokenBadRequest(
+        'Invalid mobile token: missing deviceId. Please re-pair the device.'
+      );
     }
 
     // Build update object (only include deviceSecret if provided)
@@ -1087,8 +1118,13 @@ export const mobileRoutes: FastifyPluginAsync = async (app) => {
       .returning({ id: mobileSessions.id });
 
     if (updated.length === 0) {
-      return reply.notFound(
-        'No mobile session found for this device. Please pair the device first.'
+      throw Object.assign(
+        new AppError(
+          'No mobile session found for this device. Please pair the device first.',
+          404,
+          ErrorCodes.NOT_FOUND
+        ),
+        { name: 'NotFoundError' }
       );
     }
 

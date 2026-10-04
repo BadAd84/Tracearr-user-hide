@@ -23,6 +23,15 @@ import sensible from '@fastify/sensible';
 import cookie from '@fastify/cookie';
 import { randomUUID } from 'node:crypto';
 
+const clientFloor = vi.hoisted(() => ({ value: null as string | null }));
+
+vi.mock('@tracearr/shared', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@tracearr/shared')>()),
+  get MIN_MOBILE_CLIENT_VERSION() {
+    return clientFloor.value;
+  },
+}));
+
 vi.mock('../../db/client.js', () => ({
   db: {
     select: vi.fn(),
@@ -52,10 +61,12 @@ vi.mock('../../lib/auth.js', () => ({
 
 import { db } from '../../db/client.js';
 import { getAuth } from '../../lib/auth.js';
+import { getSetting } from '../../services/settings.js';
 import { mobileSessions, mobileTokens, users, servers, authSessions } from '../../db/schema.js';
 import { hashSha256 } from '../../utils/hash.js';
-import authPlugin from '../../plugins/auth.js';
+import authPlugin, { loadJwtRevokeSettings } from '../../plugins/auth.js';
 import { mobileRoutes } from '../mobile.js';
+import { registerErrorHandler } from '../../utils/errors.js';
 
 const mockRedis = {
   get: vi.fn(),
@@ -185,6 +196,7 @@ async function buildTestApp(): Promise<FastifyInstance> {
   const app = Fastify({ logger: false });
   await app.register(cookie);
   await app.register(sensible);
+  registerErrorHandler(app);
   app.decorate('redis', mockRedis as never);
   await app.register(authPlugin);
   await app.register(mobileRoutes, { prefix: '/mobile' });
@@ -329,6 +341,7 @@ describe('mobile better auth shim', () => {
     });
 
     expect(res.statusCode).toBe(403);
+    expect(res.json().code).toBe('AUTH_007');
   });
 
   it('denies a blacklisted better auth device', async () => {
@@ -352,6 +365,7 @@ describe('mobile better auth shim', () => {
 
     expect(res.statusCode).toBe(401);
     expect(res.json().message).toBe('Session has been revoked');
+    expect(res.json().code).toBe('AUTH_005');
   });
 
   it('refresh returns the same shape for a better auth pairing', async () => {
@@ -475,5 +489,224 @@ describe('mobile better auth shim', () => {
       headers: { authorization: `Bearer ${BA_TOKEN}` },
     });
     expect(res.statusCode).toBe(401);
+  });
+
+  describe('failure codes', () => {
+    function meAs(token: string) {
+      return app.inject({
+        method: 'GET',
+        url: '/mobile/me',
+        headers: { authorization: `Bearer ${token}` },
+      });
+    }
+
+    it('answers an unknown bearer with AUTH_002', async () => {
+      app = await buildTestApp();
+      routeSelects(new Map<unknown, unknown[]>([[mobileSessions, []]]));
+
+      const res = await meAs('unknown-token');
+
+      expect(res.statusCode).toBe(401);
+      expect(res.json()).toEqual({
+        statusCode: 401,
+        error: 'UnauthorizedError',
+        message: 'Invalid or expired token',
+        code: 'AUTH_002',
+      });
+    });
+
+    it('answers a request with no credentials as before, with AUTH_002', async () => {
+      app = await buildTestApp();
+
+      const res = await app.inject({ method: 'GET', url: '/mobile/me' });
+
+      expect(res.statusCode).toBe(401);
+      expect(res.json().message).toBe('Invalid or expired token');
+      expect(res.json().code).toBe('AUTH_002');
+    });
+
+    it('answers a web cookie session with no bearer with 403 AUTH_007', async () => {
+      app = await buildTestApp();
+      routeSelects(new Map<unknown, unknown[]>([[servers, [{ id: SERVER_ID }]]]));
+      getSession.mockResolvedValueOnce({
+        user: { id: OWNER_ID, name: 'owner', username: 'owner', role: 'owner' },
+        session: { id: WEB_SESSION_ID },
+      });
+
+      const res = await app.inject({
+        method: 'GET',
+        url: '/mobile/me',
+        headers: { cookie: 'better-auth.session_token=web' },
+      });
+
+      expect(res.statusCode).toBe(403);
+      expect(res.json().message).toBe('Mobile access token required');
+      expect(res.json().code).toBe('AUTH_007');
+    });
+
+    it('answers a paired device whose session expired with AUTH_003', async () => {
+      app = await buildTestApp();
+      revokedTokens.add(BA_TOKEN);
+      routeSelects(new Map<unknown, unknown[]>([[mobileSessions, [baMobileSessionRow()]]]));
+
+      const res = await meAs(BA_TOKEN);
+
+      expect(res.statusCode).toBe(401);
+      expect(res.json().message).toBe('Invalid or expired token');
+      expect(res.json().code).toBe('AUTH_003');
+    });
+
+    it('answers a revoked device with AUTH_005 from its tombstone', async () => {
+      app = await buildTestApp();
+      revokedTokens.add(BA_TOKEN);
+      routeSelects(new Map<unknown, unknown[]>([[mobileSessions, []]]));
+      mockRedis.get.mockImplementation(async (key: string) =>
+        key.includes(`mobile:revoked:${hashSha256(BA_TOKEN)}`) ? '1' : null
+      );
+
+      const res = await meAs(BA_TOKEN);
+
+      expect(res.statusCode).toBe(401);
+      expect(res.json().code).toBe('AUTH_005');
+    });
+
+    it('answers 503 SRV_002 when redis fails during the lookup', async () => {
+      app = await buildTestApp();
+      routeSelects(
+        new Map<unknown, unknown[]>([
+          [servers, [{ id: SERVER_ID }]],
+          [mobileSessions, [baMobileSessionRow()]],
+        ])
+      );
+      mockRedis.get.mockRejectedValue(new Error('redis down'));
+
+      const res = await meAs(BA_TOKEN);
+
+      expect(res.statusCode).toBe(503);
+      expect(res.json()).toEqual({
+        statusCode: 503,
+        error: 'ServiceUnavailableError',
+        message: 'Auth store unavailable',
+        code: 'SRV_002',
+      });
+    });
+
+    it('answers 503 SRV_002 when the better auth lookup fails', async () => {
+      app = await buildTestApp();
+      getSession.mockRejectedValueOnce(new Error('db down'));
+
+      const res = await meAs(BA_TOKEN);
+
+      expect(res.statusCode).toBe(503);
+      expect(res.json().code).toBe('SRV_002');
+    });
+
+    describe('legacy JWT', () => {
+      function legacyToken(deviceId: string) {
+        return app.jwt.sign({
+          userId: OWNER_ID,
+          username: 'owner',
+          role: 'owner',
+          serverIds: [SERVER_ID],
+          mobile: true,
+          deviceId,
+        });
+      }
+
+      afterEach(async () => {
+        vi.mocked(getSetting).mockResolvedValue(null as never);
+        await loadJwtRevokeSettings();
+      });
+
+      it('answers a JWT issued before jwtRevokedBefore with AUTH_006', async () => {
+        app = await buildTestApp();
+        const token = legacyToken('legacy-device');
+        vi.mocked(getSetting).mockResolvedValue(
+          new Date(Date.now() + 60_000).toISOString() as never
+        );
+        await loadJwtRevokeSettings();
+
+        const res = await meAs(token);
+
+        expect(res.statusCode).toBe(401);
+        expect(res.json().message).toBe('Session invalidated. Please log in again');
+        expect(res.json().code).toBe('AUTH_006');
+      });
+
+      it('answers a blacklisted legacy device with AUTH_005', async () => {
+        app = await buildTestApp();
+        mockRedis.get.mockImplementation(async (key: string) =>
+          key.includes('blacklist:legacy-device') ? '1' : null
+        );
+
+        const res = await meAs(legacyToken('legacy-device'));
+
+        expect(res.statusCode).toBe(401);
+        expect(res.json().message).toBe('Session has been revoked');
+        expect(res.json().code).toBe('AUTH_005');
+      });
+    });
+
+    describe('client floor', () => {
+      beforeEach(() => {
+        clientFloor.value = '2026.10.1';
+        routeSelects(
+          new Map<unknown, unknown[]>([
+            [servers, [{ id: SERVER_ID }]],
+            [mobileSessions, [baMobileSessionRow()]],
+            [
+              users,
+              [
+                {
+                  id: OWNER_ID,
+                  username: 'owner',
+                  name: null,
+                  thumbnail: null,
+                  email: null,
+                  role: 'owner',
+                },
+              ],
+            ],
+          ])
+        );
+      });
+
+      afterEach(() => {
+        clientFloor.value = null;
+      });
+
+      it('answers a client below the floor with 426 AUTH_008', async () => {
+        app = await buildTestApp();
+
+        const res = await app.inject({
+          method: 'GET',
+          url: '/mobile/me',
+          headers: { authorization: `Bearer ${BA_TOKEN}`, 'x-tracearr-client': 'mobile/2026.9.3' },
+        });
+
+        expect(res.statusCode).toBe(426);
+        expect(res.json().error).toBe('UpgradeRequiredError');
+        expect(res.json().code).toBe('AUTH_008');
+      });
+
+      it.each([
+        ['at the floor', 'mobile/2026.10.1'],
+        ['without the header', undefined],
+        ['with an unparsable header', 'mobile/garbage'],
+      ])('lets a client %s through', async (_label, client) => {
+        app = await buildTestApp();
+
+        const res = await app.inject({
+          method: 'GET',
+          url: '/mobile/me',
+          headers: {
+            authorization: `Bearer ${BA_TOKEN}`,
+            ...(client && { 'x-tracearr-client': client }),
+          },
+        });
+
+        expect(res.statusCode).toBe(200);
+      });
+    });
   });
 });

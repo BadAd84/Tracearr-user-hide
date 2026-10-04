@@ -257,12 +257,17 @@ describe('ForbiddenError', () => {
 });
 
 describe('MobileAuthError', () => {
-  it('sends the sensible error name and carries the code', () => {
+  it.each([
+    [401, 'UnauthorizedError'],
+    [403, 'ForbiddenError'],
+    [426, 'UpgradeRequiredError'],
+    [503, 'ServiceUnavailableError'],
+  ] as const)('sends %i with the sensible error name %s and carries the code', (status, name) => {
     expect(
-      new MobileAuthError('Session has been revoked', 401, ErrorCodes.DEVICE_REVOKED).toJSON()
+      new MobileAuthError('Session has been revoked', status, ErrorCodes.DEVICE_REVOKED).toJSON()
     ).toEqual({
-      statusCode: 401,
-      error: 'UnauthorizedError',
+      statusCode: status,
+      error: name,
       message: 'Session has been revoked',
       code: 'AUTH_005',
     });
