@@ -1412,8 +1412,8 @@ export async function processPollResults(input: PollResultsInput): Promise<void>
       await pubSubService.publish('session:started', session);
     }
 
-    // The socket relay and the public channel read this as a change signal; one tick's updates
-    // still collapse to a single publish (overload fix), and sessions:progress below carries the rest.
+    // Relays read session:updated as a change signal, so one tick's updates collapse to a single
+    // publish; sessions:progress below carries the rest.
     if (updatedSessions.length > 0) {
       await pubSubService.publish('session:updated', updatedSessions[0]);
       await pubSubService.publish('sessions:progress', {

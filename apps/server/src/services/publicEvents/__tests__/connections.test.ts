@@ -126,6 +126,7 @@ async function open(
 
 describe('public event connections', () => {
   const seedLastSeen = vi.fn();
+  const clearLastSeen = vi.fn();
   const getActiveSessions = vi.fn(async () => [{ id: 'cached-1' }] as never[]);
 
   beforeEach(() => {
@@ -133,6 +134,7 @@ describe('public event connections', () => {
     resetPublicEventConnectionsForTests();
     subscriber.subscribed = null;
     seedLastSeen.mockClear();
+    clearLastSeen.mockClear();
     getActiveSessions.mockClear();
     initPublicEventConnections({
       redis: {} as never,
@@ -140,6 +142,7 @@ describe('public event connections', () => {
       translate: () => null,
       getActiveSessions,
       seedLastSeen,
+      clearLastSeen,
     });
   });
 
@@ -258,6 +261,15 @@ describe('public event connections', () => {
     expect(mockStop).toHaveBeenCalledTimes(1);
   });
 
+  it('clears the translator snapshots when the last connection closes', async () => {
+    const a = await open('a');
+    await open('b');
+    a.end();
+    expect(clearLastSeen).not.toHaveBeenCalled();
+    closeAllPublicEventConnections('shutdown');
+    expect(clearLastSeen).toHaveBeenCalledTimes(1);
+  });
+
   it('seeds the translator from the session cache once, after the subscribe is acknowledged', async () => {
     let acknowledge: () => void = () => undefined;
     subscriber.subscribed = new Promise<boolean>((resolve) => {
@@ -307,6 +319,7 @@ describe('public event connections', () => {
           : { kind: 'events', events: [event({ type: 'server.health', streamId: null })] },
       getActiveSessions,
       seedLastSeen,
+      clearLastSeen,
     });
     const mine = await open('a');
     const theirs = await open('b', { userId: 'u2' });
@@ -328,6 +341,7 @@ describe('public event connections', () => {
       },
       getActiveSessions,
       seedLastSeen,
+      clearLastSeen,
     });
     const sink = await open('a');
     subscriber.handlers?.onMessage({ event: 'session:started', data: { id: 1 }, at: 'x' });

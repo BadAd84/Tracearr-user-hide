@@ -63,6 +63,7 @@ async function buildTestApp(): Promise<FastifyInstance> {
     translate: translateChannelMessage,
     getActiveSessions: async () => [],
     seedLastSeen: () => undefined,
+    clearLastSeen: () => undefined,
   });
   return app;
 }

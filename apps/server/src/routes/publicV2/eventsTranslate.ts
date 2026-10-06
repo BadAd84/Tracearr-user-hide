@@ -193,6 +193,6 @@ export function seedLastSeen(sessions: ActiveSession[]): void {
   }
 }
 
-export function resetTranslatorForTests(): void {
+export function clearLastSeen(): void {
   lastSeen.clear();
 }

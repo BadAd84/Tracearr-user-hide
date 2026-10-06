@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import type { ActiveSession, ViolationWithDetails } from '@tracearr/shared';
 import {
   PUBLIC_EVENT_TYPES,
-  resetTranslatorForTests,
+  clearLastSeen,
   seedLastSeen,
   translateChannelMessage,
 } from '../publicV2/eventsTranslate.js';
@@ -42,7 +42,7 @@ const violation = {
 
 describe('translateChannelMessage', () => {
   beforeEach(() => {
-    resetTranslatorForTests();
+    clearLastSeen();
   });
 
   it('exposes six public types', () => {
@@ -113,6 +113,20 @@ describe('translateChannelMessage', () => {
     if (stoppedTwo?.kind !== 'events') throw new Error('expected events');
     expect(stoppedTwo.events[0]).toMatchObject({ serverId: 'srv-1' });
     expect((stoppedTwo.events[0]?.data as { stream: { id: string } }).stream.id).toBe('sess-2');
+  });
+
+  it('a cleared map lets the seed replace a stale snapshot', () => {
+    translateChannelMessage({
+      event: 'session:updated',
+      data: { ...session, state: 'paused' } as unknown as ActiveSession,
+      at: AT,
+    });
+    clearLastSeen();
+    seedLastSeen([{ ...session, state: 'playing' } as unknown as ActiveSession]);
+
+    const stopped = translateChannelMessage({ event: 'session:stopped', data: 'sess-1', at: AT });
+    if (stopped?.kind !== 'events') throw new Error('expected events');
+    expect((stopped.events[0]?.data as { stream: { state: string } }).stream.state).toBe('playing');
   });
 
   it('expands one progress message into one slim event per session', () => {

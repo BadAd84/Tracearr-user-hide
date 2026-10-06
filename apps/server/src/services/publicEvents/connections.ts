@@ -67,6 +67,7 @@ interface Deps {
   translate: (message: ChannelMessage) => Translated | null;
   getActiveSessions: () => Promise<ActiveSession[]>;
   seedLastSeen: (sessions: ActiveSession[]) => void;
+  clearLastSeen: () => void;
 }
 
 const connections = new Map<string, Connection>();
@@ -175,6 +176,7 @@ function teardownTimersIfIdle(): void {
   // Timers and the subscriber start together, so no timer means nothing to tear down.
   if (!heartbeatTimer) return;
   stopSubscriber();
+  deps?.clearLastSeen();
   clearInterval(heartbeatTimer);
   if (flushTimer) clearInterval(flushTimer);
   heartbeatTimer = null;

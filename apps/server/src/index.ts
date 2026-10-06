@@ -101,7 +101,11 @@ import {
   closeAllPublicEventConnections,
   initPublicEventConnections,
 } from './services/publicEvents/connections.js';
-import { seedLastSeen, translateChannelMessage } from './routes/publicV2/eventsTranslate.js';
+import {
+  clearLastSeen,
+  seedLastSeen,
+  translateChannelMessage,
+} from './routes/publicV2/eventsTranslate.js';
 import { initializePoller, startPoller, stopPoller } from './jobs/poller/index.js';
 import { invalidateServersCache } from './jobs/poller/database.js';
 import { sseManager } from './services/sseManager.js';
@@ -878,6 +882,7 @@ async function initializeServices(app: FastifyInstance) {
     translate: translateChannelMessage,
     getActiveSessions: () => cacheService.getAllActiveSessions(),
     seedLastSeen,
+    clearLastSeen,
   });
 
   const keySource = initDestinationCrypto();
