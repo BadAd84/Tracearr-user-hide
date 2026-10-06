@@ -44,7 +44,7 @@ describe('public events subscriber', () => {
     await Promise.resolve();
     expect(settled).toBe(false);
     acknowledge();
-    await first;
+    expect(await first).toBe(true);
     expect(settled).toBe(true);
 
     dup.emit('ready');
@@ -67,12 +67,18 @@ describe('public events subscriber', () => {
     });
   });
 
-  it('a failed subscribe reports the error and still settles the promise', async () => {
+  it('a failed subscribe reports the error, stops the subscriber and resolves false', async () => {
     const { base, dup } = fakeRedis();
     dup.subscribe.mockRejectedValueOnce(new Error('no redis'));
     const onError = vi.fn();
-    await startSubscriber(base, { onMessage: vi.fn(), onResubscribe: vi.fn(), onError });
+    const handlers = { onMessage: vi.fn(), onResubscribe: vi.fn(), onError };
+    expect(await startSubscriber(base, handlers)).toBe(false);
     expect(onError).toHaveBeenCalledWith(expect.any(Error));
+    expect(dup.disconnect).toHaveBeenCalledTimes(1);
+    expect(subscriberRunning()).toBe(false);
+
+    expect(await startSubscriber(base, handlers)).toBe(true);
+    expect(base.duplicate).toHaveBeenCalledTimes(2);
   });
 
   it('disconnects on stop and ignores events after it', () => {

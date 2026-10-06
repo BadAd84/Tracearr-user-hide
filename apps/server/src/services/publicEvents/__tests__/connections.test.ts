@@ -11,7 +11,7 @@ const { mockAdmit, mockTouch, mockRelease, mockStart, mockStop, subscriber } = v
   subscriber: {
     handlers: null as null | SubscriberHandlers,
     // Set by a test that needs to hold the subscribe open; null means resolve at once.
-    subscribed: null as null | Promise<void>,
+    subscribed: null as null | Promise<boolean>,
   },
 }));
 
@@ -24,7 +24,7 @@ vi.mock('../subscriber.js', () => ({
   startSubscriber: (_base: unknown, handlers: SubscriberHandlers) => {
     subscriber.handlers = handlers;
     mockStart();
-    return subscriber.subscribed ?? Promise.resolve();
+    return subscriber.subscribed ?? Promise.resolve(true);
   },
   stopSubscriber: () => {
     subscriber.handlers = null;
@@ -159,8 +159,8 @@ describe('public event connections', () => {
 
   it('writes retry and ready only once the subscribe is acknowledged', async () => {
     let acknowledge: () => void = () => undefined;
-    subscriber.subscribed = new Promise<void>((resolve) => {
-      acknowledge = resolve;
+    subscriber.subscribed = new Promise<boolean>((resolve) => {
+      acknowledge = () => resolve(true);
     });
     const sink = fakeSink();
     const attached = attachPublicEventConnection({
@@ -180,6 +180,60 @@ describe('public event connections', () => {
     expect(sink.chunks[0]).toBe('retry: 5000\n\n');
     expect(sink.chunks[1]).toMatch(/^event: ready\ndata: \{"at":"/);
     expect(sink.chunks).toHaveLength(2);
+  });
+
+  it('a failed first subscribe closes the waiting connections without ready and stops the subscriber', async () => {
+    let fail: () => void = () => undefined;
+    subscriber.subscribed = new Promise<boolean>((resolve) => {
+      fail = () => resolve(false);
+    });
+    const a = fakeSink();
+    const b = fakeSink();
+    const input = { userId: 'u1', ip: '127.0.0.1', types: ALL_TYPES, serverId: null };
+    const attachedA = attachPublicEventConnection({ ...input, connId: 'a', sink: a });
+    const attachedB = attachPublicEventConnection({ ...input, connId: 'b', sink: b });
+    await vi.advanceTimersByTimeAsync(0);
+
+    fail();
+    await Promise.all([attachedA, attachedB]);
+    expect(a.ended).toBe(true);
+    expect(b.ended).toBe(true);
+    expect(a.chunks).toEqual([]);
+    expect(b.chunks).toEqual([]);
+    expect(mockStop).toHaveBeenCalledTimes(1);
+    expect(getActiveSessions).not.toHaveBeenCalled();
+    expect(log.info).toHaveBeenCalledWith(
+      expect.objectContaining({ connId: 'a', reason: 'maintenance' }),
+      expect.any(String)
+    );
+
+    subscriber.subscribed = null;
+    await open('c');
+    expect(mockStart).toHaveBeenCalledTimes(2);
+  });
+
+  it('a subscribe that fails after its connections left does not close the next ones', async () => {
+    let failStale: () => void = () => undefined;
+    subscriber.subscribed = new Promise<boolean>((resolve) => {
+      failStale = () => resolve(false);
+    });
+    const first = fakeSink();
+    const attachedFirst = attachPublicEventConnection({
+      connId: 'a',
+      userId: 'u1',
+      ip: '127.0.0.1',
+      types: ALL_TYPES,
+      serverId: null,
+      sink: first,
+    });
+    first.end();
+
+    subscriber.subscribed = null;
+    const next = await open('b');
+    failStale();
+    await attachedFirst;
+    expect(next.ended).toBe(false);
+    expect(getPublicEventConnectionStats().open).toBe(1);
   });
 
   it('refuses the instance cap before asking Redis, and reports a key cap', async () => {
@@ -206,8 +260,8 @@ describe('public event connections', () => {
 
   it('seeds the translator from the session cache once, after the subscribe is acknowledged', async () => {
     let acknowledge: () => void = () => undefined;
-    subscriber.subscribed = new Promise<void>((resolve) => {
-      acknowledge = resolve;
+    subscriber.subscribed = new Promise<boolean>((resolve) => {
+      acknowledge = () => resolve(true);
     });
     const attached = open('a');
     await vi.advanceTimersByTimeAsync(0);

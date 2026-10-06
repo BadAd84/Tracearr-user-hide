@@ -73,8 +73,9 @@ const connections = new Map<string, Connection>();
 let deps: Deps | null = null;
 let heartbeatTimer: NodeJS.Timeout | null = null;
 let flushTimer: NodeJS.Timeout | null = null;
-// Settles once this process's SUBSCRIBE is acknowledged; null while idle.
-let subscribed: Promise<void> | null = null;
+// Resolves true once this process's SUBSCRIBE is acknowledged and the seed has run,
+// false if the subscribe failed; null while idle.
+let subscribed: Promise<boolean> | null = null;
 
 export function initPublicEventConnections(next: Deps): void {
   deps = next;
@@ -144,16 +145,25 @@ function ensureTimers(): void {
   const current = deps;
   // The seed waits for the subscribe acknowledgment, so a started or updated seen
   // meanwhile is never overwritten by older cache data.
-  subscribed = startSubscriber(current.redis, {
+  const attempt: Promise<boolean> = startSubscriber(current.redis, {
     onMessage,
     onResubscribe: broadcastReady,
     onError: (err) => current.log.warn({ err }, 'public event subscriber error'),
-  }).then(() =>
-    current
+  }).then(async (ok) => {
+    // A stop and restart while this subscribe was pending leaves it stale, and its
+    // result must not touch the connections that the newer subscriber serves.
+    if (subscribed !== attempt) return false;
+    if (!ok) {
+      closeAllPublicEventConnections('maintenance');
+      return false;
+    }
+    await current
       .getActiveSessions()
       .then((sessions) => current.seedLastSeen(sessions))
-      .catch((err: unknown) => current.log.warn({ err }, 'public event snapshot seed failed'))
-  );
+      .catch((err: unknown) => current.log.warn({ err }, 'public event snapshot seed failed'));
+    return true;
+  });
+  subscribed = attempt;
   heartbeatTimer = setInterval(heartbeat, HEARTBEAT_MS);
   heartbeatTimer.unref();
   flushTimer = setInterval(flushPending, COALESCE_MS);
@@ -183,8 +193,8 @@ export function attachPublicEventConnection(input: OpenConnectionInput): Promise
     'public event connection opened'
   );
   ensureTimers();
-  return (subscribed ?? Promise.resolve()).then(() => {
-    if (!writeRaw(conn, `retry: ${RETRY_MS}\n\n`)) return;
+  return (subscribed ?? Promise.resolve(true)).then((ok) => {
+    if (!ok || !writeRaw(conn, `retry: ${RETRY_MS}\n\n`)) return;
     writeRaw(conn, readyFrame());
   });
 }

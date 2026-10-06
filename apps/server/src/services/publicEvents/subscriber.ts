@@ -2,10 +2,12 @@
  * One subscriber per process on the public channel, on its own connection
  * because a subscribed ioredis client can run no other command. It starts
  * with the first open connection and stops with the last. The returned
- * promise settles when the SUBSCRIBE is acknowledged, so callers can hold
- * ready and the cache seed until events can actually arrive. ioredis
+ * promise resolves true when the SUBSCRIBE is acknowledged, so callers can
+ * hold ready and the cache seed until events can actually arrive. ioredis
  * reconnects and resubscribes by itself; every ready after the first is
- * reported so open connections can tell their clients to refetch.
+ * reported so open connections can tell their clients to refetch. ioredis
+ * only resubscribes a channel whose SUBSCRIBE was acknowledged, so a failed
+ * one stops the subscriber and resolves false.
  */
 
 import { REDIS_KEYS } from '@tracearr/shared';
@@ -19,10 +21,10 @@ export interface SubscriberHandlers {
 }
 
 let client: Redis | null = null;
-let subscribed: Promise<void> | null = null;
+let subscribed: Promise<boolean> | null = null;
 let generation = 0;
 
-export function startSubscriber(base: Redis, handlers: SubscriberHandlers): Promise<void> {
+export function startSubscriber(base: Redis, handlers: SubscriberHandlers): Promise<boolean> {
   if (client && subscribed) return subscribed;
   generation += 1;
   const gen = generation;
@@ -45,9 +47,12 @@ export function startSubscriber(base: Redis, handlers: SubscriberHandlers): Prom
   });
   subscribed = sub
     .subscribe(REDIS_KEYS.PUBLIC_EVENTS_CHANNEL)
-    .then(() => undefined)
+    .then(() => gen === generation)
     .catch((err: unknown) => {
-      if (gen === generation) handlers.onError(err);
+      if (gen !== generation) return false;
+      handlers.onError(err);
+      stopSubscriber();
+      return false;
     });
   return subscribed;
 }
