@@ -14,6 +14,7 @@ import { randomUUID } from 'node:crypto';
 import type { Redis } from 'ioredis';
 import { createLogger } from '../utils/logger.js';
 import type { PendingSessionData } from '../jobs/poller/types.js';
+import { PUBLIC_CHANNEL_EVENTS, publishPublicEvent } from './publicEvents/channel.js';
 
 const cacheLogger = createLogger('Cache');
 
@@ -769,6 +770,11 @@ export function createPubSubService(publisher: Redis, subscriber: Redis): PubSub
         REDIS_KEYS.PUBSUB_EVENTS,
         JSON.stringify({ event, data, timestamp: Date.now() })
       );
+      if (PUBLIC_CHANNEL_EVENTS.has(event)) {
+        await publishPublicEvent(publisher, event, data).catch((err: unknown) => {
+          cacheLogger.error('Public channel publish failed', { err });
+        });
+      }
     },
 
     async subscribe(channel: string, callback: (message: string) => void): Promise<void> {
