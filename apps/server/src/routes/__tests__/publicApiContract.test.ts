@@ -37,14 +37,39 @@ const SHAPE_KEYS = [
   'additionalProperties',
   'minimum',
   'maximum',
+  'exclusiveMinimum',
+  'exclusiveMaximum',
+  'minLength',
+  'maxLength',
+  'pattern',
+  'minItems',
+  'maxItems',
   'default',
 ] as const;
+
+const CONSTRAINT_KEYS = [
+  'enum',
+  'minimum',
+  'maximum',
+  'exclusiveMinimum',
+  'exclusiveMaximum',
+  'minLength',
+  'maxLength',
+  'pattern',
+  'minItems',
+  'maxItems',
+] as const;
+
+interface Body {
+  mediaType: string;
+  schema: unknown;
+}
 
 interface Operation {
   tags: string[];
   parameters: Record<string, { required: boolean; schema: unknown }>;
-  request: unknown;
-  response: unknown;
+  request: (Body & { required: boolean }) | null;
+  responses: Record<string, Body>;
 }
 
 type Contract = Record<string, Operation>;
@@ -78,10 +103,12 @@ function reduceSchema(node: unknown, components: Json, seen: string[]): unknown 
   return out;
 }
 
-function firstContentSchema(holder: Json | undefined, components: Json): unknown {
+function firstBody(holder: Json | undefined, components: Json): Body | null {
   const content = holder?.content as Json | undefined;
-  const media = content ? (Object.values(content)[0] as Json | undefined) : undefined;
-  return media ? reduceSchema(media.schema, components, []) : null;
+  const entry = content ? Object.entries(content)[0] : undefined;
+  if (!entry) return null;
+  const [mediaType, media] = entry;
+  return { mediaType, schema: reduceSchema((media as Json).schema, components, []) };
 }
 
 function contractOf(spec: Json): Contract {
@@ -97,11 +124,18 @@ function contractOf(spec: Json): Contract {
           schema: reduceSchema(p.schema, components, []),
         };
       }
+      const requestBody = o.requestBody as Json | undefined;
+      const request = firstBody(requestBody, components);
+      const responses: Operation['responses'] = {};
+      for (const [status, holder] of Object.entries((o.responses as Json | undefined) ?? {})) {
+        const body = firstBody(holder as Json, components);
+        if (body) responses[status] = body;
+      }
       out[`${method.toUpperCase()} ${path}`] = {
         tags: (o.tags as string[] | undefined) ?? [],
         parameters,
-        request: firstContentSchema(o.requestBody as Json | undefined, components),
-        response: firstContentSchema((o.responses as Json)['200'] as Json | undefined, components),
+        request: request ? { ...request, required: requestBody?.required === true } : null,
+        responses,
       };
     }
   }
@@ -112,7 +146,10 @@ function contractOf(spec: Json): Contract {
  * Every baseline key is still there with the same shape. New properties are
  * allowed. A response may gain required names; a request may not, since that
  * breaks a caller that never sent them. Enums compare exactly: a strict client
- * fails on a value it has not seen. A field that becomes nullable fails.
+ * fails on a value it has not seen, and for the same reason a response union
+ * (oneOf, anyOf) may not gain a variant. A request may not gain a constraint
+ * or an allOf member, since either rejects a body that is accepted today.
+ * A field that becomes nullable fails.
  */
 function expectShapeKept(
   baseline: unknown,
@@ -149,12 +186,51 @@ function expectShapeKept(
       }
     } else if (key === 'enum') {
       expect(cur.enum, `${at}.enum`).toEqual(value);
+    } else if (key === 'oneOf' || key === 'anyOf' || key === 'allOf') {
+      const members = value as unknown[];
+      const list = (cur[key] as unknown[] | undefined) ?? [];
+      const mayGrow = key === 'allOf' ? side === 'response' : side === 'request';
+      if (mayGrow) {
+        expect(list.length, `${at}.${key}`).toBeGreaterThanOrEqual(members.length);
+      } else {
+        expect(list.length, `${at}.${key} member count`).toBe(members.length);
+      }
+      members.forEach((m, i) => expectShapeKept(m, list[i], `${at}.${key}[${i}]`, side));
     } else {
       expectShapeKept(value, cur[key], `${at}.${key}`, side);
     }
   }
-  if (side === 'request' && !('required' in base) && Array.isArray(cur.required)) {
-    expect(cur.required, `${at}.required gained names`).toEqual([]);
+  if (side === 'request') {
+    if (!('required' in base) && Array.isArray(cur.required)) {
+      expect(cur.required, `${at}.required gained names`).toEqual([]);
+    }
+    for (const key of CONSTRAINT_KEYS) {
+      expect(key in cur && !(key in base), `${at} gained ${key}`).toBe(false);
+    }
+  }
+}
+
+function expectOperationKept(op: Operation, now: Operation | undefined, key: string): void {
+  expect(now, key).toBeDefined();
+  if (!now) return;
+  for (const [name, param] of Object.entries(op.parameters)) {
+    expect(now.parameters[name], `${key} ${name}`).toEqual(param);
+  }
+  for (const [name, param] of Object.entries(now.parameters)) {
+    if (!(name in op.parameters)) expect(param.required, `${key} new ${name}`).toBe(false);
+  }
+  if (op.request) {
+    expect(now.request?.mediaType, `${key} request media type`).toBe(op.request.mediaType);
+    expectShapeKept(op.request.schema, now.request?.schema, `${key} request`, 'request');
+  }
+  expect(
+    now.request?.required === true && op.request?.required !== true,
+    `${key} request body became required`
+  ).toBe(false);
+  for (const [status, body] of Object.entries(op.responses)) {
+    const at = `${key} ${status}`;
+    expect(now.responses[status]?.mediaType, `${at} media type`).toBe(body.mediaType);
+    expectShapeKept(body.schema, now.responses[status]?.schema, at, 'response');
   }
 }
 
@@ -176,7 +252,7 @@ describe('public API contract', () => {
   });
 
   it('keeps every baseline operation, parameter, request and response shape', () => {
-    if (process.env.UPDATE_PUBLIC_API_CONTRACT) {
+    if (process.env.UPDATE_PUBLIC_API_CONTRACT === '1') {
       writeFileSync(FIXTURE, `${JSON.stringify(current, null, 2)}\n`);
       return;
     }
@@ -185,17 +261,8 @@ describe('public API contract', () => {
     for (const version of ['v1', 'v2'] as const) {
       for (const [key, op] of Object.entries(baseline[version])) {
         const now = current[version][key];
-        expect(now, key).toBeDefined();
-        if (!now) continue;
-        if (version === 'v1') expect(now.tags, key).toEqual(op.tags);
-        for (const [name, param] of Object.entries(op.parameters)) {
-          expect(now.parameters[name], `${key} ${name}`).toEqual(param);
-        }
-        for (const [name, param] of Object.entries(now.parameters)) {
-          if (!(name in op.parameters)) expect(param.required, `${key} new ${name}`).toBe(false);
-        }
-        expectShapeKept(op.request, now.request, `${key} request`, 'request');
-        expectShapeKept(op.response, now.response, `${key} response`, 'response');
+        if (version === 'v1') expect(now?.tags, key).toEqual(op.tags);
+        expectOperationKept(op, now, key);
       }
     }
   });
@@ -249,6 +316,76 @@ describe('public API contract', () => {
       const stricter = mutate((c) => c.required.push('name'));
       expect(() => expectShapeKept(shape, stricter, 'x', 'request')).toThrow();
       expect(() => expectShapeKept(shape, stricter, 'x', 'response')).not.toThrow();
+    });
+
+    it('fails when a request property gains or tightens a length limit', () => {
+      const limited = mutate((c) => {
+        (c.properties.name as Json).maxLength = 10;
+      });
+      const base = mutate((c) => {
+        (c.properties.name as Json).maxLength = 255;
+      });
+      expect(() => expectShapeKept(shape, limited, 'x', 'request')).toThrow();
+      expect(() => expectShapeKept(base, limited, 'x', 'request')).toThrow();
+      expect(() => expectShapeKept(shape, limited, 'x', 'response')).not.toThrow();
+    });
+
+    it('lets a union gain a variant on a request but not on a response', () => {
+      const union = { oneOf: [{ type: 'string' }, { type: 'number' }] };
+      const grown = { oneOf: [...union.oneOf, { type: 'boolean' }] };
+      expect(() => expectShapeKept(union, grown, 'x', 'request')).not.toThrow();
+      expect(() => expectShapeKept(union, grown, 'x', 'response')).toThrow();
+      const anyOf = { anyOf: union.oneOf };
+      expect(() => expectShapeKept(anyOf, { anyOf: grown.oneOf }, 'x', 'response')).toThrow();
+    });
+
+    it('lets allOf gain a member on a response but not on a request', () => {
+      const all = { allOf: [{ type: 'object', properties: { id: { type: 'string' } } }] };
+      const grown = { allOf: [...all.allOf, { type: 'object', required: ['name'] }] };
+      expect(() => expectShapeKept(all, grown, 'x', 'response')).not.toThrow();
+      expect(() => expectShapeKept(all, grown, 'x', 'request')).toThrow();
+    });
+
+    const operation: Operation = {
+      tags: [],
+      parameters: {},
+      request: { mediaType: 'application/json', required: false, schema: shape },
+      responses: {
+        '200': { mediaType: 'application/json', schema: shape },
+        '400': { mediaType: 'application/json', schema: { type: 'object' } },
+      },
+    };
+    const mutateOperation = (fn: (copy: Operation) => void) => {
+      const copy = JSON.parse(JSON.stringify(operation)) as Operation;
+      fn(copy);
+      return copy;
+    };
+
+    it('fails when a response status loses its body or changes media type', () => {
+      const lost = mutateOperation((c) => {
+        delete c.responses['400'];
+      });
+      const retyped = mutateOperation((c) => {
+        c.responses['200'] = { mediaType: 'text/event-stream', schema: shape };
+      });
+      const added = mutateOperation((c) => {
+        c.responses['404'] = { mediaType: 'application/json', schema: { type: 'object' } };
+      });
+      expect(() => expectOperationKept(operation, lost, 'op')).toThrow();
+      expect(() => expectOperationKept(operation, retyped, 'op')).toThrow();
+      expect(() => expectOperationKept(operation, added, 'op')).not.toThrow();
+    });
+
+    it('fails when a request body becomes required', () => {
+      const stricter = mutateOperation((c) => {
+        if (c.request) c.request.required = true;
+      });
+      const relaxed = mutateOperation((c) => {
+        if (c.request) c.request.required = false;
+      });
+      expect(() => expectOperationKept(operation, stricter, 'op')).toThrow();
+      expect(() => expectOperationKept(stricter, relaxed, 'op')).not.toThrow();
+      expect(() => expectOperationKept({ ...operation, request: null }, stricter, 'op')).toThrow();
     });
   });
 });
