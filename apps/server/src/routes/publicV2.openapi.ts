@@ -95,6 +95,9 @@ const ActiveStateEnum = z.enum(['playing', 'paused']).openapi({
   example: 'playing',
 });
 
+const SERVER_ID = '5c1a4c1e-0b2d-4f6a-9d3e-2b7c8f9a1d20';
+const STREAM_ID = '0f4d2a6e-8b1c-4e3f-9a7d-6c5b4a3f2e1d';
+
 const CursorMeta = z
   .object({
     nextCursor: z
@@ -486,6 +489,213 @@ registry.registerPath({
 });
 
 // ============================================================================
+// GET /violations and /violations/{id}
+// ============================================================================
+
+const VIOLATION_SEMANTICS =
+  'A violation is a completed policy automation run with an account that has not been ' +
+  'dismissed: the rows the Violations page shows. Acknowledging stamps acknowledged_at and ' +
+  'changes nothing else. Dismissing removes the row from every list and reverses the trust ' +
+  'adjustments its actions made, so a dismissed violation 404s by id. Completed session ' +
+  "violations are purged after the automation's retention (365 days by default).";
+
+const ViolationsQuery = z.object({
+  cursor: z.string().optional().openapi({ description: 'Opaque cursor from meta.nextCursor' }),
+  pageSize: z.coerce.number().int().positive().max(100).default(25),
+  server_id: z.uuid().optional().openapi({ description: 'Filter to specific server' }),
+  user_id: z.uuid().optional().openapi({
+    description: 'Filter by Tracearr identity id; matches every account linked to that identity',
+  }),
+  server_user_id: z.uuid().optional().openapi({
+    description: 'Filter by one per-server account, the user.server_user_id of a row',
+  }),
+  rule_id: z.uuid().optional().openapi({
+    description: 'Filter by the automation that recorded the violation, the rule.id of a row',
+  }),
+  severity: z.enum(['low', 'warning', 'high']).optional(),
+  acknowledged: QueryBoolean.optional().openapi({
+    description: 'true for acknowledged violations only, false for pending ones only',
+  }),
+  since: QueryDate.optional().openapi({
+    description:
+      'Violations recorded at or after this instant. Accepts a date-only string (midnight UTC) or a full ISO datetime',
+  }),
+  until: QueryDate.optional().openapi({
+    description:
+      'Violations recorded at or before this instant. Must not precede since, or the request 400s',
+  }),
+});
+
+const ViolationUser = z
+  .object({
+    id: z
+      .uuid()
+      .openapi({ description: 'Tracearr identity id, the same id /users and /history use' }),
+    server_user_id: z.uuid().openapi({ description: "Tracearr's id for the per-server account" }),
+    username: z.string().openapi({
+      description: 'The identity display name when it has one, else the account name on the server',
+    }),
+    thumb_url: z.string().nullable().openapi({ description: 'Avatar as the server reports it' }),
+    avatar_url: z.string().nullable().openapi({ description: 'Proxied avatar URL' }),
+  })
+  .openapi('ViolationUser');
+
+const VIOLATION_EXAMPLE = {
+  id: 'c7e1f9a3-5d2b-4c8e-a1f6-3b9d7e2c5a84',
+  severity: 'high',
+  created_at: '2026-10-06T10:00:05.000Z',
+  acknowledged_at: null,
+  session_id: STREAM_ID,
+  rule: { id: '2a8f4c6e-1b3d-4e5f-9c7a-8d6b5e4f3a21', name: 'Too many streams' },
+  server: { id: SERVER_ID, name: 'Attic', type: 'plex' },
+  user: {
+    id: '9b2d4f6e-8a0c-4e1f-b3d5-7a9c1e3f5b70',
+    server_user_id: '7d3b9f1e-4a6c-4d2e-8b5f-1c9a7e3d5b60',
+    username: 'Alice',
+    thumb_url: 'https://plex.tv/users/8f3a1c/avatar',
+    avatar_url: 'https://plex.tv/users/8f3a1c/avatar',
+  },
+  data: {
+    evidence: [
+      {
+        groupIndex: 0,
+        matched: true,
+        match: 'all',
+        conditions: [
+          {
+            field: 'concurrent_streams',
+            operator: 'gt',
+            threshold: 2,
+            actual: 3,
+            matched: true,
+            relatedSessionIds: [
+              '4e9b7c2a-6d1f-4a3e-8c5b-9f2d7e1a6c43',
+              'a1c3e5f7-9b2d-4e6f-8a0c-2d4f6e8a0b1c',
+            ],
+          },
+        ],
+      },
+    ],
+    relatedSessionIds: [
+      '4e9b7c2a-6d1f-4a3e-8c5b-9f2d7e1a6c43',
+      'a1c3e5f7-9b2d-4e6f-8a0c-2d4f6e8a0b1c',
+    ],
+    ruleName: 'Too many streams',
+    matchedGroups: [0],
+    triggerId: 'n1',
+    edgeKey: null,
+    sessionKey: '7f0c1d2e',
+    mediaTitle: 'Inception',
+    ipAddress: '203.0.113.9',
+  },
+};
+
+const Violation = z
+  .object({
+    id: z.uuid().openapi({ description: 'Violation id' }),
+    severity: z
+      .enum(['low', 'warning', 'high'])
+      .openapi({ description: 'Severity set on the automation' }),
+    created_at: z.iso.datetime().openapi({ description: 'When the violation was recorded' }),
+    acknowledged_at: z.iso.datetime().nullable().openapi({
+      description:
+        'When an owner acknowledged it; null while pending, and always null on violation.created',
+    }),
+    session_id: z.uuid().nullable().openapi({
+      description:
+        'The stream that triggered the automation; null for account rules such as inactivity. The session may since have left /streams and /history',
+    }),
+    rule: z
+      .object({
+        id: z.uuid().openapi({ description: "The automation's id" }),
+        name: z.string().openapi({ description: 'Automation name as shown in Tracearr' }),
+      })
+      .openapi({
+        description:
+          'The automation that produced this violation. Tracearr labels it Rule on the Violations page; rule.id is the automation id',
+      }),
+    server: z.object({
+      id: z.uuid().openapi({ description: 'Server the account belongs to' }),
+      name: z.string().openapi({ description: 'Server name as set in Tracearr' }),
+      type: ServerTypeEnum,
+    }),
+    user: ViolationUser,
+    data: z.record(z.string(), z.unknown()).openapi({
+      description:
+        'What the automation recorded when it fired: evidence (each condition group with its conditions, the field, operator, threshold and actual value), relatedSessionIds, ruleName, matchedGroups, the triggerId and edgeKey of the trigger node, and for a session-scoped rule its sessionKey, mediaTitle and ipAddress. Condition fields vary by rule, so treat the keys inside evidence as free-form',
+    }),
+  })
+  .openapi('Violation', { example: VIOLATION_EXAMPLE });
+
+const ViolationAction = z
+  .object({
+    type: z
+      .string()
+      .openapi({ description: 'Action type as the automation names it', example: 'kill_stream' }),
+    success: z.boolean(),
+    skipped: z
+      .boolean()
+      .openapi({ description: 'True when the action was not attempted, with skip_reason' }),
+    skip_reason: z.string().nullable(),
+    error_message: z.string().nullable(),
+    executed_at: z.iso.datetime(),
+  })
+  .openapi('ViolationAction');
+
+const ViolationDetail = Violation.extend({
+  actions: z.array(ViolationAction).openapi({
+    description:
+      'The actions the automation ran for this violation, oldest first. Actions run after the violation is recorded, so violation.created never carries them',
+  }),
+}).openapi('ViolationDetail');
+
+const ViolationsResponse = z
+  .object({ data: z.array(Violation), meta: CursorMeta })
+  .openapi('ViolationsResponse');
+
+registry.registerPath({
+  method: 'get',
+  path: '/api/v2/public/violations',
+  tags: ['Public API v2'],
+  summary: 'Violations',
+  description:
+    'Violations newest first, in the same shape violation.created pushes, so a list fetched ' +
+    'on ready and the events after it are one stream of objects. ' +
+    VIOLATION_SEMANTICS,
+  security: [{ bearerAuth: [] }],
+  request: { query: ViolationsQuery },
+  responses: {
+    200: {
+      description: 'Violations retrieved',
+      content: { 'application/json': { schema: ViolationsResponse } },
+    },
+    400: { description: 'Invalid query parameters or cursor' },
+    ...AUTH_ERROR_RESPONSES,
+  },
+});
+
+registry.registerPath({
+  method: 'get',
+  path: '/api/v2/public/violations/{id}',
+  tags: ['Public API v2'],
+  summary: 'One violation with its actions',
+  description:
+    'The same row GET /violations returns, plus the actions the automation ran. ' +
+    VIOLATION_SEMANTICS,
+  security: [{ bearerAuth: [] }],
+  request: { params: z.object({ id: z.uuid() }) },
+  responses: {
+    200: {
+      description: 'Violation retrieved',
+      content: { 'application/json': { schema: ViolationDetail } },
+    },
+    400: { description: 'id is not a uuid' },
+    404: { description: 'No violation with this id: unknown, dismissed, or not a violation' },
+    ...AUTH_ERROR_RESPONSES,
+  },
+});
+
+// ============================================================================
 // GET /events (server-sent events)
 // ============================================================================
 
@@ -519,9 +729,6 @@ const EVENT_AT = {
   description: 'When Tracearr observed the event, ISO 8601 UTC',
   example: '2026-10-06T10:00:05.000Z',
 };
-
-const SERVER_ID = '5c1a4c1e-0b2d-4f6a-9d3e-2b7c8f9a1d20';
-const STREAM_ID = '0f4d2a6e-8b1c-4e3f-9a7d-6c5b4a3f2e1d';
 
 // What formatActiveStream emits for a cached session: library_id and genres null.
 const ACTIVE_STREAM_EXAMPLE = {
@@ -602,55 +809,6 @@ const STREAM_PROGRESS_EXAMPLE = {
   bitrate: 24500,
 };
 
-const VIOLATION_EXAMPLE = {
-  id: 'c7e1f9a3-5d2b-4c8e-a1f6-3b9d7e2c5a84',
-  severity: 'high',
-  created_at: '2026-10-06T10:00:05.000Z',
-  session_id: STREAM_ID,
-  rule: { id: '2a8f4c6e-1b3d-4e5f-9c7a-8d6b5e4f3a21', name: 'Too many streams' },
-  server: { id: SERVER_ID, name: 'Attic', type: 'plex' },
-  user: {
-    id: '7d3b9f1e-4a6c-4d2e-8b5f-1c9a7e3d5b60',
-    username: 'alice',
-    identity_name: 'Alice',
-    thumb_url: 'https://plex.tv/users/8f3a1c/avatar',
-    avatar_url: 'https://plex.tv/users/8f3a1c/avatar',
-  },
-  data: {
-    evidence: [
-      {
-        groupIndex: 0,
-        matched: true,
-        match: 'all',
-        conditions: [
-          {
-            field: 'concurrent_streams',
-            operator: 'gt',
-            threshold: 2,
-            actual: 3,
-            matched: true,
-            relatedSessionIds: [
-              '4e9b7c2a-6d1f-4a3e-8c5b-9f2d7e1a6c43',
-              'a1c3e5f7-9b2d-4e6f-8a0c-2d4f6e8a0b1c',
-            ],
-          },
-        ],
-      },
-    ],
-    relatedSessionIds: [
-      '4e9b7c2a-6d1f-4a3e-8c5b-9f2d7e1a6c43',
-      'a1c3e5f7-9b2d-4e6f-8a0c-2d4f6e8a0b1c',
-    ],
-    ruleName: 'Too many streams',
-    matchedGroups: [0],
-    triggerId: 'n1',
-    edgeKey: null,
-    sessionKey: '7f0c1d2e',
-    mediaTitle: 'Inception',
-    ipAddress: '203.0.113.9',
-  },
-};
-
 const SERVER_HEALTH_EXAMPLE = {
   server_id: SERVER_ID,
   server_name: 'Attic',
@@ -688,45 +846,6 @@ const StreamStopped = z
   .openapi('StreamStopped', {
     example: { id: STREAM_ID, server_id: SERVER_ID, stream: ACTIVE_STREAM_EXAMPLE },
   });
-
-const ViolationCreated = z
-  .object({
-    id: z.uuid().openapi({ description: 'Violation id' }),
-    severity: z
-      .enum(['low', 'warning', 'high'])
-      .openapi({ description: 'Severity set on the rule' }),
-    created_at: z.iso.datetime().openapi({ description: 'When the violation was recorded' }),
-    session_id: z.uuid().nullable().openapi({
-      description: 'The stream that triggered the rule; null for rules not tied to one',
-    }),
-    rule: z.object({
-      id: z.uuid().openapi({ description: 'Automation rule id' }),
-      name: z.string().openapi({ description: 'Rule name as shown in Tracearr' }),
-    }),
-    server: z
-      .object({
-        id: z.uuid().openapi({ description: 'Server id' }),
-        name: z.string().openapi({ description: 'Server name as set in Tracearr' }),
-        type: ServerTypeEnum,
-      })
-      .nullable()
-      .openapi({ description: 'Server the offending account belongs to' }),
-    user: z.object({
-      id: z.uuid().openapi({ description: "Tracearr's id for the per-server account" }),
-      username: z.string().openapi({ description: 'Account name on the server' }),
-      identity_name: z
-        .string()
-        .nullable()
-        .openapi({ description: 'Identity display name when the account is linked to one' }),
-      thumb_url: z.string().nullable().openapi({ description: 'Avatar as the server reports it' }),
-      avatar_url: z.string().nullable().openapi({ description: 'Proxied avatar URL' }),
-    }),
-    data: z.record(z.string(), z.unknown()).openapi({
-      description:
-        'What the automation recorded when it fired: evidence (each condition group with its conditions, the field, operator, threshold and actual value), relatedSessionIds, ruleName, matchedGroups, the triggerId and edgeKey of the trigger node, and for a session-scoped rule its sessionKey, mediaTitle and ipAddress. Condition fields vary by rule, so treat the keys inside evidence as free-form',
-    }),
-  })
-  .openapi('ViolationCreated', { example: VIOLATION_EXAMPLE });
 
 const ServerHealth = z
   .object({
@@ -814,10 +933,10 @@ const StreamStoppedEvent = envelope(
 
 const ViolationCreatedEvent = envelope(
   'violation.created',
-  ViolationCreated,
-  'The violation. GET /api/v1/public/violations lists the same violations with camelCase keys and the session details'
+  Violation,
+  'The violation, the same object GET /violations lists. Prepend it to the list held since ready'
 ).openapi('ViolationCreatedEvent', {
-  description: 'An automation rule fired and recorded a violation',
+  description: 'An automation recorded a violation',
   example: { type: 'violation.created', at: '2026-10-06T10:00:05.000Z', data: VIOLATION_EXAMPLE },
 });
 

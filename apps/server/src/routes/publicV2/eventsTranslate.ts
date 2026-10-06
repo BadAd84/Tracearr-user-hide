@@ -18,6 +18,7 @@ import type {
   ChannelMessage,
   SessionsProgressPayload,
 } from '../../services/publicEvents/channel.js';
+import type { ViolationShape } from './violations.js';
 
 export const PUBLIC_EVENT_TYPES = [
   'stream.started',
@@ -72,13 +73,22 @@ function isProgress(data: unknown): data is SessionsProgressPayload {
   );
 }
 
-function isViolation(data: unknown): data is ViolationWithDetails {
+type PublicViolationSource = ViolationWithDetails & {
+  user: ViolationWithDetails['user'] & { userId: string };
+  server: NonNullable<ViolationWithDetails['server']>;
+};
+
+function isViolation(data: unknown): data is PublicViolationSource {
+  if (typeof data !== 'object' || data === null) return false;
+  const v = data as Partial<ViolationWithDetails>;
   return (
-    typeof data === 'object' &&
-    data !== null &&
-    'ruleId' in data &&
-    'rule' in data &&
-    'user' in data
+    'ruleId' in v &&
+    typeof v.rule === 'object' &&
+    typeof v.user === 'object' &&
+    v.user !== null &&
+    typeof v.user.userId === 'string' &&
+    typeof v.server === 'object' &&
+    v.server !== null
   );
 }
 
@@ -142,25 +152,24 @@ export function translateChannelMessage(message: ChannelMessage): Translated | n
 
   if (event === WS_EVENTS.VIOLATION_NEW) {
     if (!isViolation(data)) return null;
-    const serverId = data.server?.id ?? data.user.serverId;
-    return one(at, 'violation.created', serverId, data.sessionId, {
+    const violation: ViolationShape = {
       id: data.id,
       severity: data.severity,
       created_at: new Date(data.createdAt).toISOString(),
+      acknowledged_at: data.acknowledgedAt ? new Date(data.acknowledgedAt).toISOString() : null,
       session_id: data.sessionId,
       rule: { id: data.rule.id, name: data.rule.name },
-      server: data.server
-        ? { id: data.server.id, name: data.server.name, type: data.server.type }
-        : null,
+      server: { id: data.server.id, name: data.server.name, type: data.server.type },
       user: {
-        id: data.user.id,
-        username: data.user.username,
-        identity_name: data.user.identityName,
+        id: data.user.userId,
+        server_user_id: data.user.id,
+        username: data.user.identityName ?? data.user.username,
         thumb_url: data.user.thumbUrl,
         avatar_url: buildAvatarUrl(data.user.serverId, data.user.thumbUrl),
       },
       data: data.data,
-    });
+    };
+    return one(at, 'violation.created', violation.server.id, violation.session_id, violation);
   }
 
   if (event === WS_EVENTS.SERVER_DOWN || event === WS_EVENTS.SERVER_UP) {

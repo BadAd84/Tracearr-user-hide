@@ -49,7 +49,14 @@ const violation = {
   createdAt: new Date('2026-10-06T10:00:05.000Z'),
   acknowledgedAt: null,
   rule: { id: 'r-1', name: 'Too many streams', type: null },
-  user: { id: 'su-1', username: 'alice', thumbUrl: null, serverId: 'srv-1', identityName: 'Alice' },
+  user: {
+    id: 'su-1',
+    userId: 'u-1',
+    username: 'alice',
+    thumbUrl: null,
+    serverId: 'srv-1',
+    identityName: 'Alice',
+  },
   server: { id: 'srv-1', name: 'Attic', type: 'plex' },
 } as unknown as ViolationWithDetails;
 
@@ -173,13 +180,14 @@ describe('translateChannelMessage', () => {
       id: 'v-1',
       severity: 'high',
       created_at: '2026-10-06T10:00:05.000Z',
+      acknowledged_at: null,
       session_id: 'sess-1',
       rule: { id: 'r-1', name: 'Too many streams' },
       server: { id: 'srv-1', name: 'Attic', type: 'plex' },
       user: {
-        id: 'su-1',
-        username: 'alice',
-        identity_name: 'Alice',
+        id: 'u-1',
+        server_user_id: 'su-1',
+        username: 'Alice',
         thumb_url: null,
         avatar_url: null,
       },
@@ -211,6 +219,18 @@ describe('translateChannelMessage', () => {
       status: 'up',
       reason: null,
     });
+  });
+
+  it('drops a violation whose payload lacks the identity id or the server', () => {
+    const noIdentity = {
+      ...violation,
+      user: { ...violation.user, userId: undefined },
+    } as unknown as ViolationWithDetails;
+    expect(
+      translateChannelMessage({ event: 'violation:new', data: noIdentity, at: AT })
+    ).toBeNull();
+    const noServer = { ...violation, server: undefined } as unknown as ViolationWithDetails;
+    expect(translateChannelMessage({ event: 'violation:new', data: noServer, at: AT })).toBeNull();
   });
 
   it('turns a key change into a control result and ignores everything else', () => {

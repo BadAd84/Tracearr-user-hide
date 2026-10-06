@@ -243,6 +243,16 @@ describe('public API v2 skeleton', () => {
       expect(second.statusCode).toBe(200);
       expect(third.statusCode).toBe(429);
     });
+
+    it('charges a violations request to the same budget', async () => {
+      vi.mocked(getSetting).mockResolvedValueOnce(1);
+      app = await buildTestApp(true, true);
+
+      await app.inject({ method: 'GET', url: '/api/v2/public/docs' });
+      const res = await app.inject({ method: 'GET', url: '/api/v2/public/violations' });
+
+      expect(res.statusCode).toBe(429);
+    });
   });
 
   describe('with auth rejecting', () => {
@@ -255,6 +265,8 @@ describe('public API v2 skeleton', () => {
       '/api/v2/public/history',
       '/api/v2/public/streams',
       '/api/v2/public/watched-media?media_type=movie',
+      '/api/v2/public/violations',
+      '/api/v2/public/violations/0f4d2a6e-8b1c-4e3f-9a7d-6c5b4a3f2e1d',
     ])('returns 401 for %s', async (url) => {
       const res = await app.inject({ method: 'GET', url });
 

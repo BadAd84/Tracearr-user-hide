@@ -2947,6 +2947,396 @@
         }
       }
     },
+    "GET /api/v2/public/violations": {
+      "tags": ["Public API v2"],
+      "parameters": {
+        "query:cursor": {
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        "query:pageSize": {
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "exclusiveMinimum": true,
+            "default": 25
+          }
+        },
+        "query:server_id": {
+          "required": false,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "query:user_id": {
+          "required": false,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "query:server_user_id": {
+          "required": false,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "query:rule_id": {
+          "required": false,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "query:severity": {
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": ["low", "warning", "high"]
+          }
+        },
+        "query:acknowledged": {
+          "required": false,
+          "schema": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "query:since": {
+          "required": false,
+          "schema": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "string",
+                "format": "date-time"
+              }
+            ]
+          }
+        },
+        "query:until": {
+          "required": false,
+          "schema": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "string",
+                "format": "date-time"
+              }
+            ]
+          }
+        }
+      },
+      "request": null,
+      "responses": {
+        "200": {
+          "mediaType": "application/json",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": ["low", "warning", "high"]
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "acknowledged_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "nullable": true
+                    },
+                    "session_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "nullable": true
+                    },
+                    "rule": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["id", "name"]
+                    },
+                    "server": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": ["plex", "jellyfin", "emby"]
+                        }
+                      },
+                      "required": ["id", "name", "type"]
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "server_user_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "username": {
+                          "type": "string"
+                        },
+                        "thumb_url": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "avatar_url": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      },
+                      "required": ["avatar_url", "id", "server_user_id", "thumb_url", "username"]
+                    },
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "nullable": true
+                      }
+                    }
+                  },
+                  "required": [
+                    "acknowledged_at",
+                    "created_at",
+                    "data",
+                    "id",
+                    "rule",
+                    "server",
+                    "session_id",
+                    "severity",
+                    "user"
+                  ]
+                }
+              },
+              "meta": {
+                "type": "object",
+                "properties": {
+                  "nextCursor": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "pageSize": {
+                    "type": "integer"
+                  }
+                },
+                "required": ["nextCursor", "pageSize"]
+              }
+            },
+            "required": ["data", "meta"]
+          }
+        }
+      }
+    },
+    "GET /api/v2/public/violations/{id}": {
+      "tags": ["Public API v2"],
+      "parameters": {
+        "path:id": {
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "request": null,
+      "responses": {
+        "200": {
+          "mediaType": "application/json",
+          "schema": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "severity": {
+                    "type": "string",
+                    "enum": ["low", "warning", "high"]
+                  },
+                  "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "acknowledged_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "nullable": true
+                  },
+                  "session_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "nullable": true
+                  },
+                  "rule": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["id", "name"]
+                  },
+                  "server": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": ["plex", "jellyfin", "emby"]
+                      }
+                    },
+                    "required": ["id", "name", "type"]
+                  },
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "server_user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "username": {
+                        "type": "string"
+                      },
+                      "thumb_url": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "avatar_url": {
+                        "type": "string",
+                        "nullable": true
+                      }
+                    },
+                    "required": ["avatar_url", "id", "server_user_id", "thumb_url", "username"]
+                  },
+                  "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "nullable": true
+                    }
+                  }
+                },
+                "required": [
+                  "acknowledged_at",
+                  "created_at",
+                  "data",
+                  "id",
+                  "rule",
+                  "server",
+                  "session_id",
+                  "severity",
+                  "user"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "actions": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "success": {
+                          "type": "boolean"
+                        },
+                        "skipped": {
+                          "type": "boolean"
+                        },
+                        "skip_reason": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "error_message": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "executed_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "error_message",
+                        "executed_at",
+                        "skip_reason",
+                        "skipped",
+                        "success",
+                        "type"
+                      ]
+                    }
+                  }
+                },
+                "required": ["actions"]
+              }
+            ]
+          }
+        }
+      }
+    },
     "GET /api/v2/public/events": {
       "tags": ["Public API v2"],
       "parameters": {
@@ -4409,97 +4799,113 @@
                     "format": "date-time"
                   },
                   "data": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "format": "uuid"
-                      },
-                      "severity": {
-                        "type": "string",
-                        "enum": ["low", "warning", "high"]
-                      },
-                      "created_at": {
-                        "type": "string",
-                        "format": "date-time"
-                      },
-                      "session_id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "nullable": true
-                      },
-                      "rule": {
+                    "allOf": [
+                      {
                         "type": "object",
                         "properties": {
                           "id": {
                             "type": "string",
                             "format": "uuid"
                           },
-                          "name": {
-                            "type": "string"
-                          }
-                        },
-                        "required": ["id", "name"]
-                      },
-                      "server": {
-                        "type": "object",
-                        "nullable": true,
-                        "properties": {
-                          "id": {
+                          "severity": {
                             "type": "string",
-                            "format": "uuid"
+                            "enum": ["low", "warning", "high"]
                           },
-                          "name": {
-                            "type": "string"
-                          },
-                          "type": {
+                          "created_at": {
                             "type": "string",
-                            "enum": ["plex", "jellyfin", "emby"]
-                          }
-                        },
-                        "required": ["id", "name", "type"]
-                      },
-                      "user": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid"
+                            "format": "date-time"
                           },
-                          "username": {
-                            "type": "string"
-                          },
-                          "identity_name": {
+                          "acknowledged_at": {
                             "type": "string",
+                            "format": "date-time",
                             "nullable": true
                           },
-                          "thumb_url": {
+                          "session_id": {
                             "type": "string",
+                            "format": "uuid",
                             "nullable": true
                           },
-                          "avatar_url": {
-                            "type": "string",
-                            "nullable": true
+                          "rule": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            },
+                            "required": ["id", "name"]
+                          },
+                          "server": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": ["plex", "jellyfin", "emby"]
+                              }
+                            },
+                            "required": ["id", "name", "type"]
+                          },
+                          "user": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "server_user_id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "username": {
+                                "type": "string"
+                              },
+                              "thumb_url": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "avatar_url": {
+                                "type": "string",
+                                "nullable": true
+                              }
+                            },
+                            "required": [
+                              "avatar_url",
+                              "id",
+                              "server_user_id",
+                              "thumb_url",
+                              "username"
+                            ]
+                          },
+                          "data": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "nullable": true
+                            }
                           }
                         },
-                        "required": ["avatar_url", "id", "identity_name", "thumb_url", "username"]
+                        "required": [
+                          "acknowledged_at",
+                          "created_at",
+                          "data",
+                          "id",
+                          "rule",
+                          "server",
+                          "session_id",
+                          "severity",
+                          "user"
+                        ]
                       },
-                      "data": {
-                        "type": "object",
-                        "additionalProperties": {
-                          "nullable": true
-                        }
-                      }
-                    },
-                    "required": [
-                      "created_at",
-                      "data",
-                      "id",
-                      "rule",
-                      "server",
-                      "session_id",
-                      "severity",
-                      "user"
+                      {}
                     ]
                   }
                 },
