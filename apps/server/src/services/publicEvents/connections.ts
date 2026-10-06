@@ -88,7 +88,7 @@ export function formatFrame(event: PublicEvent): string {
 }
 
 export function readyFrame(at: string = new Date().toISOString()): string {
-  return `event: ready\ndata: ${JSON.stringify({ at })}\n\n`;
+  return `event: ready\ndata: ${JSON.stringify({ type: 'ready', at, data: {} })}\n\n`;
 }
 
 export function instanceHasRoom(): boolean {

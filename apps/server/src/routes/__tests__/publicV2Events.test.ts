@@ -183,7 +183,9 @@ describe('GET /api/v2/public/events', () => {
 
     const text = await readUntil(res.stream(), 'event: ready');
     expect(text.startsWith('retry: 5000\n\n')).toBe(true);
-    expect(text).toMatch(/event: ready\ndata: \{"at":"\d{4}-\d{2}-\d{2}T[^"]+"\}\n\n/);
+    expect(text).toMatch(
+      /event: ready\ndata: \{"type":"ready","at":"\d{4}-\d{2}-\d{2}T[^"]+","data":\{\}\}\n\n/
+    );
     expect(vi.mocked(db.select)).not.toHaveBeenCalled();
     expect(vi.mocked(db.execute)).not.toHaveBeenCalled();
   });

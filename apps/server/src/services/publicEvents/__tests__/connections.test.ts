@@ -156,7 +156,7 @@ describe('public event connections', () => {
       'event: stream.started\ndata: {"type":"stream.started","at":"2026-10-06T10:00:00.000Z","data":{"id":"sess-1"}}\n\n'
     );
     expect(readyFrame('2026-10-06T10:00:00.000Z')).toBe(
-      'event: ready\ndata: {"at":"2026-10-06T10:00:00.000Z"}\n\n'
+      'event: ready\ndata: {"type":"ready","at":"2026-10-06T10:00:00.000Z","data":{}}\n\n'
     );
   });
 
@@ -181,7 +181,7 @@ describe('public event connections', () => {
     acknowledge();
     await attached;
     expect(sink.chunks[0]).toBe('retry: 5000\n\n');
-    expect(sink.chunks[1]).toMatch(/^event: ready\ndata: \{"at":"/);
+    expect(sink.chunks[1]).toMatch(/^event: ready\ndata: \{"type":"ready","at":"/);
     expect(sink.chunks).toHaveLength(2);
   });
 

@@ -39,7 +39,7 @@ const eventsQuerySchema = z.object({
 
 function overCap(reply: FastifyReply, message: string) {
   reply.header('Retry-After', String(OVER_CAP_RETRY_AFTER_S));
-  return reply.code(429).send({ error: 'Too Many Requests', message });
+  return reply.tooManyRequests(message);
 }
 
 export function registerEventsRoutes(app: FastifyInstance, routeConfig: RouteConfig): void {

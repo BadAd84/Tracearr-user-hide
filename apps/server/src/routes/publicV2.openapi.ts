@@ -90,6 +90,10 @@ const PLAY_SEMANTICS =
 const ServerTypeEnum = z.enum(['plex', 'jellyfin', 'emby']);
 const MediaTypeEnum = z.enum(['movie', 'episode', 'track', 'live', 'photo', 'trailer', 'unknown']);
 const TranscodeDecisionEnum = z.enum(['directplay', 'copy', 'transcode']);
+const ActiveStateEnum = z.enum(['playing', 'paused']).openapi({
+  description: 'A stream that stops leaves /streams and sends stream.stopped instead',
+  example: 'playing',
+});
 
 const CursorMeta = z
   .object({
@@ -198,7 +202,9 @@ const mediaIdentityFields = {
 };
 
 const streamQualityFields = {
-  is_transcode: z.boolean(),
+  is_transcode: z
+    .boolean()
+    .openapi({ description: 'True when the server reports the session as a transcode' }),
   video_decision: TranscodeDecisionEnum.nullable(),
   audio_decision: TranscodeDecisionEnum.nullable(),
   bitrate: z.number().int().nullable().openapi({ description: 'Bitrate in kbps' }),
@@ -215,7 +221,10 @@ const streamQualityFields = {
   stream_audio_details: StreamAudioDetails,
   transcode_info: TranscodeInfo,
   subtitle_info: SubtitleInfo,
-  resolution: z.string().nullable().openapi({ example: '4K' }),
+  resolution: z
+    .string()
+    .nullable()
+    .openapi({ description: 'Source resolution label from width and height', example: '4K' }),
   source_video_codec_display: z.string().nullable().openapi({ example: 'HEVC' }),
   source_audio_codec_display: z.string().nullable().openapi({ example: 'TrueHD' }),
   audio_channels_display: z.string().nullable().openapi({ example: '7.1' }),
@@ -391,13 +400,17 @@ const ActiveStream = z
     username: z.string().openapi({
       description: "Identity display name when linked, else the server account's username",
     }),
-    user_thumb: z.string().nullable(),
-    user_avatar_url: z.string().nullable(),
+    user_thumb: z.string().nullable().openapi({ description: 'Avatar as the server reports it' }),
+    user_avatar_url: z.string().nullable().openapi({ description: 'Proxied avatar URL' }),
     ...mediaMetadataFields,
-    duration_ms: z.number().int().nullable().openapi({ description: 'Total media length' }),
-    state: z.string().openapi({ example: 'playing' }),
-    progress_ms: z.number().int(),
-    started_at: z.iso.datetime(),
+    duration_ms: z
+      .number()
+      .int()
+      .nullable()
+      .openapi({ description: 'Total media length in milliseconds' }),
+    state: ActiveStateEnum,
+    progress_ms: z.number().int().openapi({ description: 'Playback position in milliseconds' }),
+    started_at: z.iso.datetime().openapi({ description: 'When the stream began' }),
     ...streamQualityFields,
     ...deviceFields,
     ...mediaIdentityFields,
@@ -476,99 +489,379 @@ registry.registerPath({
 // GET /events (server-sent events)
 // ============================================================================
 
-const PublicEventTypeEnum = z.enum([
+const EVENT_TYPES = [
   'stream.started',
   'stream.updated',
   'stream.progress',
   'stream.stopped',
   'violation.created',
   'server.health',
-]);
+] as const;
 
 const EventsQuery = z.object({
-  types: z.string().optional().openapi({
-    description:
-      'Comma-separated event types to receive. Default: all six. Values: stream.started, stream.updated, stream.progress, stream.stopped, violation.created, server.health',
-    example: 'stream.started,stream.stopped',
-  }),
+  types: z
+    .string()
+    .optional()
+    .openapi({
+      description:
+        'Comma-separated event types to receive; ready always arrives. Default: all six. Values: ' +
+        EVENT_TYPES.join(', ') +
+        '. An empty list or an unknown name returns 400',
+      example: 'stream.started,stream.stopped',
+    }),
   server_id: z.uuid().optional().openapi({
     description:
       "Only events for this server. Leave it out to receive every server on one connection and filter on each event's server_id",
   }),
 });
 
-const StreamProgressEvent = z
-  .object({
-    id: z.uuid(),
-    server_id: z.uuid(),
-    state: z.string().openapi({ example: 'playing' }),
-    progress_ms: z.number().int(),
-    bitrate: z.number().int().nullable(),
-  })
-  .openapi('StreamProgressEvent');
+const EVENT_AT = {
+  description: 'When Tracearr observed the event, ISO 8601 UTC',
+  example: '2026-10-06T10:00:05.000Z',
+};
 
-const StreamStoppedEvent = z
+const SERVER_ID = '5c1a4c1e-0b2d-4f6a-9d3e-2b7c8f9a1d20';
+const STREAM_ID = '0f4d2a6e-8b1c-4e3f-9a7d-6c5b4a3f2e1d';
+
+// What formatActiveStream emits for a cached session: library_id and genres null.
+const ACTIVE_STREAM_EXAMPLE = {
+  id: STREAM_ID,
+  server_id: SERVER_ID,
+  server_name: 'Attic',
+  server_type: 'plex',
+  username: 'alice',
+  user_thumb: 'https://plex.tv/users/8f3a1c/avatar',
+  user_avatar_url: 'https://plex.tv/users/8f3a1c/avatar',
+  media_title: 'Inception',
+  media_type: 'movie',
+  show_title: null,
+  season_number: null,
+  episode_number: null,
+  year: 2010,
+  artist_name: null,
+  album_name: null,
+  track_number: null,
+  disc_number: null,
+  thumb_path: '/library/metadata/27205/thumb/1759740000',
+  poster_url:
+    '/api/v1/images/proxy?server=5c1a4c1e-0b2d-4f6a-9d3e-2b7c8f9a1d20&url=%2Flibrary%2Fmetadata%2F27205%2Fthumb%2F1759740000&width=360&height=540&fallback=poster&v=54aaaba1',
+  duration_ms: 8880000,
+  state: 'playing',
+  progress_ms: 1260000,
+  started_at: '2026-10-06T09:39:00.000Z',
+  is_transcode: false,
+  video_decision: 'directplay',
+  audio_decision: 'directplay',
+  bitrate: 24500,
+  source_video_codec: 'hevc',
+  source_audio_codec: 'truehd',
+  source_audio_channels: 8,
+  source_video_width: 3840,
+  source_video_height: 2160,
+  source_video_details: {
+    bitrate: 24000,
+    framerate: '23.976',
+    dynamicRange: 'HDR10',
+    profile: 'main 10',
+    colorDepth: 10,
+  },
+  source_audio_details: { channelLayout: '7.1', language: 'eng', sampleRate: 48000 },
+  stream_video_codec: 'hevc',
+  stream_audio_codec: 'truehd',
+  stream_video_details: { width: 3840, height: 2160, framerate: '23.976', dynamicRange: 'HDR10' },
+  stream_audio_details: { channels: 8, language: 'eng' },
+  transcode_info: null,
+  subtitle_info: null,
+  resolution: '4K',
+  source_video_codec_display: 'HEVC',
+  source_audio_codec_display: 'TrueHD',
+  audio_channels_display: '7.1',
+  stream_video_codec_display: 'HEVC',
+  stream_audio_codec_display: 'TrueHD',
+  device: 'Apple TV',
+  player: 'Living room',
+  product: 'Plex for Apple TV',
+  platform: 'tvOS',
+  media_id: '9b2e7d41-3c5a-4f8e-b6d1-0a7c2e9f4b35',
+  show_media_id: null,
+  imdb_id: 'tt1375666',
+  tmdb_id: 27205,
+  tvdb_id: null,
+  rating_key: '27205',
+  parent_rating_key: null,
+  grandparent_rating_key: null,
+  library_id: null,
+  genres: null,
+};
+
+const STREAM_PROGRESS_EXAMPLE = {
+  id: STREAM_ID,
+  server_id: SERVER_ID,
+  state: 'playing',
+  progress_ms: 1275000,
+  bitrate: 24500,
+};
+
+const VIOLATION_EXAMPLE = {
+  id: 'c7e1f9a3-5d2b-4c8e-a1f6-3b9d7e2c5a84',
+  severity: 'high',
+  created_at: '2026-10-06T10:00:05.000Z',
+  session_id: STREAM_ID,
+  rule: { id: '2a8f4c6e-1b3d-4e5f-9c7a-8d6b5e4f3a21', name: 'Too many streams' },
+  server: { id: SERVER_ID, name: 'Attic', type: 'plex' },
+  user: {
+    id: '7d3b9f1e-4a6c-4d2e-8b5f-1c9a7e3d5b60',
+    username: 'alice',
+    identity_name: 'Alice',
+    thumb_url: 'https://plex.tv/users/8f3a1c/avatar',
+    avatar_url: 'https://plex.tv/users/8f3a1c/avatar',
+  },
+  data: {
+    evidence: [
+      {
+        groupIndex: 0,
+        matched: true,
+        match: 'all',
+        conditions: [
+          {
+            field: 'concurrent_streams',
+            operator: 'gt',
+            threshold: 2,
+            actual: 3,
+            matched: true,
+            relatedSessionIds: [
+              '4e9b7c2a-6d1f-4a3e-8c5b-9f2d7e1a6c43',
+              'a1c3e5f7-9b2d-4e6f-8a0c-2d4f6e8a0b1c',
+            ],
+          },
+        ],
+      },
+    ],
+    relatedSessionIds: [
+      '4e9b7c2a-6d1f-4a3e-8c5b-9f2d7e1a6c43',
+      'a1c3e5f7-9b2d-4e6f-8a0c-2d4f6e8a0b1c',
+    ],
+    ruleName: 'Too many streams',
+    matchedGroups: [0],
+    triggerId: 'n1',
+    edgeKey: null,
+    sessionKey: '7f0c1d2e',
+    mediaTitle: 'Inception',
+    ipAddress: '203.0.113.9',
+  },
+};
+
+const SERVER_HEALTH_EXAMPLE = {
+  server_id: SERVER_ID,
+  server_name: 'Attic',
+  status: 'down',
+  reason: 'unauthorized',
+};
+
+const StreamProgress = z
   .object({
-    id: z.uuid(),
-    server_id: z.uuid().nullable(),
+    id: z.uuid().openapi({ description: 'Session id, the same id as the ActiveStream' }),
+    server_id: z.uuid().openapi({ description: 'Server the stream plays on' }),
+    state: ActiveStateEnum,
+    progress_ms: z
+      .number()
+      .int()
+      .openapi({ description: 'Playback position in milliseconds from the start of the media' }),
+    bitrate: z.number().int().nullable().openapi({
+      description: 'Current stream bitrate in kbps; null when the server reports none',
+    }),
+  })
+  .openapi('StreamProgress', { example: STREAM_PROGRESS_EXAMPLE });
+
+const StreamStopped = z
+  .object({
+    id: z.uuid().openapi({ description: 'Session id of the stream that stopped' }),
+    server_id: z
+      .uuid()
+      .nullable()
+      .openapi({ description: 'Server the stream played on; null when stream is null' }),
     stream: ActiveStream.nullable().openapi({
       description:
         'The last snapshot Tracearr held for this stream, from live events or from the active session cache. Null when the session was never in that cache, or when the server process holding the connection evicted it from its last-seen map, which keeps the 5,000 most recently started or updated streams',
     }),
   })
-  .openapi('StreamStoppedEvent');
+  .openapi('StreamStopped', {
+    example: { id: STREAM_ID, server_id: SERVER_ID, stream: ACTIVE_STREAM_EXAMPLE },
+  });
 
-const ViolationEvent = z
+const ViolationCreated = z
   .object({
-    id: z.uuid(),
-    severity: z.enum(['low', 'warning', 'high']),
-    created_at: z.iso.datetime(),
-    session_id: z.uuid().nullable(),
-    rule: z.object({ id: z.uuid(), name: z.string() }),
-    server: z.object({ id: z.uuid(), name: z.string(), type: ServerTypeEnum }).nullable(),
-    user: z.object({
-      id: z.uuid(),
-      username: z.string(),
-      identity_name: z.string().nullable(),
-      thumb_url: z.string().nullable(),
-      avatar_url: z.string().nullable(),
+    id: z.uuid().openapi({ description: 'Violation id' }),
+    severity: z
+      .enum(['low', 'warning', 'high'])
+      .openapi({ description: 'Severity set on the rule' }),
+    created_at: z.iso.datetime().openapi({ description: 'When the violation was recorded' }),
+    session_id: z.uuid().nullable().openapi({
+      description: 'The stream that triggered the rule; null for rules not tied to one',
     }),
-    data: z.record(z.string(), z.unknown()).openapi({ description: 'Rule-specific details' }),
+    rule: z.object({
+      id: z.uuid().openapi({ description: 'Automation rule id' }),
+      name: z.string().openapi({ description: 'Rule name as shown in Tracearr' }),
+    }),
+    server: z
+      .object({
+        id: z.uuid().openapi({ description: 'Server id' }),
+        name: z.string().openapi({ description: 'Server name as set in Tracearr' }),
+        type: ServerTypeEnum,
+      })
+      .nullable()
+      .openapi({ description: 'Server the offending account belongs to' }),
+    user: z.object({
+      id: z.uuid().openapi({ description: "Tracearr's id for the per-server account" }),
+      username: z.string().openapi({ description: 'Account name on the server' }),
+      identity_name: z
+        .string()
+        .nullable()
+        .openapi({ description: 'Identity display name when the account is linked to one' }),
+      thumb_url: z.string().nullable().openapi({ description: 'Avatar as the server reports it' }),
+      avatar_url: z.string().nullable().openapi({ description: 'Proxied avatar URL' }),
+    }),
+    data: z.record(z.string(), z.unknown()).openapi({
+      description:
+        'What the automation recorded when it fired: evidence (each condition group with its conditions, the field, operator, threshold and actual value), relatedSessionIds, ruleName, matchedGroups, the triggerId and edgeKey of the trigger node, and for a session-scoped rule its sessionKey, mediaTitle and ipAddress. Condition fields vary by rule, so treat the keys inside evidence as free-form',
+    }),
   })
-  .openapi('ViolationEvent');
+  .openapi('ViolationCreated', { example: VIOLATION_EXAMPLE });
 
-const ServerHealthEvent = z
+const ServerHealth = z
   .object({
-    server_id: z.uuid(),
-    server_name: z.string(),
-    status: z.enum(['up', 'down']),
-    reason: z.enum(['unauthorized']).nullable(),
+    server_id: z.uuid().openapi({ description: 'Server whose reachability changed' }),
+    server_name: z.string().openapi({ description: 'Server name as set in Tracearr' }),
+    status: z.enum(['up', 'down']).openapi({
+      description: 'down when Tracearr can no longer reach the server, up when it can again',
+    }),
+    reason: z.enum(['unauthorized']).nullable().openapi({
+      description:
+        'Why the server is down when Tracearr knows: unauthorized means the stored credentials were rejected. Null for an up event or an unreachable server',
+    }),
   })
-  .openapi('ServerHealthEvent');
+  .openapi('ServerHealth', { example: SERVER_HEALTH_EXAMPLE });
 
-const ReadyEvent = z.object({ at: z.iso.datetime() }).openapi('ReadyEvent', {
+function envelope<T extends (typeof EVENT_TYPES)[number] | 'ready', D extends z.ZodType>(
+  type: T,
+  data: D,
+  dataDescription: string
+) {
+  return z.object({
+    type: z
+      .literal(type)
+      .openapi({ description: 'Event type, the same value as the SSE event field' }),
+    at: z.iso.datetime().openapi(EVENT_AT),
+    data: data.openapi({ description: dataDescription }),
+  });
+}
+
+const ReadyEvent = envelope('ready', z.object({}), 'Always empty').openapi('ReadyEvent', {
   description:
-    'Sent on every connect and after the server reconnects to its event source; refetch state over REST when it arrives',
+    'Sent after retry on every connect, and again whenever the server reconnects to its own event source. Fetch current state over REST when it arrives',
+  example: { type: 'ready', at: '2026-10-06T10:00:00.000Z', data: {} },
 });
 
-const EventEnvelope = z
-  .object({
-    type: PublicEventTypeEnum,
-    at: z.iso.datetime(),
-    data: z
-      .union([
-        ActiveStream,
-        StreamProgressEvent,
-        StreamStoppedEvent,
-        ViolationEvent,
-        ServerHealthEvent,
-      ])
-      .openapi({
-        description:
-          'ActiveStream for stream.started and stream.updated (library_id and genres are always null here), StreamProgressEvent for stream.progress, StreamStoppedEvent, ViolationEvent, or ServerHealthEvent',
-      }),
-  })
-  .openapi('EventEnvelope');
+const StreamStartedEvent = envelope(
+  'stream.started',
+  ActiveStream,
+  'The new stream, in the GET /streams shape. library_id and genres are always null on events'
+).openapi('StreamStartedEvent', {
+  description: 'A stream began playing',
+  example: { type: 'stream.started', at: '2026-10-06T09:39:02.000Z', data: ACTIVE_STREAM_EXAMPLE },
+});
+
+const StreamUpdatedEvent = envelope(
+  'stream.updated',
+  ActiveStream,
+  'The whole stream again, in the GET /streams shape. library_id and genres are always null on events'
+).openapi('StreamUpdatedEvent', {
+  description:
+    'The full stream again. Sent when the stream pauses, resumes, starts or stops buffering, or changes media, and once per poll tick for one of the streams that changed. The position in it can trail the latest stream.progress. Coalesced to one per stream every 2 s',
+  example: {
+    type: 'stream.updated',
+    at: '2026-10-06T10:00:05.000Z',
+    data: { ...ACTIVE_STREAM_EXAMPLE, state: 'paused' },
+  },
+});
+
+const StreamProgressEvent = envelope(
+  'stream.progress',
+  StreamProgress,
+  'Position, state and bitrate only; apply it to the ActiveStream held for data.id'
+).openapi('StreamProgressEvent', {
+  description:
+    'A playback position update, once per poll tick per stream, coalesced to one per stream every 2 s',
+  example: {
+    type: 'stream.progress',
+    at: '2026-10-06T10:00:20.000Z',
+    data: STREAM_PROGRESS_EXAMPLE,
+  },
+});
+
+const StreamStoppedEvent = envelope(
+  'stream.stopped',
+  StreamStopped,
+  'The stopped stream id and the last snapshot held for it'
+).openapi('StreamStoppedEvent', {
+  description: 'A stream ended. Remove data.id from the list held since ready',
+  example: {
+    type: 'stream.stopped',
+    at: '2026-10-06T12:07:00.000Z',
+    data: { id: STREAM_ID, server_id: SERVER_ID, stream: ACTIVE_STREAM_EXAMPLE },
+  },
+});
+
+const ViolationCreatedEvent = envelope(
+  'violation.created',
+  ViolationCreated,
+  'The violation. GET /api/v1/public/violations lists the same violations with camelCase keys and the session details'
+).openapi('ViolationCreatedEvent', {
+  description: 'An automation rule fired and recorded a violation',
+  example: { type: 'violation.created', at: '2026-10-06T10:00:05.000Z', data: VIOLATION_EXAMPLE },
+});
+
+const ServerHealthEvent = envelope(
+  'server.health',
+  ServerHealth,
+  'The server and its new status'
+).openapi('ServerHealthEvent', {
+  description: 'A media server became unreachable or reachable again',
+  example: { type: 'server.health', at: '2026-10-06T10:30:00.000Z', data: SERVER_HEALTH_EXAMPLE },
+});
+
+const PublicEvent = z
+  .discriminatedUnion('type', [
+    ReadyEvent,
+    StreamStartedEvent,
+    StreamUpdatedEvent,
+    StreamProgressEvent,
+    StreamStoppedEvent,
+    ViolationCreatedEvent,
+    ServerHealthEvent,
+  ])
+  .openapi('PublicEvent', {
+    description:
+      'The JSON in the data field of every frame. type matches the SSE event field, so a client that reads only data can still tell the events apart',
+  });
+
+const sseFrame = (type: string, body: unknown) =>
+  `event: ${type}\ndata: ${JSON.stringify(body)}\n\n`;
+
+const EVENT_STREAM_EXAMPLE =
+  'retry: 5000\n\n' +
+  sseFrame('ready', { type: 'ready', at: '2026-10-06T10:00:00.000Z', data: {} }) +
+  sseFrame('stream.started', {
+    type: 'stream.started',
+    at: '2026-10-06T10:00:02.000Z',
+    data: ACTIVE_STREAM_EXAMPLE,
+  }) +
+  sseFrame('stream.progress', {
+    type: 'stream.progress',
+    at: '2026-10-06T10:00:20.000Z',
+    data: STREAM_PROGRESS_EXAMPLE,
+  }) +
+  ': ping\n\n';
 
 registry.registerPath({
   method: 'get',
@@ -576,21 +869,28 @@ registry.registerPath({
   tags: ['Public API v2'],
   summary: 'Live events (server-sent events)',
   description:
-    'A text/event-stream of stream lifecycle, violation and server health events. Each SSE frame has ' +
-    '`event:` (the type) and `data:` (the JSON EventEnvelope). The first frame is `retry: 5000`, then a ' +
-    '`ready` control event (`{"at"}`). On `ready`, fetch current state over REST and apply later events to it: ' +
-    '`GET /api/v2/public/streams` for streams, `GET /api/v1/public/violations` and `GET /api/v1/public/health` ' +
-    'for violations and server health. Nothing is replayed after a disconnect; `ready` is the signal to ' +
-    'refetch. Read the "Live events" section of this document before integrating: shared-key limits, budget, ' +
+    'The app keeps one connection open and Tracearr pushes each event down it as it happens: a ' +
+    'stream starting, pausing, progressing or stopping, a new violation, a server going down or ' +
+    'coming back. The app does not poll. REST is used once per connection: when the `ready` event ' +
+    'arrives, fetch the starting state that later events apply to, from `GET /api/v2/public/streams` ' +
+    'for streams and `GET /api/v1/public/violations` and `GET /api/v1/public/health` for violations ' +
+    'and server health. Each frame carries `event:` (the type) and `data:` (a JSON PublicEvent with ' +
+    'the same `type`, an `at` timestamp and the payload in `data`). The first frame is `retry: 5000`, ' +
+    'then `ready`. Nothing is replayed after a disconnect; a reconnect gets a fresh `ready`, and so ' +
+    'does every open connection when the server reconnects to its own event source. Read the "Live ' +
+    'events" section at the top of this document before integrating: shared-key limits, budget, ' +
     'coalescing, widgets and proxy settings.',
   security: [{ bearerAuth: [] }],
   request: { query: EventsQuery },
   responses: {
     200: {
-      description: 'Event connection opened',
-      content: { 'text/event-stream': { schema: z.union([ReadyEvent, EventEnvelope]) } },
+      description:
+        'Event connection opened. The body is an SSE stream that stays open until the client closes it, the key is regenerated, the server shuts down, or 30 minutes pass',
+      content: { 'text/event-stream': { schema: PublicEvent, example: EVENT_STREAM_EXAMPLE } },
     },
-    400: { description: 'Unknown event type or malformed server_id' },
+    400: {
+      description: 'types is empty or names an unknown event type, or server_id is not a uuid',
+    },
     ...AUTH_ERROR_RESPONSES,
     503: {
       description:
@@ -1436,17 +1736,27 @@ by media server.
 
 ## Live events
 
-\`GET /events\` holds a server-sent events connection open. It takes the same
-\`Authorization: Bearer\` header as every other route. The browser's built-in \`EventSource\`
-cannot send request headers, so use an SSE client that can, such as a fetch-based reader or
-the \`eventsource\` package for Node.
+\`GET /events\` keeps one connection open and Tracearr pushes each event down it as it happens:
+a stream starting, pausing, progressing or stopping, a new violation, a server going down or
+coming back. The app does not poll. The connection takes the same \`Authorization: Bearer\`
+header as every other route. The browser's built-in \`EventSource\` cannot send request headers,
+so use an SSE client that can, such as a fetch-based reader or the \`eventsource\` package for Node.
 
-Nothing is replayed. Every connection starts with \`retry: 5000\` and then a \`ready\` event.
-When \`ready\` arrives, fetch current state over REST and apply later events to it: \`GET /streams\`
+REST is used once per connection. Every connection starts with \`retry: 5000\` and then a \`ready\`
+event; when \`ready\` arrives, fetch the starting state that later events apply to: \`GET /streams\`
 here for playing streams, and \`GET /api/v1/public/violations\` and \`GET /api/v1/public/health\`
-for violations and server health (the v1 routes take the same key). If the server loses its own
-connection to its event source and gets it back, it sends \`ready\` again on every open connection.
-Treat that one exactly like the first.
+for violations and server health (the v1 routes take the same key). Nothing is replayed. If the
+server loses its own connection to its event source and gets it back, it sends \`ready\` again on
+every open connection. Treat that one exactly like the first.
+
+Every frame has an \`event:\` line naming the type and a \`data:\` line holding one JSON object,
+\`{"type", "at", "data"}\`, where \`type\` repeats the event name, \`at\` is when Tracearr observed it
+and \`data\` is the payload. The types are \`ready\`, \`stream.started\`, \`stream.updated\`,
+\`stream.progress\`, \`stream.stopped\`, \`violation.created\` and \`server.health\`; the \`PublicEvent\`
+schema and the example on \`GET /events\` show each payload and a raw stream. \`stream.started\`
+and \`stream.updated\` carry the whole stream in the \`GET /streams\` shape, except that \`library_id\`
+and \`genres\` are always null on events. Apply \`stream.progress\` to the stream held under its
+\`data.id\`, and drop that id on \`stream.stopped\`. Errors are JSON with \`error\` and \`message\`.
 
 A connection can also end before \`ready\`. That happens when the server cannot subscribe to its
 event source, and the right response is an ordinary reconnect.

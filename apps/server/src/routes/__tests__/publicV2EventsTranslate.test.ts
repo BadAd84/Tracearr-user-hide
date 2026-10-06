@@ -5,9 +5,22 @@ import {
   clearLastSeen,
   seedLastSeen,
   translateChannelMessage,
+  type PublicEvent,
+  type Translated,
 } from '../publicV2/eventsTranslate.js';
 
 const AT = '2026-10-06T10:00:00.000Z';
+
+function firstEvent(out: Translated | null): PublicEvent {
+  if (out?.kind !== 'events') throw new Error('expected events');
+  const [first] = out.events;
+  if (!first) throw new Error('expected an event');
+  return first;
+}
+
+function stoppedSnapshot(out: Translated | null): { id: string; state: string } | null {
+  return (firstEvent(out).data as { stream: { id: string; state: string } | null }).stream;
+}
 
 const session = {
   id: 'sess-1',
@@ -71,14 +84,13 @@ describe('translateChannelMessage', () => {
   it('carries the last snapshot into stream.stopped and forgets it', () => {
     translateChannelMessage({ event: 'session:started', data: session, at: AT });
     const stopped = translateChannelMessage({ event: 'session:stopped', data: 'sess-1', at: AT });
-    if (stopped?.kind !== 'events') throw new Error('expected events');
-    expect(stopped.events[0]).toMatchObject({
+    expect(firstEvent(stopped)).toMatchObject({
       type: 'stream.stopped',
       serverId: 'srv-1',
       streamId: 'sess-1',
     });
-    expect(stopped.events[0]?.data).toMatchObject({ id: 'sess-1', server_id: 'srv-1' });
-    expect((stopped.events[0]?.data as { stream: unknown }).stream).toMatchObject({ id: 'sess-1' });
+    expect(firstEvent(stopped).data).toMatchObject({ id: 'sess-1', server_id: 'srv-1' });
+    expect(stoppedSnapshot(stopped)).toMatchObject({ id: 'sess-1' });
 
     const again = translateChannelMessage({ event: 'session:stopped', data: 'sess-1', at: AT });
     if (again?.kind !== 'events') throw new Error('expected events');
@@ -100,19 +112,15 @@ describe('translateChannelMessage', () => {
       data: 'sess-1',
       at: AT,
     });
-    if (stoppedOne?.kind !== 'events') throw new Error('expected events');
-    expect((stoppedOne.events[0]?.data as { stream: { state: string } }).stream.state).toBe(
-      'paused'
-    );
+    expect(stoppedSnapshot(stoppedOne)?.state).toBe('paused');
 
     const stoppedTwo = translateChannelMessage({
       event: 'session:stopped',
       data: 'sess-2',
       at: AT,
     });
-    if (stoppedTwo?.kind !== 'events') throw new Error('expected events');
-    expect(stoppedTwo.events[0]).toMatchObject({ serverId: 'srv-1' });
-    expect((stoppedTwo.events[0]?.data as { stream: { id: string } }).stream.id).toBe('sess-2');
+    expect(firstEvent(stoppedTwo)).toMatchObject({ serverId: 'srv-1' });
+    expect(stoppedSnapshot(stoppedTwo)?.id).toBe('sess-2');
   });
 
   it('a cleared map lets the seed replace a stale snapshot', () => {
@@ -125,8 +133,7 @@ describe('translateChannelMessage', () => {
     seedLastSeen([{ ...session, state: 'playing' } as unknown as ActiveSession]);
 
     const stopped = translateChannelMessage({ event: 'session:stopped', data: 'sess-1', at: AT });
-    if (stopped?.kind !== 'events') throw new Error('expected events');
-    expect((stopped.events[0]?.data as { stream: { state: string } }).stream.state).toBe('playing');
+    expect(stoppedSnapshot(stopped)?.state).toBe('playing');
   });
 
   it('expands one progress message into one slim event per session', () => {
