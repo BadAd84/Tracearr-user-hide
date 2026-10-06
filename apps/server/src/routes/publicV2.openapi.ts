@@ -24,7 +24,7 @@ export const registry = new OpenAPIRegistry();
 registry.registerComponent('securitySchemes', 'bearerAuth', {
   type: 'http',
   scheme: 'bearer',
-  description: 'API key format: trr_pub_<token>. Generate in Settings > General.',
+  description: 'API key format: trr_pub_<token>. Generate in Settings > Data & API > API.',
 });
 
 // ============================================================================
@@ -39,7 +39,8 @@ const AUTH_ERROR_RESPONSES = {
   401: { description: 'Invalid or missing API key' },
   403: { description: 'API key is not associated with an owner account' },
   429: {
-    description: "Rate limit exceeded for this key's shared budget across the whole v2 surface",
+    description:
+      "Rate limit exceeded for this key's shared budget across the whole v2 surface, or (events only) the key or the server already holds its maximum number of open event connections; Retry-After says when to try again",
   },
 } as const;
 
@@ -512,7 +513,7 @@ const StreamStoppedEvent = z
     server_id: z.uuid().nullable(),
     stream: ActiveStream.nullable().openapi({
       description:
-        'The last snapshot Tracearr held for this stream, from live events or from the active session cache; null only when the session was never in that cache',
+        'The last snapshot Tracearr held for this stream, from live events or from the active session cache. Null when the session was never in that cache, or when the server process holding the connection evicted it from its last-seen map, which keeps the 5,000 most recently started or updated streams',
     }),
   })
   .openapi('StreamStoppedEvent');
@@ -591,7 +592,10 @@ registry.registerPath({
     },
     400: { description: 'Unknown event type or malformed server_id' },
     ...AUTH_ERROR_RESPONSES,
-    503: { description: 'The event source is unavailable; retry after the retry interval' },
+    503: {
+      description:
+        'Tracearr is starting up or cannot reach Redis. Sent before any retry frame, so EventSource-style clients stop here; wait a few seconds, then open a new connection',
+    },
   },
 });
 
@@ -1415,7 +1419,7 @@ All endpoints require Bearer token authentication:
 Authorization: Bearer trr_pub_<your_token>
 \`\`\`
 
-Generate your API key in **Settings > General**.
+Generate your API key in **Settings > Data & API > API**.
 
 ## Pagination
 
@@ -1429,6 +1433,59 @@ full set in one response.
 
 History, streams, watchers, recently-added, and watched-media accept \`server_id\` to filter
 by media server.
+
+## Live events
+
+\`GET /events\` holds a server-sent events connection open. It takes the same
+\`Authorization: Bearer\` header as every other route. The browser's built-in \`EventSource\`
+cannot send request headers, so use an SSE client that can, such as a fetch-based reader or
+the \`eventsource\` package for Node.
+
+Nothing is replayed. Every connection starts with \`retry: 5000\` and then a \`ready\` event.
+When \`ready\` arrives, fetch current state over REST and apply later events to it: \`GET /streams\`
+here for playing streams, and \`GET /api/v1/public/violations\` and \`GET /api/v1/public/health\`
+for violations and server health (the v1 routes take the same key). If the server loses its own
+connection to its event source and gets it back, it sends \`ready\` again on every open connection.
+Treat that one exactly like the first.
+
+A connection can also end before \`ready\`. That happens when the server cannot subscribe to its
+event source, and the right response is an ordinary reconnect.
+
+Clients that follow the EventSource reconnect rules wait the \`retry\` interval (5 s) after a
+200 connection ends or drops, connect again and get a fresh \`ready\`. The server ends every
+connection after 30 minutes, so expect that reconnect at least twice an hour. Those rules treat
+any other status as fatal: on a 429 or 503 an EventSource-style client sets \`readyState\` to
+CLOSED and stops for good. Handle both yourself. On 429, wait the seconds in \`Retry-After\`, then
+open a new connection. A 503 means Tracearr is starting up or cannot reach Redis; wait a few
+seconds and try again, and back off if it keeps happening. Regenerating the API key closes every
+open connection for that key, and a reconnect with the old key gets 401.
+
+One connection with no \`server_id\` carries every server. An app that shows a subset filters on
+each event's \`server_id\` instead of opening one connection per server.
+
+There is one API key per owner, and every app and device the owner connects shares it: phone and
+tablet apps, a wall dashboard, Home Assistant. At most 20 connections can be open per key across
+every Tracearr process that shares the same Redis, and the 21st connect gets 429 with
+\`Retry-After: 30\`. One process also holds at most 100 connections across all keys and answers the
+same way when full. So an app that leaks connections can lock every other app on the key out.
+Connections held by a process that crashed stop counting within 75 seconds. Each connect also
+counts as one request against the key's per-minute budget, which every v2 route shares (240 by
+default, set in Settings > Data & API > API), and every reconnect costs the REST reads that
+\`ready\` asks for.
+
+Home-screen widgets cannot hold a connection open. iOS WidgetKit and Android periodic updates
+wake a widget briefly and put it back to sleep, so widgets keep polling REST. Use the event
+connection for live in-app screens and always-on dashboards.
+
+\`stream.progress\` and \`stream.updated\` are coalesced per stream: a connection gets at most one
+of each per stream every 2 s, carrying the latest values. The other event types go out as they
+happen. A \`: ping\` comment line arrives every 25 s. A client that stops reading is dropped once
+about 256 KB of unsent data builds up for it.
+
+Behind a reverse proxy, turn off response buffering for this path (the response already sends
+\`X-Accel-Buffering: no\` and \`Cache-Control: no-cache, no-transform\`) and leave compression off
+for \`text/event-stream\`; Tracearr's own gzip (\`GZIP_ENABLED=true\`) never applies to it. Set
+the proxy's idle or read timeout above 30 s, or it will cut the connection between pings.
       `.trim(),
       contact: {
         name: 'Tracearr',

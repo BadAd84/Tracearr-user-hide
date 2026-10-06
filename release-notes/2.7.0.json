@@ -1,0 +1,11 @@
+{
+  "version": "2.7.0",
+  "date": "2026-10-06",
+  "changes": [
+    {
+      "type": "new",
+      "text": "the public API v2 pushes live stream, violation and server health events over SSE at /api/v2/public/events",
+      "docs": "https://docs.tracearr.com/api"
+    }
+  ]
+}
