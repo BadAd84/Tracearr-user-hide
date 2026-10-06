@@ -16,6 +16,7 @@ import { generateOpenAPIDocumentV2 } from '../publicV2.openapi.js';
 import { serverOrderBy } from '../../utils/serverOrder.js';
 import { getPublicApiRateLimit } from './rateLimitCache.js';
 import type { RouteConfig } from './shared.js';
+import { registerEventsRoutes } from './events.js';
 import { registerHistoryRoutes } from './history.js';
 import { registerLibrariesRoutes } from './libraries.js';
 import { registerMediaRoutes } from './media.js';
@@ -99,4 +100,5 @@ export const publicV2Routes: FastifyPluginAsync = async (app) => {
   registerUsersRoutes(app, routeConfig);
   registerLibrariesRoutes(app, routeConfig);
   registerWatchedMediaRoutes(app, routeConfig);
+  registerEventsRoutes(app, routeConfig);
 };

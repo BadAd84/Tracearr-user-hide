@@ -472,6 +472,130 @@ registry.registerPath({
 });
 
 // ============================================================================
+// GET /events (server-sent events)
+// ============================================================================
+
+const PublicEventTypeEnum = z.enum([
+  'stream.started',
+  'stream.updated',
+  'stream.progress',
+  'stream.stopped',
+  'violation.created',
+  'server.health',
+]);
+
+const EventsQuery = z.object({
+  types: z.string().optional().openapi({
+    description:
+      'Comma-separated event types to receive. Default: all six. Values: stream.started, stream.updated, stream.progress, stream.stopped, violation.created, server.health',
+    example: 'stream.started,stream.stopped',
+  }),
+  server_id: z.uuid().optional().openapi({
+    description:
+      "Only events for this server. Leave it out to receive every server on one connection and filter on each event's server_id",
+  }),
+});
+
+const StreamProgressEvent = z
+  .object({
+    id: z.uuid(),
+    server_id: z.uuid(),
+    state: z.string().openapi({ example: 'playing' }),
+    progress_ms: z.number().int(),
+    bitrate: z.number().int().nullable(),
+  })
+  .openapi('StreamProgressEvent');
+
+const StreamStoppedEvent = z
+  .object({
+    id: z.uuid(),
+    server_id: z.uuid().nullable(),
+    stream: ActiveStream.nullable().openapi({
+      description:
+        'The last snapshot Tracearr held for this stream, from live events or from the active session cache; null only when the session was never in that cache',
+    }),
+  })
+  .openapi('StreamStoppedEvent');
+
+const ViolationEvent = z
+  .object({
+    id: z.uuid(),
+    severity: z.enum(['low', 'warning', 'high']),
+    created_at: z.iso.datetime(),
+    session_id: z.uuid().nullable(),
+    rule: z.object({ id: z.uuid(), name: z.string() }),
+    server: z.object({ id: z.uuid(), name: z.string(), type: ServerTypeEnum }).nullable(),
+    user: z.object({
+      id: z.uuid(),
+      username: z.string(),
+      identity_name: z.string().nullable(),
+      thumb_url: z.string().nullable(),
+      avatar_url: z.string().nullable(),
+    }),
+    data: z.record(z.string(), z.unknown()).openapi({ description: 'Rule-specific details' }),
+  })
+  .openapi('ViolationEvent');
+
+const ServerHealthEvent = z
+  .object({
+    server_id: z.uuid(),
+    server_name: z.string(),
+    status: z.enum(['up', 'down']),
+    reason: z.enum(['unauthorized']).nullable(),
+  })
+  .openapi('ServerHealthEvent');
+
+const ReadyEvent = z.object({ at: z.iso.datetime() }).openapi('ReadyEvent', {
+  description:
+    'Sent on every connect and after the server reconnects to its event source; refetch state over REST when it arrives',
+});
+
+const EventEnvelope = z
+  .object({
+    type: PublicEventTypeEnum,
+    at: z.iso.datetime(),
+    data: z
+      .union([
+        ActiveStream,
+        StreamProgressEvent,
+        StreamStoppedEvent,
+        ViolationEvent,
+        ServerHealthEvent,
+      ])
+      .openapi({
+        description:
+          'ActiveStream for stream.started and stream.updated (library_id and genres are always null here), StreamProgressEvent for stream.progress, StreamStoppedEvent, ViolationEvent, or ServerHealthEvent',
+      }),
+  })
+  .openapi('EventEnvelope');
+
+registry.registerPath({
+  method: 'get',
+  path: '/api/v2/public/events',
+  tags: ['Public API v2'],
+  summary: 'Live events (server-sent events)',
+  description:
+    'A text/event-stream of stream lifecycle, violation and server health events. Each SSE frame has ' +
+    '`event:` (the type) and `data:` (the JSON EventEnvelope). The first frame is `retry: 5000`, then a ' +
+    '`ready` control event (`{"at"}`). On `ready`, fetch current state over REST and apply later events to it: ' +
+    '`GET /api/v2/public/streams` for streams, `GET /api/v1/public/violations` and `GET /api/v1/public/health` ' +
+    'for violations and server health. Nothing is replayed after a disconnect; `ready` is the signal to ' +
+    'refetch. Read the "Live events" section of this document before integrating: shared-key limits, budget, ' +
+    'coalescing, widgets and proxy settings.',
+  security: [{ bearerAuth: [] }],
+  request: { query: EventsQuery },
+  responses: {
+    200: {
+      description: 'Event connection opened',
+      content: { 'text/event-stream': { schema: z.union([ReadyEvent, EventEnvelope]) } },
+    },
+    400: { description: 'Unknown event type or malformed server_id' },
+    ...AUTH_ERROR_RESPONSES,
+    503: { description: 'The event source is unavailable; retry after the retry interval' },
+  },
+});
+
+// ============================================================================
 // GET /media/{ref} and /media/{ref}/children
 // ============================================================================
 
