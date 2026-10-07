@@ -1,10 +1,10 @@
 /**
  * GET /api/v2/public/servers
  *
- * The server list comes from a mocked select and health from a mocked cache,
- * so each status branch is exercised by hand: a healthy server, one marked
- * down with a reason, one never checked, and a historical one that must not
- * read the cache at all.
+ * The server list comes from a mocked select and the connection and health
+ * keys from a mocked cache, so each status branch is exercised by hand: a
+ * server on a live connection, one the poller marked down with a reason, one
+ * never checked, and a historical one that must not read the cache at all.
  */
 
 import { randomUUID } from 'node:crypto';
@@ -12,14 +12,30 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify';
 import sensible from '@fastify/sensible';
 import { queryChain } from '../../test/helpers.js';
+import type { ServerConnectionStatus, SSEConnectionState } from '@tracearr/shared';
 
-const { mockCache } = vi.hoisted(() => ({
-  mockCache: {
-    getAllActiveSessions: vi.fn(async () => [] as { serverId: string }[]),
-    getServerHealth: vi.fn(async (_id: string) => null as boolean | null),
-    getServerDownReason: vi.fn(async (_id: string) => null as 'unauthorized' | null),
-  },
-}));
+const { mockCache, connectionStates, healthKeys } = vi.hoisted(() => {
+  const connectionStates = new Map<string, SSEConnectionState>();
+  const healthKeys = new Map<string, 'true' | 'false' | 'unauthorized'>();
+  return {
+    connectionStates,
+    healthKeys,
+    mockCache: {
+      getAllActiveSessions: vi.fn(async () => [] as { serverId: string }[]),
+      getServerConnectionStatus: vi.fn(async (id: string) => {
+        const state = connectionStates.get(id);
+        return state ? ({ serverId: id, state } as ServerConnectionStatus) : null;
+      }),
+      getServerHealth: vi.fn(async (id: string) => {
+        const value = healthKeys.get(id);
+        return value === undefined ? null : value === 'true';
+      }),
+      getServerDownReason: vi.fn(async (id: string) =>
+        healthKeys.get(id) === 'unauthorized' ? 'unauthorized' : null
+      ),
+    },
+  };
+});
 
 vi.mock('../../db/client.js', () => ({ db: { select: vi.fn(), execute: vi.fn() } }));
 vi.mock('../../services/settings.js', () => ({ getSetting: vi.fn(() => Promise.resolve(240)) }));
@@ -48,8 +64,19 @@ describe('GET /api/v2/public/servers', () => {
   const fresh = randomUUID();
   const old = randomUUID();
 
+  async function rowFor(id: string) {
+    app = await buildTestApp();
+    const res = await app.inject({ method: 'GET', url: '/api/v2/public/servers' });
+    expect(res.statusCode).toBe(200);
+    const row = res.json<{ data: { server_id: string }[] }>().data.find((r) => r.server_id === id);
+    if (!row) throw new Error(`no row for ${id}`);
+    return row;
+  }
+
   beforeEach(() => {
     vi.clearAllMocks();
+    connectionStates.clear();
+    healthKeys.clear();
     resetPublicApiRateLimitCache();
     vi.mocked(db.select).mockReturnValue(
       queryChain(vi.fn, [
@@ -66,19 +93,16 @@ describe('GET /api/v2/public/servers', () => {
       ])
     );
     mockCache.getAllActiveSessions.mockResolvedValue([{ serverId: up }, { serverId: up }]);
-    mockCache.getServerHealth.mockImplementation(async (id) =>
-      id === up ? true : id === down ? false : null
-    );
-    mockCache.getServerDownReason.mockImplementation(async (id) =>
-      id === down ? 'unauthorized' : null
-    );
+    connectionStates.set(up, 'connected');
+    connectionStates.set(down, 'reconnecting');
+    healthKeys.set(down, 'unauthorized');
   });
 
   afterEach(async () => {
     await app.close();
   });
 
-  it('reports up, down with reason, unknown, and historical without reading its health', async () => {
+  it('reports a live connection as up, a rejected credential as down, an unchecked server and a historical one as unknown', async () => {
     app = await buildTestApp();
 
     const res = await app.inject({ method: 'GET', url: '/api/v2/public/servers' });
@@ -129,8 +153,41 @@ describe('GET /api/v2/public/servers', () => {
       ],
       tracearr_version: '2.7.0',
     });
-    expect(mockCache.getServerHealth).not.toHaveBeenCalledWith(old);
+    expect(mockCache.getServerHealth).not.toHaveBeenCalledWith(up);
     expect(mockCache.getServerDownReason).toHaveBeenCalledTimes(1);
+  });
+
+  it('is up on a live connection with no health key, since a connected server is never polled', async () => {
+    expect(await rowFor(up)).toMatchObject({ status: 'up', reason: null });
+  });
+
+  it('is up on a live connection even when a stale down key from before the reconnect remains', async () => {
+    healthKeys.set(up, 'false');
+
+    expect(await rowFor(up)).toMatchObject({ status: 'up', reason: null });
+  });
+
+  it('is down once the connection has fallen back and the poller has confirmed the server unreachable', async () => {
+    connectionStates.set(down, 'fallback');
+    healthKeys.set(down, 'false');
+
+    expect(await rowFor(down)).toMatchObject({ status: 'down', reason: null });
+  });
+
+  it('is up without a live connection while polling still reaches the server', async () => {
+    connectionStates.set(down, 'unsupported');
+    healthKeys.set(down, 'true');
+
+    expect(await rowFor(down)).toMatchObject({ status: 'up', reason: null });
+  });
+
+  it('keeps a historical server unknown and reads neither its connection nor its health', async () => {
+    connectionStates.set(old, 'connected');
+    healthKeys.set(old, 'true');
+
+    expect(await rowFor(old)).toMatchObject({ status: 'unknown', reason: null, historical: true });
+    expect(mockCache.getServerConnectionStatus).not.toHaveBeenCalledWith(old);
+    expect(mockCache.getServerHealth).not.toHaveBeenCalledWith(old);
   });
 
   it('leads every row with exactly the keys of a server.health payload, in its order', async () => {

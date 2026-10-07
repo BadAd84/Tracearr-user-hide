@@ -701,9 +701,10 @@ registry.registerPath({
 
 const ServerStatusEnum = z.enum(['up', 'down', 'unknown']).openapi({
   description:
-    'up when the last poll succeeded, down after the configured number of consecutive failures, ' +
-    'unknown when Tracearr has not completed a check since it started, the poller has been ' +
-    'stopped for ten minutes, or the server is historical',
+    'up while Tracearr holds a live event connection to the server, or while polling reaches it. ' +
+    'down once the configured number of consecutive polls have failed. unknown when the server ' +
+    'is historical, or when it has no live connection and no poll has completed in the last ' +
+    'ten minutes',
 });
 
 const Server = z
@@ -726,10 +727,11 @@ const Server = z
       .number()
       .int()
       .openapi({ description: 'Streams playing on this server right now', example: 2 }),
-    version: z
-      .string()
-      .nullable()
-      .openapi({ description: 'The version the media server reports', example: '1.41.0' }),
+    version: z.string().nullable().openapi({
+      description:
+        'The version the media server last reported to Tracearr; null until it has been checked',
+      example: '1.41.0',
+    }),
   })
   .openapi('Server', {
     example: {
