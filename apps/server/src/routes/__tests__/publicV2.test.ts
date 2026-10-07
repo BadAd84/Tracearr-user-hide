@@ -122,6 +122,39 @@ describe('public API v2 skeleton', () => {
       }
     });
 
+    it('groups every operation under a described resource tag and never points at v1', async () => {
+      const res = await app.inject({ method: 'GET', url: '/api/v2/public/docs' });
+      const spec = res.json<{
+        tags: { name: string; description: string }[];
+        info: { description: string };
+        paths: Record<string, Record<string, { tags?: string[]; description?: string }>>;
+      }>();
+
+      expect(spec.tags.map((t) => t.name)).toEqual([
+        'Docs',
+        'Streams',
+        'Live events',
+        'Violations',
+        'Servers',
+        'History',
+        'Media',
+        'Users',
+        'Libraries',
+      ]);
+      for (const tag of spec.tags) expect(tag.description, tag.name).toBeTruthy();
+
+      const names = new Set(spec.tags.map((t) => t.name));
+      for (const [path, methods] of Object.entries(spec.paths)) {
+        for (const op of Object.values(methods)) {
+          expect(op.tags, path).toHaveLength(1);
+          expect(names.has(op.tags?.[0] ?? ''), path).toBe(true);
+          expect(op.description ?? '', path).not.toMatch(/\/api\/v1\//);
+        }
+      }
+      expect(spec.info.description).not.toMatch(/\/api\/v1\//);
+      expect(JSON.stringify(spec)).not.toMatch(/api\/v1\/public/);
+    });
+
     it('serves the v2 OpenAPI document with the docs path registered', async () => {
       const res = await app.inject({ method: 'GET', url: '/api/v2/public/docs' });
 

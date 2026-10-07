@@ -45,6 +45,54 @@ const AUTH_ERROR_RESPONSES = {
 } as const;
 
 // ============================================================================
+// Tags
+//
+// One tag per resource, in sidebar order. Each path carries exactly one of
+// these; the document's tags array below gives Scalar the order and the text.
+// ============================================================================
+
+const V2_TAGS = [
+  { name: 'Docs', description: 'This document.' },
+  {
+    name: 'Streams',
+    description: 'What is playing right now on every server, read from the session cache.',
+  },
+  {
+    name: 'Live events',
+    description:
+      'One open connection that receives stream, violation and server health events as they happen. Read the Live events section above before integrating.',
+  },
+  {
+    name: 'Violations',
+    description:
+      'Completed policy automation runs with an account that were not dismissed: the rows the Violations page shows, newest first, in the shape violation.created pushes. rule is the automation that produced each one.',
+  },
+  {
+    name: 'Servers',
+    description:
+      'Every configured media server with its health: up while Tracearr holds a live connection to it or polling reaches it, down after consecutive poll failures, unknown when Tracearr has nothing recent to go on.',
+  },
+  {
+    name: 'History',
+    description: 'Watch history as plays (resume chains) across every server, with media identity.',
+  },
+  {
+    name: 'Media',
+    description:
+      'Canonical titles across servers: identity and hierarchy, per-server availability, stats, watchers, per-title history, and the watched set.',
+  },
+  {
+    name: 'Users',
+    description:
+      'Tracearr identities and the per-server accounts behind them, with stats and history.',
+  },
+  {
+    name: 'Libraries',
+    description: 'Per-library rollups and what was recently added to them.',
+  },
+] as const;
+
+// ============================================================================
 // Shared query param schemas
 //
 // Query strings arrive as strings; runtime validation uses booleanStringSchema
@@ -64,7 +112,7 @@ const QueryDate = z.union([z.iso.date(), z.iso.datetime()]);
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/docs',
-  tags: ['Public API v2'],
+  tags: ['Docs'],
   summary: 'OpenAPI specification',
   description: 'Returns the OpenAPI 3.0 specification for the v2 public API.',
   security: [{ bearerAuth: [] }],
@@ -363,7 +411,7 @@ const HistoryResponse = z
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/history',
-  tags: ['Public API v2'],
+  tags: ['History'],
   summary: 'Watch history as plays',
   description:
     'Cursor-paginated watch history, newest first, one record per play with canonical media ' +
@@ -469,7 +517,7 @@ const StreamsResponse = z
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/streams',
-  tags: ['Public API v2'],
+  tags: ['Streams'],
   summary: 'Active streams',
   description:
     'Currently active playback sessions, each carrying the same media identity block as ' +
@@ -656,7 +704,7 @@ const ViolationsResponse = z
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/violations',
-  tags: ['Public API v2'],
+  tags: ['Violations'],
   summary: 'Violations',
   description:
     'Violations newest first, in the same shape violation.created pushes, so a list fetched ' +
@@ -677,7 +725,7 @@ registry.registerPath({
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/violations/{id}',
-  tags: ['Public API v2'],
+  tags: ['Violations'],
   summary: 'One violation with its actions',
   description:
     'The same row GET /violations returns, plus the actions the automation ran. ' +
@@ -758,7 +806,7 @@ const ServersResponse = z
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/servers',
-  tags: ['Public API v2'],
+  tags: ['Servers'],
   summary: 'Servers and their health',
   description:
     'Every configured media server in dashboard order, with the reachability Tracearr last ' +
@@ -796,9 +844,10 @@ const EventsQuery = z.object({
     .optional()
     .openapi({
       description:
-        'Comma-separated event types to receive; ready always arrives. Default: all six. Values: ' +
+        'Comma-separated event types to receive; ready always arrives. Default: every type. Values: ' +
         EVENT_TYPES.join(', ') +
-        '. An empty list or an unknown name returns 400',
+        '. An empty list or an unknown name returns 400. Leave it unset and new event types ' +
+        'arrive as Tracearr adds them; a client must ignore any event type it does not recognize',
       example: 'stream.started,stream.stopped',
     }),
   server_id: z.uuid().optional().openapi({
@@ -1069,15 +1118,16 @@ const EVENT_STREAM_EXAMPLE =
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/events',
-  tags: ['Public API v2'],
+  tags: ['Live events'],
   summary: 'Live events (server-sent events)',
   description:
     'The app keeps one connection open and Tracearr pushes each event down it as it happens: a ' +
     'stream starting, pausing, progressing or stopping, a new violation, a server going down or ' +
-    'coming back. The app does not poll. REST is used once per connection: when the `ready` event ' +
-    'arrives, fetch the starting state that later events apply to, from `GET /api/v2/public/streams` ' +
-    'for streams and `GET /api/v1/public/violations` and `GET /api/v1/public/health` for violations ' +
-    'and server health. Each frame carries `event:` (the type) and `data:` (a JSON PublicEvent with ' +
+    'coming back. The app does not poll. ' +
+    'REST is used once per connection: when the `ready` event arrives, fetch the starting state that ' +
+    'later events apply to, from `GET /streams` for streams, `GET /violations` for violations and ' +
+    '`GET /servers` for server health, all on this document. ' +
+    'Each frame carries `event:` (the type) and `data:` (a JSON PublicEvent with ' +
     'the same `type`, an `at` timestamp and the payload in `data`). The first frame is `retry: 5000`, ' +
     'then `ready`. Nothing is replayed after a disconnect; a reconnect gets a fresh `ready`, and so ' +
     'does every open connection when the server reconnects to its own event source. Read the "Live ' +
@@ -1225,7 +1275,7 @@ const MediaChildrenResponse = z
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/media/{ref}',
-  tags: ['Public API v2'],
+  tags: ['Media'],
   summary: 'Media identity and availability',
   description:
     'Resolves a media ref to its canonical identity, the ids merged into it, and per-server ' +
@@ -1246,7 +1296,7 @@ registry.registerPath({
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/media/{ref}/children',
-  tags: ['Public API v2'],
+  tags: ['Media'],
   summary: 'Media children',
   description:
     "Lists a show's seasons (with per-season episode counts) or a season's episodes. Season " +
@@ -1378,7 +1428,7 @@ const WatchersQuery = z.object({
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/media/{ref}/stats',
-  tags: ['Public API v2'],
+  tags: ['Media'],
   summary: 'Media play statistics',
   description:
     'Play counts, watch time, and distinct viewers for a media item across all_time, last_30, ' +
@@ -1403,7 +1453,7 @@ registry.registerPath({
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/media/{ref}/watchers',
-  tags: ['Public API v2'],
+  tags: ['Media'],
   summary: 'Media watchers',
   description:
     'One entry per server account that watched the item, ordered by watch time. Movies and ' +
@@ -1428,7 +1478,7 @@ registry.registerPath({
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/media/{ref}/history',
-  tags: ['Public API v2'],
+  tags: ['Media'],
   summary: 'Media watch history',
   description:
     'Cursor-paginated watch history for a single media item, newest first, one record per play. ' +
@@ -1552,7 +1602,7 @@ const UserStatsResponse = z
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/users',
-  tags: ['Public API v2'],
+  tags: ['Users'],
   summary: 'Identities with account correlation',
   description:
     'Cursor-paginated Tracearr identities, newest first, each with the media-server accounts it ' +
@@ -1573,7 +1623,7 @@ registry.registerPath({
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/users/{id}',
-  tags: ['Public API v2'],
+  tags: ['Users'],
   summary: 'One identity',
   description: 'Resolves a Tracearr identity id to its correlation block. ' + CORRELATION_NOTE,
   security: [{ bearerAuth: [] }],
@@ -1592,7 +1642,7 @@ registry.registerPath({
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/users/{id}/stats',
-  tags: ['Public API v2'],
+  tags: ['Users'],
   summary: 'Identity play statistics',
   description:
     'Plays and watch time for an identity, summed across every account it owns, over all_time, ' +
@@ -1614,7 +1664,7 @@ registry.registerPath({
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/users/{id}/history',
-  tags: ['Public API v2'],
+  tags: ['Users'],
   summary: 'Identity watch history',
   description:
     'Cursor-paginated watch history for an identity, newest first, one record per play, scoped ' +
@@ -1698,7 +1748,7 @@ const RecentlyAddedResponse = z
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/recently-added',
-  tags: ['Public API v2'],
+  tags: ['Libraries'],
   summary: 'Recently added library items',
   description:
     'Cursor-paginated library items ordered by server-reported added date, newest first, each ' +
@@ -1755,7 +1805,7 @@ const LibrariesResponse = z.object({ data: z.array(LibraryRollup) }).openapi('Li
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/libraries',
-  tags: ['Public API v2'],
+  tags: ['Libraries'],
   summary: 'Per-library rollups',
   description:
     'Item, movie, episode, show, and track counts, total file size, and per-resolution counts ' +
@@ -1874,7 +1924,7 @@ const WatchedMediaResponse = z
 registry.registerPath({
   method: 'get',
   path: '/api/v2/public/watched-media',
-  tags: ['Public API v2'],
+  tags: ['Media'],
   summary: 'Watched media set',
   description:
     'The distinct set of media with recorded engagement, newest activity first, for matching ' +
@@ -1906,6 +1956,7 @@ export function generateOpenAPIDocumentV2(): unknown {
 
   return generator.generateDocument({
     openapi: '3.0.0',
+    tags: [...V2_TAGS],
     info: {
       title: 'Tracearr Public API',
       version: '2.0.0',
@@ -1926,15 +1977,15 @@ Generate your API key in **Settings > Data & API > API**.
 
 ## Pagination
 
-The history, users, recently-added, and watched-media endpoints use cursor pagination via
+The history, users, recently-added, watched-media and violations endpoints use cursor pagination via
 \`cursor\` and \`pageSize\`. Most cap pageSize at 100 with a default of 25; watched-media
 carries far smaller rows and allows up to 1000, defaulting to 100. Each paginated response
-carries a \`meta.nextCursor\` to fetch the following page. Streams and libraries return the
+carries a \`meta.nextCursor\` to fetch the following page. Streams, servers and libraries return the
 full set in one response.
 
 ## Filtering
 
-History, streams, watchers, recently-added, and watched-media accept \`server_id\` to filter
+History, streams, watchers, recently-added, watched-media and violations accept \`server_id\` to filter
 by media server.
 
 ## Live events
@@ -1947,10 +1998,11 @@ so use an SSE client that can, such as a fetch-based reader or the \`eventsource
 
 REST is used once per connection. Every connection starts with \`retry: 5000\` and then a \`ready\`
 event; when \`ready\` arrives, fetch the starting state that later events apply to: \`GET /streams\`
-here for playing streams, and \`GET /api/v1/public/violations\` and \`GET /api/v1/public/health\`
-for violations and server health (the v1 routes take the same key). Nothing is replayed. If the
-server loses its own connection to its event source and gets it back, it sends \`ready\` again on
-every open connection. Treat that one exactly like the first.
+for playing streams, \`GET /violations\` for violations and \`GET /servers\` for server health.
+\`violation.created\` carries a \`GET /violations\` row, so prepend it; \`server.health\` carries the
+first four keys of a \`GET /servers\` row, so apply \`status\` and \`reason\` to the row with the same
+\`server_id\`. Nothing is replayed. If the server loses its own connection to its event source and
+gets it back, it sends \`ready\` again on every open connection. Treat that one exactly like the first.
 
 Every frame has an \`event:\` line naming the type and a \`data:\` line holding one JSON object,
 \`{"type", "at", "data"}\`, where \`type\` repeats the event name, \`at\` is when Tracearr observed it
@@ -1960,6 +2012,10 @@ schema and the example on \`GET /events\` show each payload and a raw stream. \`
 and \`stream.updated\` carry the whole stream in the \`GET /streams\` shape, except that \`library_id\`
 and \`genres\` are always null on events. Apply \`stream.progress\` to the stream held under its
 \`data.id\`, and drop that id on \`stream.stopped\`. Errors are JSON with \`error\` and \`message\`.
+
+Ignore any event type you do not recognize. Tracearr adds event types without a new API version,
+and a connection with no \`types\` parameter receives every type, new ones included. An app that
+wants only the types it handles names them in \`types\`.
 
 A connection can also end before \`ready\`. That happens when the server cannot subscribe to its
 event source, and the right response is an ordinary reconnect.

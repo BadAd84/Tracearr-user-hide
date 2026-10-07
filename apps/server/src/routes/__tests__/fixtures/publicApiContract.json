@@ -1779,7 +1779,7 @@
   },
   "v2": {
     "GET /api/v2/public/docs": {
-      "tags": ["Public API v2"],
+      "tags": ["Docs"],
       "parameters": {},
       "request": null,
       "responses": {
@@ -1793,7 +1793,7 @@
       }
     },
     "GET /api/v2/public/history": {
-      "tags": ["Public API v2"],
+      "tags": ["History"],
       "parameters": {
         "query:cursor": {
           "required": false,
@@ -2409,7 +2409,7 @@
       }
     },
     "GET /api/v2/public/streams": {
-      "tags": ["Public API v2"],
+      "tags": ["Streams"],
       "parameters": {
         "query:server_id": {
           "required": false,
@@ -2948,7 +2948,7 @@
       }
     },
     "GET /api/v2/public/violations": {
-      "tags": ["Public API v2"],
+      "tags": ["Violations"],
       "parameters": {
         "query:cursor": {
           "required": false,
@@ -3174,7 +3174,7 @@
       }
     },
     "GET /api/v2/public/violations/{id}": {
-      "tags": ["Public API v2"],
+      "tags": ["Violations"],
       "parameters": {
         "path:id": {
           "required": true,
@@ -3338,7 +3338,7 @@
       }
     },
     "GET /api/v2/public/servers": {
-      "tags": ["Public API v2"],
+      "tags": ["Servers"],
       "parameters": {},
       "request": null,
       "responses": {
@@ -3405,7 +3405,7 @@
       }
     },
     "GET /api/v2/public/events": {
-      "tags": ["Public API v2"],
+      "tags": ["Live events"],
       "parameters": {
         "query:types": {
           "required": false,
@@ -5020,7 +5020,7 @@
       }
     },
     "GET /api/v2/public/media/{ref}": {
-      "tags": ["Public API v2"],
+      "tags": ["Media"],
       "parameters": {
         "path:ref": {
           "required": true,
@@ -5200,7 +5200,7 @@
       }
     },
     "GET /api/v2/public/media/{ref}/children": {
-      "tags": ["Public API v2"],
+      "tags": ["Media"],
       "parameters": {
         "path:ref": {
           "required": true,
@@ -5291,7 +5291,7 @@
       }
     },
     "GET /api/v2/public/media/{ref}/stats": {
-      "tags": ["Public API v2"],
+      "tags": ["Media"],
       "parameters": {
         "path:ref": {
           "required": true,
@@ -5486,7 +5486,7 @@
       }
     },
     "GET /api/v2/public/media/{ref}/watchers": {
-      "tags": ["Public API v2"],
+      "tags": ["Media"],
       "parameters": {
         "path:ref": {
           "required": true,
@@ -5591,7 +5591,7 @@
       }
     },
     "GET /api/v2/public/media/{ref}/history": {
-      "tags": ["Public API v2"],
+      "tags": ["Media"],
       "parameters": {
         "path:ref": {
           "required": true,
@@ -6112,7 +6112,7 @@
       }
     },
     "GET /api/v2/public/users": {
-      "tags": ["Public API v2"],
+      "tags": ["Users"],
       "parameters": {
         "query:cursor": {
           "required": false,
@@ -6235,7 +6235,7 @@
       }
     },
     "GET /api/v2/public/users/{id}": {
-      "tags": ["Public API v2"],
+      "tags": ["Users"],
       "parameters": {
         "path:id": {
           "required": true,
@@ -6313,7 +6313,7 @@
       }
     },
     "GET /api/v2/public/users/{id}/stats": {
-      "tags": ["Public API v2"],
+      "tags": ["Users"],
       "parameters": {
         "path:id": {
           "required": true,
@@ -6398,7 +6398,7 @@
       }
     },
     "GET /api/v2/public/users/{id}/history": {
-      "tags": ["Public API v2"],
+      "tags": ["Users"],
       "parameters": {
         "path:id": {
           "required": true,
@@ -6920,7 +6920,7 @@
       }
     },
     "GET /api/v2/public/recently-added": {
-      "tags": ["Public API v2"],
+      "tags": ["Libraries"],
       "parameters": {
         "query:cursor": {
           "required": false,
@@ -7090,7 +7090,7 @@
       }
     },
     "GET /api/v2/public/libraries": {
-      "tags": ["Public API v2"],
+      "tags": ["Libraries"],
       "parameters": {},
       "request": null,
       "responses": {
@@ -7161,7 +7161,7 @@
       }
     },
     "GET /api/v2/public/watched-media": {
-      "tags": ["Public API v2"],
+      "tags": ["Media"],
       "parameters": {
         "query:media_type": {
           "required": true,
