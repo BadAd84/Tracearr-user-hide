@@ -60,7 +60,6 @@ const row = {
   serverUsername: 'alice',
   thumbUrl: null,
   identityName: 'Alice',
-  identityUsername: 'alice@example.com',
 };
 
 function expectViolationFilters(where: { text: string; params: unknown[] }) {
@@ -193,6 +192,21 @@ describe('GET /api/v2/public/violations', () => {
         violationId,
       ])
     );
+  });
+
+  it('bounds a cursor page with created_at <= cursor so the index range starts there', async () => {
+    const chain = queryChain(vi.fn, []);
+    vi.mocked(db.select).mockReturnValue(chain);
+    app = await buildTestApp();
+    const cursor = encodeViolationCursor(CREATED_AT_TEXT, violationId);
+
+    await app.inject({ method: 'GET', url: `/api/v2/public/violations?cursor=${cursor}` });
+
+    const where = renderCall(chain, 'where');
+    expect(where.text).toMatch(
+      /automation_runs\.created_at <= \$\d+::timestamptz and \(automation_runs\.created_at < /
+    );
+    expect(where.params.filter((p) => p === CREATED_AT_TEXT)).toHaveLength(3);
   });
 
   it('returns a cursor only for a full page, carrying the microsecond created_at', async () => {

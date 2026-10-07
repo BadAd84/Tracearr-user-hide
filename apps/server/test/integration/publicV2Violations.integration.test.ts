@@ -100,10 +100,19 @@ describe('public API v2 /violations', () => {
       .update(automationRuns)
       .set({ dismissedAt: new Date() })
       .where(eq(automationRuns.id, dismissed.id));
+    const orphan = await createTestRun({
+      automationId: policy.id,
+      serverUserId: account.id,
+      sessionId: randomUUID(),
+    });
+    await db
+      .update(automationRuns)
+      .set({ serverUserId: null })
+      .where(eq(automationRuns.id, orphan.id));
 
     const list = await app.inject({
       method: 'GET',
-      url: `/api/v2/public/violations?server_id=${server.id}`,
+      url: '/api/v2/public/violations',
       headers: { authorization: `Bearer ${token}` },
     });
     expect(list.statusCode).toBe(200);
@@ -127,6 +136,13 @@ describe('public API v2 /violations', () => {
       headers: { authorization: `Bearer ${token}` },
     });
     expect(gone.statusCode).toBe(404);
+
+    const noAccount = await app.inject({
+      method: 'GET',
+      url: `/api/v2/public/violations/${orphan.id}`,
+      headers: { authorization: `Bearer ${token}` },
+    });
+    expect(noAccount.statusCode).toBe(404);
   });
 
   it('walks pages of 1 through rows tied to the microsecond without repeats or gaps', async () => {
@@ -158,7 +174,7 @@ describe('public API v2 /violations', () => {
     const seen: string[] = [];
     let cursor: string | null = null;
     for (let page = 0; page < 5; page++) {
-      const url =
+      const url: string =
         `/api/v2/public/violations?server_id=${server.id}&pageSize=1` +
         (cursor ? `&cursor=${encodeURIComponent(cursor)}` : '');
       const res = await app.inject({

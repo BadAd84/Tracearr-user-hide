@@ -622,7 +622,7 @@ const Violation = z
     user: ViolationUser,
     data: z.record(z.string(), z.unknown()).openapi({
       description:
-        'What the automation recorded when it fired: evidence (each condition group with its conditions, the field, operator, threshold and actual value), relatedSessionIds, ruleName, matchedGroups, the triggerId and edgeKey of the trigger node, and for a session-scoped rule its sessionKey, mediaTitle and ipAddress. Condition fields vary by rule, so treat the keys inside evidence as free-form',
+        'What the automation recorded when it fired. Current automations write evidence (each condition group with its conditions, the field, operator, threshold and actual value), relatedSessionIds, ruleName, matchedGroups, the triggerId and edgeKey of the trigger node, and for a session-scoped rule its sessionKey, mediaTitle and ipAddress. Violations recorded before Tracearr 2026-02-12 carry whatever their rule stored at the time, which may be none of these keys. Condition fields vary by rule, so treat the keys inside evidence as free-form',
     }),
   })
   .openapi('Violation', { example: VIOLATION_EXAMPLE });

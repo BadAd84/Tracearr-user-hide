@@ -65,7 +65,6 @@ const violationColumns = {
   serverUsername: serverUsers.username,
   thumbUrl: serverUsers.thumbUrl,
   identityName: users.name,
-  identityUsername: users.username,
 };
 
 function selectViolations() {
@@ -92,7 +91,7 @@ export function formatViolation(row: ViolationRow) {
     user: {
       id: row.userId,
       server_user_id: row.serverUserId,
-      username: row.identityName ?? row.serverUsername ?? row.identityUsername,
+      username: row.identityName ?? row.serverUsername,
       thumb_url: row.thumbUrl,
       avatar_url: buildAvatarUrl(row.serverId, row.thumbUrl),
     },
@@ -169,7 +168,7 @@ export function registerViolationsRoutes(app: FastifyInstance, routeConfig: Rout
             sql`${automationRuns.id} > ${cursorValue.id}::uuid`
           )
         );
-        if (keyset) conditions.push(keyset);
+        if (keyset) conditions.push(lte(automationRuns.createdAt, at), keyset);
       }
 
       const rows = await selectViolations()
