@@ -815,10 +815,8 @@ registry.registerPath({
     'same server_id. A server.health ' +
     'with a server_id you do not hold, or one marking a server historical (it arrives as up), ' +
     'is a cue to fetch this list again. A row fetched from this list is newer than any earlier ' +
-    'server.health event and wins over it. Tracearr can miss sending an up: when a server that ' +
-    'polling had marked down comes back through its live event connection, no up event is sent. ' +
-    'Fetch this list again after your own event stream reconnects, and every few minutes while ' +
-    'it is open.',
+    'server.health event and wins over it. Fetch this list again after your own event stream ' +
+    'reconnects.',
   security: [{ bearerAuth: [] }],
   responses: {
     200: {
@@ -2007,10 +2005,8 @@ for playing streams, \`GET /violations\` for violations and \`GET /servers\` for
 violation sends no event, so refetch \`GET /violations\` when the list needs to show either.
 \`server.health\` carries the
 first four keys of a \`GET /servers\` row, so apply \`status\` and \`reason\` to the row with the same
-\`server_id\`. A fresh \`GET /servers\` row wins over an earlier \`server.health\` event, and Tracearr
-can miss sending an \`up\`: a server that polling had marked down and that then comes back through
-its live connection sends none. Refetch \`GET /servers\` after your own reconnect and every few
-minutes. Nothing is replayed. If the server loses its own connection to its event source and
+\`server_id\`. A fresh \`GET /servers\` row wins over an earlier \`server.health\` event. Refetch
+\`GET /servers\` after your own reconnect. Nothing is replayed. If the server loses its own connection to its event source and
 gets it back, it sends \`ready\` again on every open connection. Treat that one exactly like the first.
 
 Every frame has an \`event:\` line naming the type and a \`data:\` line holding one JSON object,

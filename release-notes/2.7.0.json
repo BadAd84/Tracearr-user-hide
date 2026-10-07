@@ -15,6 +15,10 @@
     {
       "type": "improved",
       "text": "public API v2 docs group endpoints by resource, so a regenerated v2 SDK does too; nothing changes on the wire"
+    },
+    {
+      "type": "fix",
+      "text": "server down and up automations fire once per real outage, and a dropped live connection alone no longer sends a down"
     }
   ]
 }
