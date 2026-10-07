@@ -1,6 +1,18 @@
 {
   "version": "2.7.0",
-  "date": "2026-10-06",
+  "date": "2026-10-07",
+  "headline": "Live events and violations in the public API v2",
+  "highlights": [
+    {
+      "title": "Live events in the public API",
+      "body": "Apps can hold one connection to /api/v2/public/events and get stream, violation and server health events as they happen, with no polling. v2 also gains violations and server status, so an integration needs nothing from v1. The API docs, linked from Settings > Data & API > API, list every event type with examples.",
+      "docs": "https://docs.tracearr.com/api"
+    },
+    {
+      "title": "Titles link to their media pages",
+      "body": "Click a title in history, the session details, now playing or a stream on the map to open that movie or show's media page."
+    }
+  ],
   "changes": [
     {
       "type": "new",
