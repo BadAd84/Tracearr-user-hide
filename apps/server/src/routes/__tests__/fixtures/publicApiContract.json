@@ -3337,6 +3337,73 @@
         }
       }
     },
+    "GET /api/v2/public/servers": {
+      "tags": ["Public API v2"],
+      "parameters": {},
+      "request": null,
+      "responses": {
+        "200": {
+          "mediaType": "application/json",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "server_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "server_name": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["up", "down", "unknown"]
+                    },
+                    "reason": {
+                      "type": "string",
+                      "nullable": true,
+                      "enum": ["unauthorized", null]
+                    },
+                    "server_type": {
+                      "type": "string",
+                      "enum": ["plex", "jellyfin", "emby"]
+                    },
+                    "historical": {
+                      "type": "boolean"
+                    },
+                    "active_streams": {
+                      "type": "integer"
+                    },
+                    "version": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "active_streams",
+                    "historical",
+                    "reason",
+                    "server_id",
+                    "server_name",
+                    "server_type",
+                    "status",
+                    "version"
+                  ]
+                }
+              },
+              "tracearr_version": {
+                "type": "string"
+              }
+            },
+            "required": ["data", "tracearr_version"]
+          }
+        }
+      }
+    },
     "GET /api/v2/public/events": {
       "tags": ["Public API v2"],
       "parameters": {

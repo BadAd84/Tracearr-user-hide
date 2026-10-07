@@ -267,6 +267,7 @@ describe('public API v2 skeleton', () => {
       '/api/v2/public/watched-media?media_type=movie',
       '/api/v2/public/violations',
       '/api/v2/public/violations/0f4d2a6e-8b1c-4e3f-9a7d-6c5b4a3f2e1d',
+      '/api/v2/public/servers',
     ])('returns 401 for %s', async (url) => {
       const res = await app.inject({ method: 'GET', url });
 

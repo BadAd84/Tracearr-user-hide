@@ -696,6 +696,86 @@ registry.registerPath({
 });
 
 // ============================================================================
+// GET /servers
+// ============================================================================
+
+const ServerStatusEnum = z.enum(['up', 'down', 'unknown']).openapi({
+  description:
+    'up when the last poll succeeded, down after the configured number of consecutive failures, ' +
+    'unknown when Tracearr has not completed a check since it started, the poller has been ' +
+    'stopped for ten minutes, or the server is historical',
+});
+
+const Server = z
+  .object({
+    server_id: z.uuid(),
+    server_name: z
+      .string()
+      .openapi({ description: 'Server name as set in Tracearr', example: 'Attic' }),
+    status: ServerStatusEnum,
+    reason: z.enum(['unauthorized']).nullable().openapi({
+      description:
+        'Why the server is down when Tracearr knows: unauthorized means the stored credentials were rejected. Null otherwise',
+    }),
+    server_type: ServerTypeEnum,
+    historical: z.boolean().openapi({
+      description:
+        'True when the owner switched this server to historical: Tracearr keeps its history and stops contacting it',
+    }),
+    active_streams: z
+      .number()
+      .int()
+      .openapi({ description: 'Streams playing on this server right now', example: 2 }),
+    version: z
+      .string()
+      .nullable()
+      .openapi({ description: 'The version the media server reports', example: '1.41.0' }),
+  })
+  .openapi('Server', {
+    example: {
+      server_id: SERVER_ID,
+      server_name: 'Attic',
+      status: 'up',
+      reason: null,
+      server_type: 'plex',
+      historical: false,
+      active_streams: 2,
+      version: '1.41.0',
+    },
+  });
+
+const ServersResponse = z
+  .object({
+    data: z.array(Server),
+    tracearr_version: z
+      .string()
+      .openapi({ description: 'The Tracearr version answering', example: '2.7.0' }),
+  })
+  .openapi('ServersResponse');
+
+registry.registerPath({
+  method: 'get',
+  path: '/api/v2/public/servers',
+  tags: ['Public API v2'],
+  summary: 'Servers and their health',
+  description:
+    'Every configured media server in dashboard order, with the reachability Tracearr last ' +
+    'recorded. The first four keys of a row, server_id, server_name, status and reason, are the ' +
+    'server.health event payload: apply status and reason from the event to the row with the ' +
+    'same server_id. A server.health ' +
+    'with a server_id you do not hold, or one marking a server historical (it arrives as up), ' +
+    'is a cue to fetch this list again.',
+  security: [{ bearerAuth: [] }],
+  responses: {
+    200: {
+      description: 'Servers retrieved',
+      content: { 'application/json': { schema: ServersResponse } },
+    },
+    ...AUTH_ERROR_RESPONSES,
+  },
+});
+
+// ============================================================================
 // GET /events (server-sent events)
 // ============================================================================
 
@@ -852,7 +932,8 @@ const ServerHealth = z
     server_id: z.uuid().openapi({ description: 'Server whose reachability changed' }),
     server_name: z.string().openapi({ description: 'Server name as set in Tracearr' }),
     status: z.enum(['up', 'down']).openapi({
-      description: 'down when Tracearr can no longer reach the server, up when it can again',
+      description:
+        'down when Tracearr can no longer reach the server, up when it can again. Apply it to the GET /servers row with this server_id',
     }),
     reason: z.enum(['unauthorized']).nullable().openapi({
       description:
@@ -943,9 +1024,10 @@ const ViolationCreatedEvent = envelope(
 const ServerHealthEvent = envelope(
   'server.health',
   ServerHealth,
-  'The server and its new status'
+  'The server and its new status, the first four keys of its GET /servers row'
 ).openapi('ServerHealthEvent', {
-  description: 'A media server became unreachable or reachable again',
+  description:
+    'A media server became unreachable or reachable again. Marking a server historical also sends up for it; fetch GET /servers to see the historical flag',
   example: { type: 'server.health', at: '2026-10-06T10:30:00.000Z', data: SERVER_HEALTH_EXAMPLE },
 });
 
