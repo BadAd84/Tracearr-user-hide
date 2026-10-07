@@ -4,21 +4,28 @@
   "changes": [
     {
       "type": "new",
-      "text": "the public API v2 pushes live stream, violation and server health events over SSE at /api/v2/public/events",
-      "docs": "https://docs.tracearr.com/api"
-    },
-    {
-      "type": "new",
-      "text": "public API v2 adds GET /violations, GET /violations/{id} and GET /servers, so a live events app needs nothing from v1",
+      "text": "the public API v2 adds live events over SSE, plus violations and server status, so apps need nothing from v1",
       "docs": "https://docs.tracearr.com/api"
     },
     {
       "type": "improved",
-      "text": "public API v2 docs group endpoints by resource, so a regenerated v2 SDK does too; nothing changes on the wire"
+      "text": "session titles in history, now playing and the map link to their media pages"
+    },
+    {
+      "type": "improved",
+      "text": "automation run details and the builder's live check show names instead of ids"
     },
     {
       "type": "fix",
       "text": "server down and up automations fire once per outage; with session sync on, a dropped live connection alone sends no down"
+    },
+    {
+      "type": "fix",
+      "text": "editing a Jellyfin or Emby server accepts a new API key after the old one was revoked"
+    },
+    {
+      "type": "note",
+      "text": "a regenerated public API v2 SDK groups its methods by resource; requests and responses are unchanged"
     }
   ]
 }
