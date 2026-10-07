@@ -99,6 +99,15 @@ import { geoipService } from './services/geoip.js';
 import { tailscaleService } from './services/tailscale.js';
 import { geoasnService } from './services/geoasn.js';
 import { createCacheService, createPubSubService } from './services/cache.js';
+import {
+  closeAllPublicEventConnections,
+  initPublicEventConnections,
+} from './services/publicEvents/connections.js';
+import {
+  clearLastSeen,
+  seedLastSeen,
+  translateChannelMessage,
+} from './routes/publicV2/eventsTranslate.js';
 import { initializePoller, startPoller, stopPoller } from './jobs/poller/index.js';
 import { invalidateServersCache } from './jobs/poller/database.js';
 import { sseManager } from './services/sseManager.js';
@@ -603,6 +612,11 @@ async function buildApp(options: { trustProxy?: boolean } = {}) {
     app.log.info('Static file serving enabled for production');
   }
 
+  // server.close() waits for active responses; an open event connection is one, so end them first.
+  app.addHook('preClose', async () => {
+    closeAllPublicEventConnections('shutdown');
+  });
+
   // Cleanup hook — handles both maintenance and ready mode resources
   app.addHook('onClose', async () => {
     if (recoveryInterval) {
@@ -865,6 +879,14 @@ async function initializeServices(app: FastifyInstance) {
   });
   const cacheService = createCacheService(app.redis);
   const pubSubService = createPubSubService(app.redis, pubSubRedis);
+  initPublicEventConnections({
+    redis: app.redis,
+    log: app.log,
+    translate: translateChannelMessage,
+    getActiveSessions: () => cacheService.getAllActiveSessions(),
+    seedLastSeen,
+    clearLastSeen,
+  });
 
   const keySource = initDestinationCrypto();
   app.log.info(`Destination secrets keyed from ${keySource}`);
@@ -1519,6 +1541,7 @@ async function start() {
         app.log.info('Entering maintenance mode — shutting down services');
         stopPoller();
         stopSSEProcessor();
+        closeAllPublicEventConnections('maintenance');
         stopPauseWakes();
         stopPluginUpdateChecker();
         void sseManager

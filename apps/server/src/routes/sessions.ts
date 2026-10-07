@@ -369,6 +369,8 @@ export const sessionRoutes: FastifyPluginAsync = async (app) => {
           s.artist_name,
           s.album_name,
           s.thumb_path,
+          s.media_id,
+          s.show_media_id,
           s.reference_id,
           s.ip_address,
           s.geo_city,
@@ -442,6 +444,8 @@ export const sessionRoutes: FastifyPluginAsync = async (app) => {
         artist_name: string | null;
         album_name: string | null;
         thumb_path: string | null;
+        media_id: string | null;
+        show_media_id: string | null;
         reference_id: string | null;
         ip_address: string | null;
         geo_city: string | null;
@@ -504,6 +508,8 @@ export const sessionRoutes: FastifyPluginAsync = async (app) => {
       artistName: row.artist_name,
       albumName: row.album_name,
       thumbPath: row.thumb_path,
+      mediaId: row.media_id,
+      showMediaId: row.show_media_id,
       startedAt: row.started_at ? new Date(row.started_at).toISOString() : null,
       stoppedAt: row.stopped_at ? new Date(row.stopped_at).toISOString() : null,
       durationMs: row.duration_ms ? Number(row.duration_ms) : null,
@@ -741,6 +747,8 @@ export const sessionRoutes: FastifyPluginAsync = async (app) => {
           s.artist_name,
           s.album_name,
           s.thumb_path,
+          s.media_id,
+          s.show_media_id,
           s.reference_id,
           s.ip_address,
           s.geo_city,
@@ -845,6 +853,8 @@ export const sessionRoutes: FastifyPluginAsync = async (app) => {
         artist_name: string | null;
         album_name: string | null;
         thumb_path: string | null;
+        media_id: string | null;
+        show_media_id: string | null;
         reference_id: string | null;
         ip_address: string | null;
         geo_city: string | null;
@@ -907,6 +917,8 @@ export const sessionRoutes: FastifyPluginAsync = async (app) => {
       artistName: row.artist_name,
       albumName: row.album_name,
       thumbPath: row.thumb_path,
+      mediaId: row.media_id,
+      showMediaId: row.show_media_id,
       startedAt: row.started_at ? new Date(row.started_at).toISOString() : null,
       stoppedAt: row.stopped_at ? new Date(row.stopped_at).toISOString() : null,
       durationMs: row.duration_ms ? Number(row.duration_ms) : null,
@@ -1448,6 +1460,8 @@ export const sessionRoutes: FastifyPluginAsync = async (app) => {
         artistName: sessions.artistName,
         albumName: sessions.albumName,
         thumbPath: sessions.thumbPath,
+        mediaId: sessions.mediaId,
+        showMediaId: sessions.showMediaId,
         startedAt: sessions.startedAt,
         stoppedAt: sessions.stoppedAt,
         durationMs: sessions.durationMs,
@@ -1535,6 +1549,8 @@ export const sessionRoutes: FastifyPluginAsync = async (app) => {
       artistName: row.artistName,
       albumName: row.albumName,
       thumbPath: row.thumbPath,
+      mediaId: row.mediaId,
+      showMediaId: row.showMediaId,
       startedAt: row.startedAt,
       stoppedAt: row.stoppedAt,
       durationMs: row.durationMs,
