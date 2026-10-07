@@ -670,7 +670,7 @@ const Violation = z
     user: ViolationUser,
     data: z.record(z.string(), z.unknown()).openapi({
       description:
-        'What the automation recorded when it fired. Current automations write evidence (each condition group with its conditions, the field, operator, threshold and actual value), relatedSessionIds, ruleName, matchedGroups, the triggerId and edgeKey of the trigger node, and for a session-scoped rule its sessionKey, mediaTitle and ipAddress. Violations recorded before Tracearr 2026-02-12 carry whatever their rule stored at the time, which may be none of these keys. Condition fields vary by rule, so treat the keys inside evidence as free-form',
+        'What the automation recorded when it fired. Current automations write evidence (each condition group with its conditions, the field, operator, threshold and actual value), relatedSessionIds, ruleName, matchedGroups, the triggerId and edgeKey of the trigger node, and for a session-scoped rule its sessionKey, mediaTitle and ipAddress. Violations recorded before Tracearr 1.4.18 carry whatever their rule stored at the time, which may be none of these keys. Condition fields vary by rule, so treat the keys inside evidence as free-form',
     }),
   })
   .openapi('Violation', { example: VIOLATION_EXAMPLE });
@@ -750,7 +750,7 @@ registry.registerPath({
 const ServerStatusEnum = z.enum(['up', 'down', 'unknown']).openapi({
   description:
     'up while Tracearr holds a live event connection to the server, or while polling reaches it. ' +
-    'down once the configured number of consecutive polls have failed. unknown when the server ' +
+    'down once three consecutive polls have failed. unknown when the server ' +
     'is historical, or when it has no live connection and no poll has completed in the last ' +
     'ten minutes',
 });
@@ -814,7 +814,11 @@ registry.registerPath({
     'server.health event payload: apply status and reason from the event to the row with the ' +
     'same server_id. A server.health ' +
     'with a server_id you do not hold, or one marking a server historical (it arrives as up), ' +
-    'is a cue to fetch this list again.',
+    'is a cue to fetch this list again. A row fetched from this list is newer than any earlier ' +
+    'server.health event and wins over it. Tracearr can miss sending an up: when a server that ' +
+    'polling had marked down comes back through its live event connection, no up event is sent. ' +
+    'Fetch this list again after your own event stream reconnects, and every few minutes while ' +
+    'it is open.',
   security: [{ bearerAuth: [] }],
   responses: {
     200: {
@@ -2003,7 +2007,10 @@ for playing streams, \`GET /violations\` for violations and \`GET /servers\` for
 violation sends no event, so refetch \`GET /violations\` when the list needs to show either.
 \`server.health\` carries the
 first four keys of a \`GET /servers\` row, so apply \`status\` and \`reason\` to the row with the same
-\`server_id\`. Nothing is replayed. If the server loses its own connection to its event source and
+\`server_id\`. A fresh \`GET /servers\` row wins over an earlier \`server.health\` event, and Tracearr
+can miss sending an \`up\`: a server that polling had marked down and that then comes back through
+its live connection sends none. Refetch \`GET /servers\` after your own reconnect and every few
+minutes. Nothing is replayed. If the server loses its own connection to its event source and
 gets it back, it sends \`ready\` again on every open connection. Treat that one exactly like the first.
 
 Every frame has an \`event:\` line naming the type and a \`data:\` line holding one JSON object,
