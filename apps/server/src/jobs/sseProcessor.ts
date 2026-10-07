@@ -19,7 +19,7 @@ import { servers, serverUserExternalAliases, serverUsers, sessions, users } from
 import { getGeoIPSettings } from '../routes/settings.js';
 import type { CacheService, PubSubService } from '../services/cache.js';
 import { createMediaServerClient } from '../services/mediaServer/index.js';
-import { isLiveServer } from '../services/liveServers.js';
+import { isLiveServer, liveServers } from '../services/liveServers.js';
 import { extractLiveUuid } from '../services/mediaServer/plex/plexUtils.js';
 import { resolveSessionGeo } from '../services/serverLocations.js';
 import {
@@ -235,6 +235,24 @@ export function startSSEProcessor(): void {
   // Subscribe to server health events (SSE connection state changes)
   sseManager.on('fallback:activated', wrappedHandlers.fallbackActivated);
   sseManager.on('fallback:deactivated', wrappedHandlers.fallbackDeactivated);
+
+  if (!isPollerRunning()) {
+    void armDownTimersForUnconnectedServers().catch((error: unknown) =>
+      console.error('[SSEProcessor] Failed to arm down timers on start:', error)
+    );
+  }
+}
+
+/**
+ * Every server starts in fallback, so one that never connects after a start emits no
+ * fallback:activated; with nothing polling, its down timer has to start here.
+ */
+async function armDownTimersForUnconnectedServers(): Promise<void> {
+  const rows = await liveServers();
+  if (!isRunning) return;
+  for (const server of rows) {
+    if (sseManager.isInFallback(server.id)) armDownTimer(server.id, server.name);
+  }
 }
 
 /**
@@ -883,12 +901,13 @@ async function processSessionWriteRetries(): Promise<void> {
  * stayed down past the threshold.
  */
 function handleFallbackActivated(event: FallbackEvent): void {
-  const { serverId, serverName } = event;
-  clearServerDownState(serverId);
-  if (isPollerRunning()) return;
+  if (!isPollerRunning()) armDownTimer(event.serverId, event.serverName);
+}
 
+function armDownTimer(serverId: string, serverName: string): void {
+  clearServerDownState(serverId);
   console.log(
-    `[SSEProcessor] Server ${serverName} SSE connection failed and nothing polls it, ` +
+    `[SSEProcessor] Server ${serverName} has no live connection and nothing polls it, ` +
       `marking it down in ${SERVER_DOWN_THRESHOLD_MS / 1000}s`
   );
 
@@ -902,7 +921,14 @@ function handleFallbackActivated(event: FallbackEvent): void {
 }
 
 async function markUnpolledServerDown(serverId: string, serverName: string): Promise<void> {
-  if (!cacheService || !(await isLiveServer(serverId))) return;
+  if (!cacheService) return;
+  const live = await isLiveServer(serverId);
+  // A reconnect during the read already marked the server up and cleared this timer.
+  if (!downTimers.has(serverId)) return;
+  if (!live) {
+    clearServerDownState(serverId);
+    return;
+  }
   if ((await cacheService.setServerHealth(serverId, false)) === false) return;
 
   console.log(`[SSEProcessor] Server ${serverName} is DOWN (threshold exceeded)`);

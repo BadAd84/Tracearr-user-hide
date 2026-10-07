@@ -18,16 +18,20 @@ const {
   mockGetActiveAutomations,
   mockIsLiveServer,
   mockIsPollerRunning,
+  mockLiveServers,
 } = vi.hoisted(() => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { EventEmitter: EE } = require('events');
   return {
-    mockSseManager: new EE() as EventEmitter,
+    mockSseManager: Object.assign(new EE() as EventEmitter, {
+      isInFallback: vi.fn().mockReturnValue(true),
+    }),
     mockEnqueueNotification: vi.fn().mockResolvedValue('job-id'),
     mockDispatch: vi.fn().mockResolvedValue({ violations: [], outcomes: [] }),
     mockGetActiveAutomations: vi.fn().mockResolvedValue([]),
     mockIsLiveServer: vi.fn().mockResolvedValue(true),
     mockIsPollerRunning: vi.fn().mockReturnValue(false),
+    mockLiveServers: vi.fn().mockResolvedValue([]),
   };
 });
 
@@ -38,6 +42,7 @@ vi.mock('../../services/sseManager.js', () => ({
 
 vi.mock('../../services/liveServers.js', () => ({
   isLiveServer: (...args: unknown[]) => mockIsLiveServer(...args),
+  liveServers: () => mockLiveServers(),
 }));
 
 // Mock enqueueNotification
@@ -203,6 +208,8 @@ describe('SSE Processor - Server Health Notifications', () => {
     mockGetActiveAutomations.mockResolvedValue(listening);
     mockIsLiveServer.mockResolvedValue(true);
     mockIsPollerRunning.mockReturnValue(false);
+    mockLiveServers.mockResolvedValue([]);
+    mockSseManager.isInFallback.mockReturnValue(true);
     health.clear();
     mockSseManager.removeAllListeners();
 
@@ -232,6 +239,64 @@ describe('SSE Processor - Server Health Notifications', () => {
       down('server-1', 'Plex');
       clearServerDownState('server-1');
       await vi.advanceTimersByTimeAsync(60_000);
+      expect(dispatched('server.down', 'server-1')).toHaveLength(0);
+    });
+
+    it('sends no server.down when the connection returns while the timer reads the server row', async () => {
+      let answer!: (live: boolean) => void;
+      mockIsLiveServer.mockImplementationOnce(
+        () =>
+          new Promise<boolean>((resolve) => {
+            answer = resolve;
+          })
+      );
+      down('server-1', 'Test Server');
+      await vi.advanceTimersByTimeAsync(60_000);
+
+      up('server-1', 'Test Server');
+      await vi.advanceTimersByTimeAsync(0);
+      answer(true);
+      await vi.advanceTimersByTimeAsync(0);
+
+      expect(dispatched('server.down', 'server-1')).toHaveLength(0);
+      expect(health.get('server-1')).toBe(true);
+    });
+
+    it('stops the timer of a server that is no longer live', async () => {
+      mockIsLiveServer.mockResolvedValue(false);
+      down('server-1', 'Plex');
+      await vi.advanceTimersByTimeAsync(60_000);
+      const reads = mockIsLiveServer.mock.calls.length;
+
+      await vi.advanceTimersByTimeAsync(5 * 60_000);
+
+      expect(mockIsLiveServer.mock.calls.length).toBe(reads);
+    });
+
+    it('marks down a server that never connects after a start, and not one that does', async () => {
+      stopSSEProcessor();
+      mockLiveServers.mockResolvedValue([
+        { id: 'server-1', name: 'Never Connects' },
+        { id: 'server-2', name: 'Connects' },
+      ]);
+      startSSEProcessor();
+      await vi.advanceTimersByTimeAsync(5_000);
+      up('server-2', 'Connects');
+
+      await vi.advanceTimersByTimeAsync(55_000);
+
+      expect(dispatched('server.down', 'server-1')).toHaveLength(1);
+      expect(dispatched('server.down', 'server-2')).toHaveLength(0);
+    });
+
+    it('skips a server whose live connection opened before the start finished reading servers', async () => {
+      stopSSEProcessor();
+      mockLiveServers.mockResolvedValue([{ id: 'server-1', name: 'Plex' }]);
+      mockSseManager.isInFallback.mockReturnValue(false);
+      startSSEProcessor();
+
+      await vi.advanceTimersByTimeAsync(2 * 60_000);
+
       expect(dispatched('server.down', 'server-1')).toHaveLength(0);
     });
 

@@ -70,7 +70,7 @@ const V2_TAGS = [
   {
     name: 'Servers',
     description:
-      'Every configured media server with its health: up while Tracearr holds a live connection to it or polling reaches it, down after consecutive poll failures, unknown when Tracearr has nothing recent to go on.',
+      'Every configured media server with its health: up while Tracearr holds a live connection to it or polling reaches it, down after consecutive poll failures, or with Session Sync turned off once its live connection has been down for a minute, unknown when Tracearr has nothing recent to go on.',
   },
   {
     name: 'History',
@@ -750,7 +750,8 @@ registry.registerPath({
 const ServerStatusEnum = z.enum(['up', 'down', 'unknown']).openapi({
   description:
     'up while Tracearr holds a live event connection to the server, or while polling reaches it. ' +
-    'down once three consecutive polls have failed. unknown when the server ' +
+    'down once three consecutive polls have failed, or with Session Sync turned off, once its ' +
+    'live connection has been down for a minute. unknown when the server ' +
     'is historical, or when it has no live connection and no poll has completed in the last ' +
     'ten minutes',
 });

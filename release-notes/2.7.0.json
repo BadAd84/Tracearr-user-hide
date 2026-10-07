@@ -18,7 +18,7 @@
     },
     {
       "type": "fix",
-      "text": "server down and up automations fire once per real outage, and a dropped live connection alone no longer sends a down"
+      "text": "server down and up automations fire once per outage; with session sync on, a dropped live connection alone sends no down"
     }
   ]
 }
