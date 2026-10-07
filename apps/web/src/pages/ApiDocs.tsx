@@ -93,7 +93,7 @@ export function ApiDocs() {
 
   return (
     <div className="api-docs-wrapper">
-      <div className="api-docs-header flex flex-wrap items-center gap-2">
+      <div className="api-docs-header flex items-center gap-2 overflow-hidden">
         <Link to="/settings">
           <Button variant="ghost" size="sm" className="gap-2">
             <ArrowLeft className="h-4 w-4" />
