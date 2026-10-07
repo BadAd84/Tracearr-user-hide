@@ -65,7 +65,7 @@ const V2_TAGS = [
   {
     name: 'Violations',
     description:
-      'Completed policy automation runs with an account that were not dismissed: the rows the Violations page shows, newest first, in the shape violation.created pushes. rule is the automation that produced each one.',
+      'Violations as the Violations page shows them, newest first: completed policy automation runs that have an account and were not dismissed. Each row has the shape `violation.created` pushes, and `rule` is the automation that produced it.',
   },
   {
     name: 'Servers',
@@ -1126,7 +1126,7 @@ registry.registerPath({
     'coming back. The app does not poll. ' +
     'REST is used once per connection: when the `ready` event arrives, fetch the starting state that ' +
     'later events apply to, from `GET /streams` for streams, `GET /violations` for violations and ' +
-    '`GET /servers` for server health, all on this document. ' +
+    '`GET /servers` for server health, all under `/api/v2/public`. ' +
     'Each frame carries `event:` (the type) and `data:` (a JSON PublicEvent with ' +
     'the same `type`, an `at` timestamp and the payload in `data`). The first frame is `retry: 5000`, ' +
     'then `ready`. Nothing is replayed after a disconnect; a reconnect gets a fresh `ready`, and so ' +
@@ -1999,7 +1999,9 @@ so use an SSE client that can, such as a fetch-based reader or the \`eventsource
 REST is used once per connection. Every connection starts with \`retry: 5000\` and then a \`ready\`
 event; when \`ready\` arrives, fetch the starting state that later events apply to: \`GET /streams\`
 for playing streams, \`GET /violations\` for violations and \`GET /servers\` for server health.
-\`violation.created\` carries a \`GET /violations\` row, so prepend it; \`server.health\` carries the
+\`violation.created\` carries a \`GET /violations\` row, so prepend it. Acknowledging or dismissing a
+violation sends no event, so refetch \`GET /violations\` when the list needs to show either.
+\`server.health\` carries the
 first four keys of a \`GET /servers\` row, so apply \`status\` and \`reason\` to the row with the same
 \`server_id\`. Nothing is replayed. If the server loses its own connection to its event source and
 gets it back, it sends \`ready\` again on every open connection. Treat that one exactly like the first.
@@ -2015,7 +2017,9 @@ and \`genres\` are always null on events. Apply \`stream.progress\` to the strea
 
 Ignore any event type you do not recognize. Tracearr adds event types without a new API version,
 and a connection with no \`types\` parameter receives every type, new ones included. An app that
-wants only the types it handles names them in \`types\`.
+wants only the types it handles names them in \`types\`. Naming a type this Tracearr does not know
+returns 400, so an app that also targets older Tracearr versions should name only types those
+versions list.
 
 A connection can also end before \`ready\`. That happens when the server cannot subscribe to its
 event source, and the right response is an ordinary reconnect.

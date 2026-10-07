@@ -5,8 +5,8 @@
  * parameters, request body and the dereferenced 200 response shape) and
  * checks every operation in the committed baseline is still there unchanged.
  * Additions are allowed: a new operation, a new optional parameter, a new
- * response property. Tags are compared for v1 only, since the first tag is
- * what a generated SDK names its class after and v2's grouping is deliberate.
+ * response property. Tags are compared exactly, since the first tag is what a
+ * generated SDK names its class after.
  *
  * Regenerate the baseline only for a deliberate change, by running this file
  * with UPDATE_PUBLIC_API_CONTRACT=1 set, and read the fixture diff.
@@ -261,7 +261,7 @@ describe('public API contract', () => {
     for (const version of ['v1', 'v2'] as const) {
       for (const [key, op] of Object.entries(baseline[version])) {
         const now = current[version][key];
-        if (version === 'v1') expect(now?.tags, key).toEqual(op.tags);
+        expect(now?.tags, key).toEqual(op.tags);
         expectOperationKept(op, now, key);
       }
     }
