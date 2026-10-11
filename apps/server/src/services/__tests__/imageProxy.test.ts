@@ -641,6 +641,36 @@ describe('buildUpstreamRequest', () => {
   });
 
   describe('path allowlist', () => {
+    it.each([
+      ['plex', '/library/metadata/1/thumb/..\\..\\..\\..\\library\\sections\\1\\refresh'],
+      ['plex', '/library/metadata/1/thumb/../../../../library/sections/1/refresh'],
+      ['plex', '/library/metadata/1/thumb/%2e%2e%2f%2e%2e%2flibrary%2fsections'],
+      ['plex', '/library/metadata/1/thumb/%5C..%5Clibrary'],
+      ['plex', '/library/metadata/1/thumb/2%00'],
+      ['plex', '/library/metadata/1/thumb/%252e%252e%252flibrary%252fsections'],
+      ['jellyfin', '/Items/..\\..\\System\\Info/Images/Primary'],
+      ['jellyfin', '/Items/%2E%2E/Images/Primary'],
+      ['emby', '/Users/..\\..\\System\\Info/Images/Primary'],
+    ])('rejects a %s path that walks out of the image route: %s', (type, path) => {
+      const server = { ...baseServer, type } as never;
+      expect(() => buildUpstreamRequest(server, path)).toThrow(SsrfBlockedError);
+    });
+
+    it('still builds an ordinary image path, also under a base path', () => {
+      const plex = { ...baseServer, type: 'plex' } as never;
+      expect(buildUpstreamRequest(plex, '/library/metadata/1/thumb/1700000000').imageUrl).toContain(
+        '/library/metadata/1/thumb/1700000000?X-Plex-Token='
+      );
+      const jf = {
+        ...baseServer,
+        type: 'jellyfin',
+        url: 'http://jf.local:8096/jellyfin/',
+      } as never;
+      expect(buildUpstreamRequest(jf, '/Items/abc/Images/Primary?tag=f00').imageUrl).toBe(
+        'http://jf.local:8096/jellyfin/Items/abc/Images/Primary?tag=f00'
+      );
+    });
+
     it('rejects a plex path outside library image routes', () => {
       const server = { ...baseServer, type: 'plex' } as never;
       expect(() => buildUpstreamRequest(server, '/library/sections')).toThrow(SsrfBlockedError);
@@ -750,6 +780,24 @@ describe('resizedOnly (background warms)', () => {
 
     expect(fetchSpy).toHaveBeenCalledTimes(1);
     expect(String(fetchSpy.mock.calls[0]?.[0])).toContain('width=360');
+  });
+
+  it('treats a redirect from the media server as a failed fetch instead of following it', async () => {
+    fetchSpy.mockResolvedValue(
+      new Response(null, { status: 302, headers: { location: 'http://elsewhere.example/x' } })
+    );
+    const result = await proxyImage({
+      serverId: randomUUID(),
+      imagePath: '/library/metadata/4/thumb/1',
+      width: 360,
+      height: 540,
+      fallback: 'poster',
+    });
+
+    expect(result.contentType).toBe('image/svg+xml');
+    for (const [, init] of fetchSpy.mock.calls) {
+      expect((init as RequestInit).redirect).toBe('manual');
+    }
   });
 
   it('still retries the original for a live request', async () => {

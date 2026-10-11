@@ -11,7 +11,7 @@ import { readFile, writeFile, rename, stat as fsStat, unlink, mkdir } from 'node
 import { join } from 'node:path';
 import sharp from 'sharp';
 import { and, eq, isNull } from 'drizzle-orm';
-import { POSTER_IMAGE_SIZE, TIME_MS } from '@tracearr/shared';
+import { POSTER_IMAGE_SIZE, TIME_MS, isDirectAvatarUrl } from '@tracearr/shared';
 import { db } from '../db/client.js';
 import { servers, libraryItems } from '../db/schema.js';
 import { assertSafeProbeUrl, SsrfBlockedError } from '../utils/ssrf.js';
@@ -324,21 +324,34 @@ function acquireFetchSlot(): Promise<() => void> {
 /**
  * imagePath reaches here from the unauthenticated /images routes and is
  * concatenated onto the server URL, so a suffix like ".attacker.example/x"
- * moves the request to another host and takes the media-server token with it.
- * Resolve it and require the origin to survive.
+ * moves the request to another host and takes the media-server token with it,
+ * and "..\" segments (URL parsing reads a backslash as a slash) walk out of the
+ * allowlisted route. Resolve it and require it to come out exactly as written:
+ * same origin, and a path the parser did not rewrite.
  */
-function assertSameOrigin(baseUrl: string, imagePath: string): void {
+function assertCanonicalImagePath(baseUrl: string, imagePath: string): void {
+  // Media server image paths are never percent-encoded; any % could decode into a traversal after
+  // the allowlist ran, double encodings included once Plex's transcoder reads its url param.
+  if (imagePath.includes('\\') || imagePath.includes('\0') || imagePath.includes('%')) {
+    throw new SsrfBlockedError(`Image path is not in canonical form: ${imagePath}`);
+  }
   let resolved: URL;
   try {
     resolved = new URL(`${baseUrl}${imagePath}`);
   } catch {
     throw new SsrfBlockedError(`Image path produced an unparseable URL: ${imagePath}`);
   }
-  if (resolved.origin !== new URL(baseUrl).origin) {
+  const base = new URL(baseUrl);
+  if (resolved.origin !== base.origin) {
     throw new SsrfBlockedError(`Image path escapes the server origin: ${resolved.origin}`);
   }
   if (resolved.username || resolved.password) {
     throw new SsrfBlockedError('Image path injected URL credentials');
+  }
+  if (
+    `${resolved.pathname}${resolved.search}` !== `${base.pathname.replace(/\/$/, '')}${imagePath}`
+  ) {
+    throw new SsrfBlockedError(`Image path is not in canonical form: ${imagePath}`);
   }
 }
 
@@ -358,7 +371,7 @@ export function buildUpstreamRequest(
 
   // Origin pinning makes the configured server the only reachable host, so one
   // check on the base URL covers every request shape built below.
-  assertSameOrigin(baseUrl, imagePath);
+  assertCanonicalImagePath(baseUrl, imagePath);
   assertSafeProbeUrl(baseUrl);
   if (!IMAGE_PATH_ALLOWLIST[server.type].test(imagePath)) {
     throw new SsrfBlockedError(`Not a media server image path: ${imagePath}`);
@@ -472,8 +485,10 @@ async function runMissPipeline(args: MissPipelineArgs): Promise<ProxyResult> {
     let lastError: unknown = null;
     for (const { imageUrl, headers } of candidates) {
       try {
+        // A redirect would carry the token past the path checks, so it counts as a failure.
         const response = await fetch(imageUrl, {
           headers,
+          redirect: 'manual',
           signal: AbortSignal.timeout(10000), // 10 second timeout
         });
 
@@ -770,8 +785,7 @@ export function buildAvatarUrl(
   size: number = IMAGE_SIZES.apiAvatar.width
 ): string | null {
   if (!thumbUrl) return null;
-  // Direct links (e.g., from Plex.tv) are already absolute
-  if (thumbUrl.startsWith('http')) return thumbUrl;
+  if (thumbUrl.startsWith('http')) return isDirectAvatarUrl(thumbUrl) ? thumbUrl : null;
   if (!serverId) return null;
   return buildProxyUrl({
     serverId,
@@ -810,8 +824,7 @@ export function buildPushAvatarUrl(
   thumbUrl: string | null | undefined
 ): string | null {
   if (!thumbUrl) return null;
-  // Direct links are already absolute
-  if (thumbUrl.startsWith('http')) return thumbUrl;
+  if (thumbUrl.startsWith('http')) return isDirectAvatarUrl(thumbUrl) ? thumbUrl : null;
   if (!serverId) return null;
   return buildAbsoluteProxyUrl(baseUrl, {
     serverId,

@@ -21,7 +21,7 @@ import { and, eq, lte, isNotNull } from 'drizzle-orm';
 import { getBullPrefix, queueConnectionOptions } from './queueConnection.js';
 import { isMaintenance } from '../serverState.js';
 import { db } from '../db/client.js';
-import { authAccounts, plexAccounts, servers } from '../db/schema.js';
+import { authAccounts, plexAccounts, servers, users } from '../db/schema.js';
 import { invalidateServersCache } from './poller/database.js';
 import { PlexClient } from '../services/mediaServer/index.js';
 
@@ -176,9 +176,11 @@ export async function processPlexTokenRefresh(): Promise<PlexTokenRefreshResult>
       refreshToken: authAccounts.refreshToken,
     })
     .from(authAccounts)
+    .innerJoin(users, eq(users.id, authAccounts.userId))
     .where(
       and(
         eq(authAccounts.providerId, 'plex'),
+        eq(users.role, 'owner'),
         isNotNull(authAccounts.accessTokenExpiresAt),
         lte(authAccounts.accessTokenExpiresAt, cutoff)
       )
