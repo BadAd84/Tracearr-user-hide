@@ -25,8 +25,11 @@ jobs:
 
       # setup rather than the node action: a container action can't expose its
       # exit code, and the whole point here is telling exit 1 from exit 2.
+      # 1.1308.0 fails snyk test with a 404 (SNYK-CLI-0000).
       - name: Install Snyk CLI
         uses: snyk/actions/setup@b075801f26076be9bb50521154cafab73f44da0c # master
+        with:
+          snyk-version: v1.1307.4
 
       # Snyk is the detection half. Its database carries findings with no live
       # GHSA and no OSV entry, which is exactly what Renovate's
