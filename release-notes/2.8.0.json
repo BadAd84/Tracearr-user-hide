@@ -98,10 +98,6 @@
     },
     {
       "type": "note",
-      "text": "existing admins start on Default: turn member sign-in on in Settings → Sign-in or set them to Allow"
-    },
-    {
-      "type": "note",
       "text": "TRUST_PROXY=true now trusts one proxy hop and is needed for x-forwarded-host; two chained proxies need TRUST_PROXY=2"
     },
     {
