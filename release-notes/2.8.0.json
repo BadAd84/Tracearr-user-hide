@@ -85,6 +85,10 @@
       "refs": ["#1308"]
     },
     {
+      "type": "fix",
+      "text": "newsletters keep sending after Redis drops and reconnects instead of stopping until a restart"
+    },
+    {
       "type": "security",
       "text": "a page on another port or subdomain of the same host can no longer act with your session"
     },
