@@ -98,6 +98,10 @@
       "text": "newsletters keep sending after Redis drops and reconnects instead of stopping until a restart"
     },
     {
+      "type": "improved",
+      "text": "stream and trust score pushes start on for new phones and any phone that never opened its notification settings"
+    },
+    {
       "type": "security",
       "text": "a page on another port or subdomain of the same host can no longer act with your session"
     },
