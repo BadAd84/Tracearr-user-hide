@@ -142,6 +142,8 @@ export type {
   NotificationEventType,
   NotificationPreferences,
   RateLimitStatus,
+  PushEventPreference,
+  PushDeliveryStatus,
   NotificationPreferencesWithStatus,
   EncryptedPushPayload,
   PushNotificationPayload,

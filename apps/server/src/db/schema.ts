@@ -792,11 +792,11 @@ export const notificationPreferences = pgTable(
 
     // Event type toggles
     onViolationDetected: boolean('on_violation_detected').notNull().default(true),
-    onStreamStarted: boolean('on_stream_started').notNull().default(false),
-    onStreamStopped: boolean('on_stream_stopped').notNull().default(false),
+    onStreamStarted: boolean('on_stream_started').notNull().default(true),
+    onStreamStopped: boolean('on_stream_stopped').notNull().default(true),
     onConcurrentStreams: boolean('on_concurrent_streams').notNull().default(true),
     onNewDevice: boolean('on_new_device').notNull().default(true),
-    onTrustScoreChanged: boolean('on_trust_score_changed').notNull().default(false),
+    onTrustScoreChanged: boolean('on_trust_score_changed').notNull().default(true),
     onServerDown: boolean('on_server_down').notNull().default(true),
     onServerUp: boolean('on_server_up').notNull().default(true),
 

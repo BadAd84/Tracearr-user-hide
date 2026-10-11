@@ -799,6 +799,13 @@
       "when": 1791676225521,
       "tag": "0113_member_plex_tokens",
       "breakpoints": true
+    },
+    {
+      "idx": 114,
+      "version": "7",
+      "when": 1791753584930,
+      "tag": "0114_device_toggle_defaults",
+      "breakpoints": true
     }
   ]
 }

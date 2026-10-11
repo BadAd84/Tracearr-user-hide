@@ -1570,9 +1570,32 @@ export interface RateLimitStatus {
   resetHourIn: number; // seconds until hour window resets
 }
 
+/** The per-device toggles that filter a push after the server has decided to send it. */
+export type PushEventPreference =
+  | 'onViolationDetected'
+  | 'onStreamStarted'
+  | 'onStreamStopped'
+  | 'onNewDevice'
+  | 'onTrustScoreChanged'
+  | 'onServerDown'
+  | 'onServerUp';
+
+/** What stands between an event and this device, apart from the device's own toggles. */
+export interface PushDeliveryStatus {
+  /** The server holds a push token for this device. */
+  tokenRegistered: boolean;
+  /** The built-in Mobile push destination is switched on. */
+  destinationEnabled: boolean;
+  /** Mobile push has Receive violations on, so every violation is sent. */
+  violationsSubscribed: boolean;
+  /** Active automations that send each event to Mobile push. */
+  automations: Record<PushEventPreference, number>;
+}
+
 // Extended preferences response including live rate limit status
 export interface NotificationPreferencesWithStatus extends NotificationPreferences {
   rateLimitStatus?: RateLimitStatus;
+  delivery?: PushDeliveryStatus;
 }
 
 // Encrypted push payload (AES-256-GCM with separate authTag per security best practices)
