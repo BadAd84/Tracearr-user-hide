@@ -81,6 +81,15 @@
     },
     {
       "type": "fix",
+      "text": "the poster cache warning in Settings → General clears as soon as the cache is on a mounted volume",
+      "refs": ["#1312"]
+    },
+    {
+      "type": "improved",
+      "text": "a poster cache directory the server cannot write to is logged with the error code and uid"
+    },
+    {
+      "type": "fix",
       "text": "a concurrent streams rule kills the stream again instead of skipping it as condition cleared",
       "refs": ["#1308"]
     },

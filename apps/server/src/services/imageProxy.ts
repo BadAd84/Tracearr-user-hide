@@ -183,6 +183,9 @@ async function readFromCache(cachePath: string, versioned: boolean): Promise<Pro
   }
 }
 
+// A pass over an unwritable directory fails once per poster, so each error code logs once.
+const warnedWriteErrors = new Set<string>();
+
 async function writeCacheAtomic(shardDir: string, cachePath: string, data: Buffer): Promise<void> {
   if (!(await cacheWriteAllowed(data.length, IMAGE_CACHE_DIR))) return;
   const tmpPath = `${cachePath}.tmp.${process.pid}`;
@@ -191,8 +194,15 @@ async function writeCacheAtomic(shardDir: string, cachePath: string, data: Buffe
     await writeFile(tmpPath, data);
     await rename(tmpPath, cachePath);
     noteCacheWrite(data.length);
-  } catch {
+  } catch (err) {
     await unlink(tmpPath).catch(() => undefined);
+    const code = (err as NodeJS.ErrnoException).code ?? String(err);
+    if (!warnedWriteErrors.has(code)) {
+      warnedWriteErrors.add(code);
+      console.warn(
+        `[ImageProxy] Cannot write to the poster cache at ${IMAGE_CACHE_DIR} (${code}, running as uid ${process.getuid?.()}). Posters are fetched from the media server on every request until this is fixed.`
+      );
+    }
   }
 }
 

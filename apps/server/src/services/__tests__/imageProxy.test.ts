@@ -302,6 +302,35 @@ describe('proxyImage cache-miss pipeline', () => {
     await vi.waitFor(() => expect(vi.mocked(db.update)).toHaveBeenCalledTimes(1));
   });
 
+  it('warns once per error code when the cache directory cannot be written', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    vi.mocked(writeFile).mockRejectedValue(Object.assign(new Error('denied'), { code: 'EACCES' }));
+    vi.mocked(unlink).mockResolvedValue(undefined);
+    // A Response body reads once, and this test fetches twice.
+    fetchSpy.mockImplementation(
+      async () =>
+        new Response(testImage, { status: 200, headers: { 'content-type': 'image/jpeg' } })
+    );
+
+    for (const id of ['5', '6']) {
+      mockSelectChain([
+        { id: 'server-5', type: 'plex', url: 'http://localhost:32400', token: 'token' },
+      ]);
+      await proxyImage({
+        serverId: randomUUID(),
+        imagePath: `/library/metadata/${id}/thumb/${id}`,
+        width: 240,
+        height: 360,
+      });
+    }
+
+    expect(vi.mocked(writeFile)).toHaveBeenCalledTimes(2);
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('EACCES'));
+    warn.mockRestore();
+    await vi.waitFor(() => expect(vi.mocked(db.update)).toHaveBeenCalledTimes(2));
+  });
+
   it('persists the dominant color only when the row does not have one yet', async () => {
     mockSelectChain([
       { id: 'server-2', type: 'plex', url: 'http://localhost:32400', token: 'token' },

@@ -1037,8 +1037,8 @@ export interface ImageCacheStatus {
   sweptAt: string | null;
   freedBytesLastSweep: number;
   deletedFilesLastSweep: number;
-  /** A full pass this process completed was followed by an empty cache, so the
-   *  directory is not surviving restarts. */
+  /** A completed full pass was followed by an empty cache on a directory that
+   *  is not a mounted volume, so the cache is not surviving restarts. */
   notPersisting: boolean;
   /** Distinct (server, thumb path) pairs in library_items, removed rows
    *  included: one cache file each, however many rows share the image. */
