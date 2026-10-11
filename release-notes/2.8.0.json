@@ -80,6 +80,11 @@
       "text": "the supervised image fixes ownership of a separately mounted image cache and /data/backup"
     },
     {
+      "type": "fix",
+      "text": "a concurrent streams rule kills the stream again instead of skipping it as condition cleared",
+      "refs": ["#1308"]
+    },
+    {
       "type": "security",
       "text": "a page on another port or subdomain of the same host can no longer act with your session"
     },
