@@ -18,7 +18,7 @@
 import { Queue, Worker, type Job, type ConnectionOptions } from 'bullmq';
 import { TIME_MS } from '@tracearr/shared';
 import { and, eq, lte, isNotNull } from 'drizzle-orm';
-import { getBullPrefix, queueConnectionOptions } from './queueConnection.js';
+import { everyAligned, getBullPrefix, queueConnectionOptions } from './queueConnection.js';
 import { isMaintenance } from '../serverState.js';
 import { db } from '../db/client.js';
 import { authAccounts, plexAccounts, servers, users } from '../db/schema.js';
@@ -141,15 +141,10 @@ export async function schedulePlexTokenRefresh(): Promise<void> {
     await refreshQueue.removeJobScheduler(scheduler.key);
   }
 
-  await refreshQueue.add(
-    'scheduled-refresh',
-    { type: 'refresh' },
-    {
-      repeat: {
-        every: REFRESH_INTERVAL_MS,
-      },
-      jobId: 'plex-token-refresh-repeatable',
-    }
+  await refreshQueue.upsertJobScheduler(
+    'plex-token-refresh-repeatable',
+    everyAligned(REFRESH_INTERVAL_MS),
+    { name: 'scheduled-refresh', data: { type: 'refresh' } }
   );
 
   console.log('[PlexTokenRefresh] Scheduled daily token refresh checks');

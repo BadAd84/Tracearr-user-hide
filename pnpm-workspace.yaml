@@ -25,6 +25,10 @@ overrides:
   '@esbuild-kit/core-utils>esbuild': '^0.28.0'
   'drizzle-kit>esbuild': '^0.28.2'
   '@scalar/json-magic>undici': '^8.0.0'
+peerDependencyRules:
+  allowedVersions:
+    'ioredis-mock>ioredis': '6'
+    '@types/ioredis-mock>ioredis': '6'
 publicHoistPattern:
   - '@babel/types'
 allowBuilds:
