@@ -22,6 +22,7 @@ import { isTrustedOrigin, requestHost } from '../lib/origins.js';
 import { isTokenRevoked } from '../plugins/auth.js';
 import { ACCESS_CACHE_TTL_MS } from '../lib/scope.js';
 import { getPubSubService } from '../services/cache.js';
+import { isHiddenSession } from '../fork/hiddenUsers.js'; // fork: hide users
 
 type TypedServer = Server<ClientToServerEvents, ServerToClientEvents>;
 type TypedSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
@@ -284,7 +285,7 @@ export function broadcastSessionEvent(
   event: 'session:started' | 'session:updated',
   session: ActiveSession
 ): Promise<void> {
-  broadcastToSessions(event, session);
+  if (!isHiddenSession(session)) broadcastToSessions(event, session); // fork: hide users
   if (!io) return Promise.resolve();
   sessionAccounts.set(session.id, session.serverUserId);
   return deliverToMember(session.id, async () => {

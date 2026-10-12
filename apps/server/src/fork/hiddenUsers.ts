@@ -6,7 +6,6 @@
  */
 
 import { eq, inArray, sql, type SQL } from 'drizzle-orm';
-import { WS_EVENTS } from '@tracearr/shared';
 import { db } from '../db/client.js';
 import { serverUsers, settings } from '../db/schema.js';
 
@@ -18,11 +17,18 @@ interface Snapshot {
   userIds: ReadonlySet<string>;
   /** Every server account (server_users.id) of a hidden identity */
   serverUserIds: ReadonlySet<string>;
+  /** Server accounts per hidden identity, so a viewer's own can be exempted */
+  accountsByUser: ReadonlyMap<string, readonly string[]>;
   /** Changes whenever the hidden set changes (for cache keys) */
   key: string;
 }
 
-const EMPTY: Snapshot = { userIds: new Set(), serverUserIds: new Set(), key: '' };
+const EMPTY: Snapshot = {
+  userIds: new Set(),
+  serverUserIds: new Set(),
+  accountsByUser: new Map(),
+  key: '',
+};
 
 let snapshot: Snapshot = EMPTY;
 let refreshTimer: NodeJS.Timeout | null = null;
@@ -40,12 +46,16 @@ async function readHiddenUserIds(): Promise<string[]> {
 async function buildSnapshot(userIds: string[]): Promise<Snapshot> {
   if (userIds.length === 0) return EMPTY;
   const accounts = await db
-    .select({ id: serverUsers.id })
+    .select({ id: serverUsers.id, userId: serverUsers.userId })
     .from(serverUsers)
     .where(inArray(serverUsers.userId, userIds));
+  const accountsByUser = new Map<string, string[]>();
+  for (const a of accounts)
+    accountsByUser.set(a.userId, [...(accountsByUser.get(a.userId) ?? []), a.id]);
   return {
     userIds: new Set(userIds),
     serverUserIds: new Set(accounts.map((a) => a.id)),
+    accountsByUser,
     key: [...userIds].sort().join(','),
   };
 }
@@ -91,30 +101,50 @@ export async function setUserHidden(userId: string, hidden: boolean): Promise<st
 
 type SessionLike = { serverUserId?: string | null; user?: { id?: string | null } | null };
 
-function isHiddenSession(session: SessionLike): boolean {
-  const ids = snapshot.serverUserIds;
+/**
+ * Hidden accounts as seen by a viewer (users.id). A person always sees their own
+ * activity, so the viewer's own accounts are never hidden from them.
+ */
+function hiddenAccountsFor(viewerUserId?: string): ReadonlySet<string> {
+  const own = viewerUserId ? snapshot.accountsByUser.get(viewerUserId) : undefined;
+  if (!own) return snapshot.serverUserIds;
+  const ids = new Set(snapshot.serverUserIds);
+  for (const id of own) ids.delete(id);
+  return ids;
+}
+
+function hiddenFrom(ids: ReadonlySet<string>, session: SessionLike): boolean {
   return (
     (!!session.serverUserId && ids.has(session.serverUserId)) ||
     (!!session.user?.id && ids.has(session.user.id))
   );
 }
 
-export function withoutHiddenSessions<T extends SessionLike>(sessions: T[]): T[] {
-  return snapshot.serverUserIds.size === 0 ? sessions : sessions.filter((s) => !isHiddenSession(s));
+export function isHiddenSession(session: SessionLike): boolean {
+  return hiddenFrom(snapshot.serverUserIds, session);
+}
+
+export function withoutHiddenSessions<T extends SessionLike>(
+  sessions: T[],
+  viewerUserId?: string
+): T[] {
+  const ids = hiddenAccountsFor(viewerUserId);
+  return ids.size === 0 ? sessions : sessions.filter((s) => !hiddenFrom(ids, s));
 }
 
 /** Drop filter-option users (one row per identity) with any hidden account. */
 export function withoutHiddenUsers<T extends { id: string; serverUserIds?: string[] }>(
-  users: T[]
+  users: T[],
+  viewerUserId?: string
 ): T[] {
-  const ids = snapshot.serverUserIds;
+  const ids = hiddenAccountsFor(viewerUserId);
   if (ids.size === 0) return users;
   return users.filter((u) => !ids.has(u.id) && !(u.serverUserIds ?? []).some((id) => ids.has(id)));
 }
 
-/** Conditions excluding hidden sessions for a sessions alias; empty if nobody is hidden. */
-export function hiddenSessionConditions(alias = 's'): SQL[] {
-  const ids = [...snapshot.serverUserIds];
+/** Conditions excluding hidden sessions for a sessions alias; empty if nothing is hidden. */
+export function hiddenSessionConditions(alias = 's', viewerUserId?: string): SQL[] {
+  const ids = [...hiddenAccountsFor(viewerUserId)];
   if (ids.length === 0) return [];
   return [
     sql`${sql.raw(alias)}.server_user_id NOT IN (${sql.join(
@@ -122,10 +152,4 @@ export function hiddenSessionConditions(alias = 's'): SQL[] {
       sql`, `
     )})`,
   ];
-}
-
-/** Live start/update events for a hidden person; stop events carry only an id. */
-export function isHiddenSessionEvent(event: string, data: unknown): boolean {
-  if (event !== WS_EVENTS.SESSION_STARTED && event !== WS_EVENTS.SESSION_UPDATED) return false;
-  return !!data && typeof data === 'object' && isHiddenSession(data as SessionLike);
 }

@@ -224,7 +224,7 @@ function buildHistoryFilterConditions(
   if (subtitleBurnIn !== undefined)
     conditions.push(subtitleBurnIn ? subtitleBurnInSql('s') : sql`NOT ${subtitleBurnInSql('s')}`);
   if (excludeShortSessions) conditions.push(sql`s.short_session = false`);
-  conditions.push(...hiddenSessionConditions('s')); // fork: hide users
+  conditions.push(...hiddenSessionConditions('s', authUser.userId)); // fork: hide users
 
   return { conditions, whereClause: buildWhereClause(conditions) };
 }
@@ -330,7 +330,7 @@ export const sessionRoutes: FastifyPluginAsync = async (app) => {
       endOfDay.setHours(23, 59, 59, 999);
       conditions.push(sql`s.started_at <= ${endOfDay}`);
     }
-    conditions.push(...hiddenSessionConditions('s')); // fork: hide users
+    conditions.push(...hiddenSessionConditions('s', authUser.userId)); // fork: hide users
 
     // Build the WHERE clause
     const whereClause =
@@ -1386,7 +1386,7 @@ export const sessionRoutes: FastifyPluginAsync = async (app) => {
       devices: devicesResult.rows as unknown as HistoryFilterOptions['devices'],
       countries: countriesResult.rows as unknown as HistoryFilterOptions['countries'],
       cities: citiesResult.rows as unknown as HistoryFilterOptions['cities'],
-      users: withoutHiddenUsers(usersData), // fork: hide users
+      users: withoutHiddenUsers(usersData, authUser.userId), // fork: hide users
       servers: serversData,
     };
 
@@ -1430,7 +1430,7 @@ export const sessionRoutes: FastifyPluginAsync = async (app) => {
     }
     // else: owner with no filter, keep all
 
-    activeSessions = withoutHiddenSessions(activeSessions); // fork: hide users
+    activeSessions = withoutHiddenSessions(activeSessions, authUser.userId); // fork: hide users
     const scope = await viewScope(request);
     if (scope === 'all') return { data: activeSessions };
     const own = new Set(scope.serverUserIds);

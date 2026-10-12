@@ -102,7 +102,10 @@ async function computeDashboardStats(
         const idSet = new Set(serverIds);
         activeSessions = activeSessions.filter((s) => idSet.has(s.serverId));
       }
-      activeSessions = withoutHiddenSessions(activeSessions); // fork: hide users
+      activeSessions = withoutHiddenSessions(
+        activeSessions,
+        scope === 'all' ? undefined : scope.userId
+      ); // fork: hide users
       activeStreams = activeSessions.length;
       if (scope !== 'all') {
         const own = new Set(scope.serverUserIds);

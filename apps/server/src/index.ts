@@ -15,7 +15,7 @@ import { createBetterAuthHandler } from './lib/betterAuthRequest.js';
 import { getBasePath } from './lib/basePath.js';
 import { registerOriginPolicy, trustProxyFromEnv } from './lib/origins.js';
 import { hiddenUsersRoutes } from './fork/hiddenUsersRoutes.js'; // fork: hide users
-import { isHiddenSessionEvent, startHiddenUsersSync } from './fork/hiddenUsers.js'; // fork: hide users
+import { startHiddenUsersSync } from './fork/hiddenUsers.js'; // fork: hide users
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -1248,7 +1248,6 @@ async function initializePostListen(app: FastifyInstance) {
         data: unknown;
         timestamp: number;
       };
-      if (isHiddenSessionEvent(event, data)) return; // fork: hide users
 
       // Forward events to WebSocket clients
       switch (event) {
