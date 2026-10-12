@@ -16,6 +16,7 @@ import { getCacheService } from '../../services/cache.js';
 import { getCurrentVersion } from '../../utils/buildInfo.js';
 import { serverOrderBy } from '../../utils/serverOrder.js';
 import type { RouteConfig } from './shared.js';
+import { withoutHiddenSessions } from '../../fork/hiddenUsers.js'; // fork: hide users
 
 // Exhaustive so a new connection state has to say whether the poller covers it
 function hasLiveConnection(connection: ServerConnectionStatus | null): boolean {
@@ -49,7 +50,8 @@ export function registerServersRoutes(app: FastifyInstance, routeConfig: RouteCo
         .orderBy(...serverOrderBy());
 
       const cache = getCacheService();
-      const activeSessions = cache ? await cache.getAllActiveSessions() : [];
+      let activeSessions = cache ? await cache.getAllActiveSessions() : [];
+      activeSessions = withoutHiddenSessions(activeSessions); // fork: hide users
 
       const data = await Promise.all(
         rows.map(async (server) => {
