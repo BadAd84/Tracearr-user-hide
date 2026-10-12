@@ -1,5 +1,5 @@
 > [!NOTE]
-> **This is a fork of [connorgallopo/Tracearr](https://github.com/connorgallopo/Tracearr)** that adds one feature: an owner can **hide a user** from the user's page (eye button next to their name). A hidden user's streams and plays are left out of the dashboard's Now Playing list, the History page and the API the mobile app and integrations use. Nothing is deleted, and unhiding brings everything back. Every new upstream stable release is merged and published here automatically.
+> **This is a fork of [connorgallopo/Tracearr](https://github.com/connorgallopo/Tracearr)** that adds one feature: an owner or admin can **hide a user** from the user's page (eye button next to their name). A hidden user's streams and plays are left out of the dashboard's Now Playing list, the History page and the API the mobile app and integrations use. A hidden member still sees their own activity; an owner or admin who hides themselves is hidden from their own view too. Nothing is deleted, and unhiding brings everything back. Every new upstream stable release is merged and published here automatically.
 >
 > **Switching from the original image** changes only the image name. Keep your existing volumes, environment variables and ports; your data carries over.
 >
@@ -15,7 +15,7 @@
 > - **Portainer:** Stacks → edit the stack's `image:` line → **Update the stack** with **Re-pull image** on. For a standalone container: open it → **Duplicate/Edit** → change **Image** → **Deploy the container** → confirm the replace.
 > - **`docker run`:** stop and remove the old container (`docker rm -f tracearr`), then run the same command with the fork image name.
 >
-> Image names must be all lowercase. To confirm the switch worked, sign in as the owner and open any user: the eye button should appear next to their name. Going back to the original image is safe once upstream has released a version at least as new as the one you ran here.
+> Image names must be all lowercase. To confirm the switch worked, sign in as the owner or an admin and open any user: the eye button should appear next to their name. Going back to the original image is safe once upstream has released a version at least as new as the one you ran here.
 
 <p align="center">
   <img src="apps/web/public/images/og_image.png" alt="Tracearr" width="600" />
