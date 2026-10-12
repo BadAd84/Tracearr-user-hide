@@ -76,6 +76,7 @@ describe('UserAccessControls', () => {
     expect(
       screen.getByRole('button', { name: 'userDetail.access.viewAsLabel:Dana' })
     ).toBeEnabled();
+    expect(screen.queryByText('userDetail.access.viewAsHint')).toBeNull();
   });
 
   it.each([

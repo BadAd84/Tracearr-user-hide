@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Eye, KeyRound, Loader2 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FieldError, FieldGroup } from '@/components/ui/field';
 import { AutosaveSelectField } from '@/components/ui/autosave-field';
@@ -51,8 +51,24 @@ export function UserAccessControls({ user, name }: UserAccessControlsProps) {
           <KeyRound className="h-5 w-5" />
           {t('userDetail.access.title')}
         </CardTitle>
+        {!inactive && (
+          <CardAction>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={viewAs.isPending}
+              aria-label={t('userDetail.access.viewAsLabel', { name })}
+              title={t('userDetail.access.viewAsHint')}
+              onClick={() => viewAs.mutate(identityId)}
+            >
+              {viewAs.isPending ? <Loader2 className="animate-spin" /> : <Eye />}
+              {t('userDetail.access.viewAs')}
+            </Button>
+          </CardAction>
+        )}
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
+        {viewAs.error && <FieldError>{viewAs.error.message}</FieldError>}
         {inactive ? (
           <p className="text-muted-foreground text-sm">
             {t(
@@ -60,7 +76,7 @@ export function UserAccessControls({ user, name }: UserAccessControlsProps) {
             )}
           </p>
         ) : (
-          <FieldGroup>
+          <FieldGroup className="grid gap-4 sm:grid-cols-2">
             <AutosaveSelectField
               id="user-login-access"
               label={t('userDetail.access.signIn')}
@@ -100,14 +116,14 @@ export function UserAccessControls({ user, name }: UserAccessControlsProps) {
           </FieldGroup>
         )}
 
-        <dl className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <dt className="text-muted-foreground">{t('userDetail.access.signIns')}</dt>
-            <dd className="font-medium">{user.loginCount}</dd>
+        <dl className="text-muted-foreground flex flex-wrap gap-x-6 gap-y-1 text-sm">
+          <div className="flex gap-1.5">
+            <dt>{t('userDetail.access.signIns')}</dt>
+            <dd className="text-foreground font-medium">{user.loginCount}</dd>
           </div>
-          <div>
-            <dt className="text-muted-foreground">{t('userDetail.access.lastSignIn')}</dt>
-            <dd className="font-medium">
+          <div className="flex gap-1.5">
+            <dt>{t('userDetail.access.lastSignIn')}</dt>
+            <dd className="text-foreground font-medium">
               {safeFormatDate(
                 user.lastLoginAt,
                 `MMM d, yyyy, ${getTimeFormatString()}`,
@@ -116,23 +132,6 @@ export function UserAccessControls({ user, name }: UserAccessControlsProps) {
             </dd>
           </div>
         </dl>
-
-        {!inactive && (
-          <div className="space-y-2">
-            <Button
-              variant="outline"
-              className="w-full sm:w-auto"
-              disabled={viewAs.isPending}
-              aria-label={t('userDetail.access.viewAsLabel', { name })}
-              onClick={() => viewAs.mutate(identityId)}
-            >
-              {viewAs.isPending ? <Loader2 className="animate-spin" /> : <Eye />}
-              {t('userDetail.access.viewAs')}
-            </Button>
-            <p className="text-muted-foreground text-xs">{t('userDetail.access.viewAsHint')}</p>
-            {viewAs.error && <FieldError>{viewAs.error.message}</FieldError>}
-          </div>
-        )}
       </CardContent>
     </Card>
   );

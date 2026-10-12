@@ -357,6 +357,8 @@ export const userRosterFilterSchema = serverIdFilterSchema.extend({
    * view is narrowed to one server.
    */
   hasAccessTo: serverIdsQuerySchema,
+  /** Only people whose sign-in access is set to Allow or Block on their user page. */
+  signInOverride: booleanStringSchema.default(false),
   // Identity-level bounds: earliest account join, latest account activity.
   joinedAfter: listDateBoundSchema,
   joinedBefore: listDateBoundSchema,

@@ -72,7 +72,7 @@ function owner(): AuthUser {
 }
 
 function filters(overrides: Partial<UserRosterFilters> = {}): UserRosterFilters {
-  return { includeRemoved: false, ...overrides };
+  return { includeRemoved: false, signInOverride: false, ...overrides };
 }
 
 function pageSql(
@@ -209,6 +209,15 @@ describe('roster date bounds', () => {
 // ============================================================================
 // Account scope
 // ============================================================================
+
+describe('roster signInOverride', () => {
+  it('keeps only identities set to Allow or Block', () => {
+    const { text } = pageSql(filters({ signInOverride: true }));
+
+    expect(text).toContain("u.login_access <> 'default'");
+    expect(pageSql(filters()).text).not.toContain('u.login_access <>');
+  });
+});
 
 describe('roster hasAccessTo', () => {
   it('requires an active account on every listed server, not any of them', () => {

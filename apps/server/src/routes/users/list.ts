@@ -164,6 +164,10 @@ export function buildUserRosterSql(
     }
   }
 
+  if (filters.signInOverride) {
+    identityConditions.push(sql`u.login_access <> 'default'`);
+  }
+
   const joinedAfter = utcDayStart(filters.joinedAfter);
   if (joinedAfter) {
     identityConditions.push(sql`u.first_joined_at >= ${joinedAfter}`);
