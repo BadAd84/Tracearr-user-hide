@@ -596,7 +596,10 @@ export function UserDetail() {
                     {removedBadgeState.removed && (
                       <RemovedBadge removedAt={removedBadgeState.removedAt} />
                     )}
-                    {isOwner && identityUserId && <HideUserToggle userId={identityUserId} />}
+                    {/* fork: hide users */}
+                    {(isOwner || authUser?.role === 'admin') && identityUserId && (
+                      <HideUserToggle userId={identityUserId} />
+                    )}
                   </div>
                   <p className="text-muted-foreground text-sm">@{user.username}</p>
                   <ContactEmailLine

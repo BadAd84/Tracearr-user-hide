@@ -1,6 +1,6 @@
-/** Fork patch: owner routes. GET / lists hidden users.id; PUT/DELETE /:userId hide/unhide. */
+/** Fork patch: owner/admin routes. GET / lists hidden users.id; PUT/DELETE /:userId hide/unhide. */
 
-import type { FastifyPluginAsync } from 'fastify';
+import type { FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../db/client.js';
@@ -17,10 +17,17 @@ async function applyHidden(userId: string, hidden: boolean): Promise<{ data: str
   return { data };
 }
 
-export const hiddenUsersRoutes: FastifyPluginAsync = async (app) => {
-  app.get('/', { preHandler: [app.requireOwner] }, async () => ({ data: getHiddenUserIds() }));
+async function requireStaff(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+  const { role } = request.user;
+  if (role !== 'owner' && role !== 'admin') return reply.forbidden('Owner or admin only');
+}
 
-  app.put('/:userId', { preHandler: [app.requireOwner] }, async (request, reply) => {
+export const hiddenUsersRoutes: FastifyPluginAsync = async (app) => {
+  const guard = { preHandler: [app.authenticate, requireStaff] };
+
+  app.get('/', guard, async () => ({ data: getHiddenUserIds() }));
+
+  app.put('/:userId', guard, async (request, reply) => {
     const params = paramsSchema.safeParse(request.params);
     if (!params.success) return reply.badRequest('Invalid user ID');
 
@@ -34,7 +41,7 @@ export const hiddenUsersRoutes: FastifyPluginAsync = async (app) => {
     return applyHidden(user.id, true);
   });
 
-  app.delete('/:userId', { preHandler: [app.requireOwner] }, async (request, reply) => {
+  app.delete('/:userId', guard, async (request, reply) => {
     const params = paramsSchema.safeParse(request.params);
     if (!params.success) return reply.badRequest('Invalid user ID');
     return applyHidden(params.data.userId, false);

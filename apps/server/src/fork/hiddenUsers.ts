@@ -7,7 +7,7 @@
 
 import { eq, inArray, sql, type SQL } from 'drizzle-orm';
 import { db } from '../db/client.js';
-import { serverUsers, settings } from '../db/schema.js';
+import { serverUsers, settings, users } from '../db/schema.js';
 
 const HIDDEN_USERS_SETTING = 'fork.hiddenUserIds';
 const REFRESH_MS = 10_000;
@@ -17,7 +17,8 @@ interface Snapshot {
   userIds: ReadonlySet<string>;
   /** Every server account (server_users.id) of a hidden identity */
   serverUserIds: ReadonlySet<string>;
-  /** Server accounts per hidden identity, so a viewer's own can be exempted */
+  /** Accounts per hidden member, so they still see their own activity. Owners and
+   *  admins who hide themselves are left out: for them, hidden means hidden. */
   accountsByUser: ReadonlyMap<string, readonly string[]>;
   /** Changes whenever the hidden set changes (for cache keys) */
   key: string;
@@ -46,12 +47,15 @@ async function readHiddenUserIds(): Promise<string[]> {
 async function buildSnapshot(userIds: string[]): Promise<Snapshot> {
   if (userIds.length === 0) return EMPTY;
   const accounts = await db
-    .select({ id: serverUsers.id, userId: serverUsers.userId })
+    .select({ id: serverUsers.id, userId: serverUsers.userId, role: users.role })
     .from(serverUsers)
+    .innerJoin(users, eq(users.id, serverUsers.userId))
     .where(inArray(serverUsers.userId, userIds));
   const accountsByUser = new Map<string, string[]>();
-  for (const a of accounts)
+  for (const a of accounts) {
+    if (a.role === 'owner' || a.role === 'admin') continue;
     accountsByUser.set(a.userId, [...(accountsByUser.get(a.userId) ?? []), a.id]);
+  }
   return {
     userIds: new Set(userIds),
     serverUserIds: new Set(accounts.map((a) => a.id)),
@@ -102,8 +106,8 @@ export async function setUserHidden(userId: string, hidden: boolean): Promise<st
 type SessionLike = { serverUserId?: string | null; user?: { id?: string | null } | null };
 
 /**
- * Hidden accounts as seen by a viewer (users.id). A person always sees their own
- * activity, so the viewer's own accounts are never hidden from them.
+ * Hidden accounts as seen by a viewer (users.id). A hidden member still sees
+ * their own activity; a hidden owner or admin does not.
  */
 function hiddenAccountsFor(viewerUserId?: string): ReadonlySet<string> {
   const own = viewerUserId ? snapshot.accountsByUser.get(viewerUserId) : undefined;
