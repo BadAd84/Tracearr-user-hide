@@ -1,0 +1,14 @@
+{
+  "version": "2.8.1",
+  "date": "2026-10-12",
+  "changes": [
+    {
+      "type": "fix",
+      "text": "the Seerr card picks up a new Seerr version on the next sync instead of staying on the one it was added with"
+    },
+    {
+      "type": "fix",
+      "text": "syncing a Plex, Jellyfin or Emby server refreshes its shown version instead of waiting up to six hours"
+    }
+  ]
+}
