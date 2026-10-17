@@ -18,7 +18,7 @@
  * servers.
  *
  * Uses LEFT JOIN to ensure items without sessions return 0 watch count.
- * A play is one resume chain (COALESCE(reference_id, id)) gated at 2 minutes (120000ms).
+ * A play is one resume chain (COALESCE(reference_id, id)) that ran 2 minutes or was watched.
  */
 
 import type { FastifyPluginAsync } from 'fastify';
@@ -29,6 +29,7 @@ import {
   libraryWatchQuerySchema,
   type LibraryWatchQueryInput,
 } from '@tracearr/shared';
+import { countedSessionSql } from '../../constants/index.js';
 import { db } from '../../db/client.js';
 import { resolveServerIds, buildMultiServerFragment } from '../../utils/serverFiltering.js';
 import { resolutionRankSql } from '../../utils/resolutionBuckets.js';
@@ -251,8 +252,8 @@ export const libraryWatchRoute: FastifyPluginAsync = async (app) => {
               li.video_resolution,
               li.created_at AS added_at,
               COALESCE(m.sort_title, lower(li.title)) AS sort_key,
-              COUNT(DISTINCT COALESCE(sess.reference_id, sess.id)) FILTER (WHERE COALESCE(sess.duration_ms, 0) >= 120000) AS watch_count,
-              COALESCE(SUM(sess.duration_ms) FILTER (WHERE sess.duration_ms >= 120000), 0) AS total_watch_ms,
+              COUNT(DISTINCT COALESCE(sess.reference_id, sess.id)) FILTER (WHERE ${countedSessionSql('sess')}) AS watch_count,
+              COALESCE(SUM(sess.duration_ms) FILTER (WHERE ${countedSessionSql('sess')}), 0) AS total_watch_ms,
               MAX(sess.stopped_at) AS last_watched_at,
               BOOL_OR(
                 sess.duration_ms IS NOT NULL
@@ -362,8 +363,8 @@ export const libraryWatchRoute: FastifyPluginAsync = async (app) => {
               SELECT
                 li.id,
                 li.server_id,
-                COUNT(DISTINCT COALESCE(sess.reference_id, sess.id)) FILTER (WHERE COALESCE(sess.duration_ms, 0) >= 120000) AS watch_count,
-                COALESCE(SUM(sess.duration_ms) FILTER (WHERE sess.duration_ms >= 120000), 0) AS total_watch_ms,
+                COUNT(DISTINCT COALESCE(sess.reference_id, sess.id)) FILTER (WHERE ${countedSessionSql('sess')}) AS watch_count,
+                COALESCE(SUM(sess.duration_ms) FILTER (WHERE ${countedSessionSql('sess')}), 0) AS total_watch_ms,
                 BOOL_OR(
                   sess.duration_ms IS NOT NULL
                   AND sess.total_duration_ms IS NOT NULL
@@ -422,8 +423,8 @@ export const libraryWatchRoute: FastifyPluginAsync = async (app) => {
               li.created_at AS added_at,
               COALESCE(li.media_id::text, li.id::text) AS match_key,
               COALESCE(m.sort_title, lower(li.title)) AS sort_key,
-              COUNT(DISTINCT COALESCE(sess.reference_id, sess.id)) FILTER (WHERE COALESCE(sess.duration_ms, 0) >= 120000) AS watch_count,
-              COALESCE(SUM(sess.duration_ms) FILTER (WHERE sess.duration_ms >= 120000), 0) AS total_watch_ms,
+              COUNT(DISTINCT COALESCE(sess.reference_id, sess.id)) FILTER (WHERE ${countedSessionSql('sess')}) AS watch_count,
+              COALESCE(SUM(sess.duration_ms) FILTER (WHERE ${countedSessionSql('sess')}), 0) AS total_watch_ms,
               MAX(sess.stopped_at) AS last_watched_at,
               -- Completion signal: any session covering 85%+ of total_duration_ms
               BOOL_OR(
@@ -565,8 +566,8 @@ export const libraryWatchRoute: FastifyPluginAsync = async (app) => {
                 li.id,
                 li.server_id,
                 COALESCE(li.media_id::text, li.id::text) AS match_key,
-                COUNT(DISTINCT COALESCE(sess.reference_id, sess.id)) FILTER (WHERE COALESCE(sess.duration_ms, 0) >= 120000) AS watch_count,
-                COALESCE(SUM(sess.duration_ms) FILTER (WHERE sess.duration_ms >= 120000), 0) AS total_watch_ms,
+                COUNT(DISTINCT COALESCE(sess.reference_id, sess.id)) FILTER (WHERE ${countedSessionSql('sess')}) AS watch_count,
+                COALESCE(SUM(sess.duration_ms) FILTER (WHERE ${countedSessionSql('sess')}), 0) AS total_watch_ms,
                 BOOL_OR(
                   sess.duration_ms IS NOT NULL
                   AND sess.total_duration_ms IS NOT NULL

@@ -13,12 +13,9 @@
 import type { SQL } from 'drizzle-orm';
 import { sql } from 'drizzle-orm';
 import { db } from '../../db/client.js';
-import { MEDIA_TYPE_SQL_FILTER } from '../../constants/index.js';
+import { countedSessionSql, MEDIA_TYPE_SQL_FILTER } from '../../constants/index.js';
 import { playbackDecisionSql } from '../../utils/playbackDecisionSql.js';
 import type { QualityStats } from '@tracearr/shared';
-
-// Sessions shorter than 2 minutes are not counted as intentional plays
-const MIN_PLAY_DURATION_MS = 120000;
 
 // ============================================================================
 // Plays Over Time
@@ -48,8 +45,8 @@ export async function queryPlaysOverTime(params: {
   const { rangeStart, timezone, bucketInterval, serverFilter, endDate, mediaTypeFilter } = params;
 
   const baseWhere = rangeStart
-    ? sql`WHERE started_at >= ${rangeStart} AND duration_ms >= ${MIN_PLAY_DURATION_MS}`
-    : sql`WHERE duration_ms >= ${MIN_PLAY_DURATION_MS}`;
+    ? sql`WHERE started_at >= ${rangeStart} AND ${countedSessionSql()}`
+    : sql`WHERE ${countedSessionSql()}`;
 
   const result = await db.execute(sql`
     SELECT
@@ -93,8 +90,8 @@ export async function queryPlaysByDayOfWeek(params: {
   const { rangeStart, timezone, serverFilter, endDate } = params;
 
   const baseWhere = rangeStart
-    ? sql`WHERE started_at >= ${rangeStart} AND duration_ms >= ${MIN_PLAY_DURATION_MS}`
-    : sql`WHERE duration_ms >= ${MIN_PLAY_DURATION_MS}`;
+    ? sql`WHERE started_at >= ${rangeStart} AND ${countedSessionSql()}`
+    : sql`WHERE ${countedSessionSql()}`;
 
   const result = await db.execute(sql`
     SELECT
@@ -136,8 +133,8 @@ export async function queryPlaysByHourOfDay(params: {
   const { rangeStart, timezone, serverFilter, endDate } = params;
 
   const baseWhere = rangeStart
-    ? sql`WHERE started_at >= ${rangeStart} AND duration_ms >= ${MIN_PLAY_DURATION_MS}`
-    : sql`WHERE duration_ms >= ${MIN_PLAY_DURATION_MS}`;
+    ? sql`WHERE started_at >= ${rangeStart} AND ${countedSessionSql()}`
+    : sql`WHERE ${countedSessionSql()}`;
 
   const result = await db.execute(sql`
     SELECT

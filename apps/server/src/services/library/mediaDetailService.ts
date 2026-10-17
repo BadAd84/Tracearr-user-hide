@@ -10,6 +10,7 @@
 
 import { and, eq, isNull, sql, type SQL } from 'drizzle-orm';
 import type { WatchedState } from '@tracearr/shared';
+import { countedSessionSql } from '../../constants/index.js';
 import { db } from '../../db/client.js';
 import { media, servers } from '../../db/schema.js';
 import { buildMultiServerFragment } from '../../utils/serverFiltering.js';
@@ -653,9 +654,9 @@ export async function getMediaStats(
         ? await db.execute(sql`
             SELECT
               s.server_id,
-              COUNT(DISTINCT COALESCE(s.reference_id, s.id)) FILTER (WHERE COALESCE(s.duration_ms, 0) >= 120000) AS plays,
-              SUM(CASE WHEN COALESCE(s.duration_ms, 0) >= 120000 THEN s.duration_ms ELSE 0 END) AS watch_time_ms,
-              COUNT(DISTINCT su.user_id) FILTER (WHERE COALESCE(s.duration_ms, 0) >= 120000)::int AS unique_users
+              COUNT(DISTINCT COALESCE(s.reference_id, s.id)) FILTER (WHERE ${countedSessionSql('s')}) AS plays,
+              SUM(CASE WHEN ${countedSessionSql('s')} THEN s.duration_ms ELSE 0 END) AS watch_time_ms,
+              COUNT(DISTINCT su.user_id) FILTER (WHERE ${countedSessionSql('s')})::int AS unique_users
             FROM sessions s
             JOIN server_users su ON su.id = s.server_user_id
             WHERE ${scopeFilter}${windowDayFilter(sql`s.started_at`, win.days)} ${serverFragment}
@@ -753,20 +754,20 @@ export async function getMediaWatchers(args: GetMediaWatchersArgs): Promise<Medi
         su.username,
         u.name AS identity_name,
         COALESCE(u.thumbnail, su.thumb_url) AS thumb,
-        COUNT(DISTINCT COALESCE(s.reference_id, s.id)) FILTER (WHERE COALESCE(s.duration_ms, 0) >= 120000) AS plays,
-        SUM(CASE WHEN COALESCE(s.duration_ms, 0) >= 120000 THEN s.duration_ms ELSE 0 END) AS watch_time_ms,
+        COUNT(DISTINCT COALESCE(s.reference_id, s.id)) FILTER (WHERE ${countedSessionSql('s')}) AS plays,
+        SUM(CASE WHEN ${countedSessionSql('s')} THEN s.duration_ms ELSE 0 END) AS watch_time_ms,
         CASE WHEN MAX(s.progress_ms) IS NULL OR COALESCE(MAX(s.total_duration_ms), 0) = 0 THEN NULL
              ELSE LEAST(100, round(100.0 * MAX(s.progress_ms) / MAX(s.total_duration_ms), 1))
         END::float8 AS completion_pct,
         MAX((s.started_at AT TIME ZONE 'utc')::date)::text AS last_watched_day,
-        COUNT(DISTINCT s.media_id) FILTER (WHERE COALESCE(s.duration_ms, 0) >= 120000)::int AS distinct_episodes_watched
+        COUNT(DISTINCT s.media_id) FILTER (WHERE ${countedSessionSql('s')})::int AS distinct_episodes_watched
       FROM sessions s
       JOIN server_users su ON su.id = s.server_user_id
       LEFT JOIN users u ON u.id = su.user_id
       WHERE s.show_media_id IN (${idList(scope.showAliases)})
         AND s.season_number = ${scope.seasonNumber}${windowDayFilter(sql`s.started_at`, days)} ${serverFilter} ${authFragment}
       GROUP BY s.server_user_id, su.user_id, su.server_id, su.username, u.name, COALESCE(u.thumbnail, su.thumb_url)
-      HAVING COUNT(DISTINCT COALESCE(s.reference_id, s.id)) FILTER (WHERE COALESCE(s.duration_ms, 0) >= 120000) > 0
+      HAVING COUNT(DISTINCT COALESCE(s.reference_id, s.id)) FILTER (WHERE ${countedSessionSql('s')}) > 0
       ORDER BY watch_time_ms DESC, s.server_user_id
     `);
     rows = result.rows as unknown as WatcherAggRow[];
@@ -873,13 +874,13 @@ export async function getMediaPlatformBreakdown(
     SELECT
       s.platform,
       s.player_name AS player,
-      COUNT(DISTINCT COALESCE(s.reference_id, s.id)) FILTER (WHERE COALESCE(s.duration_ms, 0) >= 120000) AS plays,
-      SUM(CASE WHEN COALESCE(s.duration_ms, 0) >= 120000 THEN s.duration_ms ELSE 0 END) AS watch_time_ms
+      COUNT(DISTINCT COALESCE(s.reference_id, s.id)) FILTER (WHERE ${countedSessionSql('s')}) AS plays,
+      SUM(CASE WHEN ${countedSessionSql('s')} THEN s.duration_ms ELSE 0 END) AS watch_time_ms
     FROM sessions s
     WHERE (s.media_id = ANY(${uuidArraySql(ids)}) OR s.show_media_id = ANY(${uuidArraySql(ids)}))
       ${serverFragment}
     GROUP BY s.platform, s.player_name
-    HAVING COUNT(DISTINCT COALESCE(s.reference_id, s.id)) FILTER (WHERE COALESCE(s.duration_ms, 0) >= 120000) > 0
+    HAVING COUNT(DISTINCT COALESCE(s.reference_id, s.id)) FILTER (WHERE ${countedSessionSql('s')}) > 0
     ORDER BY plays DESC, lower(s.platform) NULLS LAST, lower(s.player_name) NULLS LAST
   `);
   return (

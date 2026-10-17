@@ -11,7 +11,7 @@
 
 import type { FastifyPluginAsync } from 'fastify';
 import { sql, eq, and, inArray } from 'drizzle-orm';
-import { statsQuerySchema, SESSION_LIMITS } from '@tracearr/shared';
+import { statsQuerySchema } from '@tracearr/shared';
 import type { UserStats, TopUserStats } from '@tracearr/shared';
 import { db } from '../../db/client.js';
 import { serverUsers, servers } from '../../db/schema.js';
@@ -23,7 +23,7 @@ import {
 } from '../../utils/serverFiltering.js';
 import { scopedServerFragment } from '../../lib/scope.js';
 import { representativeAccountOrderSql } from '../../utils/representativeAccount.js';
-import { MEDIA_TYPE_SQL_FILTER_S } from '../../constants/index.js';
+import { countedSessionSql, MEDIA_TYPE_SQL_FILTER_S } from '../../constants/index.js';
 
 export const usersRoutes: FastifyPluginAsync = async (app) => {
   const readStats = { preHandler: [app.requirePermission('stats', 'read')] };
@@ -66,7 +66,7 @@ export const usersRoutes: FastifyPluginAsync = async (app) => {
           rep.id as server_user_id,
           rep.username,
           rep.thumb_url,
-          COUNT(DISTINCT COALESCE(s.reference_id, s.id)) FILTER (WHERE s.duration_ms >= ${SESSION_LIMITS.MIN_PLAY_TIME_MS})::int as play_count,
+          COUNT(DISTINCT COALESCE(s.reference_id, s.id)) FILTER (WHERE ${countedSessionSql('s')})::int as play_count,
           COALESCE(SUM(s.duration_ms), 0)::bigint as watch_time_ms
         FROM users u
         INNER JOIN server_users su ON su.user_id = u.id
@@ -150,7 +150,7 @@ export const usersRoutes: FastifyPluginAsync = async (app) => {
           rep.username,
           rep.thumb_url,
           rep.server_id::text as server_id,
-          COUNT(DISTINCT COALESCE(s.reference_id, s.id)) FILTER (WHERE s.duration_ms >= ${SESSION_LIMITS.MIN_PLAY_TIME_MS})::int as play_count,
+          COUNT(DISTINCT COALESCE(s.reference_id, s.id)) FILTER (WHERE ${countedSessionSql('s')})::int as play_count,
           COALESCE(SUM(s.duration_ms), 0)::bigint as watch_time_ms,
           MODE() WITHIN GROUP (ORDER BY s.media_type) as top_media_type,
           MODE() WITHIN GROUP (ORDER BY COALESCE(s.grandparent_title, s.media_title)) as top_content

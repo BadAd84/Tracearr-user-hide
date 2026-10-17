@@ -27,7 +27,11 @@ import {
   seesServerActivity,
   type Scope,
 } from '../lib/scope.js';
-import { PRIMARY_MEDIA_TYPES, MEDIA_TYPE_SQL_FILTER } from '../constants/index.js';
+import {
+  countedSessionSql,
+  PRIMARY_MEDIA_TYPES,
+  MEDIA_TYPE_SQL_FILTER,
+} from '../constants/index.js';
 
 export interface GetDashboardStatsOptions {
   /** Server IDs to filter by. undefined = all servers */
@@ -41,7 +45,6 @@ export interface GetDashboardStatsOptions {
 }
 
 const CACHE_TTL_SECONDS = 60;
-const MIN_PLAY_DURATION_MS = 120000;
 
 /**
  * Get dashboard statistics with optional caching.
@@ -139,7 +142,7 @@ async function computeDashboardStats(
         SELECT COUNT(DISTINCT COALESCE(reference_id, id))::int as count
         FROM sessions
         WHERE started_at >= ${todayStart} AND started_at < ${todayEnd}
-          AND duration_ms >= ${MIN_PLAY_DURATION_MS}
+          AND ${countedSessionSql()}
           ${MEDIA_TYPE_SQL_FILTER}
       `),
     ]);
@@ -227,7 +230,7 @@ async function computeDashboardStats(
         SELECT COUNT(DISTINCT COALESCE(reference_id, id))::int as count
         FROM sessions
         WHERE started_at >= ${todayStart} AND started_at < ${todayEnd}
-          AND duration_ms >= ${MIN_PLAY_DURATION_MS}
+          AND ${countedSessionSql()}
           ${MEDIA_TYPE_SQL_FILTER}
         ${sessionServerFilter}
       `),
