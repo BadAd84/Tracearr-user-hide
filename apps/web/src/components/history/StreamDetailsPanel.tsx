@@ -249,6 +249,8 @@ export function StreamDetailsPanel({
   // Check if we have any stream details to show
   const hasVideoDetails = sourceVideoCodec || streamVideoCodec || sourceVideoWidth;
   const hasAudioDetails = sourceAudioCodec || streamAudioCodec || sourceAudioChannels;
+  // Atmos is metadata inside the core codec, so a direct play or copy keeps it
+  const atmosSuffix = sourceAudioDetails?.atmos ? ' Atmos' : '';
   const hasSubtitleDetails = subtitleInfo?.codec || subtitleInfo?.language;
   const hasTranscodeDetails =
     transcodeInfo && (transcodeInfo.hwDecoding || transcodeInfo.hwEncoding || transcodeInfo.speed);
@@ -398,10 +400,11 @@ export function StreamDetailsPanel({
             <SectionColumnLabels className="border-border/50 mb-1 border-b pb-1" />
             <ComparisonRow
               label="Codec"
-              sourceValue={
-                formatCodec(sourceAudioCodec) + (sourceAudioDetails?.atmos ? ' Atmos' : '')
+              sourceValue={formatCodec(sourceAudioCodec) + atmosSuffix}
+              streamValue={
+                formatCodec(streamAudioCodec ?? sourceAudioCodec) +
+                (audioDecision === 'transcode' ? '' : atmosSuffix)
               }
-              streamValue={formatCodec(streamAudioCodec ?? sourceAudioCodec)}
             />
             <ComparisonRow
               label="Channels"
