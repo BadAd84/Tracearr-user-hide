@@ -450,7 +450,14 @@ test('media-shelves', async ({ page }) => {
   const recentlyAdded = page.getByRole('region', { name: 'Recently Added Movies' });
   await open(page, '/library', recentlyAdded, 'the Recently Added Movies shelf');
   await settle(page);
-  await elementShot(recentlyAdded.locator('xpath=..'), 'media-shelves');
+  // Each shelf's scroller hangs 6px left of the column for the hover lift, so
+  // the column alone would shave the first card.
+  const shelves = recentlyAdded.locator('xpath=..');
+  await shelves.evaluate((el) => {
+    el.style.marginInline = '-16px';
+    el.style.paddingInline = '16px';
+  });
+  await elementShot(shelves, 'media-shelves');
 });
 
 test('media-browse', async ({ page }) => {

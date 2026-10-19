@@ -55,6 +55,8 @@ const SESSION_COUNT = 1400;
 const MUSIC_SESSION_COUNT = 350;
 const RECENT_MOVIES = 9;
 const RECENT_SHOWS = 5;
+/** Days ago each upgraded movie's new Plex file arrived: inside the shelf range, outside the digest's week. */
+const REPLACED_DAYS_AGO = [10, 14, 19];
 
 const serverIdOf = (key: ServerKey): string => fixtureId(`showcase:server:${key}`);
 const userIdOf = (personKey: string): string => fixtureId(`showcase:user:${personKey}`);
@@ -142,6 +144,8 @@ interface CatalogTitle {
   spec: ShowcaseTitle;
   mediaId: string;
   addedAt: Date;
+  /** When an upgrade replaced the Plex copy, for the Recently Updated shelf. */
+  replacedAt: Date | null;
   copies: TitleCopy[];
   seasons: SeasonPlan[];
   episodeRuntimeMs: number;
@@ -213,7 +217,7 @@ function buildCatalog(now: Date): CatalogTitle[] {
   });
   const recentOrder = [...recent].sort((a, b) => a - b);
 
-  return titles.map((spec, index) => {
+  const catalog = titles.map((spec, index): CatalogTitle => {
     const random = rng(`showcase:title:${index}`);
     const baseResolution = spec.resolution ?? '1080p';
     const copies: TitleCopy[] = serversFor(index).map((serverKey) => {
@@ -245,12 +249,27 @@ function buildCatalog(now: Date): CatalogTitle[] {
       spec,
       mediaId: mediaIdOf(spec),
       addedAt: addedAtFor(now, recentOrder.indexOf(index), index, titles.length),
+      replacedAt: null,
       copies,
       seasons,
       episodeRuntimeMs: (22 + (hashSeed(`r:${spec.title}`) % 34)) * 60_000,
       movieRuntimeMs: (92 + (hashSeed(`m:${spec.title}`) % 58)) * 60_000,
     };
   });
+
+  // The replacement has to be the title's newest copy, so only movies whose
+  // other copies are older than every replacement date qualify.
+  const upgradable = catalog.filter(
+    (title) =>
+      title.spec.type === 'movie' &&
+      !recent.has(title.index) &&
+      title.addedAt.getTime() < now.getTime() - 25 * DAY_MS
+  );
+  REPLACED_DAYS_AGO.forEach((daysAgo, i) => {
+    const title = upgradable[i];
+    if (title) title.replacedAt = new Date(now.getTime() - daysAgo * DAY_MS);
+  });
+  return catalog;
 }
 
 const copyOn = (title: CatalogTitle, server: ServerKey): TitleCopy | undefined =>
@@ -1282,7 +1301,7 @@ async function seedLibrary(client: Client, catalog: CatalogTitle[]): Promise<voi
       sortTitleLocal(title.spec.title),
       title.spec.year,
       title.spec.genres,
-      title.addedAt,
+      title.replacedAt ?? title.addedAt,
       null,
       null,
     ])
@@ -1337,10 +1356,46 @@ async function seedLibrary(client: Client, catalog: CatalogTitle[]): Promise<voi
     ]);
   };
 
+  const replaced: unknown[][] = [];
   for (const title of catalog) {
     for (const copy of title.copies) {
       const poster = posterPath(copy.serverKey, title.spec.poster);
       const showItemId = itemIdOf(copy.serverKey, copy.ratingKey);
+      const upgradedAt = copy.serverKey === 'plex' ? title.replacedAt : null;
+      const copyAddedAt = upgradedAt ?? title.addedAt;
+      if (upgradedAt) {
+        // The file the upgrade deleted: same title on the same server, gone an
+        // hour before the new one arrived, which is what reAddedPredicate matches.
+        const oldAddedAt = new Date(upgradedAt.getTime() - 200 * DAY_MS);
+        const oldResolution = copy.resolution === '4k' ? '1080p' : '720p';
+        replaced.push([
+          itemIdOf(copy.serverKey, `${copy.ratingKey}-old`),
+          serverIdOf(copy.serverKey),
+          copy.libraryId,
+          `${copy.ratingKey}-old`,
+          title.spec.title,
+          'movie',
+          title.spec.year,
+          oldResolution,
+          'h264',
+          'aac',
+          2,
+          Math.round(copy.fileSize * 0.4),
+          'sdr',
+          title.mediaId,
+          title.spec.genres,
+          poster,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          oldAddedAt,
+          oldAddedAt,
+          new Date(upgradedAt.getTime() - 60 * 60 * 1000),
+        ]);
+      }
       items.push([
         showItemId,
         serverIdOf(copy.serverKey),
@@ -1364,10 +1419,10 @@ async function seedLibrary(client: Client, catalog: CatalogTitle[]): Promise<voi
         null,
         null,
         null,
-        title.addedAt,
-        title.addedAt,
+        copyAddedAt,
+        copyAddedAt,
       ]);
-      if (title.spec.type === 'movie') addVersion(showItemId, copy, copy.fileSize, title.addedAt);
+      if (title.spec.type === 'movie') addVersion(showItemId, copy, copy.fileSize, copyAddedAt);
       if (title.spec.type !== 'show') continue;
 
       const lastSeason = title.seasons[title.seasons.length - 1]?.number ?? 1;
@@ -1467,6 +1522,7 @@ async function seedLibrary(client: Client, catalog: CatalogTitle[]): Promise<voi
 
   await insertRows(client, 'media', MEDIA_COLUMNS, [...childMedia.values()], 400);
   await insertRows(client, 'library_items', ITEM_COLUMNS, items, 400);
+  await insertRows(client, 'library_items', [...ITEM_COLUMNS, 'removed_at'], replaced);
   await insertRows(client, 'library_item_versions', VERSION_COLUMNS, versions, 400);
 }
 
@@ -1690,7 +1746,8 @@ async function seedSnapshots(client: Client, now: Date): Promise<void> {
               date_trunc('day', $1::timestamptz),
               interval '1 day') AS d(day)
        JOIN library_items li
-         ON li.created_at < d.day + interval '1 day' AND li.removed_at IS NULL
+         ON li.created_at < d.day + interval '1 day'
+        AND (li.removed_at IS NULL OR li.removed_at >= d.day + interval '1 day')
       GROUP BY li.server_id, li.library_id, d.day`,
     [now]
   );
