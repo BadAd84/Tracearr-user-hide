@@ -74,6 +74,7 @@ import { getSetting } from '../../services/settings.js';
 import type { DateRange } from '../stats/utils.js';
 import {
   ARTIST_OF_TRACK,
+  LI_HAS_KNOWN_IMAGE,
   mediaSizeSubquery,
   buildLibraryCacheKey,
   withComputeSingleFlight,
@@ -478,16 +479,17 @@ function buildCommonWhere(params: {
 
 /**
  * ORDER BY fragment for the poster_copy subquery (li already scoped to
- * thumb_path IS NOT NULL by the caller). With a preferred server, booleans
- * sort false < true so DESC puts a matching copy first; when the preferred
- * server has no poster row it simply isn't in this set, so the newest-first
- * tiebreak naturally falls back to the current behavior. A preferred id that
- * no longer matches any server (e.g. the server was deleted) resolves the
- * same way - no special-casing needed.
+ * thumb_path IS NOT NULL by the caller). A copy with a real image comes first,
+ * so an untagged Jellyfin/Emby path never beats another server's poster. Then,
+ * with a preferred server, booleans sort false < true so DESC puts a matching
+ * copy first; when the preferred server has no poster row it simply isn't in
+ * this set, so the newest-first tiebreak naturally falls back to the current
+ * behavior. A preferred id that no longer matches any server (e.g. the server
+ * was deleted) resolves the same way - no special-casing needed.
  */
 export function buildPosterOrderFragment(preferredServerId: string | null | undefined): SQL {
-  if (!preferredServerId) return sql`ORDER BY li.created_at DESC`;
-  return sql`ORDER BY (li.server_id = ${preferredServerId}) DESC, li.created_at DESC`;
+  if (!preferredServerId) return sql`ORDER BY ${LI_HAS_KNOWN_IMAGE} DESC, li.created_at DESC`;
+  return sql`ORDER BY ${LI_HAS_KNOWN_IMAGE} DESC, (li.server_id = ${preferredServerId}) DESC, li.created_at DESC`;
 }
 
 /** Base WHERE + ORDER BY for one sort variant, shared by the page and

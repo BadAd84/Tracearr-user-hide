@@ -27,7 +27,7 @@ import { formatNumber, formatPercent } from '@/lib/formatters';
 import { deltaPercent } from '@/lib/periodWindows';
 import { cn } from '@/lib/utils';
 import { OpenOnServerAction, openOnServerTargets, type HeroServerLookupEntry } from './DetailHero';
-import { buildPosterSrc } from './PosterCard';
+import { buildPosterSrc, PosterArt } from './PosterCard';
 
 const columnHelper = createDataTableColumnHelper<AlbumTrack>();
 
@@ -213,11 +213,16 @@ export function AlbumSheet({ albumId, serverIds, serverById, isMember, onClose }
         <SheetHeader>
           <div className="flex items-start gap-3.5 pr-6">
             <div className="bg-muted size-[72px] shrink-0 overflow-hidden rounded-lg">
-              {album?.posterUrl && (
-                <img
-                  src={buildPosterSrc(album.posterUrl, album.posterVersion, { square: true })}
-                  alt=""
-                  className="h-full w-full object-cover"
+              {album && (
+                <PosterArt
+                  src={
+                    album.posterUrl
+                      ? buildPosterSrc(album.posterUrl, album.posterVersion, { square: true })
+                      : null
+                  }
+                  title={album.title}
+                  dominantColor={null}
+                  caption={false}
                 />
               )}
             </div>

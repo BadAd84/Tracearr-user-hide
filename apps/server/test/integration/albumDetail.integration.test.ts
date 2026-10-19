@@ -195,6 +195,26 @@ describe('GET /library/media/:id/album', () => {
     expect(body.allTime.listeners).toEqual([]);
   });
 
+  it('takes the poster from the copy with art over a newer untagged Emby copy', async () => {
+    const s = await seedAlbum();
+    await db.execute(sql`UPDATE servers SET type = 'emby' WHERE id = ${s.serverB}`);
+    await db.execute(sql`
+      UPDATE library_items
+      SET thumb_path = '/Items/88412/Images/Primary', created_at = '2026-09-28T19:02:00Z'
+      WHERE server_id = ${s.serverB} AND rating_key = 'Discovery-b'
+    `);
+    await db.execute(sql`
+      UPDATE library_items
+      SET thumb_path = '/library/metadata/38648/thumb/1761199736', created_at = '2025-03-14T08:30:00Z'
+      WHERE server_id = ${s.serverA} AND rating_key = 'Discovery-a'
+    `);
+
+    const { body } = await fetchAlbum(owner(), s.albumId);
+    expect(body.album.copies[0]).toEqual({ serverId: s.serverA, ratingKey: 'Discovery-a' });
+    expect(body.album.posterUrl).toContain(`server=${s.serverA}`);
+    expect(body.album.posterUrl).toContain(encodeURIComponent('/library/metadata/38648/thumb/'));
+  });
+
   it('404s an artist id', async () => {
     const s = await seedAlbum();
 

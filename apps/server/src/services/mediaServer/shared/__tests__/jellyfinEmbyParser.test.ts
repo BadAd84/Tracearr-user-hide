@@ -618,6 +618,44 @@ describe('parseLibraryItemsResponse', () => {
     expect(result[0]!.thumbPath).toBe('/Items/track-4/Images/Primary?tag=own');
   });
 
+  it('gives an Emby album with no own image the cover Emby reports from one of its tracks', () => {
+    const input = [
+      {
+        Id: '76952',
+        Name: '#SELFIE: The Remixes',
+        Type: 'MusicAlbum',
+        ImageTags: {},
+        PrimaryImageItemId: '70217',
+        PrimaryImageTag: '48364e5cd4c7cdac3b3c296999fecfc0_639047018375581113',
+        DateCreated: '2025-11-02T18:24:11Z',
+      },
+    ];
+
+    const result = parseLibraryItemsResponse(input);
+
+    expect(result[0]!.thumbPath).toBe(
+      '/Items/70217/Images/Primary?tag=48364e5cd4c7cdac3b3c296999fecfc0_639047018375581113'
+    );
+  });
+
+  it('points a track with no own image at the album image it inherits', () => {
+    const input = [
+      {
+        Id: 'track-5',
+        Name: 'Track',
+        Type: 'Audio',
+        ImageTags: {},
+        AlbumId: 'album-9',
+        PrimaryImageItemId: 'album-9',
+        PrimaryImageTag: 'albumtag',
+      },
+    ];
+
+    const result = parseLibraryItemsResponse(input);
+
+    expect(result[0]!.thumbPath).toBe('/Items/album-9/Images/Primary?tag=albumtag');
+  });
+
   it('gives an episode with no image the parent poster Jellyfin reports, else the series poster', () => {
     const input = [
       {

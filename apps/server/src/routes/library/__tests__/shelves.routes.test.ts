@@ -478,6 +478,23 @@ describe('GET /library/shelves', () => {
     expect(dbExecute).toHaveBeenCalledTimes(13);
   });
 
+  it('orders every poster_copy pick by known art before server and age', async () => {
+    const redis = createSpyRedis();
+    app = await buildTestApp(createOwnerUser(), redis);
+    mockEmptyCompute();
+
+    await app.inject({ method: 'GET', url: '/library/shelves' });
+    const posterPicks = dbExecute.mock.calls
+      .map(([query]) => renderQuery(query).text)
+      .filter((text) => text.includes('AS poster_copy'));
+    expect(posterPicks.length).toBeGreaterThan(0);
+    for (const text of posterPicks) {
+      expect(text).toContain(
+        "ORDER BY (li.thumb_path IS NOT NULL AND (li.thumb_path NOT LIKE '/Items/%' OR li.thumb_path LIKE '%?tag=%')) DESC, li.created_at DESC LIMIT 1) AS poster_copy"
+      );
+    }
+  });
+
   it('reads the poster preference once per request and folds it into the cache key', async () => {
     const redis = createSpyRedis();
     app = await buildTestApp(createOwnerUser(), redis);

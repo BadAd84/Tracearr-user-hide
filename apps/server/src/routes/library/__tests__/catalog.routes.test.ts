@@ -344,7 +344,7 @@ describe('buildCatalogPageQuery', () => {
     expect(params).toContain(serverId);
   });
 
-  it('poster_copy ORDER BY: no preference is newest-first', () => {
+  it('poster_copy ORDER BY: no preference puts known art first, then newest', () => {
     const { sql } = renderSql(
       buildCatalogPageQuery({
         type: 'movie',
@@ -355,10 +355,12 @@ describe('buildCatalogPageQuery', () => {
         preferredPosterServerId: null,
       })
     );
-    expect(normalize(sql)).toContain('ORDER BY li.created_at DESC LIMIT 1');
+    expect(normalize(sql)).toContain(
+      "ORDER BY (li.thumb_path IS NOT NULL AND (li.thumb_path NOT LIKE '/Items/%' OR li.thumb_path LIKE '%?tag=%')) DESC, li.created_at DESC LIMIT 1"
+    );
   });
 
-  it('poster_copy ORDER BY: a preference sorts that server first, newest as tiebreak', () => {
+  it('poster_copy ORDER BY: known art first, then the preferred server, newest as tiebreak', () => {
     const preferredId = randomUUID();
     const { sql, params } = renderSql(
       buildCatalogPageQuery({
@@ -370,7 +372,9 @@ describe('buildCatalogPageQuery', () => {
         preferredPosterServerId: preferredId,
       })
     );
-    expect(normalize(sql)).toContain('ORDER BY (li.server_id =');
+    expect(normalize(sql)).toContain(
+      "ORDER BY (li.thumb_path IS NOT NULL AND (li.thumb_path NOT LIKE '/Items/%' OR li.thumb_path LIKE '%?tag=%')) DESC, (li.server_id ="
+    );
     expect(params).toContain(preferredId);
   });
 });

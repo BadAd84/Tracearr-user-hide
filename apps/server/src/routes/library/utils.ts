@@ -11,6 +11,13 @@ import { REDIS_KEYS, TIME_MS } from '@tracearr/shared';
 import { scopeFragment, type Scope } from '../../lib/scope.js';
 import { buildMultiServerFragment } from '../../utils/serverFiltering.js';
 
+// A library_items row `li` whose thumb_path names a real image. Jellyfin/Emby paths carry
+// ?tag= only when the item had a Primary image at sync time; an untagged one 404s. The same
+// test as HAS_KNOWN_IMAGE in jobs/imagePrecacheQueue.ts, and false rather than NULL for a
+// NULL path so it sorts as a boolean.
+export const LI_HAS_KNOWN_IMAGE = sql`(li.thumb_path IS NOT NULL
+  AND (li.thumb_path NOT LIKE '/Items/%' OR li.thumb_path LIKE '%?tag=%'))`;
+
 // The active artist row a track rolls up to; t is the track, matched on the outer row.
 export const ARTIST_OF_TRACK = sql`
   FROM library_items t

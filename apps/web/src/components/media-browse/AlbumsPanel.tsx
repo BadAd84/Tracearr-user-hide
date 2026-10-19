@@ -4,6 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { InlineErrorState } from '@/components/library/ErrorState';
 import { imageProxyUrl } from '@/lib/basePath';
+import { PosterArt } from './PosterCard';
 
 interface AlbumsPanelProps {
   albums: MediaChildEntry[] | undefined;
@@ -57,20 +58,21 @@ export function AlbumsPanel({ albums, isLoading, isError, onRetry, onSelect }: A
                 className="group focus-visible:ring-ring w-full min-w-0 cursor-pointer space-y-1.5 rounded-md text-left focus-visible:ring-2 focus-visible:outline-none"
               >
                 <span className="bg-muted block aspect-square overflow-hidden rounded-[calc(var(--radius)+2px)] transition-transform duration-200 group-hover:-translate-y-[3px] group-hover:shadow-[0_12px_32px_hsl(240_10%_2%/0.7)]">
-                  {album.thumbPath && album.serverId && (
-                    <img
-                      src={imageProxyUrl(
-                        album.serverId,
-                        album.thumbPath,
-                        SQUARE_POSTER_SIZE.width,
-                        SQUARE_POSTER_SIZE.height
-                      )}
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                      className="h-full w-full object-cover"
-                    />
-                  )}
+                  <PosterArt
+                    src={
+                      album.thumbPath && album.serverId
+                        ? imageProxyUrl(
+                            album.serverId,
+                            album.thumbPath,
+                            SQUARE_POSTER_SIZE.width,
+                            SQUARE_POSTER_SIZE.height
+                          )
+                        : null
+                    }
+                    title={album.title}
+                    dominantColor={null}
+                    loading="lazy"
+                  />
                 </span>
                 <span className="block truncate text-sm font-medium">{album.title}</span>
                 <span className="text-muted-foreground block truncate text-xs tabular-nums">

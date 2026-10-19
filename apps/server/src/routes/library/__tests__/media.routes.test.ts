@@ -521,6 +521,10 @@ describe('GET /library/media/:id and sub-resources', () => {
       ],
     });
     expect(redis.setex).toHaveBeenCalledTimes(1);
+    const { sql: copiesSql } = renderSql(dbExecute.mock.calls[0]![0] as never);
+    expect(copiesSql.replace(/\s+/g, ' ')).toContain(
+      "ORDER BY (li.thumb_path IS NOT NULL AND (li.thumb_path NOT LIKE '/Items/%' OR li.thumb_path LIKE '%?tag=%')) DESC, li.created_at DESC"
+    );
   });
 
   it('scopes artist stats to track sessions under the artist copies', async () => {

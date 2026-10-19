@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { initI18n } from '@tracearr/translations';
 import type { MediaChildEntry } from '@tracearr/shared';
 import { AlbumsPanel } from './AlbumsPanel';
@@ -66,7 +66,7 @@ describe('AlbumsPanel', () => {
     expect(screen.getAllByText('Discovery')).toHaveLength(2);
   });
 
-  it('leaves the art box empty when an album has no art', () => {
+  it('shows the initials tile when an album has no art', () => {
     const { container } = render(
       <AlbumsPanel
         albums={[album({ thumbPath: null })]}
@@ -78,7 +78,24 @@ describe('AlbumsPanel', () => {
     );
 
     expect(container.querySelector('img')).toBeNull();
-    expect(screen.getByText('Discovery')).toBeInTheDocument();
+    expect(screen.getByText('Di').closest('.aspect-square')).not.toBeNull();
+  });
+
+  it('swaps to the initials tile when the art fails to load', () => {
+    const { container } = render(
+      <AlbumsPanel
+        albums={[album()]}
+        isLoading={false}
+        isError={false}
+        onRetry={vi.fn()}
+        onSelect={vi.fn()}
+      />
+    );
+
+    fireEvent.error(container.querySelector('img')!);
+
+    expect(container.querySelector('img')).toBeNull();
+    expect(screen.getByText('Di')).toBeInTheDocument();
   });
 
   it('opens an album when its tile is clicked', () => {

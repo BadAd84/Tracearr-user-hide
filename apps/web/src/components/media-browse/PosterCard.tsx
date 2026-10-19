@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import {
@@ -77,6 +77,60 @@ function fallbackGradient(dominantColor: string | null): string {
     return 'linear-gradient(160deg, hsl(var(--muted)) 0%, hsl(var(--card-raised)) 100%)';
   }
   return `linear-gradient(160deg, ${dominantColor} 0%, ${darkenHex(dominantColor)} 100%)`;
+}
+
+interface PosterArtProps {
+  src: string | null;
+  title: string;
+  dominantColor: string | null;
+  /** The two-line title under the initials; off where the tile is too small to read it. */
+  caption?: boolean;
+  loading?: 'eager' | 'lazy';
+  fetchPriority?: 'high' | 'low' | 'auto';
+}
+
+/** The poster image, or the initials tile when there is no image or it fails to load. */
+export function PosterArt({
+  src,
+  title,
+  dominantColor,
+  caption = true,
+  loading,
+  fetchPriority,
+}: PosterArtProps) {
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+
+  if (!src || failedSrc === src) {
+    return (
+      <div
+        className="flex h-full w-full flex-col items-center justify-center gap-0.5 p-2 text-center"
+        style={{ background: fallbackGradient(dominantColor) }}
+      >
+        <span
+          aria-hidden="true"
+          className="text-foreground/85 text-[34px] leading-none font-bold tracking-[-0.02em] [text-shadow:0_2px_12px_hsl(240_10%_2%/0.4)]"
+        >
+          {posterInitials(title)}
+        </span>
+        {caption && (
+          <small className="text-foreground/75 line-clamp-2 text-[9px] font-semibold tracking-[0.14em] uppercase">
+            {title}
+          </small>
+        )}
+      </div>
+    );
+  }
+  return (
+    <img
+      src={src}
+      alt=""
+      loading={loading}
+      decoding="async"
+      fetchPriority={fetchPriority}
+      onError={() => setFailedSrc(src)}
+      className="h-full w-full object-cover"
+    />
+  );
 }
 
 export interface PosterCardServer extends HoverOverlayServer {
@@ -182,13 +236,6 @@ export function PosterCard({
   className,
 }: PosterCardProps) {
   const { t } = useTranslation('pages');
-  const [imgError, setImgError] = useState(false);
-
-  useEffect(() => {
-    setImgError(false);
-  }, [posterUrl]);
-
-  const showFallback = !posterUrl || imgError;
   const isMusic = mediaType === 'artist' || mediaType === 'album';
   const aspect: PosterAspect = isMusic ? 'square' : 'poster';
   const showRank = rank != null;
@@ -268,35 +315,20 @@ export function PosterCard({
           )}
           style={dominantColor ? { backgroundColor: dominantColor } : undefined}
         >
-          {showFallback ? (
-            <div
-              className="flex h-full w-full flex-col items-center justify-center gap-0.5 p-2 text-center"
-              style={{ background: fallbackGradient(dominantColor) }}
-            >
-              <span
-                aria-hidden="true"
-                className="text-foreground/85 text-[34px] leading-none font-bold tracking-[-0.02em] [text-shadow:0_2px_12px_hsl(240_10%_2%/0.4)]"
-              >
-                {posterInitials(title)}
-              </span>
-              <small className="text-foreground/75 line-clamp-2 text-[9px] font-semibold tracking-[0.14em] uppercase">
-                {title}
-              </small>
-            </div>
-          ) : (
-            <img
-              src={buildPosterSrc(posterUrl, posterVersion, {
-                lqip: true,
-                square: aspect === 'square',
-              })}
-              alt=""
-              loading={loading}
-              decoding="async"
-              fetchPriority={fetchPriority}
-              onError={() => setImgError(true)}
-              className="h-full w-full object-cover"
-            />
-          )}
+          <PosterArt
+            src={
+              posterUrl
+                ? buildPosterSrc(posterUrl, posterVersion, {
+                    lqip: true,
+                    square: aspect === 'square',
+                  })
+                : null
+            }
+            title={title}
+            dominantColor={dominantColor}
+            loading={loading}
+            fetchPriority={fetchPriority}
+          />
           {(showNewEpisodesChip || showVersionsChip) && (
             <div className="absolute top-1.5 left-1.5 flex flex-col items-start gap-1">
               {showNewEpisodesChip && (

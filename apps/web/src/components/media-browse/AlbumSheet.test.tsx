@@ -1,5 +1,5 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { initI18n } from '@tracearr/translations';
 import type { AlbumDetailResponse } from '@tracearr/shared';
@@ -113,6 +113,25 @@ describe('AlbumSheet', () => {
     expect(within(sheet).getByText('Album · AJR · 2017')).toBeInTheDocument();
     expect(within(sheet).getByText('13 tracks · added Nov 17, 2024')).toBeInTheDocument();
     expect(sheet.querySelector('img')?.getAttribute('src')).toContain('width=360&height=360');
+  });
+
+  it('shows the initials tile when the album has no poster', () => {
+    mockUseAlbumDetail.mockReturnValue(
+      queryReturn({ data: { ...DETAIL, album: { ...DETAIL.album, posterUrl: null } } })
+    );
+    const { sheet } = renderSheet();
+
+    expect(sheet.querySelector('img')).toBeNull();
+    expect(within(sheet).getByText('TC')).toBeInTheDocument();
+  });
+
+  it('swaps to the initials tile when the poster fails to load', () => {
+    const { sheet } = renderSheet();
+
+    fireEvent.error(sheet.querySelector('img')!);
+
+    expect(sheet.querySelector('img')).toBeNull();
+    expect(within(sheet).getByText('TC')).toBeInTheDocument();
   });
 
   it('renders the four tiles and every track in album order', () => {
