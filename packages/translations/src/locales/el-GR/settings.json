@@ -21,7 +21,6 @@
       "destinations": "",
       "newsletters": "",
       "email": "",
-      "guest": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -37,7 +36,6 @@
       "posters": "",
       "plexAccounts": "",
       "destinations": "",
-      "guest": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -229,7 +227,14 @@
       "autoDetectNote": "",
       "issueBlocked": "",
       "issueRestartRequired": "",
-      "issueMalfunctioned": ""
+      "issueMalfunctioned": "",
+      "jellyfinStep1": "",
+      "jellyfinStep2": "",
+      "jellyfinStep3": "",
+      "jellyfinStep4": "",
+      "embyStep1": "",
+      "embyStep2": "",
+      "embyStep3": ""
     },
     "posterSource": {
       "label": "",
@@ -245,11 +250,6 @@
     }
   },
   "mobile": {
-    "title": "Εφαρμογή Για Κινητά",
-    "pairDevice": "Σύζευξη Συσκευής",
-    "generateToken": "Δημιουργία Διακριτικού Σύζευξης",
-    "scanQrCode": "",
-    "tokenExpires": "Το διακριτικό λήγει σε {{time}}",
     "lastSeen": "",
     "connectedOn": "",
     "noDevices": "Δεν υπάρχουν συνδεδεμένες συσκευές",
@@ -257,7 +257,6 @@
     "revokeAll": "Ανάκληση Όλων Των Συνεδριών",
     "getOnGooglePlay": "Αποκτήστε το στο Google Play",
     "downloadOnAppStore": "Λήψη από το App Store",
-    "externalUrlRequired": "Πρέπει να ρυθμιστεί μια εξωτερική διεύθυνση URL στις Γενικές ρυθμίσεις για να λειτουργήσει η σύζευξη κινητών συσκευών.",
     "mobileAccessDisabled": "Απενεργοποιημένη Πρόσβαση Κινητού",
     "mobileAccessDisabledDesc": "Ενεργοποιήστε την πρόσβαση στο κινητό για να επιτρέψετε στο Tracearr να συνδεθεί με το διακομιστή σας.",
     "enableMobileAccess": "Ενεργοποίηση Πρόσβασης Για Κινητά",
@@ -352,11 +351,6 @@
     "automatic": "",
     "startJob": "Έναρξη Εργασίας"
   },
-  "accessControl": {
-    "allowGuestAccess": "Επιτρέψτε Την Πρόσβαση Επισκέπτη",
-    "allowGuestAccessDesc": "Όταν είναι απενεργοποιημένη, μόνο ο ιδιοκτήτης του διακομιστή μπορεί να συνδεθεί στο Tracearr",
-    "singleOwnerNote": "Σημείωση: Όταν η πρόσβαση του επισκέπτη είναι απενεργοποιημένη, μόνο ο ιδιοκτήτης του διακομιστή μπορεί να εισέλθει. Όλοι οι άλλοι χρήστες θα δουν ένα μήνυμα \"Απαγορεύεται η πρόσβαση\"."
-  },
   "import": {
     "noServers": "Δεν Υπάρχουν Συνδεδεμένοι Διακομιστές",
     "noServersHint": "Χρειάζεστε τουλάχιστον έναν συνδεδεμένο διακομιστή για την εισαγωγή δεδομένων.",
@@ -419,7 +413,14 @@
     "overlapSkipped_one": "",
     "overlapSkipped_other": "",
     "duplicates_one": "",
-    "duplicates_other": ""
+    "duplicates_other": "",
+    "importFailed": "",
+    "dropzone": {
+      "dropHere": "",
+      "dragOrClick": "",
+      "limit": "",
+      "removeFile": ""
+    }
   },
   "plex": {
     "signInWithPlex": "Συνδεθείτε με Plex",
@@ -577,7 +578,6 @@
       "cron": "",
       "inZone": ""
     },
-    "nextRun": "",
     "noNextRun": "",
     "neverSent": "",
     "lastSend": "",
@@ -1015,11 +1015,7 @@
     "neverSynced": "",
     "counts": {
       "requests_one": "",
-      "requests_other": "",
-      "unmatchedMedia_one": "",
-      "unmatchedMedia_other": "",
-      "unmatchedUsers_one": "",
-      "unmatchedUsers_other": ""
+      "requests_other": ""
     },
     "needsKey": "",
     "lastError": "",

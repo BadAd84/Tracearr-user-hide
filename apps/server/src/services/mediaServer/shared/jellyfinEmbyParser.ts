@@ -891,6 +891,7 @@ const ALLOWED_LIBRARY_ITEM_TYPES = new Set([
   'episode',
   'season',
   'musicartist',
+  'musicalbum',
   'audio',
 ]);
 

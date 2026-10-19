@@ -196,7 +196,7 @@ export const libraryDuplicatesRoute: FastifyPluginAsync = async (app) => {
                    END AS episode_key
             FROM library_items
             WHERE removed_at IS NULL
-              AND media_type != 'season'
+              AND media_type NOT IN ('season', 'album')
               ${serverFilterSql}
               ${mediaTypeFilter}
           ),

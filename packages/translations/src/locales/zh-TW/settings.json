@@ -21,7 +21,6 @@
       "destinations": "",
       "newsletters": "",
       "email": "",
-      "guest": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -37,7 +36,6 @@
       "posters": "",
       "plexAccounts": "",
       "destinations": "",
-      "guest": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -228,7 +226,14 @@
       "autoDetectNote": "",
       "issueBlocked": "",
       "issueRestartRequired": "",
-      "issueMalfunctioned": ""
+      "issueMalfunctioned": "",
+      "jellyfinStep1": "",
+      "jellyfinStep2": "",
+      "jellyfinStep3": "",
+      "jellyfinStep4": "",
+      "embyStep1": "",
+      "embyStep2": "",
+      "embyStep3": ""
     },
     "posterSource": {
       "label": "",
@@ -244,11 +249,6 @@
     }
   },
   "mobile": {
-    "title": "手機應用程式",
-    "pairDevice": "配對裝置",
-    "generateToken": "產生配對憑證",
-    "scanQrCode": "掃描 QR 碼",
-    "tokenExpires": "憑證於 {{time}} 過期",
     "lastSeen": "",
     "connectedOn": "",
     "noDevices": "尚未配對任何裝置",
@@ -256,7 +256,6 @@
     "revokeAll": "撤銷所有會話",
     "getOnGooglePlay": "",
     "downloadOnAppStore": "",
-    "externalUrlRequired": "",
     "mobileAccessDisabled": "",
     "mobileAccessDisabledDesc": "",
     "enableMobileAccess": "",
@@ -350,11 +349,6 @@
     "automatic": "",
     "startJob": ""
   },
-  "accessControl": {
-    "allowGuestAccess": "",
-    "allowGuestAccessDesc": "",
-    "singleOwnerNote": ""
-  },
   "import": {
     "noServers": "",
     "noServersHint": "",
@@ -415,7 +409,14 @@
     "skipOverlap": "",
     "skipDuplicatePlugin": "",
     "overlapSkipped_other": "",
-    "duplicates_other": ""
+    "duplicates_other": "",
+    "importFailed": "",
+    "dropzone": {
+      "dropHere": "",
+      "dragOrClick": "",
+      "limit": "",
+      "removeFile": ""
+    }
   },
   "plex": {
     "signInWithPlex": "使用 Plex 登入",
@@ -571,7 +572,6 @@
       "cron": "",
       "inZone": ""
     },
-    "nextRun": "",
     "noNextRun": "",
     "neverSent": "",
     "lastSend": "",
@@ -984,9 +984,7 @@
     "syncedAgo": "",
     "neverSynced": "",
     "counts": {
-      "requests_other": "",
-      "unmatchedMedia_other": "",
-      "unmatchedUsers_other": ""
+      "requests_other": ""
     },
     "needsKey": "",
     "lastError": "",

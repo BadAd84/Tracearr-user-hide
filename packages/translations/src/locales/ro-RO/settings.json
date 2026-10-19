@@ -21,7 +21,6 @@
       "destinations": "",
       "newsletters": "",
       "email": "",
-      "guest": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -37,7 +36,6 @@
       "posters": "",
       "plexAccounts": "",
       "destinations": "",
-      "guest": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -230,7 +228,14 @@
       "autoDetectNote": "",
       "issueBlocked": "",
       "issueRestartRequired": "",
-      "issueMalfunctioned": ""
+      "issueMalfunctioned": "",
+      "jellyfinStep1": "",
+      "jellyfinStep2": "",
+      "jellyfinStep3": "",
+      "jellyfinStep4": "",
+      "embyStep1": "",
+      "embyStep2": "",
+      "embyStep3": ""
     },
     "posterSource": {
       "label": "",
@@ -246,11 +251,6 @@
     }
   },
   "mobile": {
-    "title": "Aplicație mobilă",
-    "pairDevice": "Asociază Dispozitiv",
-    "generateToken": "Generează token de asociere",
-    "scanQrCode": "",
-    "tokenExpires": "Token-ul expiră în {{time}}",
     "lastSeen": "",
     "connectedOn": "",
     "noDevices": "Niciun dispozitiv asociat încă",
@@ -258,7 +258,6 @@
     "revokeAll": "Revocă toate sesiunile",
     "getOnGooglePlay": "Ia-l pe Google Play",
     "downloadOnAppStore": "Descărcați de pe App Store",
-    "externalUrlRequired": "Un URL extern trebuie configurat în Setările generale pentru ca asocierea mobilă să funcționeze.",
     "mobileAccessDisabled": "Acces mobil dezactivat",
     "mobileAccessDisabledDesc": "Activați accesul mobil pentru a permite aplicației Tracearr să se conecteze la server.",
     "enableMobileAccess": "Activare acces mobil",
@@ -354,11 +353,6 @@
     "automatic": "",
     "startJob": "Începe sarcina"
   },
-  "accessControl": {
-    "allowGuestAccess": "Permite accesul vizitatorilor",
-    "allowGuestAccessDesc": "Când este dezactivat, numai proprietarul serverului se poate conecta la Tracearr",
-    "singleOwnerNote": "Notă: Când accesul vizitatorilor este dezactivat, numai proprietarul serverului se poate conecta. Toți ceilalți utilizatori vor vedea un mesaj \"Acces refuzat\"."
-  },
   "import": {
     "noServers": "Niciun server conectat",
     "noServersHint": "Aveţi nevoie de cel puţin un server conectat pentru a importa date.",
@@ -423,7 +417,14 @@
     "overlapSkipped_other": "",
     "duplicates_one": "",
     "duplicates_few": "",
-    "duplicates_other": ""
+    "duplicates_other": "",
+    "importFailed": "",
+    "dropzone": {
+      "dropHere": "",
+      "dragOrClick": "",
+      "limit": "",
+      "removeFile": ""
+    }
   },
   "plex": {
     "signInWithPlex": "Autentificare cu Plex",
@@ -583,7 +584,6 @@
       "cron": "",
       "inZone": ""
     },
-    "nextRun": "",
     "noNextRun": "",
     "neverSent": "",
     "lastSend": "",
@@ -1046,13 +1046,7 @@
     "counts": {
       "requests_one": "",
       "requests_few": "",
-      "requests_other": "",
-      "unmatchedMedia_one": "",
-      "unmatchedMedia_few": "",
-      "unmatchedMedia_other": "",
-      "unmatchedUsers_one": "",
-      "unmatchedUsers_few": "",
-      "unmatchedUsers_other": ""
+      "requests_other": ""
     },
     "needsKey": "",
     "lastError": "",

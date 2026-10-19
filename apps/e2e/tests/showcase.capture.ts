@@ -223,8 +223,8 @@ test('dashboard', async ({ page }) => {
 });
 
 test('activity', async ({ page }) => {
-  const heading = page.getByRole('heading', { name: 'Activity', level: 1 });
-  await open(page, '/activity', heading, 'the Activity heading');
+  const heading = page.getByRole('heading', { name: 'Stats', level: 1 });
+  await open(page, '/stats/activity', heading, 'the Stats heading');
   await settle(page);
   await shot(page, 'activity');
 });
@@ -255,8 +255,10 @@ test('automation-detail', async ({ page }) => {
 });
 
 test('violations', async ({ page }) => {
-  const heading = page.getByRole('heading', { name: 'Violations', level: 1 });
-  await open(page, '/violations', heading, 'the Violations heading');
+  const tab = page
+    .getByRole('navigation', { name: 'Automations' })
+    .getByRole('link', { name: /^Violations/ });
+  await open(page, '/violations', tab, 'the Violations tab');
   await settle(page);
   await shot(page, 'violations');
 });
@@ -308,44 +310,58 @@ test('user-accounts', async ({ page }) => {
     throw new Error('seedShowcase returned no Plex account for maya');
   }
   const card = cardFor(page, 'Linked accounts');
-  await open(page, `/users/${serverUserId}`, card, 'the linked accounts card');
+  await open(page, `/users/${serverUserId}?tab=access`, card, 'the linked accounts card');
   await settle(page);
   await elementShot(card, 'user-accounts');
 });
 
 test('stats-activity', async ({ page }) => {
-  const heading = page.getByRole('heading', { name: 'Activity', level: 1 });
-  await open(page, '/stats/activity', heading, 'the Activity heading');
+  const heading = page.getByRole('heading', { name: 'Stats', level: 1 });
+  await open(page, '/stats/activity', heading, 'the Stats heading');
   await settle(page);
   await shot(page, 'stats-activity');
 });
 
+test('stats-people', async ({ page }) => {
+  const summary = page.getByText('Active people');
+  await open(page, '/stats/people', summary, 'the People summary cards');
+  await settle(page);
+  await shot(page, 'stats-people');
+});
+
 test('stats-bandwidth', async ({ page }) => {
-  const heading = page.getByRole('heading', { name: 'Bandwidth', level: 1 });
-  await open(page, '/stats/bandwidth', heading, 'the Bandwidth heading');
+  const heading = page.getByRole('heading', { name: 'Stats', level: 1 });
+  await open(page, '/stats/bandwidth', heading, 'the Stats heading');
   await settle(page);
   await shot(page, 'stats-bandwidth');
 });
 
 test('stats-devices', async ({ page }) => {
-  const heading = page.getByRole('heading', { name: 'Device Compatibility', level: 1 });
-  await open(page, '/stats/devices', heading, 'the Device Compatibility heading');
+  const heading = page.getByRole('heading', { name: 'Stats', level: 1 });
+  await open(page, '/stats/devices', heading, 'the Stats heading');
   await settle(page);
   await shot(page, 'stats-devices');
 });
 
 test('library-quality', async ({ page }) => {
-  const heading = page.getByRole('heading', { name: 'Quality', level: 1 });
-  await open(page, '/library/quality', heading, 'the Quality heading');
+  const heading = page.getByRole('heading', { name: 'Library', level: 1 });
+  await open(page, '/library/quality', heading, 'the Library heading');
   await settle(page);
   await shot(page, 'library-quality');
 });
 
 test('library-storage', async ({ page }) => {
-  const heading = page.getByRole('heading', { name: 'Storage', level: 1 });
-  await open(page, '/library/storage', heading, 'the Storage heading');
+  const heading = page.getByRole('heading', { name: 'Library', level: 1 });
+  await open(page, '/library/storage', heading, 'the Library heading');
   await settle(page);
   await shot(page, 'library-storage');
+});
+
+test('library-genres', async ({ page }) => {
+  const card = cardFor(page, 'Genre breakdown');
+  await open(page, '/library/genres', card, 'the Genre breakdown card');
+  await settle(page);
+  await shot(page, 'library-genres');
 });
 
 test('media-duplicates', async ({ page }) => {
@@ -357,14 +373,14 @@ test('media-duplicates', async ({ page }) => {
 
 test('media-overview', async ({ page }) => {
   const heading = page.getByRole('heading', { name: 'Library', level: 1 });
-  await open(page, '/media', heading, 'the Library heading');
+  await open(page, '/library', heading, 'the Library heading');
   await settle(page);
   await shot(page, 'media-overview');
 });
 
 test('media-shelves', async ({ page }) => {
   const recentlyAdded = page.getByRole('region', { name: 'Recently Added Movies' });
-  await open(page, '/media', recentlyAdded, 'the Recently Added Movies shelf');
+  await open(page, '/library', recentlyAdded, 'the Recently Added Movies shelf');
   await settle(page);
   await elementShot(recentlyAdded.locator('xpath=..'), 'media-shelves');
 });

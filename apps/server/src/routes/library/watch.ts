@@ -207,10 +207,11 @@ export const libraryWatchRoute: FastifyPluginAsync = async (app) => {
 
       const libraryFilter = libraryId ? sql`AND li.library_id = ${libraryId}` : sql``;
       // mediaType is always one of movie/episode/show (see libraryWatchQuerySchema); season
-      // is never selectable and, unfiltered, would show up as a permanent 0-watch item.
+      // and album are never selectable and, unfiltered, would show up as permanent 0-watch
+      // items.
       const mediaTypeFilter = mediaType
         ? sql`AND li.media_type = ${mediaType}`
-        : sql`AND li.media_type != 'season'`;
+        : sql`AND li.media_type NOT IN ('season', 'album')`;
 
       const minWatchFilter =
         minWatchCount !== undefined ? sql`AND watch_count >= ${minWatchCount}` : sql``;

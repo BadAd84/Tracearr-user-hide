@@ -702,6 +702,70 @@ describe('GET /library/catalog', () => {
     });
   });
 
+  it('lists artists with album counts and track-derived plays, no year and no self state', async () => {
+    app = await buildTestApp(createOwnerUser());
+    const artistId = randomUUID();
+    let engagementSql = '';
+    const handlers = dispatchBySql([
+      {
+        match: isPageQuery,
+        rows: [
+          rawMovieRow({
+            id: artistId,
+            media_type: 'artist',
+            title: 'Daft Punk',
+            year: null,
+            genres: ['Electronic'],
+            album_count: 2,
+            poster_copy: {
+              thumbPath: '/library/metadata/41/thumb/1700000000',
+              dominantColor: null,
+              serverId: randomUUID(),
+            },
+          }),
+        ],
+      },
+      { match: isTotalsQuery, rows: [{ total_items: '1', total_file_size: '0' }] },
+      { match: isAliasExpansion, rows: [{ id: artistId }] },
+      { match: isEngagement, rows: [{ canonical_id: artistId, plays: '4', viewers: '2' }] },
+    ]);
+    dbExecute.mockImplementation(((query: unknown) => {
+      const text = normalize(renderSql(query as never).sql);
+      if (isEngagement(text)) engagementSql = text;
+      return handlers(query);
+    }) as never);
+
+    const response = await app.inject({ method: 'GET', url: '/library/catalog?type=artist' });
+    expect(response.statusCode).toBe(200);
+    const row = response.json<CatalogResponse>().data[0]!;
+    expect(row).toMatchObject({
+      mediaId: artistId,
+      mediaType: 'artist',
+      year: null,
+      albumCount: 2,
+      plays: 4,
+      viewers: 2,
+    });
+    expect(row).not.toHaveProperty('watchedStateSelf');
+    expect(row.posterUrl).toContain('width=360&height=360');
+    expect(engagementSql).toContain("p.media_type = 'track'");
+    expect(engagementSql).toContain('ar.rating_key = t.grandparent_rating_key');
+    expect(
+      dbExecute.mock.calls.some(([q]) => isWatchedProbe(normalize(renderSql(q as never).sql)))
+    ).toBe(false);
+  });
+
+  it.each([
+    ['an artist year sort', 'type=artist&sort=year'],
+    ['an artist watched filter', 'type=artist&watched=watched'],
+    ['the album type', 'type=album'],
+  ])('rejects %s', async (_label, query) => {
+    app = await buildTestApp(createOwnerUser());
+    const response = await app.inject({ method: 'GET', url: `/library/catalog?${query}` });
+    expect(response.statusCode).toBe(400);
+    expect(dbExecute).not.toHaveBeenCalled();
+  });
+
   describe('watchedStateSelf', () => {
     it('flags anyone-watched but not self-watched when a different user watched it', async () => {
       const requester = createOwnerUser();

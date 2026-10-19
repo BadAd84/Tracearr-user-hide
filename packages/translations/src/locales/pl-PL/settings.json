@@ -21,7 +21,6 @@
       "destinations": "Miejsca docelowe",
       "newsletters": "Newslettery",
       "email": "Wiadomości e-mail",
-      "guest": "Dostęp dla gości",
       "mobile": "Urządzenia mobilne",
       "remote": "Zdalny dostęp",
       "import": "Import",
@@ -37,7 +36,6 @@
       "posters": "Serwer, którego plakat ma pierwszeństwo, gdy tytuł istnieje na więcej niż jednym serwerze.",
       "plexAccounts": "Konta Plex.tv, które Tracearr wykorzystuje do wykrywania i autoryzacji serwerów.",
       "destinations": "Gdzie przekazywane są powiadomienia i newslettery.",
-      "guest": "To, co mogą zobaczyć wylogowani użytkownicy i goście.",
       "mobile": "Urządzenia sparowane z aplikacją mobilną Tracearr.",
       "remote": "Jak ludzie spoza Twojej sieci łączą się z tą instancją.",
       "import": "Przenieś historię oglądania z Tautulli, Jellystat lub Playback Reporting.",
@@ -231,7 +229,14 @@
       "autoDetectNote": "Uruchom ponownie Jellyfin lub Emby po zainstalowaniu wtyczki; ponowne uruchomienie jest wymagane. Tracearr nie wymaga ponownego uruchomienia i wykryje wtyczkę automatycznie.",
       "issueBlocked": "Serwer zgłasza wtyczkę jako zainstalowaną i aktywną, ale Tracearr dostaje błąd 404 z jej endpointu. Zwykle przyczyną jest reverse proxy blokujące tę ścieżkę.",
       "issueRestartRequired": "Wtyczka jest zainstalowana, ale zostanie aktywowana dopiero po ponownym uruchomieniu serwera multimediów.",
-      "issueMalfunctioned": "Serwer zgłasza, że nie udało się załadować wtyczki. Aktualizacja wtyczki lub serwera multimediów zwykle pomaga."
+      "issueMalfunctioned": "Serwer zgłasza, że nie udało się załadować wtyczki. Aktualizacja wtyczki lub serwera multimediów zwykle pomaga.",
+      "jellyfinStep1": "",
+      "jellyfinStep2": "",
+      "jellyfinStep3": "",
+      "jellyfinStep4": "",
+      "embyStep1": "",
+      "embyStep2": "",
+      "embyStep3": ""
     },
     "posterSource": {
       "label": "Preferowane źródło plakatów",
@@ -247,11 +252,6 @@
     }
   },
   "mobile": {
-    "title": "Aplikacja mobilna",
-    "pairDevice": "Sparuj urządzenie",
-    "generateToken": "Wygeneruj token parowania",
-    "scanQrCode": "Zeskanuj kod QR",
-    "tokenExpires": "Token wygasa za {{time}}",
     "lastSeen": "Ostatnio aktywne {{when}}",
     "connectedOn": "Połączono {{date}}",
     "noDevices": "Brak sparowanych urządzeń",
@@ -259,7 +259,6 @@
     "revokeAll": "Unieważnij wszystkie sesje",
     "getOnGooglePlay": "Pobierz z Google Play",
     "downloadOnAppStore": "Pobierz w App Store",
-    "externalUrlRequired": "Aby parowanie mobilne działało, w ustawieniach ogólnych musi być skonfigurowany zewnętrzny adres URL.",
     "mobileAccessDisabled": "Dostęp mobilny wyłączony",
     "mobileAccessDisabledDesc": "Włącz dostęp mobilny, aby umożliwić aplikacji mobilnej Tracearr łączenie się z serwerem.",
     "enableMobileAccess": "Włącz dostęp mobilny",
@@ -356,11 +355,6 @@
     "automatic": "Automatyczne",
     "startJob": "Uruchom zadanie"
   },
-  "accessControl": {
-    "allowGuestAccess": "Zezwól na dostęp gości",
-    "allowGuestAccessDesc": "Po wyłączeniu tylko właściciel serwera może zalogować się do Tracearr.",
-    "singleOwnerNote": "Uwaga: gdy dostęp gości jest wyłączony, zalogować może się tylko właściciel serwera. Wszyscy pozostali zobaczą komunikat „Odmowa dostępu”."
-  },
   "import": {
     "noServers": "Brak połączonych serwerów",
     "noServersHint": "Aby zaimportować dane, potrzebujesz co najmniej jednego połączonego serwera.",
@@ -427,7 +421,14 @@
     "duplicates_one": "{{count}} duplikat pominięty",
     "duplicates_few": "{{count}} duplikaty pominięte",
     "duplicates_many": "{{count}} duplikatów pominiętych",
-    "duplicates_other": "{{count}} duplikatów pominiętych"
+    "duplicates_other": "{{count}} duplikatów pominiętych",
+    "importFailed": "",
+    "dropzone": {
+      "dropHere": "",
+      "dragOrClick": "",
+      "limit": "",
+      "removeFile": ""
+    }
   },
   "plex": {
     "signInWithPlex": "Zaloguj się przez Plex",
@@ -589,7 +590,6 @@
       "cron": "Cron {{expression}}",
       "inZone": "{{summary}}, {{timezone}}"
     },
-    "nextRun": "Następne uruchomienie {{when}}",
     "noNextRun": "Niezaplanowane",
     "neverSent": "Jeszcze nie wysłano",
     "lastSend": "{{outcome}} – odbiorców: {{count}}",
@@ -1077,15 +1077,7 @@
       "requests_one": "{{count}} prośba",
       "requests_few": "{{count}} prośby",
       "requests_many": "{{count}} próśb",
-      "requests_other": "{{count}} próśb",
-      "unmatchedMedia_one": "{{count}} niedopasowany tytuł",
-      "unmatchedMedia_few": "{{count}} niedopasowane tytuły",
-      "unmatchedMedia_many": "{{count}} niedopasowanych tytułów",
-      "unmatchedMedia_other": "{{count}} niedopasowanych tytułów",
-      "unmatchedUsers_one": "{{count}} niedopasowany użytkownik",
-      "unmatchedUsers_few": "{{count}} niedopasowanych użytkowników",
-      "unmatchedUsers_many": "{{count}} niedopasowanych użytkowników",
-      "unmatchedUsers_other": "{{count}} niedopasowanych użytkowników"
+      "requests_other": "{{count}} próśb"
     },
     "needsKey": "Wymaga klucza API",
     "lastError": "Ostatnia synchronizacja nie powiodła się {{ago}}: {{error}}",

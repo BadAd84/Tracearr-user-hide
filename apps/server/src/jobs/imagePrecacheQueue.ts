@@ -17,7 +17,7 @@
 
 import { Queue, Worker, type Job, type ConnectionOptions } from 'bullmq';
 import { and, asc, eq, gt, gte, isNotNull, isNull, sql } from 'drizzle-orm';
-import { POSTER_IMAGE_SIZE, REDIS_KEYS } from '@tracearr/shared';
+import { REDIS_KEYS, posterSizeFor } from '@tracearr/shared';
 import { getBullPrefix, queueConnectionOptions } from './queueConnection.js';
 import { isMaintenance } from '../serverState.js';
 import { db } from '../db/client.js';
@@ -117,7 +117,9 @@ async function checkPersistence(
   const sample = batch.slice(0, PERSISTENCE_SAMPLE);
   if (sample.length === 0) return;
   const present = (
-    await Promise.all(sample.map((item) => posterCacheEntryExists(serverId, item.thumbPath)))
+    await Promise.all(
+      sample.map((item) => posterCacheEntryExists(serverId, item.thumbPath, item.size))
+    )
   ).filter(Boolean).length;
 
   if (present / sample.length < PERSISTENCE_MIN_PRESENT) {
@@ -379,6 +381,7 @@ async function countEligibleItems(
 interface PrecacheBatchRow {
   id: string;
   thumbPath: string;
+  size: ReturnType<typeof posterSizeFor>;
 }
 
 /**
@@ -396,7 +399,11 @@ async function fetchBatch(
   sinceUpdatedAt?: string | null
 ): Promise<PrecacheBatchRow[]> {
   const rows = await db
-    .select({ id: libraryItems.id, thumbPath: libraryItems.thumbPath })
+    .select({
+      id: libraryItems.id,
+      thumbPath: libraryItems.thumbPath,
+      mediaType: libraryItems.mediaType,
+    })
     .from(libraryItems)
     .where(
       and(
@@ -411,21 +418,25 @@ async function fetchBatch(
     .orderBy(asc(libraryItems.id))
     .limit(BATCH_SIZE);
 
-  return rows.map((row) => ({ id: row.id, thumbPath: row.thumbPath! }));
+  return rows.map((row) => ({
+    id: row.id,
+    thumbPath: row.thumbPath!,
+    size: posterSizeFor(row.mediaType),
+  }));
 }
 
-/** One proxyImage call for one item, at the poster's one cache size. Each
+/** One proxyImage call for one item, at the poster's cache size for its type. Each
  *  task is a single fetch-semaphore acquisition at most, so bounding
  *  concurrent tasks to MAX_CONCURRENT_WARMS bounds concurrent semaphore
  *  slots the same way. Returns why the warm failed, or null. */
 async function runWarmTask(
   serverId: string,
-  thumbPath: string
+  item: PrecacheBatchRow
 ): Promise<{ reason: string; itemFault: boolean } | null> {
   const result = await proxyImage({
     serverId,
-    imagePath: thumbPath,
-    ...POSTER_IMAGE_SIZE,
+    imagePath: item.thumbPath,
+    ...item.size,
     fallback: 'poster',
     resizedOnly: true,
   });
@@ -438,7 +449,7 @@ async function runWarmTask(
 
 /**
  * Process one batch: warm at most MAX_CONCURRENT_WARMS items at a time, one
- * proxyImage call each (posters have exactly one cache size now), so bounding
+ * proxyImage call each (one cache size per poster), so bounding
  * concurrent items bounds concurrent fetch-semaphore acquisitions the same
  * way. Re-enqueues for the next cursor when the raw batch came back full
  * (more items may remain beyond it).
@@ -501,7 +512,7 @@ export async function processImagePrecacheJob(
     await Promise.all(
       batch.map(async (item) =>
         (deadItems.get(`${serverId} ${item.thumbPath}`) ?? 0) > now ||
-        (await posterCacheEntryExists(serverId, item.thumbPath))
+        (await posterCacheEntryExists(serverId, item.thumbPath, item.size))
           ? null
           : item
       )
@@ -530,7 +541,7 @@ export async function processImagePrecacheJob(
       const item = missing[nextIndex++]!;
       // Fail-open: a single warm failing must not fail the batch or the job.
       try {
-        const failure = await runWarmTask(serverId, item.thumbPath);
+        const failure = await runWarmTask(serverId, item);
         if (!failure) {
           warmSuccesses++;
         } else if (failure.itemFault) {

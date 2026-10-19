@@ -21,7 +21,6 @@
       "destinations": "",
       "newsletters": "",
       "email": "",
-      "guest": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -37,7 +36,6 @@
       "posters": "",
       "plexAccounts": "",
       "destinations": "",
-      "guest": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -230,7 +228,14 @@
       "autoDetectNote": "",
       "issueBlocked": "",
       "issueRestartRequired": "",
-      "issueMalfunctioned": ""
+      "issueMalfunctioned": "",
+      "jellyfinStep1": "",
+      "jellyfinStep2": "",
+      "jellyfinStep3": "",
+      "jellyfinStep4": "",
+      "embyStep1": "",
+      "embyStep2": "",
+      "embyStep3": ""
     },
     "posterSource": {
       "label": "",
@@ -246,11 +251,6 @@
     }
   },
   "mobile": {
-    "title": "",
-    "pairDevice": "",
-    "generateToken": "",
-    "scanQrCode": "",
-    "tokenExpires": "",
     "lastSeen": "",
     "connectedOn": "",
     "noDevices": "",
@@ -258,7 +258,6 @@
     "revokeAll": "",
     "getOnGooglePlay": "",
     "downloadOnAppStore": "",
-    "externalUrlRequired": "",
     "mobileAccessDisabled": "",
     "mobileAccessDisabledDesc": "",
     "enableMobileAccess": "",
@@ -354,11 +353,6 @@
     "automatic": "",
     "startJob": ""
   },
-  "accessControl": {
-    "allowGuestAccess": "",
-    "allowGuestAccessDesc": "",
-    "singleOwnerNote": ""
-  },
   "import": {
     "noServers": "",
     "noServersHint": "",
@@ -423,7 +417,14 @@
     "overlapSkipped_other": "",
     "duplicates_one": "",
     "duplicates_two": "",
-    "duplicates_other": ""
+    "duplicates_other": "",
+    "importFailed": "",
+    "dropzone": {
+      "dropHere": "",
+      "dragOrClick": "",
+      "limit": "",
+      "removeFile": ""
+    }
   },
   "plex": {
     "signInWithPlex": "",
@@ -583,7 +584,6 @@
       "cron": "",
       "inZone": ""
     },
-    "nextRun": "",
     "noNextRun": "",
     "neverSent": "",
     "lastSend": "",
@@ -1046,13 +1046,7 @@
     "counts": {
       "requests_one": "",
       "requests_two": "",
-      "requests_other": "",
-      "unmatchedMedia_one": "",
-      "unmatchedMedia_two": "",
-      "unmatchedMedia_other": "",
-      "unmatchedUsers_one": "",
-      "unmatchedUsers_two": "",
-      "unmatchedUsers_other": ""
+      "requests_other": ""
     },
     "needsKey": "",
     "lastError": "",

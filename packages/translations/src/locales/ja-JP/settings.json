@@ -21,7 +21,6 @@
       "destinations": "",
       "newsletters": "",
       "email": "",
-      "guest": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -37,7 +36,6 @@
       "posters": "",
       "plexAccounts": "",
       "destinations": "",
-      "guest": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -228,7 +226,14 @@
       "autoDetectNote": "",
       "issueBlocked": "",
       "issueRestartRequired": "",
-      "issueMalfunctioned": ""
+      "issueMalfunctioned": "",
+      "jellyfinStep1": "",
+      "jellyfinStep2": "",
+      "jellyfinStep3": "",
+      "jellyfinStep4": "",
+      "embyStep1": "",
+      "embyStep2": "",
+      "embyStep3": ""
     },
     "posterSource": {
       "label": "",
@@ -244,11 +249,6 @@
     }
   },
   "mobile": {
-    "title": "モバイルアプリ",
-    "pairDevice": "デバイスをペアリングする",
-    "generateToken": "ペアトークンを生成する",
-    "scanQrCode": "",
-    "tokenExpires": "トークンの有効期限は {{time}} です。",
     "lastSeen": "",
     "connectedOn": "",
     "noDevices": "まだペアリングされたデバイスはありません",
@@ -256,7 +256,6 @@
     "revokeAll": "すべてのセッションを取り消す",
     "getOnGooglePlay": "Google Playで入手",
     "downloadOnAppStore": "App Storeでダウンロード",
-    "externalUrlRequired": "モバイルペアリングを機能させるには、一般設定で外部 URL を設定する必要があります。",
     "mobileAccessDisabled": "モバイルアクセスは無効です",
     "mobileAccessDisabledDesc": "Tracearrモバイルアプリがあなたのサーバーに接続できるようにするには、モバイルアクセスを有効にします。",
     "enableMobileAccess": "モバイルアクセスを有効にする",
@@ -350,11 +349,6 @@
     "automatic": "",
     "startJob": "作業を開始"
   },
-  "accessControl": {
-    "allowGuestAccess": "ゲストアクセスを許可する",
-    "allowGuestAccessDesc": "無効にすると、サーバーの所有者のみが Tracearr にログインできます。",
-    "singleOwnerNote": "注: ゲストアクセスが無効になっている場合、サーバーの所有者のみがサインインできます。他のすべてのユーザーには「アクセス拒否」メッセージが表示されます。"
-  },
   "import": {
     "noServers": "サーバーが接続されていません",
     "noServersHint": "データをインポートするには、少なくとも1つの接続されたサーバーが必要です。",
@@ -415,7 +409,14 @@
     "skipOverlap": "",
     "skipDuplicatePlugin": "",
     "overlapSkipped_other": "",
-    "duplicates_other": ""
+    "duplicates_other": "",
+    "importFailed": "",
+    "dropzone": {
+      "dropHere": "",
+      "dragOrClick": "",
+      "limit": "",
+      "removeFile": ""
+    }
   },
   "plex": {
     "signInWithPlex": "Plexでサインイン",
@@ -571,7 +572,6 @@
       "cron": "",
       "inZone": ""
     },
-    "nextRun": "",
     "noNextRun": "",
     "neverSent": "",
     "lastSend": "",
@@ -984,9 +984,7 @@
     "syncedAgo": "",
     "neverSynced": "",
     "counts": {
-      "requests_other": "",
-      "unmatchedMedia_other": "",
-      "unmatchedUsers_other": ""
+      "requests_other": ""
     },
     "needsKey": "",
     "lastError": "",

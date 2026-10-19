@@ -153,8 +153,8 @@ function mockBatchQuery(rows: unknown[], eligibleCount = rows.length) {
   });
 }
 
-function makeItemRow(id: string, thumbPath: string | null = '/thumb') {
-  return { id, thumbPath };
+function makeItemRow(id: string, thumbPath: string | null = '/thumb', mediaType = 'movie') {
+  return { id, thumbPath, mediaType };
 }
 
 /** A pass start as the queue hands it back: no passStartedAt, which is what
@@ -599,6 +599,33 @@ describe('imagePrecacheQueue', () => {
         passStartedAt: expect.any(String),
         refusedWrites: 0,
       });
+    });
+
+    it('warms artist and album art at 360x360 and every other row at 360x540', async () => {
+      mockBatchQuery([
+        makeItemRow('item-artist', '/library/metadata/101/thumb/1', 'artist'),
+        makeItemRow('item-album', '/library/metadata/102/thumb/1', 'album'),
+        makeItemRow('item-track', '/library/metadata/103/thumb/1', 'track'),
+      ]);
+
+      await processImagePrecacheJob(makeJob({ serverId: 'server-1', cursor: null }));
+
+      const warmed = Object.fromEntries(
+        mockProxyImage.mock.calls.map(([options]) => [
+          options.imagePath,
+          `${options.width}x${options.height}`,
+        ])
+      );
+      expect(warmed).toEqual({
+        '/library/metadata/101/thumb/1': '360x360',
+        '/library/metadata/102/thumb/1': '360x360',
+        '/library/metadata/103/thumb/1': '360x540',
+      });
+      expect(mockPosterCacheEntryExists).toHaveBeenCalledWith(
+        'server-1',
+        '/library/metadata/102/thumb/1',
+        { width: 360, height: 360 }
+      );
     });
 
     it('re-enqueues from the raw row count even when one row in the raw 50 has a null thumbPath', async () => {

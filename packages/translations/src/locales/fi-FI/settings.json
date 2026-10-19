@@ -21,7 +21,6 @@
       "destinations": "Kohteet",
       "newsletters": "Uutiskirjeet",
       "email": "Sähköposti",
-      "guest": "Vieraiden käyttöoikeus",
       "mobile": "Mobiililaitteet",
       "remote": "Etäkäyttö",
       "import": "Tietojen tuonti",
@@ -37,7 +36,6 @@
       "posters": "Minkä palvelimen kuvituskuvat voittavat, kun nimike on olemassa useammalla, kuin yhdellä palvelimella.",
       "plexAccounts": "Plex.tv-tilit, joita Tracearr käyttää löytääkseen ja valtuuttaakseen palvelimia.",
       "destinations": "Mihin ilmoitukset ja koosteet toimitetaan.",
-      "guest": "Mitä uloskirjautuneet ja vierailijat näkevät.",
       "mobile": "Laitteet, jotka on liitetty Tracearr-mobiilisovellukseen.",
       "remote": "Kuinka verkkosi ulkopuolella olevat ihmiset saavuttavat tämän instanssin.",
       "import": "Tuo katseluhistoria: Tautulli, Jellystat tai Playback Reporting.",
@@ -229,7 +227,14 @@
       "autoDetectNote": "Käynnistä Jellyfin tai Emby uudelleen liitännäisen asennuksen jälkeen; uudelleenkäynnistys tarvitaan. Tracearr itsessään ei tarvitse uudelleenkäynnistystä ja poimii liitännäisen automaattisesti.",
       "issueBlocked": "Palvelin raportoi liitännäisen asennetuksi ja aktiiviseksi, mutta Tracearr saa 404:n sen päätepisteestä. Tavanomainen syy on käänteinen välityspalvelin, joka estää polun.",
       "issueRestartRequired": "Liitännäinen on asennettu, mutta mediapalvelin tarvitsee uudelleenkäynnistyksen ennen kuin se aktivoidaan.",
-      "issueMalfunctioned": "Palvelin ilmoittaa liitännäisen lataamisen epäonnistumisesta. Liitännäisen tai mediapalvelimen päivittäminen poistaa tämän yleensä."
+      "issueMalfunctioned": "Palvelin ilmoittaa liitännäisen lataamisen epäonnistumisesta. Liitännäisen tai mediapalvelimen päivittäminen poistaa tämän yleensä.",
+      "jellyfinStep1": "",
+      "jellyfinStep2": "",
+      "jellyfinStep3": "",
+      "jellyfinStep4": "",
+      "embyStep1": "",
+      "embyStep2": "",
+      "embyStep3": ""
     },
     "posterSource": {
       "label": "Ensisijainen julisteiden lähde",
@@ -245,11 +250,6 @@
     }
   },
   "mobile": {
-    "title": "Mobiili Sovellus",
-    "pairDevice": "Parita laite",
-    "generateToken": "Luo paritustunnus",
-    "scanQrCode": "Skannaa QR-koodi",
-    "tokenExpires": "Token vanhenee {{time}}",
     "lastSeen": "Viimeksi nähty {{when}}",
     "connectedOn": "Yhdistetty {{date}}",
     "noDevices": "Laitteita ei ole yhdistetty",
@@ -257,7 +257,6 @@
     "revokeAll": "Peruuta Kaikki Istunnot",
     "getOnGooglePlay": "Hanki se Google Playsta",
     "downloadOnAppStore": "Lataa App Storesta",
-    "externalUrlRequired": "Ulkoinen URL-osoite on konfiguroitava Yleiset asetukset, jotta mobiiliparitus toimisi.",
     "mobileAccessDisabled": "Mobiilikäyttö Pois Käytöstä",
     "mobileAccessDisabledDesc": "Ota mobiiliyhteys käyttöön, jotta Tracearr mobiilisovellus voi muodostaa yhteyden palvelimellesi.",
     "enableMobileAccess": "Ota Mobiilikäyttö Käyttöön",
@@ -352,11 +351,6 @@
     "automatic": "Automaattinen",
     "startJob": "Aloita Työ"
   },
-  "accessControl": {
-    "allowGuestAccess": "Salli Vieraiden Käyttö",
-    "allowGuestAccessDesc": "Kun tämä on poistettu käytöstä, vain palvelimen omistaja voi kirjautua Tracearriin.",
-    "singleOwnerNote": "Huomautus: Kun vierailijoiden käyttö on poistettu käytöstä, vain palvelimen omistaja voi kirjautua sisään. Kaikki muut käyttäjät näkevät \"Pääsy estetty\" -viestin."
-  },
   "import": {
     "noServers": "Palvelimia Ei Yhdistetty",
     "noServersHint": "Tietojen tuonti vaatii ainakin yhden yhdistetyn palvelimen.",
@@ -419,7 +413,14 @@
     "overlapSkipped_one": "{{count}} ohitettu päällekkäisyytenä",
     "overlapSkipped_other": "{{count}} ohitettu päällekkäisyyksinä",
     "duplicates_one": "{{count}} kaksoiskappale ohitettu",
-    "duplicates_other": "{{count}} kaksoiskappaletta ohitettu"
+    "duplicates_other": "{{count}} kaksoiskappaletta ohitettu",
+    "importFailed": "",
+    "dropzone": {
+      "dropHere": "",
+      "dragOrClick": "",
+      "limit": "",
+      "removeFile": ""
+    }
   },
   "plex": {
     "signInWithPlex": "Kirjaudu sisään Plexillä",
@@ -577,7 +578,6 @@
       "cron": "Cron {{expression}}",
       "inZone": "{{summary}} {{timezone}}"
     },
-    "nextRun": "Seuraava ajo {{when}}",
     "noNextRun": "Ei ajastettu",
     "neverSent": "Ei koskaan lähetetty",
     "lastSend": "{{outcome}}: {{count}}",
@@ -1015,11 +1015,7 @@
     "neverSynced": "Ei vielä synkronoitu",
     "counts": {
       "requests_one": "{{count}} pyyntö",
-      "requests_other": "{{count}} pyyntöä",
-      "unmatchedMedia_one": "{{count}} sovittamaton nimike",
-      "unmatchedMedia_other": "{{count}} sovittamatonta nimikettä",
-      "unmatchedUsers_one": "{{count}} sovittamaton käyttäjä",
-      "unmatchedUsers_other": "{{count}} sovittamatonta käyttäjää"
+      "requests_other": "{{count}} pyyntöä"
     },
     "needsKey": "Tarvitsee API-avaimen",
     "lastError": "Viimeisin synkronointi epäonnistui {{ago}}: {{error}}",

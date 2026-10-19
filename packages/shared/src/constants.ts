@@ -408,8 +408,17 @@ export const NOTIFICATION_EVENTS = {
   TRUST_SCORE_CHANGED: 'trust_score_changed',
 } as const;
 
-/** The one size a poster is cached at. Every poster URL the server hands out uses it. */
+/** The 2:3 size a poster is cached at, for every row but artists and albums. */
 export const POSTER_IMAGE_SIZE = { width: 360, height: 540 } as const;
+
+/** Artist and album art is square; the one other size a versioned poster URL may ask for. */
+export const SQUARE_POSTER_SIZE = { width: 360, height: 360 } as const;
+
+export function posterSizeFor(
+  mediaType: string
+): typeof POSTER_IMAGE_SIZE | typeof SQUARE_POSTER_SIZE {
+  return mediaType === 'artist' || mediaType === 'album' ? SQUARE_POSTER_SIZE : POSTER_IMAGE_SIZE;
+}
 
 // API version
 /**
