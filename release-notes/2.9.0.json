@@ -186,6 +186,11 @@
     {
       "type": "fix",
       "text": "a busy server no longer bounces you to the dashboard; you stay on the page, and signing in returns you to it"
+    },
+    {
+      "type": "fix",
+      "text": "PAL SD shows as 576p in Now Playing and history; Normalize Resolutions under Jobs relabels older plays",
+      "refs": ["#1334"]
     }
   ]
 }

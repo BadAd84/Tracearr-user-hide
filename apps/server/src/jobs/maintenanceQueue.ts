@@ -42,7 +42,7 @@ import type {
   MaintenanceJobResult,
   MaintenanceJobType,
 } from '@tracearr/shared';
-import { WS_EVENTS, classifyByDimensions, RESOLUTION_TIERS } from '@tracearr/shared';
+import { WS_EVENTS, resolutionDisplayName, RESOLUTION_TIERS } from '@tracearr/shared';
 import { sql, isNotNull, isNull, inArray, or, and, eq, ne } from 'drizzle-orm';
 import { db } from '../db/client.js';
 import { servers, sessions, serverUsers } from '../db/schema.js';
@@ -1764,10 +1764,10 @@ export async function processNormalizeResolutionsJob(
 
       for (const session of batch) {
         try {
-          const recomputed = classifyByDimensions(
-            session.sourceVideoWidth,
-            session.sourceVideoHeight
-          );
+          const recomputed = resolutionDisplayName({
+            width: session.sourceVideoWidth,
+            height: session.sourceVideoHeight,
+          });
 
           if (recomputed && recomputed !== session.quality) {
             updates.push({ id: session.id, quality: recomputed });

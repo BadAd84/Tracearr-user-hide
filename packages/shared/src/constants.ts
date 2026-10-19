@@ -5,6 +5,7 @@
 import {
   classifyByDimensions,
   normalizeResolutionLabel,
+  resolutionDisplayName,
   type ResolutionLabel,
 } from './resolution.js';
 
@@ -819,7 +820,7 @@ export function formatResolutionDisplay(
   width: number | null | undefined,
   height: number | null | undefined
 ): string {
-  const label = getResolutionLabel(width, height);
+  const label = resolutionDisplayName({ width, height });
   if (!label) return '—';
 
   if (width && height) return `${width}×${height} (${label})`;

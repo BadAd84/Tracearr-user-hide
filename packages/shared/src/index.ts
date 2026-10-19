@@ -948,6 +948,7 @@ export {
   resolutionAboveSdSpellings,
   resolutionSpellingRanks,
   normalizeResolution,
+  resolutionDisplayName,
   type ResolutionInput,
   type ResolutionBucket,
 } from './resolution.js';
