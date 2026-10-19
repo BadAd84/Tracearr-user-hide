@@ -26,6 +26,7 @@
     "connectedTo": "متصل بـ {{name}}",
     "plexAuthFailed": "فشل مصادقة Plex",
     "plexStartFailed": "فشل في بدء تسجيل الدخول لـ Plex",
+    "plexExpired": "",
     "serverConnectFailed": "فشل الاتصال بالخادم",
     "createAccountFailed": "فشل في إنشاء الحساب",
     "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صالحة",
@@ -35,7 +36,23 @@
     "claimCodeLabel": "رمز المطالبة",
     "claimCodeHint": "يتم طباعة رمز المطالبة في سجلات الخادم عند بدء تشغيل الحاوية",
     "validateClaimCode": "",
-    "claimCodeSecurityNote": "هذا التدبير الأمني يضمن فقط للمستخدمين المصرح لهم بإكمال الإعداد لأول مرة"
+    "claimCodeSecurityNote": "هذا التدبير الأمني يضمن فقط للمستخدمين المصرح لهم بإكمال الإعداد لأول مرة",
+    "member": {
+      "tabLocal": "",
+      "tabMember": "",
+      "server": "",
+      "signingInTo": "",
+      "passwordHint": "",
+      "quickConnectHint": "",
+      "waiting": "",
+      "copyCode": "",
+      "usePassword": "",
+      "useQuickConnect": "",
+      "codeExpired": "",
+      "newCode": "",
+      "refused": "",
+      "notPermitted": ""
+    }
   },
   "dashboard": {
     "alerts": "التنبيهات",
@@ -48,13 +65,83 @@
     "bandwidth": "عرض التردد",
     "noActiveStreams": "لا يوجد بث نشط",
     "streamsAppearHere": "ستظهر البث النشط هنا عندما يبدأ المستخدمون بمشاهدة",
+    "dayStreak": "",
+    "view": {
+      "label": "",
+      "admin": "",
+      "me": ""
+    },
+    "me": {
+      "last30": "",
+      "streakDetail": "",
+      "topTitles": "",
+      "welcome": {
+        "title": "",
+        "description": "",
+        "browse": ""
+      },
+      "requests": {
+        "title": "",
+        "requestedAgo": "",
+        "seeAll": "",
+        "availableThisWeek_other": ""
+      },
+      "episodes_other": ""
+    },
     "resources": {
       "system": "",
       "perServer": "",
       "average": ""
     },
     "unknownLocation": "",
-    "unknownQuality": ""
+    "unknownQuality": "",
+    "othersStreaming_other": ""
+  },
+  "yourStats": {
+    "titles": "",
+    "howYouWatch": "",
+    "viewerType": {
+      "completionist": {
+        "label": "",
+        "desc": ""
+      },
+      "rewatcher": {
+        "label": "",
+        "desc": ""
+      },
+      "sampler": {
+        "label": "",
+        "desc": ""
+      },
+      "casual": {
+        "label": "",
+        "desc": ""
+      }
+    },
+    "habits": "",
+    "seeActivity": "",
+    "allTime": "",
+    "watchTime": "",
+    "span": {
+      "minutes_other": "",
+      "hours_other": "",
+      "days_other": "",
+      "weeks_other": ""
+    },
+    "longestStreak": "",
+    "firstPlay": "",
+    "biggestBinge": "",
+    "topGenres": "",
+    "allTimeCaption": "",
+    "tier": {
+      "watched": "",
+      "engaged": "",
+      "sampled": "",
+      "abandoned": "",
+      "rewatched": ""
+    },
+    "days_other": "",
+    "bingeValue_other": ""
   },
   "users": {
     "title": "المستخدمون",
@@ -109,6 +196,16 @@
     "filterHasAccessTo": "",
     "filterHasAccessToPlaceholder": "",
     "filterHasAccessToHint": "",
+    "merged": "",
+    "filterRoleAll": "",
+    "filterSignInAll": "",
+    "filterPendingOnly": "",
+    "rowActions": "",
+    "menuOpenViolations": "",
+    "signInOn": "",
+    "signInOff": "",
+    "signedInAgo": "",
+    "neverSignedIn": "",
     "selectAllUsers_zero": "",
     "selectAllUsers_one": "",
     "selectAllUsers_two": "",
@@ -151,16 +248,6 @@
     "suggestionsPairUsernameMore_few": "",
     "suggestionsPairUsernameMore_many": "",
     "suggestionsPairUsernameMore_other": "",
-    "merged": "",
-    "filterRoleAll": "",
-    "filterSignInAll": "",
-    "filterPendingOnly": "",
-    "rowActions": "",
-    "menuOpenViolations": "",
-    "signInOn": "",
-    "signInOff": "",
-    "signedInAgo": "",
-    "neverSignedIn": "",
     "pendingLink_other": ""
   },
   "userDetail": {
@@ -194,6 +281,28 @@
     "contactEmailNone": "",
     "contactEmailNoLogin": "",
     "locations": "المواقع",
+    "access": {
+      "title": "",
+      "signIn": "",
+      "signInAllow": "",
+      "signInDefault": "",
+      "signInBlock": "",
+      "signInDefaultOn": "",
+      "signInDefaultOff": "",
+      "signInDefaultUnknown": "",
+      "role": "",
+      "roleAdmin": "",
+      "roleMember": "",
+      "roleHint": "",
+      "disabled": "",
+      "pending": "",
+      "signIns": "",
+      "lastSignIn": "",
+      "never": "",
+      "viewAs": "",
+      "viewAsLabel": "",
+      "viewAsHint": ""
+    },
     "tabs": {
       "access": ""
     },
@@ -229,8 +338,8 @@
     "unknownCity": "",
     "unknownDevice": "",
     "viewAllMore": "",
-    "ipCount_other": "",
-    "adjustTrustScoreDesc": ""
+    "adjustTrustScoreDesc": "",
+    "ipCount_other": ""
   },
   "history": {
     "title": "السجل",
@@ -261,11 +370,11 @@
       "network": "",
       "remote": "",
       "trailers": "",
-      "selected_other": "",
       "clearUsers": "",
       "clearPlatforms": "",
       "clearCountries": "",
-      "clearFilters": ""
+      "clearFilters": "",
+      "selected_other": ""
     },
     "detail": {
       "watch": "",
@@ -277,7 +386,6 @@
       "bitrateUnavailable": "",
       "stereo": "",
       "mono": "",
-      "channelCount_other": "",
       "noDetails": "",
       "source": "",
       "stream": "",
@@ -300,7 +408,8 @@
       "hwDecode": "",
       "hwEncode": "",
       "speed": "",
-      "throttled": ""
+      "throttled": "",
+      "channelCount_other": ""
     }
   },
   "library": {
@@ -317,7 +426,14 @@
       "thisWeek": "هذا الأسبوع",
       "thisMonth": "هذا الشهر",
       "thisYear": "هذا العام",
-      "serversNeedSync": ""
+      "serversNeedSync": "",
+      "notWatchedByYou": "",
+      "memberEmpty": {
+        "title": "",
+        "description": ""
+      },
+      "movieCount_other": "",
+      "showCount_other": ""
     },
     "quality": {
       "qualityEvolution": "تطور الجودة",
@@ -594,21 +710,20 @@
         }
       },
       "qualityTimeline": {
-        "titles_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
+        },
+        "titles_other": ""
       },
       "monthly": {
         "watchCount": "",
-        "uniqueItems_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
+        },
+        "uniqueItems_other": ""
       },
-      "watchesValue_other": "",
       "growth": {
         "empty": {
           "title": "",
@@ -625,12 +740,13 @@
       "completion": {
         "inProgress": "",
         "notStarted": "",
-        "tooltip_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
-      }
+        },
+        "tooltip_other": ""
+      },
+      "watchesValue_other": ""
     }
   },
   "activity": {
@@ -638,6 +754,7 @@
     "concurrentStreams": "البث المتزامن",
     "engagementBreakdown": "توزيع المشاركة",
     "howUsersEngage": "كيفية مشاركة المستخدمين مع المحتوى",
+    "howYouEngage": "",
     "playsVsSessions": "مرات التشغيل مقابل الجلسات",
     "playsVsSessionsDesc": "الإكمال الكامل فقط: تُحتسب مرة تشغيل عندما يغطي إجمالي وقت المشاهدة مدة المحتوى بالكامل",
     "activityByDayOfWeek": "النشاط حسب يوم الأسبوع",
@@ -645,12 +762,12 @@
     "platforms": "المنصات",
     "streamQuality": "جودة البث",
     "noEngagementData": "",
-    "tierItems_other": "",
     "noPlatformData": "",
     "noQualityData": "",
     "noConcurrentData": "",
-    "playsShare_other": "",
-    "peakConcurrent": ""
+    "peakConcurrent": "",
+    "tierItems_other": "",
+    "playsShare_other": ""
   },
   "violations": {
     "title": "الانتهاكات",
@@ -691,13 +808,13 @@
       "conditionGroup": "مجموعة الشروط {{index}}",
       "matched": "{{matched}}/{{total}} مطابقة",
       "actual": "فعلي",
+      "actionResults": "",
       "relatedSessions_zero": "",
       "relatedSessions_one": "",
       "relatedSessions_two": "",
       "relatedSessions_few": "",
       "relatedSessions_many": "",
-      "relatedSessions_other": "",
-      "actionResults": ""
+      "relatedSessions_other": ""
     },
     "selectAllViolations_zero": "",
     "selectAllViolations_one": "",
@@ -2283,6 +2400,12 @@
       "usedByNewsletters_other": ""
     }
   },
+  "impersonation": {
+    "banner": "",
+    "stop": "",
+    "stopLabel": "",
+    "stopViewing": ""
+  },
   "maintenance": {
     "startingTitle": "بدأ Tracearr في الإنتظار...",
     "interruptionTitle": "انقطاع الخدمة",
@@ -2313,6 +2436,7 @@
     "allTypes": "جميع الأنواع",
     "heatmap": "خريطة حرارية",
     "circles": "دوائر",
+    "viewMode": "",
     "streams": "بث",
     "locations": "المواقع",
     "allActivity": "جميع الأنشطة",
@@ -2320,7 +2444,6 @@
     "webglUnavailable": "",
     "webglHint": "",
     "badMounts": "",
-    "viewMode": "",
     "loadingData": "",
     "noDataForFilters": "",
     "totalStreams": "",
@@ -2468,7 +2591,6 @@
       "completed": "",
       "scheduled": "",
       "processing": "",
-      "dlq_other": "",
       "onDemand": "",
       "notInitialized": "",
       "backgroundServices": "",
@@ -2493,7 +2615,8 @@
         "inactivityCheckDesc": "",
         "backup": "",
         "backupDesc": ""
-      }
+      },
+      "dlq_other": ""
     },
     "clientErrors": {
       "title": "",
@@ -2603,14 +2726,14 @@
         "ofCountedPlays": "",
         "topTitles": "",
         "topArtists": "",
+        "browse": "",
+        "allGenresPeak": "",
         "artistCount_zero": "",
         "artistCount_one": "",
         "artistCount_two": "",
         "artistCount_few": "",
         "artistCount_many": "",
-        "artistCount_other": "",
-        "browse": "",
-        "allGenresPeak": ""
+        "artistCount_other": ""
       }
     },
     "detail": {
@@ -2653,8 +2776,13 @@
       },
       "kpis": {
         "ariaLabel": "",
+        "yourPlays": "",
+        "yourWatchTime": "",
         "yourListenTime": "",
+        "yourCompletion": "",
+        "lastWatched": "",
         "lastPlayed": "",
+        "episodesOf": "",
         "loadError": "",
         "completionLoadError": "",
         "plays": {
@@ -2675,6 +2803,7 @@
           "detailMovie": "",
           "detailMusic": ""
         },
+        "watchedByOthers_other": "",
         "playedByOthers_other": ""
       },
       "watchers": {

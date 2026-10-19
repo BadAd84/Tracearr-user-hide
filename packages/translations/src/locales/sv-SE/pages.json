@@ -26,6 +26,7 @@
     "connectedTo": "Ansluten till {{name}}",
     "plexAuthFailed": "Plex-autentisering misslyckades",
     "plexStartFailed": "Det gick inte att starta Plex inloggning",
+    "plexExpired": "",
     "serverConnectFailed": "Det gick inte att ansluta till servern",
     "createAccountFailed": "Kunde inte skapa konto",
     "invalidCredentials": "Ogiltig e-postadress eller lösenord",
@@ -35,7 +36,23 @@
     "claimCodeLabel": "Hämta kod",
     "claimCodeHint": "Anspråkskoden skrivs ut i serverloggarna när behållaren startar",
     "validateClaimCode": "",
-    "claimCodeSecurityNote": "Denna säkerhetsåtgärd garanterar att endast behöriga användare kan slutföra förstagångskonfigurationen"
+    "claimCodeSecurityNote": "Denna säkerhetsåtgärd garanterar att endast behöriga användare kan slutföra förstagångskonfigurationen",
+    "member": {
+      "tabLocal": "",
+      "tabMember": "",
+      "server": "",
+      "signingInTo": "",
+      "passwordHint": "",
+      "quickConnectHint": "",
+      "waiting": "",
+      "copyCode": "",
+      "usePassword": "",
+      "useQuickConnect": "",
+      "codeExpired": "",
+      "newCode": "",
+      "refused": "",
+      "notPermitted": ""
+    }
   },
   "dashboard": {
     "alerts": "Varningar",
@@ -48,13 +65,83 @@
     "bandwidth": "Bandbredd",
     "noActiveStreams": "Inga aktiva strömmar",
     "streamsAppearHere": "Aktiva strömmar visas här när användare börjar titta på",
+    "dayStreak": "",
+    "view": {
+      "label": "",
+      "admin": "",
+      "me": ""
+    },
+    "me": {
+      "last30": "",
+      "streakDetail": "",
+      "topTitles": "",
+      "welcome": {
+        "title": "",
+        "description": "",
+        "browse": ""
+      },
+      "requests": {
+        "title": "",
+        "requestedAgo": "",
+        "seeAll": "",
+        "availableThisWeek_other": ""
+      },
+      "episodes_other": ""
+    },
     "resources": {
       "system": "",
       "perServer": "",
       "average": ""
     },
     "unknownLocation": "",
-    "unknownQuality": ""
+    "unknownQuality": "",
+    "othersStreaming_other": ""
+  },
+  "yourStats": {
+    "titles": "",
+    "howYouWatch": "",
+    "viewerType": {
+      "completionist": {
+        "label": "",
+        "desc": ""
+      },
+      "rewatcher": {
+        "label": "",
+        "desc": ""
+      },
+      "sampler": {
+        "label": "",
+        "desc": ""
+      },
+      "casual": {
+        "label": "",
+        "desc": ""
+      }
+    },
+    "habits": "",
+    "seeActivity": "",
+    "allTime": "",
+    "watchTime": "",
+    "span": {
+      "minutes_other": "",
+      "hours_other": "",
+      "days_other": "",
+      "weeks_other": ""
+    },
+    "longestStreak": "",
+    "firstPlay": "",
+    "biggestBinge": "",
+    "topGenres": "",
+    "allTimeCaption": "",
+    "tier": {
+      "watched": "",
+      "engaged": "",
+      "sampled": "",
+      "abandoned": "",
+      "rewatched": ""
+    },
+    "days_other": "",
+    "bingeValue_other": ""
   },
   "users": {
     "title": "Användare",
@@ -109,6 +196,16 @@
     "filterHasAccessTo": "",
     "filterHasAccessToPlaceholder": "",
     "filterHasAccessToHint": "",
+    "merged": "",
+    "filterRoleAll": "",
+    "filterSignInAll": "",
+    "filterPendingOnly": "",
+    "rowActions": "",
+    "menuOpenViolations": "",
+    "signInOn": "",
+    "signInOff": "",
+    "signedInAgo": "",
+    "neverSignedIn": "",
     "selectAllUsers_one": "",
     "selectAllUsers_other": "Välj alla {{count}} användare",
     "resetTrustScoreTitle_one": "Återställ förtroendepoäng för {{count}} användare",
@@ -123,16 +220,6 @@
     "suggestionsPairEmailUsernameMore_other": "",
     "suggestionsPairUsernameMore_one": "",
     "suggestionsPairUsernameMore_other": "",
-    "merged": "",
-    "filterRoleAll": "",
-    "filterSignInAll": "",
-    "filterPendingOnly": "",
-    "rowActions": "",
-    "menuOpenViolations": "",
-    "signInOn": "",
-    "signInOff": "",
-    "signedInAgo": "",
-    "neverSignedIn": "",
     "pendingLink_other": ""
   },
   "userDetail": {
@@ -166,6 +253,28 @@
     "contactEmailNone": "",
     "contactEmailNoLogin": "",
     "locations": "Platser",
+    "access": {
+      "title": "",
+      "signIn": "",
+      "signInAllow": "",
+      "signInDefault": "",
+      "signInBlock": "",
+      "signInDefaultOn": "",
+      "signInDefaultOff": "",
+      "signInDefaultUnknown": "",
+      "role": "",
+      "roleAdmin": "",
+      "roleMember": "",
+      "roleHint": "",
+      "disabled": "",
+      "pending": "",
+      "signIns": "",
+      "lastSignIn": "",
+      "never": "",
+      "viewAs": "",
+      "viewAsLabel": "",
+      "viewAsHint": ""
+    },
     "tabs": {
       "access": ""
     },
@@ -201,8 +310,8 @@
     "unknownCity": "",
     "unknownDevice": "",
     "viewAllMore": "",
-    "ipCount_other": "",
-    "adjustTrustScoreDesc": ""
+    "adjustTrustScoreDesc": "",
+    "ipCount_other": ""
   },
   "history": {
     "title": "Historik",
@@ -233,11 +342,11 @@
       "network": "",
       "remote": "",
       "trailers": "",
-      "selected_other": "",
       "clearUsers": "",
       "clearPlatforms": "",
       "clearCountries": "",
-      "clearFilters": ""
+      "clearFilters": "",
+      "selected_other": ""
     },
     "detail": {
       "watch": "",
@@ -249,7 +358,6 @@
       "bitrateUnavailable": "",
       "stereo": "",
       "mono": "",
-      "channelCount_other": "",
       "noDetails": "",
       "source": "",
       "stream": "",
@@ -272,7 +380,8 @@
       "hwDecode": "",
       "hwEncode": "",
       "speed": "",
-      "throttled": ""
+      "throttled": "",
+      "channelCount_other": ""
     }
   },
   "library": {
@@ -289,7 +398,14 @@
       "thisWeek": "denna vecka",
       "thisMonth": "denna månad",
       "thisYear": "i år",
-      "serversNeedSync": ""
+      "serversNeedSync": "",
+      "notWatchedByYou": "",
+      "memberEmpty": {
+        "title": "",
+        "description": ""
+      },
+      "movieCount_other": "",
+      "showCount_other": ""
     },
     "quality": {
       "qualityEvolution": "Kvalitet Evolution",
@@ -550,21 +666,20 @@
         }
       },
       "qualityTimeline": {
-        "titles_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
+        },
+        "titles_other": ""
       },
       "monthly": {
         "watchCount": "",
-        "uniqueItems_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
+        },
+        "uniqueItems_other": ""
       },
-      "watchesValue_other": "",
       "growth": {
         "empty": {
           "title": "",
@@ -581,12 +696,13 @@
       "completion": {
         "inProgress": "",
         "notStarted": "",
-        "tooltip_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
-      }
+        },
+        "tooltip_other": ""
+      },
+      "watchesValue_other": ""
     }
   },
   "activity": {
@@ -594,6 +710,7 @@
     "concurrentStreams": "Samtidiga strömmar",
     "engagementBreakdown": "Förbindelse Fördelning",
     "howUsersEngage": "Hur användare engagerar sig med innehåll",
+    "howYouEngage": "",
     "playsVsSessions": "Uppspelningar mot sessioner",
     "playsVsSessionsDesc": "Endast helt uppspelade: en uppspelning räknas när den totala visningstiden täcker innehållets hela speltid",
     "activityByDayOfWeek": "Aktivitet efter veckodag",
@@ -601,12 +718,12 @@
     "platforms": "Plattformar",
     "streamQuality": "Strömkvalitet",
     "noEngagementData": "",
-    "tierItems_other": "",
     "noPlatformData": "",
     "noQualityData": "",
     "noConcurrentData": "",
-    "playsShare_other": "",
-    "peakConcurrent": ""
+    "peakConcurrent": "",
+    "tierItems_other": "",
+    "playsShare_other": ""
   },
   "violations": {
     "title": "Överträdelser",
@@ -647,9 +764,9 @@
       "conditionGroup": "Villkor grupp {{index}}",
       "matched": "{{matched}}/{{total}} matchade",
       "actual": "Faktisk",
+      "actionResults": "",
       "relatedSessions_one": "{{count}} relaterad session",
-      "relatedSessions_other": "{{count}} relaterade sessioner",
-      "actionResults": ""
+      "relatedSessions_other": "{{count}} relaterade sessioner"
     },
     "selectAllViolations_one": "",
     "selectAllViolations_other": "Välj alla {{count}} överträdelser som matchar filter",
@@ -2163,6 +2280,12 @@
       "usedByNewsletters_other": ""
     }
   },
+  "impersonation": {
+    "banner": "",
+    "stop": "",
+    "stopLabel": "",
+    "stopViewing": ""
+  },
   "maintenance": {
     "startingTitle": "Tracearr startar upp...",
     "interruptionTitle": "Avbrott i tjänsten",
@@ -2193,6 +2316,7 @@
     "allTypes": "Alla typer",
     "heatmap": "Värmekarta",
     "circles": "Cirklar",
+    "viewMode": "",
     "streams": "strömmar",
     "locations": "platser",
     "allActivity": "All aktivitet",
@@ -2200,7 +2324,6 @@
     "webglUnavailable": "",
     "webglHint": "",
     "badMounts": "",
-    "viewMode": "",
     "loadingData": "",
     "noDataForFilters": "",
     "totalStreams": "",
@@ -2344,7 +2467,6 @@
       "completed": "",
       "scheduled": "",
       "processing": "",
-      "dlq_other": "",
       "onDemand": "",
       "notInitialized": "",
       "backgroundServices": "",
@@ -2369,7 +2491,8 @@
         "inactivityCheckDesc": "",
         "backup": "",
         "backupDesc": ""
-      }
+      },
+      "dlq_other": ""
     },
     "clientErrors": {
       "title": "",
@@ -2463,10 +2586,10 @@
         "ofCountedPlays": "",
         "topTitles": "",
         "topArtists": "",
-        "artistCount_one": "",
-        "artistCount_other": "",
         "browse": "",
-        "allGenresPeak": ""
+        "allGenresPeak": "",
+        "artistCount_one": "",
+        "artistCount_other": ""
       }
     },
     "detail": {
@@ -2501,8 +2624,13 @@
       },
       "kpis": {
         "ariaLabel": "",
+        "yourPlays": "",
+        "yourWatchTime": "",
         "yourListenTime": "",
+        "yourCompletion": "",
+        "lastWatched": "",
         "lastPlayed": "",
+        "episodesOf": "",
         "loadError": "",
         "completionLoadError": "",
         "plays": {
@@ -2523,6 +2651,7 @@
           "detailMovie": "",
           "detailMusic": ""
         },
+        "watchedByOthers_other": "",
         "playedByOthers_other": ""
       },
       "watchers": {

@@ -21,6 +21,7 @@
       "destinations": "Destination",
       "newsletters": "Newsletters",
       "email": "Email",
+      "memberLogin": "",
       "mobile": "Appareils mobiles",
       "remote": "Accès à distance",
       "import": "Importer",
@@ -36,6 +37,7 @@
       "posters": "Quelle affiche de serveur l'emporte quand un titre existe sur plusieurs serveurs.",
       "plexAccounts": "Les comptes Plex.tv que Tracearr utilise pour découvrir et autoriser les serveurs.",
       "destinations": "Où les notifications et les résumés sont délivrés.",
+      "memberLogin": "",
       "mobile": "",
       "remote": "",
       "import": " ",
@@ -241,7 +243,9 @@
       "description": "Quand un titre est sur plusieurs serveurs, utilisez l'affiche de ce serveur. Si elle n'en a pas, nous reprendrons la dernière copie ajoutée.",
       "automatic": "Automatique (plus récent)",
       "emptyHint": "Ajouter un serveur pour choisir une source d'affiches préférée.",
-      "ownerOnly": "Seul le propriétaire peut choisir la source d'affiches préférée."
+      "ownerOnly": "Seul le propriétaire peut choisir la source d'affiches préférée.",
+      "precache": "",
+      "precacheDescription": ""
     },
     "version": {
       "installed": "Version {{version}}",
@@ -351,6 +355,42 @@
     "automatic": "",
     "startJob": "Commencer la tâche"
   },
+  "memberLogin": {
+    "serverActivity": "",
+    "serverActivityDesc": "",
+    "noServers": "",
+    "addServer": "",
+    "serversLoadFailed": "",
+    "signIn": {
+      "title": "",
+      "titleDesc": "",
+      "local": "",
+      "localDesc": "",
+      "oidc": "",
+      "oidcDesc": "",
+      "plex": "",
+      "plexDesc": "",
+      "onlyWay": "",
+      "membersTitle": "",
+      "media": "",
+      "mediaDesc": "",
+      "servers": "",
+      "overrides": "",
+      "overridesDesc": "",
+      "overridesEmpty": "",
+      "overridesLoadFailed": "",
+      "addPerson": "",
+      "searchPeople": "",
+      "nobodyFound": "",
+      "accessLabel": "",
+      "roleLabel": "",
+      "allow": "",
+      "block": "",
+      "admin": "",
+      "member": "",
+      "backToDefault": ""
+    }
+  },
   "import": {
     "noServers": "Aucun serveur connecté",
     "noServersHint": "Vous avez besoin d'au moins un serveur connecté pour importer des données.",
@@ -410,17 +450,17 @@
     "importFullRangeHelp": "",
     "skipOverlap": "Recouvrement de l'enregistrement - l'horodatage tombe dans la période que Tracearr suit déjà pour ce serveur. Activez l'importation complète pour l'inclure.",
     "skipDuplicatePlugin": "Enregistrement en double - déjà importé directement ou arrivé plus tôt via une importation Jellystat des mêmes données de plugin.",
-    "overlapSkipped_one": "",
-    "overlapSkipped_other": "{{count}} ont été ignorés car ils se chevauchaient",
-    "duplicates_one": "",
-    "duplicates_other": "Les doublons {{count}} ont été ignorés",
     "importFailed": "",
     "dropzone": {
       "dropHere": "",
       "dragOrClick": "",
       "limit": "",
       "removeFile": ""
-    }
+    },
+    "overlapSkipped_one": "",
+    "overlapSkipped_other": "{{count}} ont été ignorés car ils se chevauchaient",
+    "duplicates_one": "",
+    "duplicates_other": "Les doublons {{count}} ont été ignorés"
   },
   "plex": {
     "signInWithPlex": "Se connecter avec Plex",

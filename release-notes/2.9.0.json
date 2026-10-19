@@ -166,6 +166,26 @@
     {
       "type": "note",
       "text": "today's plays, sessions and active users count music on the Dashboard and the v1 /stats/today"
+    },
+    {
+      "type": "fix",
+      "text": "background tasks no longer pile up after restarts; one sync or poster warm-up per server, resumed where it stopped"
+    },
+    {
+      "type": "fix",
+      "text": "a Tautulli import interrupted by a restart continues from the last finished page"
+    },
+    {
+      "type": "note",
+      "text": "first boot after updating clears queued tasks once and queues one poster pass per server; syncs restart, imports stay"
+    },
+    {
+      "type": "new",
+      "text": "poster caching after library syncs can be turned off in Settings → Servers → Posters"
+    },
+    {
+      "type": "fix",
+      "text": "a busy server no longer bounces you to the dashboard; you stay on the page, and signing in returns you to it"
     }
   ]
 }

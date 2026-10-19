@@ -292,6 +292,19 @@ export interface SyncResult {
 }
 
 /**
+ * Lets a sync job skip the libraries an earlier attempt finished. Libraries are the
+ * only abort points: a force-close mid-library leaves the lock to expire and stalled
+ * detection resumes from the last completed library.
+ */
+export interface SyncResume {
+  completedLibraryIds: ReadonlySet<string>;
+  onLibraryComplete: (libraryId: string) => Promise<void>;
+  signal?: AbortSignal;
+}
+
+export class SyncInterruptedError extends Error {}
+
+/**
  * Progress callback for real-time updates
  */
 export type OnProgressCallback = (progress: LibrarySyncProgress) => void;
@@ -401,12 +414,14 @@ export class LibrarySyncService {
    * @param serverId - The server ID to sync
    * @param onProgress - Optional callback for progress updates
    * @param triggeredBy - Whether sync was triggered manually or by scheduler
-   * @returns Array of SyncResult for each library
+   * @param resume - Libraries already done by an earlier attempt, and the abort signal
+   * @returns Array of SyncResult for each library synced in this call
    */
   async syncServer(
     serverId: string,
     onProgress?: OnProgressCallback,
-    triggeredBy: 'manual' | 'scheduled' = 'scheduled'
+    triggeredBy: 'manual' | 'scheduled' = 'scheduled',
+    resume?: SyncResume
   ): Promise<SyncResult[]> {
     const results: SyncResult[] = [];
 
@@ -469,8 +484,9 @@ export class LibrarySyncService {
     }
 
     // Sync each library
-    for (let i = 0; i < libraries.length; i++) {
-      const library = libraries[i]!;
+    for (const [i, library] of libraries.entries()) {
+      if (resume?.signal?.aborted) throw new SyncInterruptedError();
+      if (resume?.completedLibraryIds.has(library.id)) continue;
 
       const result = await this.syncLibrary({
         serverId,
@@ -489,6 +505,7 @@ export class LibrarySyncService {
       });
 
       results.push(result);
+      await resume?.onLibraryComplete(library.id);
     }
 
     // Every library is in, so a season can now absorb the episodes that arrived with it.

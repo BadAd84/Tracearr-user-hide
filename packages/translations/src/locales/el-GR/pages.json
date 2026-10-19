@@ -26,6 +26,7 @@
     "connectedTo": "",
     "plexAuthFailed": "Αποτυχία ταυτοποίησης Plex",
     "plexStartFailed": "Αποτυχία έναρξης σύνδεσης στο Plex",
+    "plexExpired": "",
     "serverConnectFailed": "Αποτυχία σύνδεσης με το διακομιστή",
     "createAccountFailed": "Αποτυχία δημιουργίας λογαριασμού",
     "invalidCredentials": "Μη έγκυρο email ή κωδικός πρόσβασης",
@@ -35,7 +36,23 @@
     "claimCodeLabel": "Διεκδίκηση Κώδικα",
     "claimCodeHint": "Ο κωδικός απαίτησης εκτυπώνεται στα αρχεία καταγραφής του διακομιστή όταν ξεκινά το δοχείο",
     "validateClaimCode": "",
-    "claimCodeSecurityNote": "Αυτό το μέτρο ασφαλείας εξασφαλίζει ότι μόνο εξουσιοδοτημένοι χρήστες μπορούν να ολοκληρώσουν την πρώτη ρύθμιση"
+    "claimCodeSecurityNote": "Αυτό το μέτρο ασφαλείας εξασφαλίζει ότι μόνο εξουσιοδοτημένοι χρήστες μπορούν να ολοκληρώσουν την πρώτη ρύθμιση",
+    "member": {
+      "tabLocal": "",
+      "tabMember": "",
+      "server": "",
+      "signingInTo": "",
+      "passwordHint": "",
+      "quickConnectHint": "",
+      "waiting": "",
+      "copyCode": "",
+      "usePassword": "",
+      "useQuickConnect": "",
+      "codeExpired": "",
+      "newCode": "",
+      "refused": "",
+      "notPermitted": ""
+    }
   },
   "dashboard": {
     "alerts": "Ειδοποιήσεις",
@@ -48,13 +65,83 @@
     "bandwidth": "Εύρος Ζώνης",
     "noActiveStreams": "Δεν υπάρχουν ενεργές ροές",
     "streamsAppearHere": "Οι ενεργές ροές θα εμφανιστούν εδώ όταν οι χρήστες αρχίσουν να παρακολουθούν",
+    "dayStreak": "",
+    "view": {
+      "label": "",
+      "admin": "",
+      "me": ""
+    },
+    "me": {
+      "last30": "",
+      "streakDetail": "",
+      "topTitles": "",
+      "welcome": {
+        "title": "",
+        "description": "",
+        "browse": ""
+      },
+      "requests": {
+        "title": "",
+        "requestedAgo": "",
+        "seeAll": "",
+        "availableThisWeek_other": ""
+      },
+      "episodes_other": ""
+    },
     "resources": {
       "system": "",
       "perServer": "",
       "average": ""
     },
     "unknownLocation": "",
-    "unknownQuality": ""
+    "unknownQuality": "",
+    "othersStreaming_other": ""
+  },
+  "yourStats": {
+    "titles": "",
+    "howYouWatch": "",
+    "viewerType": {
+      "completionist": {
+        "label": "",
+        "desc": ""
+      },
+      "rewatcher": {
+        "label": "",
+        "desc": ""
+      },
+      "sampler": {
+        "label": "",
+        "desc": ""
+      },
+      "casual": {
+        "label": "",
+        "desc": ""
+      }
+    },
+    "habits": "",
+    "seeActivity": "",
+    "allTime": "",
+    "watchTime": "",
+    "span": {
+      "minutes_other": "",
+      "hours_other": "",
+      "days_other": "",
+      "weeks_other": ""
+    },
+    "longestStreak": "",
+    "firstPlay": "",
+    "biggestBinge": "",
+    "topGenres": "",
+    "allTimeCaption": "",
+    "tier": {
+      "watched": "",
+      "engaged": "",
+      "sampled": "",
+      "abandoned": "",
+      "rewatched": ""
+    },
+    "days_other": "",
+    "bingeValue_other": ""
   },
   "users": {
     "title": "Χρήστες",
@@ -109,6 +196,16 @@
     "filterHasAccessTo": "",
     "filterHasAccessToPlaceholder": "",
     "filterHasAccessToHint": "",
+    "merged": "",
+    "filterRoleAll": "",
+    "filterSignInAll": "",
+    "filterPendingOnly": "",
+    "rowActions": "",
+    "menuOpenViolations": "",
+    "signInOn": "",
+    "signInOff": "",
+    "signedInAgo": "",
+    "neverSignedIn": "",
     "selectAllUsers_one": "",
     "selectAllUsers_other": "Επιλογή όλων των {{count}} χρηστών",
     "resetTrustScoreTitle_one": "",
@@ -123,16 +220,6 @@
     "suggestionsPairEmailUsernameMore_other": "",
     "suggestionsPairUsernameMore_one": "",
     "suggestionsPairUsernameMore_other": "",
-    "merged": "",
-    "filterRoleAll": "",
-    "filterSignInAll": "",
-    "filterPendingOnly": "",
-    "rowActions": "",
-    "menuOpenViolations": "",
-    "signInOn": "",
-    "signInOff": "",
-    "signedInAgo": "",
-    "neverSignedIn": "",
     "pendingLink_other": ""
   },
   "userDetail": {
@@ -166,6 +253,28 @@
     "contactEmailNone": "",
     "contactEmailNoLogin": "",
     "locations": "Τοποθεσίες",
+    "access": {
+      "title": "",
+      "signIn": "",
+      "signInAllow": "",
+      "signInDefault": "",
+      "signInBlock": "",
+      "signInDefaultOn": "",
+      "signInDefaultOff": "",
+      "signInDefaultUnknown": "",
+      "role": "",
+      "roleAdmin": "",
+      "roleMember": "",
+      "roleHint": "",
+      "disabled": "",
+      "pending": "",
+      "signIns": "",
+      "lastSignIn": "",
+      "never": "",
+      "viewAs": "",
+      "viewAsLabel": "",
+      "viewAsHint": ""
+    },
     "tabs": {
       "access": ""
     },
@@ -201,8 +310,8 @@
     "unknownCity": "",
     "unknownDevice": "",
     "viewAllMore": "",
-    "ipCount_other": "",
-    "adjustTrustScoreDesc": ""
+    "adjustTrustScoreDesc": "",
+    "ipCount_other": ""
   },
   "history": {
     "title": "Ιστορικό",
@@ -233,11 +342,11 @@
       "network": "",
       "remote": "",
       "trailers": "",
-      "selected_other": "",
       "clearUsers": "",
       "clearPlatforms": "",
       "clearCountries": "",
-      "clearFilters": ""
+      "clearFilters": "",
+      "selected_other": ""
     },
     "detail": {
       "watch": "",
@@ -249,7 +358,6 @@
       "bitrateUnavailable": "",
       "stereo": "",
       "mono": "",
-      "channelCount_other": "",
       "noDetails": "",
       "source": "",
       "stream": "",
@@ -272,7 +380,8 @@
       "hwDecode": "",
       "hwEncode": "",
       "speed": "",
-      "throttled": ""
+      "throttled": "",
+      "channelCount_other": ""
     }
   },
   "library": {
@@ -289,7 +398,14 @@
       "thisWeek": "αυτή την εβδομάδα",
       "thisMonth": "αυτό το μήνα",
       "thisYear": "αυτό το έτος",
-      "serversNeedSync": ""
+      "serversNeedSync": "",
+      "notWatchedByYou": "",
+      "memberEmpty": {
+        "title": "",
+        "description": ""
+      },
+      "movieCount_other": "",
+      "showCount_other": ""
     },
     "quality": {
       "qualityEvolution": "Ποιοτική Εξέλιξη",
@@ -550,21 +666,20 @@
         }
       },
       "qualityTimeline": {
-        "titles_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
+        },
+        "titles_other": ""
       },
       "monthly": {
         "watchCount": "",
-        "uniqueItems_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
+        },
+        "uniqueItems_other": ""
       },
-      "watchesValue_other": "",
       "growth": {
         "empty": {
           "title": "",
@@ -581,12 +696,13 @@
       "completion": {
         "inProgress": "",
         "notStarted": "",
-        "tooltip_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
-      }
+        },
+        "tooltip_other": ""
+      },
+      "watchesValue_other": ""
     }
   },
   "activity": {
@@ -594,6 +710,7 @@
     "concurrentStreams": "Ταυτόχρονες Ροές",
     "engagementBreakdown": "Ανάλυση Δέσμευσης",
     "howUsersEngage": "Πώς οι χρήστες εμπλέκονται με το περιεχόμενο",
+    "howYouEngage": "",
     "playsVsSessions": "Αναπαραγωγές vs συνεδρίες",
     "playsVsSessionsDesc": "Μόνο πλήρεις ολοκληρώσεις: μετράει μία αναπαραγωγή όταν ο συνολικός χρόνος παρακολούθησης καλύπτει ολόκληρη τη διάρκεια του περιεχομένου",
     "activityByDayOfWeek": "Δραστηριότητα ανά Ημέρα της Εβδομάδας",
@@ -601,12 +718,12 @@
     "platforms": "Πλατφόρμες",
     "streamQuality": "Ποιότητα Ροής",
     "noEngagementData": "",
-    "tierItems_other": "",
     "noPlatformData": "",
     "noQualityData": "",
     "noConcurrentData": "",
-    "playsShare_other": "",
-    "peakConcurrent": ""
+    "peakConcurrent": "",
+    "tierItems_other": "",
+    "playsShare_other": ""
   },
   "violations": {
     "title": "Παραβιάσεις",
@@ -647,9 +764,9 @@
       "conditionGroup": "",
       "matched": "{{matched}}/{{total}} ταιριάζουν",
       "actual": "Πραγματικό",
+      "actionResults": "",
       "relatedSessions_one": "",
-      "relatedSessions_other": "",
-      "actionResults": ""
+      "relatedSessions_other": ""
     },
     "selectAllViolations_one": "",
     "selectAllViolations_other": "Επιλογή και των {{count}} παραβιάσεων που ταιριάζουν με τα φίλτρα",
@@ -2163,6 +2280,12 @@
       "usedByNewsletters_other": ""
     }
   },
+  "impersonation": {
+    "banner": "",
+    "stop": "",
+    "stopLabel": "",
+    "stopViewing": ""
+  },
   "maintenance": {
     "startingTitle": "Το Tracearr ξεκινάει...",
     "interruptionTitle": "Διακοπή υπηρεσίας",
@@ -2193,6 +2316,7 @@
     "allTypes": "Όλοι οι τύποι",
     "heatmap": "Χάρτης Θερμότητας",
     "circles": "Κύκλοι",
+    "viewMode": "",
     "streams": "ροές",
     "locations": "τοποθεσίες",
     "allActivity": "Όλη η δραστηριότητα",
@@ -2200,7 +2324,6 @@
     "webglUnavailable": "",
     "webglHint": "",
     "badMounts": "",
-    "viewMode": "",
     "loadingData": "",
     "noDataForFilters": "",
     "totalStreams": "",
@@ -2344,7 +2467,6 @@
       "completed": "",
       "scheduled": "",
       "processing": "",
-      "dlq_other": "",
       "onDemand": "",
       "notInitialized": "",
       "backgroundServices": "",
@@ -2369,7 +2491,8 @@
         "inactivityCheckDesc": "",
         "backup": "",
         "backupDesc": ""
-      }
+      },
+      "dlq_other": ""
     },
     "clientErrors": {
       "title": "",
@@ -2463,10 +2586,10 @@
         "ofCountedPlays": "",
         "topTitles": "",
         "topArtists": "",
-        "artistCount_one": "",
-        "artistCount_other": "",
         "browse": "",
-        "allGenresPeak": ""
+        "allGenresPeak": "",
+        "artistCount_one": "",
+        "artistCount_other": ""
       }
     },
     "detail": {
@@ -2501,8 +2624,13 @@
       },
       "kpis": {
         "ariaLabel": "",
+        "yourPlays": "",
+        "yourWatchTime": "",
         "yourListenTime": "",
+        "yourCompletion": "",
+        "lastWatched": "",
         "lastPlayed": "",
+        "episodesOf": "",
         "loadError": "",
         "completionLoadError": "",
         "plays": {
@@ -2523,6 +2651,7 @@
           "detailMovie": "",
           "detailMusic": ""
         },
+        "watchedByOthers_other": "",
         "playedByOthers_other": ""
       },
       "watchers": {

@@ -26,6 +26,7 @@
     "connectedTo": "{{name}} に接続しました",
     "plexAuthFailed": "Plex認証に失敗しました",
     "plexStartFailed": "Plexのログインを開始できませんでした",
+    "plexExpired": "",
     "serverConnectFailed": "サーバーへの接続に失敗しました",
     "createAccountFailed": "アカウントの作成に失敗しました",
     "invalidCredentials": "メールアドレスまたはパスワードが正しくありません",
@@ -35,7 +36,23 @@
     "claimCodeLabel": "請求コード",
     "claimCodeHint": "コンテナ起動時に要求コードがサーバーログに表示されます",
     "validateClaimCode": "",
-    "claimCodeSecurityNote": "このセキュリティ対策は、許可されたユーザーのみが初めてのセットアップを完了することを保証します"
+    "claimCodeSecurityNote": "このセキュリティ対策は、許可されたユーザーのみが初めてのセットアップを完了することを保証します",
+    "member": {
+      "tabLocal": "",
+      "tabMember": "",
+      "server": "",
+      "signingInTo": "",
+      "passwordHint": "",
+      "quickConnectHint": "",
+      "waiting": "",
+      "copyCode": "",
+      "usePassword": "",
+      "useQuickConnect": "",
+      "codeExpired": "",
+      "newCode": "",
+      "refused": "",
+      "notPermitted": ""
+    }
   },
   "dashboard": {
     "alerts": "アラート",
@@ -48,13 +65,83 @@
     "bandwidth": "",
     "noActiveStreams": "アクティブなストリームはありません",
     "streamsAppearHere": "ユーザーが視聴を開始すると、アクティブなストリームがここに表示されます",
+    "dayStreak": "",
+    "view": {
+      "label": "",
+      "admin": "",
+      "me": ""
+    },
+    "me": {
+      "last30": "",
+      "streakDetail": "",
+      "topTitles": "",
+      "welcome": {
+        "title": "",
+        "description": "",
+        "browse": ""
+      },
+      "requests": {
+        "title": "",
+        "requestedAgo": "",
+        "seeAll": "",
+        "availableThisWeek_other": ""
+      },
+      "episodes_other": ""
+    },
     "resources": {
       "system": "",
       "perServer": "",
       "average": ""
     },
     "unknownLocation": "",
-    "unknownQuality": ""
+    "unknownQuality": "",
+    "othersStreaming_other": ""
+  },
+  "yourStats": {
+    "titles": "",
+    "howYouWatch": "",
+    "viewerType": {
+      "completionist": {
+        "label": "",
+        "desc": ""
+      },
+      "rewatcher": {
+        "label": "",
+        "desc": ""
+      },
+      "sampler": {
+        "label": "",
+        "desc": ""
+      },
+      "casual": {
+        "label": "",
+        "desc": ""
+      }
+    },
+    "habits": "",
+    "seeActivity": "",
+    "allTime": "",
+    "watchTime": "",
+    "span": {
+      "minutes_other": "",
+      "hours_other": "",
+      "days_other": "",
+      "weeks_other": ""
+    },
+    "longestStreak": "",
+    "firstPlay": "",
+    "biggestBinge": "",
+    "topGenres": "",
+    "allTimeCaption": "",
+    "tier": {
+      "watched": "",
+      "engaged": "",
+      "sampled": "",
+      "abandoned": "",
+      "rewatched": ""
+    },
+    "days_other": "",
+    "bingeValue_other": ""
   },
   "users": {
     "title": "ユーザー",
@@ -109,13 +196,6 @@
     "filterHasAccessTo": "",
     "filterHasAccessToPlaceholder": "",
     "filterHasAccessToHint": "",
-    "selectAllUsers_other": "すべての {{count}} ユーザーを選択",
-    "resetTrustScoreTitle_other": "{{count}} ユーザーの信頼スコアをリセット",
-    "mergeMoves_other": "",
-    "suggestionsCount_other": "",
-    "suggestionsPairEmailMore_other": "",
-    "suggestionsPairEmailUsernameMore_other": "",
-    "suggestionsPairUsernameMore_other": "",
     "merged": "",
     "filterRoleAll": "",
     "filterSignInAll": "",
@@ -126,6 +206,13 @@
     "signInOff": "",
     "signedInAgo": "",
     "neverSignedIn": "",
+    "selectAllUsers_other": "すべての {{count}} ユーザーを選択",
+    "resetTrustScoreTitle_other": "{{count}} ユーザーの信頼スコアをリセット",
+    "mergeMoves_other": "",
+    "suggestionsCount_other": "",
+    "suggestionsPairEmailMore_other": "",
+    "suggestionsPairEmailUsernameMore_other": "",
+    "suggestionsPairUsernameMore_other": "",
     "pendingLink_other": ""
   },
   "userDetail": {
@@ -159,6 +246,28 @@
     "contactEmailNone": "",
     "contactEmailNoLogin": "",
     "locations": "場所",
+    "access": {
+      "title": "",
+      "signIn": "",
+      "signInAllow": "",
+      "signInDefault": "",
+      "signInBlock": "",
+      "signInDefaultOn": "",
+      "signInDefaultOff": "",
+      "signInDefaultUnknown": "",
+      "role": "",
+      "roleAdmin": "",
+      "roleMember": "",
+      "roleHint": "",
+      "disabled": "",
+      "pending": "",
+      "signIns": "",
+      "lastSignIn": "",
+      "never": "",
+      "viewAs": "",
+      "viewAsLabel": "",
+      "viewAsHint": ""
+    },
     "tabs": {
       "access": ""
     },
@@ -194,8 +303,8 @@
     "unknownCity": "",
     "unknownDevice": "",
     "viewAllMore": "",
-    "ipCount_other": "",
-    "adjustTrustScoreDesc": ""
+    "adjustTrustScoreDesc": "",
+    "ipCount_other": ""
   },
   "history": {
     "title": "沿革",
@@ -226,11 +335,11 @@
       "network": "",
       "remote": "",
       "trailers": "",
-      "selected_other": "",
       "clearUsers": "",
       "clearPlatforms": "",
       "clearCountries": "",
-      "clearFilters": ""
+      "clearFilters": "",
+      "selected_other": ""
     },
     "detail": {
       "watch": "",
@@ -242,7 +351,6 @@
       "bitrateUnavailable": "",
       "stereo": "",
       "mono": "",
-      "channelCount_other": "",
       "noDetails": "",
       "source": "",
       "stream": "",
@@ -265,7 +373,8 @@
       "hwDecode": "",
       "hwEncode": "",
       "speed": "",
-      "throttled": ""
+      "throttled": "",
+      "channelCount_other": ""
     }
   },
   "library": {
@@ -282,7 +391,14 @@
       "thisWeek": "今週間",
       "thisMonth": "今月",
       "thisYear": "今年は",
-      "serversNeedSync": ""
+      "serversNeedSync": "",
+      "notWatchedByYou": "",
+      "memberEmpty": {
+        "title": "",
+        "description": ""
+      },
+      "movieCount_other": "",
+      "showCount_other": ""
     },
     "quality": {
       "qualityEvolution": "品質の進化",
@@ -539,21 +655,20 @@
         }
       },
       "qualityTimeline": {
-        "titles_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
+        },
+        "titles_other": ""
       },
       "monthly": {
         "watchCount": "",
-        "uniqueItems_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
+        },
+        "uniqueItems_other": ""
       },
-      "watchesValue_other": "",
       "growth": {
         "empty": {
           "title": "",
@@ -570,12 +685,13 @@
       "completion": {
         "inProgress": "",
         "notStarted": "",
-        "tooltip_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
-      }
+        },
+        "tooltip_other": ""
+      },
+      "watchesValue_other": ""
     }
   },
   "activity": {
@@ -583,6 +699,7 @@
     "concurrentStreams": "同時ストリーム",
     "engagementBreakdown": "エンゲージメントの分析",
     "howUsersEngage": "ユーザーがコンテンツをどのように利用するか",
+    "howYouEngage": "",
     "playsVsSessions": "再生回数とセッション数",
     "playsVsSessionsDesc": "完全に再生された場合のみ: 合計視聴時間がコンテンツの全編をカバーしたときに1回の再生として数えます",
     "activityByDayOfWeek": "曜日ごとのアクティビティ",
@@ -590,12 +707,12 @@
     "platforms": "プラットフォーム",
     "streamQuality": "ストリーム品質",
     "noEngagementData": "",
-    "tierItems_other": "",
     "noPlatformData": "",
     "noQualityData": "",
     "noConcurrentData": "",
-    "playsShare_other": "",
-    "peakConcurrent": ""
+    "peakConcurrent": "",
+    "tierItems_other": "",
+    "playsShare_other": ""
   },
   "violations": {
     "title": "違反",
@@ -636,8 +753,8 @@
       "conditionGroup": "条件グループ {{index}}",
       "matched": "{{matched}}/{{total}} が一致しました",
       "actual": "実際：",
-      "relatedSessions_other": "{{count}} 関連セッション",
-      "actionResults": ""
+      "actionResults": "",
+      "relatedSessions_other": "{{count}} 関連セッション"
     },
     "selectAllViolations_other": "すべての {{count}} 違反マッチングフィルターを選択",
     "dismissViolations_other": "{{count}} 違反を却下する",
@@ -2133,6 +2250,12 @@
       "usedByNewsletters_other": ""
     }
   },
+  "impersonation": {
+    "banner": "",
+    "stop": "",
+    "stopLabel": "",
+    "stopViewing": ""
+  },
   "maintenance": {
     "startingTitle": "Tracearrを起動しています...",
     "interruptionTitle": "サービスの中断",
@@ -2163,6 +2286,7 @@
     "allTypes": "すべてのタイプ",
     "heatmap": "ヒートマップ",
     "circles": "円",
+    "viewMode": "",
     "streams": "ストリーム",
     "locations": "場所",
     "allActivity": "すべてのアクティビティ",
@@ -2170,7 +2294,6 @@
     "webglUnavailable": "",
     "webglHint": "",
     "badMounts": "",
-    "viewMode": "",
     "loadingData": "",
     "noDataForFilters": "",
     "totalStreams": "",
@@ -2313,7 +2436,6 @@
       "completed": "",
       "scheduled": "",
       "processing": "",
-      "dlq_other": "",
       "onDemand": "",
       "notInitialized": "",
       "backgroundServices": "",
@@ -2338,7 +2460,8 @@
         "inactivityCheckDesc": "",
         "backup": "",
         "backupDesc": ""
-      }
+      },
+      "dlq_other": ""
     },
     "clientErrors": {
       "title": "",
@@ -2428,9 +2551,9 @@
         "ofCountedPlays": "",
         "topTitles": "",
         "topArtists": "",
-        "artistCount_other": "",
         "browse": "",
-        "allGenresPeak": ""
+        "allGenresPeak": "",
+        "artistCount_other": ""
       }
     },
     "detail": {
@@ -2463,8 +2586,13 @@
       },
       "kpis": {
         "ariaLabel": "",
+        "yourPlays": "",
+        "yourWatchTime": "",
         "yourListenTime": "",
+        "yourCompletion": "",
+        "lastWatched": "",
         "lastPlayed": "",
+        "episodesOf": "",
         "loadError": "",
         "completionLoadError": "",
         "plays": {
@@ -2485,6 +2613,7 @@
           "detailMovie": "",
           "detailMusic": ""
         },
+        "watchedByOthers_other": "",
         "playedByOthers_other": ""
       },
       "watchers": {

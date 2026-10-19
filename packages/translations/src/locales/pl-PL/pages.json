@@ -26,6 +26,7 @@
     "connectedTo": "Połączono z {{name}}",
     "plexAuthFailed": "Uwierzytelnianie Plex nie powiodło się",
     "plexStartFailed": "Nie udało się uruchomić logowania Plex",
+    "plexExpired": "",
     "serverConnectFailed": "Nie udało się połączyć z serwerem",
     "createAccountFailed": "Nie udało się utworzyć konta",
     "invalidCredentials": "Nieprawidłowa nazwa użytkownika, e-mail lub hasło",
@@ -35,7 +36,23 @@
     "claimCodeLabel": "Kod aktywacyjny",
     "claimCodeHint": "Kod aktywacyjny jest wypisywany w logach serwera podczas uruchamiania kontenera",
     "validateClaimCode": "Zweryfikuj kod aktywacyjny",
-    "claimCodeSecurityNote": "To zabezpieczenie gwarantuje, że tylko uprawnieni użytkownicy mogą ukończyć pierwszą konfigurację"
+    "claimCodeSecurityNote": "To zabezpieczenie gwarantuje, że tylko uprawnieni użytkownicy mogą ukończyć pierwszą konfigurację",
+    "member": {
+      "tabLocal": "",
+      "tabMember": "",
+      "server": "",
+      "signingInTo": "",
+      "passwordHint": "",
+      "quickConnectHint": "",
+      "waiting": "",
+      "copyCode": "",
+      "usePassword": "",
+      "useQuickConnect": "",
+      "codeExpired": "",
+      "newCode": "",
+      "refused": "",
+      "notPermitted": ""
+    }
   },
   "dashboard": {
     "alerts": "Powiadomienia",
@@ -48,13 +65,83 @@
     "bandwidth": "Przepustowość",
     "noActiveStreams": "Brak aktywnych strumieni",
     "streamsAppearHere": "Aktywne strumienie pojawią się tutaj, gdy użytkownicy zaczną oglądać",
+    "dayStreak": "",
+    "view": {
+      "label": "",
+      "admin": "",
+      "me": ""
+    },
+    "me": {
+      "last30": "",
+      "streakDetail": "",
+      "topTitles": "",
+      "welcome": {
+        "title": "",
+        "description": "",
+        "browse": ""
+      },
+      "requests": {
+        "title": "",
+        "requestedAgo": "",
+        "seeAll": "",
+        "availableThisWeek_other": ""
+      },
+      "episodes_other": ""
+    },
     "resources": {
       "system": "",
       "perServer": "",
       "average": ""
     },
     "unknownLocation": "",
-    "unknownQuality": ""
+    "unknownQuality": "",
+    "othersStreaming_other": ""
+  },
+  "yourStats": {
+    "titles": "",
+    "howYouWatch": "",
+    "viewerType": {
+      "completionist": {
+        "label": "",
+        "desc": ""
+      },
+      "rewatcher": {
+        "label": "",
+        "desc": ""
+      },
+      "sampler": {
+        "label": "",
+        "desc": ""
+      },
+      "casual": {
+        "label": "",
+        "desc": ""
+      }
+    },
+    "habits": "",
+    "seeActivity": "",
+    "allTime": "",
+    "watchTime": "",
+    "span": {
+      "minutes_other": "",
+      "hours_other": "",
+      "days_other": "",
+      "weeks_other": ""
+    },
+    "longestStreak": "",
+    "firstPlay": "",
+    "biggestBinge": "",
+    "topGenres": "",
+    "allTimeCaption": "",
+    "tier": {
+      "watched": "",
+      "engaged": "",
+      "sampled": "",
+      "abandoned": "",
+      "rewatched": ""
+    },
+    "days_other": "",
+    "bingeValue_other": ""
   },
   "users": {
     "title": "Użytkownicy",
@@ -109,6 +196,16 @@
     "filterHasAccessTo": "Ma dostęp do",
     "filterHasAccessToPlaceholder": "Dowolny serwer",
     "filterHasAccessToHint": "Pokazuje osoby z aktywnym kontem na każdym wybranym serwerze.",
+    "merged": "",
+    "filterRoleAll": "",
+    "filterSignInAll": "",
+    "filterPendingOnly": "",
+    "rowActions": "",
+    "menuOpenViolations": "",
+    "signInOn": "",
+    "signInOff": "",
+    "signedInAgo": "",
+    "neverSignedIn": "",
     "selectAllUsers_one": "Zaznacz {{count}} użytkownika",
     "selectAllUsers_few": "Zaznacz wszystkich {{count}} użytkowników",
     "selectAllUsers_many": "Zaznacz wszystkich {{count}} użytkowników",
@@ -137,16 +234,6 @@
     "suggestionsPairUsernameMore_few": "{{first}} i {{second}} współdzielą nazwę użytkownika, i jeszcze {{count}}",
     "suggestionsPairUsernameMore_many": "{{first}} i {{second}} współdzielą nazwę użytkownika, i jeszcze {{count}}",
     "suggestionsPairUsernameMore_other": "{{first}} i {{second}} współdzielą nazwę użytkownika, a także {{count}} więcej",
-    "merged": "",
-    "filterRoleAll": "",
-    "filterSignInAll": "",
-    "filterPendingOnly": "",
-    "rowActions": "",
-    "menuOpenViolations": "",
-    "signInOn": "",
-    "signInOff": "",
-    "signedInAgo": "",
-    "neverSignedIn": "",
     "pendingLink_other": ""
   },
   "userDetail": {
@@ -180,6 +267,28 @@
     "contactEmailNone": "nie ustawiono",
     "contactEmailNoLogin": "Nie daje możliwości logowania.",
     "locations": "Lokalizacje",
+    "access": {
+      "title": "",
+      "signIn": "",
+      "signInAllow": "",
+      "signInDefault": "",
+      "signInBlock": "",
+      "signInDefaultOn": "",
+      "signInDefaultOff": "",
+      "signInDefaultUnknown": "",
+      "role": "",
+      "roleAdmin": "",
+      "roleMember": "",
+      "roleHint": "",
+      "disabled": "",
+      "pending": "",
+      "signIns": "",
+      "lastSignIn": "",
+      "never": "",
+      "viewAs": "",
+      "viewAsLabel": "",
+      "viewAsHint": ""
+    },
     "tabs": {
       "access": ""
     },
@@ -215,8 +324,8 @@
     "unknownCity": "",
     "unknownDevice": "",
     "viewAllMore": "",
-    "ipCount_other": "",
-    "adjustTrustScoreDesc": ""
+    "adjustTrustScoreDesc": "",
+    "ipCount_other": ""
   },
   "history": {
     "title": "Historia",
@@ -247,11 +356,11 @@
       "network": "",
       "remote": "",
       "trailers": "",
-      "selected_other": "",
       "clearUsers": "",
       "clearPlatforms": "",
       "clearCountries": "",
-      "clearFilters": ""
+      "clearFilters": "",
+      "selected_other": ""
     },
     "detail": {
       "watch": "",
@@ -263,7 +372,6 @@
       "bitrateUnavailable": "",
       "stereo": "",
       "mono": "",
-      "channelCount_other": "",
       "noDetails": "",
       "source": "",
       "stream": "",
@@ -286,7 +394,8 @@
       "hwDecode": "",
       "hwEncode": "",
       "speed": "",
-      "throttled": ""
+      "throttled": "",
+      "channelCount_other": ""
     }
   },
   "library": {
@@ -303,7 +412,14 @@
       "thisWeek": "w tym tygodniu",
       "thisMonth": "w tym miesiącu",
       "thisYear": "w tym roku",
-      "serversNeedSync": "Te serwery muszą zostać zsynchronizowane:"
+      "serversNeedSync": "Te serwery muszą zostać zsynchronizowane:",
+      "notWatchedByYou": "",
+      "memberEmpty": {
+        "title": "",
+        "description": ""
+      },
+      "movieCount_other": "",
+      "showCount_other": ""
     },
     "quality": {
       "qualityEvolution": "Ewolucja jakości",
@@ -572,21 +688,20 @@
         }
       },
       "qualityTimeline": {
-        "titles_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
+        },
+        "titles_other": ""
       },
       "monthly": {
         "watchCount": "",
-        "uniqueItems_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
+        },
+        "uniqueItems_other": ""
       },
-      "watchesValue_other": "",
       "growth": {
         "empty": {
           "title": "",
@@ -603,12 +718,13 @@
       "completion": {
         "inProgress": "",
         "notStarted": "",
-        "tooltip_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
-      }
+        },
+        "tooltip_other": ""
+      },
+      "watchesValue_other": ""
     }
   },
   "activity": {
@@ -616,6 +732,7 @@
     "concurrentStreams": "Równoległe strumienie",
     "engagementBreakdown": "Podział zaangażowania",
     "howUsersEngage": "Jak użytkownicy angażują się w treści",
+    "howYouEngage": "",
     "playsVsSessions": "Odtworzenia a sesje",
     "playsVsSessionsDesc": "Tylko pełne obejrzenia – odtworzenie jest liczone, gdy łączny czas oglądania pokrywa cały czas trwania treści",
     "activityByDayOfWeek": "Aktywność według dnia tygodnia",
@@ -623,12 +740,12 @@
     "platforms": "Platformy",
     "streamQuality": "Jakość strumienia",
     "noEngagementData": "",
-    "tierItems_other": "",
     "noPlatformData": "",
     "noQualityData": "",
     "noConcurrentData": "",
-    "playsShare_other": "",
-    "peakConcurrent": ""
+    "peakConcurrent": "",
+    "tierItems_other": "",
+    "playsShare_other": ""
   },
   "violations": {
     "title": "Naruszenia",
@@ -669,11 +786,11 @@
       "conditionGroup": "Grupa warunków {{index}}",
       "matched": "Dopasowano {{matched}}/{{total}}",
       "actual": "Rzeczywista wartość",
+      "actionResults": "",
       "relatedSessions_one": "{{count}} powiązana sesja",
       "relatedSessions_few": "{{count}} powiązane sesje",
       "relatedSessions_many": "{{count}} powiązanych sesji",
-      "relatedSessions_other": "{{count}} powiązanych sesji",
-      "actionResults": ""
+      "relatedSessions_other": "{{count}} powiązanych sesji"
     },
     "selectAllViolations_one": "Zaznacz {{count}} naruszenie pasujące do filtrów",
     "selectAllViolations_few": "Zaznacz wszystkie {{count}} naruszenia pasujące do filtrów",
@@ -2223,6 +2340,12 @@
       "usedByNewsletters_other": "Używane przez {{count}} newsletterów"
     }
   },
+  "impersonation": {
+    "banner": "",
+    "stop": "",
+    "stopLabel": "",
+    "stopViewing": ""
+  },
   "maintenance": {
     "startingTitle": "Tracearr jest uruchamiany...",
     "interruptionTitle": "Przerwa w działaniu usługi",
@@ -2253,6 +2376,7 @@
     "allTypes": "Wszystkie typy",
     "heatmap": "Mapa cieplna",
     "circles": "Okręgi",
+    "viewMode": "",
     "streams": "strumienie",
     "locations": "lokalizacje",
     "allActivity": "Cała aktywność",
@@ -2260,7 +2384,6 @@
     "webglUnavailable": "WebGL jest wyłączony w tej przeglądarce",
     "webglHint": "Mapa wymaga WebGL. Włącz go dla tej witryny w ustawieniach przeglądarki.",
     "badMounts": "Wykryto nieprawidłowo zamontowane woluminy – poprawne działanie nie jest gwarantowane.",
-    "viewMode": "",
     "loadingData": "",
     "noDataForFilters": "",
     "totalStreams": "",
@@ -2406,7 +2529,6 @@
       "completed": "",
       "scheduled": "",
       "processing": "",
-      "dlq_other": "",
       "onDemand": "",
       "notInitialized": "",
       "backgroundServices": "",
@@ -2431,7 +2553,8 @@
         "inactivityCheckDesc": "",
         "backup": "",
         "backupDesc": ""
-      }
+      },
+      "dlq_other": ""
     },
     "clientErrors": {
       "title": "",
@@ -2533,12 +2656,12 @@
         "ofCountedPlays": "",
         "topTitles": "",
         "topArtists": "",
+        "browse": "",
+        "allGenresPeak": "",
         "artistCount_one": "",
         "artistCount_few": "",
         "artistCount_many": "",
-        "artistCount_other": "",
-        "browse": "",
-        "allGenresPeak": ""
+        "artistCount_other": ""
       }
     },
     "detail": {
@@ -2577,8 +2700,13 @@
       },
       "kpis": {
         "ariaLabel": "Statystyki oglądalności",
+        "yourPlays": "",
+        "yourWatchTime": "",
         "yourListenTime": "",
+        "yourCompletion": "",
+        "lastWatched": "",
         "lastPlayed": "",
+        "episodesOf": "",
         "loadError": "Nie udało się załadować statystyk oglądalności",
         "completionLoadError": "Nie udało się załadować danych o ukończeniu",
         "plays": {
@@ -2599,6 +2727,7 @@
           "detailMovie": "{{finished}} z {{total}} obejrzało do końca",
           "detailMusic": ""
         },
+        "watchedByOthers_other": "",
         "playedByOthers_other": ""
       },
       "watchers": {

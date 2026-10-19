@@ -21,6 +21,7 @@
       "destinations": "Destinacions",
       "newsletters": "Butlletins",
       "email": "Correu electrònic",
+      "memberLogin": "",
       "mobile": "Dispositius mòbils",
       "remote": "Accés remot",
       "import": "Importa",
@@ -36,6 +37,7 @@
       "posters": "Quin servidor té preferència per a les imatges quan un títol és a més d'un.",
       "plexAccounts": "Comptes de Plex.tv que Tracearr fa servir per descobrir i autoritzar servidors.",
       "destinations": "On s'envien les notificacions i els resums.",
+      "memberLogin": "",
       "mobile": "Dispositius aparellats amb l'aplicació mòbil de Tracearr.",
       "remote": "Com arriben a aquesta instància les persones de fora de la vostra xarxa.",
       "import": "Importeu l'historial de visionament de Tautulli, Jellystat o Playback Reporting.",
@@ -241,7 +243,9 @@
       "description": "Quan un títol és a més d'un servidor, es fa servir el pòster d'aquest servidor. Si no en té cap, es fa servir el de la còpia afegida més recentment.",
       "automatic": "Automàtic (el més recent)",
       "emptyHint": "Afegiu un servidor per triar una font de pòsters preferida.",
-      "ownerOnly": "Només el propietari pot triar la font de pòsters preferida."
+      "ownerOnly": "Només el propietari pot triar la font de pòsters preferida.",
+      "precache": "",
+      "precacheDescription": ""
     },
     "version": {
       "installed": "Versió {{version}}",
@@ -351,6 +355,42 @@
     "automatic": "Automàtica",
     "startJob": "Inicia la tasca"
   },
+  "memberLogin": {
+    "serverActivity": "",
+    "serverActivityDesc": "",
+    "noServers": "",
+    "addServer": "",
+    "serversLoadFailed": "",
+    "signIn": {
+      "title": "",
+      "titleDesc": "",
+      "local": "",
+      "localDesc": "",
+      "oidc": "",
+      "oidcDesc": "",
+      "plex": "",
+      "plexDesc": "",
+      "onlyWay": "",
+      "membersTitle": "",
+      "media": "",
+      "mediaDesc": "",
+      "servers": "",
+      "overrides": "",
+      "overridesDesc": "",
+      "overridesEmpty": "",
+      "overridesLoadFailed": "",
+      "addPerson": "",
+      "searchPeople": "",
+      "nobodyFound": "",
+      "accessLabel": "",
+      "roleLabel": "",
+      "allow": "",
+      "block": "",
+      "admin": "",
+      "member": "",
+      "backToDefault": ""
+    }
+  },
   "import": {
     "noServers": "No hi ha cap servidor connectat",
     "noServersHint": "Cal com a mínim un servidor connectat per importar dades.",
@@ -410,17 +450,17 @@
     "importFullRangeHelp": "Les reproduccions que van començar després d'afegir aquest servidor a Tracearr no s'importen mai. Per defecte, la importació també s'atura a la reproducció més antiga que Tracearr ja té d'aquest servidor, per exemple d'una importació de Jellystat. Activeu això per importar-ho tot d'abans que s'afegís el servidor. Els duplicats exactes se segueixen ometent.",
     "skipOverlap": "Registre solapat: la marca de temps cau dins del període que Tracearr ja registra per a aquest servidor. Activeu la importació de tot l'històric per incloure'l.",
     "skipDuplicatePlugin": "Registre duplicat: ja s'havia importat directament o havia arribat abans amb una importació de Jellystat de les mateixes dades del connector.",
-    "overlapSkipped_one": "{{count}} omès per solapament",
-    "overlapSkipped_other": "{{count}} omesos per solapament",
-    "duplicates_one": "{{count}} duplicat omès",
-    "duplicates_other": "{{count}} duplicats omesos",
     "importFailed": "",
     "dropzone": {
       "dropHere": "",
       "dragOrClick": "",
       "limit": "",
       "removeFile": ""
-    }
+    },
+    "overlapSkipped_one": "{{count}} omès per solapament",
+    "overlapSkipped_other": "{{count}} omesos per solapament",
+    "duplicates_one": "{{count}} duplicat omès",
+    "duplicates_other": "{{count}} duplicats omesos"
   },
   "plex": {
     "signInWithPlex": "Inicia la sessió amb Plex",

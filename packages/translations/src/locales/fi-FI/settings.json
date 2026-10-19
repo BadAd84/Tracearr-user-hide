@@ -21,6 +21,7 @@
       "destinations": "Kohteet",
       "newsletters": "Uutiskirjeet",
       "email": "Sähköposti",
+      "memberLogin": "",
       "mobile": "Mobiililaitteet",
       "remote": "Etäkäyttö",
       "import": "Tietojen tuonti",
@@ -36,6 +37,7 @@
       "posters": "Minkä palvelimen kuvituskuvat voittavat, kun nimike on olemassa useammalla, kuin yhdellä palvelimella.",
       "plexAccounts": "Plex.tv-tilit, joita Tracearr käyttää löytääkseen ja valtuuttaakseen palvelimia.",
       "destinations": "Mihin ilmoitukset ja koosteet toimitetaan.",
+      "memberLogin": "",
       "mobile": "Laitteet, jotka on liitetty Tracearr-mobiilisovellukseen.",
       "remote": "Kuinka verkkosi ulkopuolella olevat ihmiset saavuttavat tämän instanssin.",
       "import": "Tuo katseluhistoria: Tautulli, Jellystat tai Playback Reporting.",
@@ -241,7 +243,9 @@
       "description": "Kun nimike on useammalla kuin yhdellä palvelimella, käytä tämän palvelimen julistetta. Jos sillä ei ole sellaista, palaamme viimeisimpään lisättyyn kopioon.",
       "automatic": "Automaattinen (viimeisimmät)",
       "emptyHint": "Lisää palvelin valitaksesi halutun julistelähteen.",
-      "ownerOnly": "Vain omistaja voi valita halutun julistelähteen."
+      "ownerOnly": "Vain omistaja voi valita halutun julistelähteen.",
+      "precache": "",
+      "precacheDescription": ""
     },
     "version": {
       "installed": "Versio {{version}}",
@@ -351,6 +355,42 @@
     "automatic": "Automaattinen",
     "startJob": "Aloita Työ"
   },
+  "memberLogin": {
+    "serverActivity": "",
+    "serverActivityDesc": "",
+    "noServers": "",
+    "addServer": "",
+    "serversLoadFailed": "",
+    "signIn": {
+      "title": "",
+      "titleDesc": "",
+      "local": "",
+      "localDesc": "",
+      "oidc": "",
+      "oidcDesc": "",
+      "plex": "",
+      "plexDesc": "",
+      "onlyWay": "",
+      "membersTitle": "",
+      "media": "",
+      "mediaDesc": "",
+      "servers": "",
+      "overrides": "",
+      "overridesDesc": "",
+      "overridesEmpty": "",
+      "overridesLoadFailed": "",
+      "addPerson": "",
+      "searchPeople": "",
+      "nobodyFound": "",
+      "accessLabel": "",
+      "roleLabel": "",
+      "allow": "",
+      "block": "",
+      "admin": "",
+      "member": "",
+      "backToDefault": ""
+    }
+  },
   "import": {
     "noServers": "Palvelimia Ei Yhdistetty",
     "noServersHint": "Tietojen tuonti vaatii ainakin yhden yhdistetyn palvelimen.",
@@ -410,17 +450,17 @@
     "importFullRangeHelp": "Toistoja, jotka alkoivat sen jälkeen, kun tämä palvelin lisättiin Tracearriin, ei koskaan tuoda. Oletuksena tuonti pysähtyy myös aikaisimpaan toistoon, joka Tracearrilla jo on tältä palvelimelta, esimerkiksi Jellystat-tuonnista. Ota tämä käyttöön tuodaksesi kaiken ajalta ennen palvelimen lisäämistä. Täsmälleen samat kaksoiskappaleet ohitetaan silti.",
     "skipOverlap": "Päällekkäinen tieto - aikaleima osuu ajanjaksolle, jota Tracearr jo seuraa tällä palvelimella. Ota koko historian tuonti käyttöön sisällyttääksesi sen.",
     "skipDuplicatePlugin": "Kaksoiskappale - tuotu jo suoraan tai saapunut aiemmin saman liitännäisdatan Jellystat-tuonnin kautta.",
-    "overlapSkipped_one": "{{count}} ohitettu päällekkäisyytenä",
-    "overlapSkipped_other": "{{count}} ohitettu päällekkäisyyksinä",
-    "duplicates_one": "{{count}} kaksoiskappale ohitettu",
-    "duplicates_other": "{{count}} kaksoiskappaletta ohitettu",
     "importFailed": "",
     "dropzone": {
       "dropHere": "",
       "dragOrClick": "",
       "limit": "",
       "removeFile": ""
-    }
+    },
+    "overlapSkipped_one": "{{count}} ohitettu päällekkäisyytenä",
+    "overlapSkipped_other": "{{count}} ohitettu päällekkäisyyksinä",
+    "duplicates_one": "{{count}} kaksoiskappale ohitettu",
+    "duplicates_other": "{{count}} kaksoiskappaletta ohitettu"
   },
   "plex": {
     "signInWithPlex": "Kirjaudu sisään Plexillä",

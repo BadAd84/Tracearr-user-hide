@@ -21,6 +21,7 @@
       "destinations": "",
       "newsletters": "",
       "email": "",
+      "memberLogin": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -36,6 +37,7 @@
       "posters": "",
       "plexAccounts": "",
       "destinations": "",
+      "memberLogin": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -241,7 +243,9 @@
       "description": "",
       "automatic": "",
       "emptyHint": "",
-      "ownerOnly": ""
+      "ownerOnly": "",
+      "precache": "",
+      "precacheDescription": ""
     },
     "version": {
       "installed": "",
@@ -351,6 +355,42 @@
     "automatic": "",
     "startJob": "Iniciar trabajo"
   },
+  "memberLogin": {
+    "serverActivity": "",
+    "serverActivityDesc": "",
+    "noServers": "",
+    "addServer": "",
+    "serversLoadFailed": "",
+    "signIn": {
+      "title": "",
+      "titleDesc": "",
+      "local": "",
+      "localDesc": "",
+      "oidc": "",
+      "oidcDesc": "",
+      "plex": "",
+      "plexDesc": "",
+      "onlyWay": "",
+      "membersTitle": "",
+      "media": "",
+      "mediaDesc": "",
+      "servers": "",
+      "overrides": "",
+      "overridesDesc": "",
+      "overridesEmpty": "",
+      "overridesLoadFailed": "",
+      "addPerson": "",
+      "searchPeople": "",
+      "nobodyFound": "",
+      "accessLabel": "",
+      "roleLabel": "",
+      "allow": "",
+      "block": "",
+      "admin": "",
+      "member": "",
+      "backToDefault": ""
+    }
+  },
   "import": {
     "noServers": "No hay servidores conectados",
     "noServersHint": "Necesita al menos un servidor conectado para importar datos.",
@@ -410,17 +450,17 @@
     "importFullRangeHelp": "",
     "skipOverlap": "",
     "skipDuplicatePlugin": "",
-    "overlapSkipped_one": "",
-    "overlapSkipped_other": "",
-    "duplicates_one": "",
-    "duplicates_other": "",
     "importFailed": "",
     "dropzone": {
       "dropHere": "",
       "dragOrClick": "",
       "limit": "",
       "removeFile": ""
-    }
+    },
+    "overlapSkipped_one": "",
+    "overlapSkipped_other": "",
+    "duplicates_one": "",
+    "duplicates_other": ""
   },
   "plex": {
     "signInWithPlex": "Inicia sesión con Plex",

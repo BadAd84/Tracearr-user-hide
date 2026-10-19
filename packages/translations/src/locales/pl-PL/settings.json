@@ -21,6 +21,7 @@
       "destinations": "Miejsca docelowe",
       "newsletters": "Newslettery",
       "email": "Wiadomości e-mail",
+      "memberLogin": "",
       "mobile": "Urządzenia mobilne",
       "remote": "Zdalny dostęp",
       "import": "Import",
@@ -36,6 +37,7 @@
       "posters": "Serwer, którego plakat ma pierwszeństwo, gdy tytuł istnieje na więcej niż jednym serwerze.",
       "plexAccounts": "Konta Plex.tv, które Tracearr wykorzystuje do wykrywania i autoryzacji serwerów.",
       "destinations": "Gdzie przekazywane są powiadomienia i newslettery.",
+      "memberLogin": "",
       "mobile": "Urządzenia sparowane z aplikacją mobilną Tracearr.",
       "remote": "Jak ludzie spoza Twojej sieci łączą się z tą instancją.",
       "import": "Przenieś historię oglądania z Tautulli, Jellystat lub Playback Reporting.",
@@ -243,7 +245,9 @@
       "description": "Gdy tytuł jest na więcej niż jednym serwerze, używany jest plakat z tego serwera. Jeśli go nie ma, użyjemy ostatnio dodanej kopii.",
       "automatic": "Automatyczne (najnowsze)",
       "emptyHint": "Dodaj serwer, aby wybrać preferowane źródło plakatów.",
-      "ownerOnly": "Tylko właściciel może wybrać preferowane źródło plakatów."
+      "ownerOnly": "Tylko właściciel może wybrać preferowane źródło plakatów.",
+      "precache": "",
+      "precacheDescription": ""
     },
     "version": {
       "installed": "Wersja {{version}}",
@@ -355,6 +359,42 @@
     "automatic": "Automatyczne",
     "startJob": "Uruchom zadanie"
   },
+  "memberLogin": {
+    "serverActivity": "",
+    "serverActivityDesc": "",
+    "noServers": "",
+    "addServer": "",
+    "serversLoadFailed": "",
+    "signIn": {
+      "title": "",
+      "titleDesc": "",
+      "local": "",
+      "localDesc": "",
+      "oidc": "",
+      "oidcDesc": "",
+      "plex": "",
+      "plexDesc": "",
+      "onlyWay": "",
+      "membersTitle": "",
+      "media": "",
+      "mediaDesc": "",
+      "servers": "",
+      "overrides": "",
+      "overridesDesc": "",
+      "overridesEmpty": "",
+      "overridesLoadFailed": "",
+      "addPerson": "",
+      "searchPeople": "",
+      "nobodyFound": "",
+      "accessLabel": "",
+      "roleLabel": "",
+      "allow": "",
+      "block": "",
+      "admin": "",
+      "member": "",
+      "backToDefault": ""
+    }
+  },
   "import": {
     "noServers": "Brak połączonych serwerów",
     "noServersHint": "Aby zaimportować dane, potrzebujesz co najmniej jednego połączonego serwera.",
@@ -414,6 +454,13 @@
     "importFullRangeHelp": "Odtworzenia rozpoczęte po dodaniu tego serwera do Tracearr nigdy nie są importowane. Domyślnie import zatrzymuje się również na najwcześniejszym odtworzeniu, jakie Tracearr posiada dla tego serwera, na przykład z importu Jellystat. Włącz tę funkcję, aby importować wszystko sprzed dodania serwera. Dokładne duplikaty nadal zostaną pominięte.",
     "skipOverlap": "Nakładający się rekord – znacznik czasu przypada w okresie, który Tracearr już śledzi dla tego serwera. Włącz import pełnej historii, aby go uwzględnić.",
     "skipDuplicatePlugin": "Zduplikowany rekord – został już zaimportowany bezpośrednio lub dotarł wcześniej poprzez import Jellystat tych samych danych wtyczki.",
+    "importFailed": "",
+    "dropzone": {
+      "dropHere": "",
+      "dragOrClick": "",
+      "limit": "",
+      "removeFile": ""
+    },
     "overlapSkipped_one": "{{count}} pominięty jako nakładający się",
     "overlapSkipped_few": "{{count}} pominięte jako nakładające się",
     "overlapSkipped_many": "{{count}} pominiętych jako nakładające się",
@@ -421,14 +468,7 @@
     "duplicates_one": "{{count}} duplikat pominięty",
     "duplicates_few": "{{count}} duplikaty pominięte",
     "duplicates_many": "{{count}} duplikatów pominiętych",
-    "duplicates_other": "{{count}} duplikatów pominiętych",
-    "importFailed": "",
-    "dropzone": {
-      "dropHere": "",
-      "dragOrClick": "",
-      "limit": "",
-      "removeFile": ""
-    }
+    "duplicates_other": "{{count}} duplikatów pominiętych"
   },
   "plex": {
     "signInWithPlex": "Zaloguj się przez Plex",

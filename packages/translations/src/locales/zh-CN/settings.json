@@ -21,6 +21,7 @@
       "destinations": "",
       "newsletters": "",
       "email": "",
+      "memberLogin": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -36,6 +37,7 @@
       "posters": "",
       "plexAccounts": "",
       "destinations": "",
+      "memberLogin": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -240,7 +242,9 @@
       "description": "当一个标题在多个服务器上时，使用此服务器的海报。 如果没有，我们将回到最近添加的副本。",
       "automatic": "自动(最近一次)",
       "emptyHint": "",
-      "ownerOnly": ""
+      "ownerOnly": "",
+      "precache": "",
+      "precacheDescription": ""
     },
     "version": {
       "installed": "",
@@ -349,6 +353,42 @@
     "automatic": "",
     "startJob": "开始作业"
   },
+  "memberLogin": {
+    "serverActivity": "",
+    "serverActivityDesc": "",
+    "noServers": "",
+    "addServer": "",
+    "serversLoadFailed": "",
+    "signIn": {
+      "title": "",
+      "titleDesc": "",
+      "local": "",
+      "localDesc": "",
+      "oidc": "",
+      "oidcDesc": "",
+      "plex": "",
+      "plexDesc": "",
+      "onlyWay": "",
+      "membersTitle": "",
+      "media": "",
+      "mediaDesc": "",
+      "servers": "",
+      "overrides": "",
+      "overridesDesc": "",
+      "overridesEmpty": "",
+      "overridesLoadFailed": "",
+      "addPerson": "",
+      "searchPeople": "",
+      "nobodyFound": "",
+      "accessLabel": "",
+      "roleLabel": "",
+      "allow": "",
+      "block": "",
+      "admin": "",
+      "member": "",
+      "backToDefault": ""
+    }
+  },
   "import": {
     "noServers": "没有服务器连接",
     "noServersHint": "您需要至少一个连接的服务器来导入数据。",
@@ -408,15 +448,15 @@
     "importFullRangeHelp": "",
     "skipOverlap": "重叠记录 - 时间戳位于 Tracearr 已为此服务器跟踪的时间段内。启用全范围导入以包含它。",
     "skipDuplicatePlugin": "重复记录 - 已经直接导入或通过Jellstat导入相同的插件数据早期到达。",
-    "overlapSkipped_other": "",
-    "duplicates_other": "",
     "importFailed": "",
     "dropzone": {
       "dropHere": "",
       "dragOrClick": "",
       "limit": "",
       "removeFile": ""
-    }
+    },
+    "overlapSkipped_other": "",
+    "duplicates_other": ""
   },
   "plex": {
     "signInWithPlex": "使用 Plex 登录",

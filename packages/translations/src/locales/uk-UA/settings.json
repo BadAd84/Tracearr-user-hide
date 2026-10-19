@@ -21,6 +21,7 @@
       "destinations": "",
       "newsletters": "",
       "email": "",
+      "memberLogin": "",
       "mobile": "Мобільні пристрої",
       "remote": "Віддалений доступ",
       "import": "Iмпорт",
@@ -36,6 +37,7 @@
       "posters": "",
       "plexAccounts": "",
       "destinations": "",
+      "memberLogin": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -243,7 +245,9 @@
       "description": "",
       "automatic": "",
       "emptyHint": "",
-      "ownerOnly": ""
+      "ownerOnly": "",
+      "precache": "",
+      "precacheDescription": ""
     },
     "version": {
       "installed": "",
@@ -355,6 +359,42 @@
     "automatic": "",
     "startJob": "Почати роботу"
   },
+  "memberLogin": {
+    "serverActivity": "",
+    "serverActivityDesc": "",
+    "noServers": "",
+    "addServer": "",
+    "serversLoadFailed": "",
+    "signIn": {
+      "title": "",
+      "titleDesc": "",
+      "local": "",
+      "localDesc": "",
+      "oidc": "",
+      "oidcDesc": "",
+      "plex": "",
+      "plexDesc": "",
+      "onlyWay": "",
+      "membersTitle": "",
+      "media": "",
+      "mediaDesc": "",
+      "servers": "",
+      "overrides": "",
+      "overridesDesc": "",
+      "overridesEmpty": "",
+      "overridesLoadFailed": "",
+      "addPerson": "",
+      "searchPeople": "",
+      "nobodyFound": "",
+      "accessLabel": "",
+      "roleLabel": "",
+      "allow": "",
+      "block": "",
+      "admin": "",
+      "member": "",
+      "backToDefault": ""
+    }
+  },
   "import": {
     "noServers": "Немає підключених серверів",
     "noServersHint": "Вам потрібно принаймні один підключений сервер для імпорту даних.",
@@ -414,6 +454,13 @@
     "importFullRangeHelp": "",
     "skipOverlap": "",
     "skipDuplicatePlugin": "",
+    "importFailed": "",
+    "dropzone": {
+      "dropHere": "",
+      "dragOrClick": "",
+      "limit": "",
+      "removeFile": ""
+    },
     "overlapSkipped_one": "",
     "overlapSkipped_few": "",
     "overlapSkipped_many": "",
@@ -421,14 +468,7 @@
     "duplicates_one": "",
     "duplicates_few": "",
     "duplicates_many": "",
-    "duplicates_other": "",
-    "importFailed": "",
-    "dropzone": {
-      "dropHere": "",
-      "dragOrClick": "",
-      "limit": "",
-      "removeFile": ""
-    }
+    "duplicates_other": ""
   },
   "plex": {
     "signInWithPlex": "Увійти через Plex",

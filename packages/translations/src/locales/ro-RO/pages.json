@@ -26,6 +26,7 @@
     "connectedTo": "Conectat la {{name}}",
     "plexAuthFailed": "Autentificare Plex eșuată",
     "plexStartFailed": "Pornirea autentificării Plex a eșuat",
+    "plexExpired": "",
     "serverConnectFailed": "Conectarea la server a eșuat",
     "createAccountFailed": "Crearea contului a eșuat",
     "invalidCredentials": "E-mail sau parolă nevalide",
@@ -35,7 +36,23 @@
     "claimCodeLabel": "Solicită cod",
     "claimCodeHint": "Codul de solicitare este tipărit în jurnalele serverului atunci când începe containerul",
     "validateClaimCode": "",
-    "claimCodeSecurityNote": "Această măsură de securitate asigură că numai utilizatorii autorizați pot finaliza configurarea pentru prima dată"
+    "claimCodeSecurityNote": "Această măsură de securitate asigură că numai utilizatorii autorizați pot finaliza configurarea pentru prima dată",
+    "member": {
+      "tabLocal": "",
+      "tabMember": "",
+      "server": "",
+      "signingInTo": "",
+      "passwordHint": "",
+      "quickConnectHint": "",
+      "waiting": "",
+      "copyCode": "",
+      "usePassword": "",
+      "useQuickConnect": "",
+      "codeExpired": "",
+      "newCode": "",
+      "refused": "",
+      "notPermitted": ""
+    }
   },
   "dashboard": {
     "alerts": "Alerte",
@@ -48,13 +65,83 @@
     "bandwidth": "Lățimea benzii",
     "noActiveStreams": "Niciun stream activ",
     "streamsAppearHere": "Stream-urile active vor apărea aici atunci când utilizatorii încep să vizioneze",
+    "dayStreak": "",
+    "view": {
+      "label": "",
+      "admin": "",
+      "me": ""
+    },
+    "me": {
+      "last30": "",
+      "streakDetail": "",
+      "topTitles": "",
+      "welcome": {
+        "title": "",
+        "description": "",
+        "browse": ""
+      },
+      "requests": {
+        "title": "",
+        "requestedAgo": "",
+        "seeAll": "",
+        "availableThisWeek_other": ""
+      },
+      "episodes_other": ""
+    },
     "resources": {
       "system": "",
       "perServer": "",
       "average": ""
     },
     "unknownLocation": "",
-    "unknownQuality": ""
+    "unknownQuality": "",
+    "othersStreaming_other": ""
+  },
+  "yourStats": {
+    "titles": "",
+    "howYouWatch": "",
+    "viewerType": {
+      "completionist": {
+        "label": "",
+        "desc": ""
+      },
+      "rewatcher": {
+        "label": "",
+        "desc": ""
+      },
+      "sampler": {
+        "label": "",
+        "desc": ""
+      },
+      "casual": {
+        "label": "",
+        "desc": ""
+      }
+    },
+    "habits": "",
+    "seeActivity": "",
+    "allTime": "",
+    "watchTime": "",
+    "span": {
+      "minutes_other": "",
+      "hours_other": "",
+      "days_other": "",
+      "weeks_other": ""
+    },
+    "longestStreak": "",
+    "firstPlay": "",
+    "biggestBinge": "",
+    "topGenres": "",
+    "allTimeCaption": "",
+    "tier": {
+      "watched": "",
+      "engaged": "",
+      "sampled": "",
+      "abandoned": "",
+      "rewatched": ""
+    },
+    "days_other": "",
+    "bingeValue_other": ""
   },
   "users": {
     "title": "Utilizatori",
@@ -109,6 +196,16 @@
     "filterHasAccessTo": "",
     "filterHasAccessToPlaceholder": "",
     "filterHasAccessToHint": "",
+    "merged": "",
+    "filterRoleAll": "",
+    "filterSignInAll": "",
+    "filterPendingOnly": "",
+    "rowActions": "",
+    "menuOpenViolations": "",
+    "signInOn": "",
+    "signInOff": "",
+    "signedInAgo": "",
+    "neverSignedIn": "",
     "selectAllUsers_one": "",
     "selectAllUsers_few": "",
     "selectAllUsers_other": "Selectați toți utilizatorii {{count}}",
@@ -130,16 +227,6 @@
     "suggestionsPairUsernameMore_one": "",
     "suggestionsPairUsernameMore_few": "",
     "suggestionsPairUsernameMore_other": "",
-    "merged": "",
-    "filterRoleAll": "",
-    "filterSignInAll": "",
-    "filterPendingOnly": "",
-    "rowActions": "",
-    "menuOpenViolations": "",
-    "signInOn": "",
-    "signInOff": "",
-    "signedInAgo": "",
-    "neverSignedIn": "",
     "pendingLink_other": ""
   },
   "userDetail": {
@@ -173,6 +260,28 @@
     "contactEmailNone": "",
     "contactEmailNoLogin": "",
     "locations": "Locații",
+    "access": {
+      "title": "",
+      "signIn": "",
+      "signInAllow": "",
+      "signInDefault": "",
+      "signInBlock": "",
+      "signInDefaultOn": "",
+      "signInDefaultOff": "",
+      "signInDefaultUnknown": "",
+      "role": "",
+      "roleAdmin": "",
+      "roleMember": "",
+      "roleHint": "",
+      "disabled": "",
+      "pending": "",
+      "signIns": "",
+      "lastSignIn": "",
+      "never": "",
+      "viewAs": "",
+      "viewAsLabel": "",
+      "viewAsHint": ""
+    },
     "tabs": {
       "access": ""
     },
@@ -208,8 +317,8 @@
     "unknownCity": "",
     "unknownDevice": "",
     "viewAllMore": "",
-    "ipCount_other": "",
-    "adjustTrustScoreDesc": ""
+    "adjustTrustScoreDesc": "",
+    "ipCount_other": ""
   },
   "history": {
     "title": "Istoric",
@@ -240,11 +349,11 @@
       "network": "",
       "remote": "",
       "trailers": "",
-      "selected_other": "",
       "clearUsers": "",
       "clearPlatforms": "",
       "clearCountries": "",
-      "clearFilters": ""
+      "clearFilters": "",
+      "selected_other": ""
     },
     "detail": {
       "watch": "",
@@ -256,7 +365,6 @@
       "bitrateUnavailable": "",
       "stereo": "",
       "mono": "",
-      "channelCount_other": "",
       "noDetails": "",
       "source": "",
       "stream": "",
@@ -279,7 +387,8 @@
       "hwDecode": "",
       "hwEncode": "",
       "speed": "",
-      "throttled": ""
+      "throttled": "",
+      "channelCount_other": ""
     }
   },
   "library": {
@@ -296,7 +405,14 @@
       "thisWeek": "săptămâna aceasta",
       "thisMonth": "luna aceasta",
       "thisYear": "în acest an",
-      "serversNeedSync": ""
+      "serversNeedSync": "",
+      "notWatchedByYou": "",
+      "memberEmpty": {
+        "title": "",
+        "description": ""
+      },
+      "movieCount_other": "",
+      "showCount_other": ""
     },
     "quality": {
       "qualityEvolution": "Evoluția calității",
@@ -561,21 +677,20 @@
         }
       },
       "qualityTimeline": {
-        "titles_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
+        },
+        "titles_other": ""
       },
       "monthly": {
         "watchCount": "",
-        "uniqueItems_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
+        },
+        "uniqueItems_other": ""
       },
-      "watchesValue_other": "",
       "growth": {
         "empty": {
           "title": "",
@@ -592,12 +707,13 @@
       "completion": {
         "inProgress": "",
         "notStarted": "",
-        "tooltip_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
-      }
+        },
+        "tooltip_other": ""
+      },
+      "watchesValue_other": ""
     }
   },
   "activity": {
@@ -605,6 +721,7 @@
     "concurrentStreams": "Stream-uri Concurente",
     "engagementBreakdown": "Defalcare angajament",
     "howUsersEngage": "Modul în care utilizatorii interacționează cu conținutul",
+    "howYouEngage": "",
     "playsVsSessions": "Vizionări vs. sesiuni",
     "playsVsSessionsDesc": "Doar vizionări complete: se numără o vizionare când timpul total de vizionare acoperă întreaga durată a conținutului",
     "activityByDayOfWeek": "Activitate pe ziua de săptămână",
@@ -612,12 +729,12 @@
     "platforms": "Platforme",
     "streamQuality": "Calitatea stream-ului",
     "noEngagementData": "",
-    "tierItems_other": "",
     "noPlatformData": "",
     "noQualityData": "",
     "noConcurrentData": "",
-    "playsShare_other": "",
-    "peakConcurrent": ""
+    "peakConcurrent": "",
+    "tierItems_other": "",
+    "playsShare_other": ""
   },
   "violations": {
     "title": "Încălcări",
@@ -658,10 +775,10 @@
       "conditionGroup": "",
       "matched": "{{matched}}/{{total}} corespondență",
       "actual": "Actuală",
+      "actionResults": "",
       "relatedSessions_one": "{{count}} sesiune legată de",
       "relatedSessions_few": "",
-      "relatedSessions_other": "{{count}} sesiuni asociate",
-      "actionResults": ""
+      "relatedSessions_other": "{{count}} sesiuni asociate"
     },
     "selectAllViolations_one": "",
     "selectAllViolations_few": "",
@@ -2193,6 +2310,12 @@
       "usedByNewsletters_other": ""
     }
   },
+  "impersonation": {
+    "banner": "",
+    "stop": "",
+    "stopLabel": "",
+    "stopViewing": ""
+  },
   "maintenance": {
     "startingTitle": "Tracearr pornește...",
     "interruptionTitle": "Întreruperea serviciului",
@@ -2223,6 +2346,7 @@
     "allTypes": "Toate tipurile",
     "heatmap": "Hartă",
     "circles": "Cercuri",
+    "viewMode": "",
     "streams": "stream-uri",
     "locations": "locații",
     "allActivity": "Toată activitatea",
@@ -2230,7 +2354,6 @@
     "webglUnavailable": "",
     "webglHint": "",
     "badMounts": "",
-    "viewMode": "",
     "loadingData": "",
     "noDataForFilters": "",
     "totalStreams": "",
@@ -2375,7 +2498,6 @@
       "completed": "",
       "scheduled": "",
       "processing": "",
-      "dlq_other": "",
       "onDemand": "",
       "notInitialized": "",
       "backgroundServices": "",
@@ -2400,7 +2522,8 @@
         "inactivityCheckDesc": "",
         "backup": "",
         "backupDesc": ""
-      }
+      },
+      "dlq_other": ""
     },
     "clientErrors": {
       "title": "",
@@ -2498,11 +2621,11 @@
         "ofCountedPlays": "",
         "topTitles": "",
         "topArtists": "",
+        "browse": "",
+        "allGenresPeak": "",
         "artistCount_one": "",
         "artistCount_few": "",
-        "artistCount_other": "",
-        "browse": "",
-        "allGenresPeak": ""
+        "artistCount_other": ""
       }
     },
     "detail": {
@@ -2539,8 +2662,13 @@
       },
       "kpis": {
         "ariaLabel": "",
+        "yourPlays": "",
+        "yourWatchTime": "",
         "yourListenTime": "",
+        "yourCompletion": "",
+        "lastWatched": "",
         "lastPlayed": "",
+        "episodesOf": "",
         "loadError": "",
         "completionLoadError": "",
         "plays": {
@@ -2561,6 +2689,7 @@
           "detailMovie": "",
           "detailMusic": ""
         },
+        "watchedByOthers_other": "",
         "playedByOthers_other": ""
       },
       "watchers": {

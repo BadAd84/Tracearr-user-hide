@@ -21,6 +21,7 @@
       "destinations": "",
       "newsletters": "",
       "email": "",
+      "memberLogin": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -36,6 +37,7 @@
       "posters": "",
       "plexAccounts": "",
       "destinations": "",
+      "memberLogin": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -241,7 +243,9 @@
       "description": "Als een titel op meerdere servers beschikbaar is, gebruik dan de poster van die server. Als die server geen poster heeft, gebruiken we de meest recent toegevoegde versie.",
       "automatic": "Automatisch (meest recent)",
       "emptyHint": "Voeg een server toe om een ​​voorkeursbron voor posters te kiezen.",
-      "ownerOnly": ""
+      "ownerOnly": "",
+      "precache": "",
+      "precacheDescription": ""
     },
     "version": {
       "installed": "",
@@ -351,6 +355,42 @@
     "automatic": "",
     "startJob": "Taak starten"
   },
+  "memberLogin": {
+    "serverActivity": "",
+    "serverActivityDesc": "",
+    "noServers": "",
+    "addServer": "",
+    "serversLoadFailed": "",
+    "signIn": {
+      "title": "",
+      "titleDesc": "",
+      "local": "",
+      "localDesc": "",
+      "oidc": "",
+      "oidcDesc": "",
+      "plex": "",
+      "plexDesc": "",
+      "onlyWay": "",
+      "membersTitle": "",
+      "media": "",
+      "mediaDesc": "",
+      "servers": "",
+      "overrides": "",
+      "overridesDesc": "",
+      "overridesEmpty": "",
+      "overridesLoadFailed": "",
+      "addPerson": "",
+      "searchPeople": "",
+      "nobodyFound": "",
+      "accessLabel": "",
+      "roleLabel": "",
+      "allow": "",
+      "block": "",
+      "admin": "",
+      "member": "",
+      "backToDefault": ""
+    }
+  },
   "import": {
     "noServers": "Geen servers verbonden",
     "noServersHint": "Je hebt minstens één verbonden server nodig om gegevens te importeren.",
@@ -410,17 +450,17 @@
     "importFullRangeHelp": "",
     "skipOverlap": "Overlappende record - de tijdstempel valt binnen de periode die Tracearr al bijhoudt voor deze server. Schakel 'volledige bereikimport' in om deze mee te nemen.",
     "skipDuplicatePlugin": "Dubbele record - reeds rechtstreeks geïmporteerd of eerder binnengekomen via een Jellystat import van dezelfde plugingegevens.",
-    "overlapSkipped_one": "",
-    "overlapSkipped_other": "{{count}} overgeslagen vanwege overlapping",
-    "duplicates_one": "",
-    "duplicates_other": "{{count}} duplicaten overgeslagen",
     "importFailed": "",
     "dropzone": {
       "dropHere": "",
       "dragOrClick": "",
       "limit": "",
       "removeFile": ""
-    }
+    },
+    "overlapSkipped_one": "",
+    "overlapSkipped_other": "{{count}} overgeslagen vanwege overlapping",
+    "duplicates_one": "",
+    "duplicates_other": "{{count}} duplicaten overgeslagen"
   },
   "plex": {
     "signInWithPlex": "Aanmelden met Plex",

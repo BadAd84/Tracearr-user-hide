@@ -271,9 +271,11 @@ export const REDIS_KEYS = {
   // trusts a stamp taken against the directory the process is using now.
   LIBRARY_PRECACHE_LAST_FULL_DIR: (serverId: string) =>
     `${_redisPrefix}tracearr:library:precache:last-full-dir:${serverId}`,
-  // Poster cache: one-time boot reconciliation marker, the last sweep's tally,
-  // and the disk-limited flag the precache sets when the guard refused writes.
+  // One-time boot reconciliation markers: the 2.2 poster cache change (no longer
+  // read) and the 2.9 job queue cleanup. Then the last poster sweep's tally and
+  // the disk-limited flag the precache sets when the guard refused writes.
   IMAGE_CACHE_SCHEMA: `${_redisPrefix}tracearr:image-cache:schema`,
+  JOBS_SCHEMA: `${_redisPrefix}tracearr:jobs:schema`,
   IMAGE_CACHE_TALLY: `${_redisPrefix}tracearr:image-cache:tally`,
   IMAGE_CACHE_DISK_LIMITED: `${_redisPrefix}tracearr:image-cache:disk-limited`,
   // Global, not per-server: the cache directory is one path for the whole process.

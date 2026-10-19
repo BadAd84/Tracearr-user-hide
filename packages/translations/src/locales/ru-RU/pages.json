@@ -26,6 +26,7 @@
     "connectedTo": "Подключено к {{name}}",
     "plexAuthFailed": "Ошибка аутентификации Plex",
     "plexStartFailed": "Не удалось запустить Plex логин",
+    "plexExpired": "",
     "serverConnectFailed": "Не удалось подключиться к серверу",
     "createAccountFailed": "Не удалось создать аккаунт",
     "invalidCredentials": "Неверный email или пароль",
@@ -35,7 +36,23 @@
     "claimCodeLabel": "Получить код",
     "claimCodeHint": "Код претензии печатается в логах сервера при запуске контейнера",
     "validateClaimCode": "",
-    "claimCodeSecurityNote": "Эта мера безопасности обеспечивает только авторизованным пользователям возможность первой настройки"
+    "claimCodeSecurityNote": "Эта мера безопасности обеспечивает только авторизованным пользователям возможность первой настройки",
+    "member": {
+      "tabLocal": "",
+      "tabMember": "",
+      "server": "",
+      "signingInTo": "",
+      "passwordHint": "",
+      "quickConnectHint": "",
+      "waiting": "",
+      "copyCode": "",
+      "usePassword": "",
+      "useQuickConnect": "",
+      "codeExpired": "",
+      "newCode": "",
+      "refused": "",
+      "notPermitted": ""
+    }
   },
   "dashboard": {
     "alerts": "Оповещения",
@@ -48,13 +65,83 @@
     "bandwidth": "Трафик",
     "noActiveStreams": "Нет активных потоков",
     "streamsAppearHere": "Активные потоки появятся здесь, когда пользователи начнут просматривать",
+    "dayStreak": "",
+    "view": {
+      "label": "",
+      "admin": "",
+      "me": ""
+    },
+    "me": {
+      "last30": "",
+      "streakDetail": "",
+      "topTitles": "",
+      "welcome": {
+        "title": "",
+        "description": "",
+        "browse": ""
+      },
+      "requests": {
+        "title": "",
+        "requestedAgo": "",
+        "seeAll": "",
+        "availableThisWeek_other": ""
+      },
+      "episodes_other": ""
+    },
     "resources": {
       "system": "",
       "perServer": "",
       "average": ""
     },
     "unknownLocation": "",
-    "unknownQuality": ""
+    "unknownQuality": "",
+    "othersStreaming_other": ""
+  },
+  "yourStats": {
+    "titles": "",
+    "howYouWatch": "",
+    "viewerType": {
+      "completionist": {
+        "label": "",
+        "desc": ""
+      },
+      "rewatcher": {
+        "label": "",
+        "desc": ""
+      },
+      "sampler": {
+        "label": "",
+        "desc": ""
+      },
+      "casual": {
+        "label": "",
+        "desc": ""
+      }
+    },
+    "habits": "",
+    "seeActivity": "",
+    "allTime": "",
+    "watchTime": "",
+    "span": {
+      "minutes_other": "",
+      "hours_other": "",
+      "days_other": "",
+      "weeks_other": ""
+    },
+    "longestStreak": "",
+    "firstPlay": "",
+    "biggestBinge": "",
+    "topGenres": "",
+    "allTimeCaption": "",
+    "tier": {
+      "watched": "",
+      "engaged": "",
+      "sampled": "",
+      "abandoned": "",
+      "rewatched": ""
+    },
+    "days_other": "",
+    "bingeValue_other": ""
   },
   "users": {
     "title": "Пользователи",
@@ -109,6 +196,16 @@
     "filterHasAccessTo": "",
     "filterHasAccessToPlaceholder": "",
     "filterHasAccessToHint": "",
+    "merged": "",
+    "filterRoleAll": "",
+    "filterSignInAll": "",
+    "filterPendingOnly": "",
+    "rowActions": "",
+    "menuOpenViolations": "",
+    "signInOn": "",
+    "signInOff": "",
+    "signedInAgo": "",
+    "neverSignedIn": "",
     "selectAllUsers_one": "",
     "selectAllUsers_few": "",
     "selectAllUsers_many": "",
@@ -137,16 +234,6 @@
     "suggestionsPairUsernameMore_few": "",
     "suggestionsPairUsernameMore_many": "",
     "suggestionsPairUsernameMore_other": "",
-    "merged": "",
-    "filterRoleAll": "",
-    "filterSignInAll": "",
-    "filterPendingOnly": "",
-    "rowActions": "",
-    "menuOpenViolations": "",
-    "signInOn": "",
-    "signInOff": "",
-    "signedInAgo": "",
-    "neverSignedIn": "",
     "pendingLink_other": ""
   },
   "userDetail": {
@@ -180,6 +267,28 @@
     "contactEmailNone": "",
     "contactEmailNoLogin": "",
     "locations": "Места",
+    "access": {
+      "title": "",
+      "signIn": "",
+      "signInAllow": "",
+      "signInDefault": "",
+      "signInBlock": "",
+      "signInDefaultOn": "",
+      "signInDefaultOff": "",
+      "signInDefaultUnknown": "",
+      "role": "",
+      "roleAdmin": "",
+      "roleMember": "",
+      "roleHint": "",
+      "disabled": "",
+      "pending": "",
+      "signIns": "",
+      "lastSignIn": "",
+      "never": "",
+      "viewAs": "",
+      "viewAsLabel": "",
+      "viewAsHint": ""
+    },
     "tabs": {
       "access": ""
     },
@@ -215,8 +324,8 @@
     "unknownCity": "",
     "unknownDevice": "",
     "viewAllMore": "",
-    "ipCount_other": "",
-    "adjustTrustScoreDesc": ""
+    "adjustTrustScoreDesc": "",
+    "ipCount_other": ""
   },
   "history": {
     "title": "История",
@@ -247,11 +356,11 @@
       "network": "",
       "remote": "",
       "trailers": "",
-      "selected_other": "",
       "clearUsers": "",
       "clearPlatforms": "",
       "clearCountries": "",
-      "clearFilters": ""
+      "clearFilters": "",
+      "selected_other": ""
     },
     "detail": {
       "watch": "",
@@ -263,7 +372,6 @@
       "bitrateUnavailable": "",
       "stereo": "",
       "mono": "",
-      "channelCount_other": "",
       "noDetails": "",
       "source": "",
       "stream": "",
@@ -286,7 +394,8 @@
       "hwDecode": "",
       "hwEncode": "",
       "speed": "",
-      "throttled": ""
+      "throttled": "",
+      "channelCount_other": ""
     }
   },
   "library": {
@@ -303,7 +412,14 @@
       "thisWeek": "эта неделя",
       "thisMonth": "за месяц",
       "thisYear": "в этом году",
-      "serversNeedSync": ""
+      "serversNeedSync": "",
+      "notWatchedByYou": "",
+      "memberEmpty": {
+        "title": "",
+        "description": ""
+      },
+      "movieCount_other": "",
+      "showCount_other": ""
     },
     "quality": {
       "qualityEvolution": "Изменения Качества",
@@ -572,21 +688,20 @@
         }
       },
       "qualityTimeline": {
-        "titles_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
+        },
+        "titles_other": ""
       },
       "monthly": {
         "watchCount": "",
-        "uniqueItems_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
+        },
+        "uniqueItems_other": ""
       },
-      "watchesValue_other": "",
       "growth": {
         "empty": {
           "title": "",
@@ -603,12 +718,13 @@
       "completion": {
         "inProgress": "",
         "notStarted": "",
-        "tooltip_other": "",
         "empty": {
           "title": "",
           "description": ""
-        }
-      }
+        },
+        "tooltip_other": ""
+      },
+      "watchesValue_other": ""
     }
   },
   "activity": {
@@ -616,6 +732,7 @@
     "concurrentStreams": "Одновременные потоки",
     "engagementBreakdown": "Разбивка участия",
     "howUsersEngage": "Как пользователи взаимодействуют с контентом",
+    "howYouEngage": "",
     "playsVsSessions": "Просмотры и сессии",
     "playsVsSessionsDesc": "Только полные просмотры: просмотр засчитывается, когда общее время просмотра покрывает всю длительность контента",
     "activityByDayOfWeek": "Активность по дням недели",
@@ -623,12 +740,12 @@
     "platforms": "Платформы",
     "streamQuality": "Качество потока",
     "noEngagementData": "",
-    "tierItems_other": "",
     "noPlatformData": "",
     "noQualityData": "",
     "noConcurrentData": "",
-    "playsShare_other": "",
-    "peakConcurrent": ""
+    "peakConcurrent": "",
+    "tierItems_other": "",
+    "playsShare_other": ""
   },
   "violations": {
     "title": "Нарушения",
@@ -669,11 +786,11 @@
       "conditionGroup": "Группа условий {{index}}",
       "matched": "Соответствует {{matched}}/{{total}}",
       "actual": "Фактический",
+      "actionResults": "",
       "relatedSessions_one": "Связанная с {{count}} сессия",
       "relatedSessions_few": "",
       "relatedSessions_many": "",
-      "relatedSessions_other": "{{count}} связанные сессии",
-      "actionResults": ""
+      "relatedSessions_other": "{{count}} связанные сессии"
     },
     "selectAllViolations_one": "",
     "selectAllViolations_few": "",
@@ -2223,6 +2340,12 @@
       "usedByNewsletters_other": ""
     }
   },
+  "impersonation": {
+    "banner": "",
+    "stop": "",
+    "stopLabel": "",
+    "stopViewing": ""
+  },
   "maintenance": {
     "startingTitle": "Tracearr запускается...",
     "interruptionTitle": "Прерывание службы",
@@ -2253,6 +2376,7 @@
     "allTypes": "Все типы",
     "heatmap": "Тепловая карта",
     "circles": "Круги",
+    "viewMode": "",
     "streams": "потоки",
     "locations": "места",
     "allActivity": "Все действия",
@@ -2260,7 +2384,6 @@
     "webglUnavailable": "",
     "webglHint": "",
     "badMounts": "",
-    "viewMode": "",
     "loadingData": "",
     "noDataForFilters": "",
     "totalStreams": "",
@@ -2406,7 +2529,6 @@
       "completed": "",
       "scheduled": "",
       "processing": "",
-      "dlq_other": "",
       "onDemand": "",
       "notInitialized": "",
       "backgroundServices": "",
@@ -2431,7 +2553,8 @@
         "inactivityCheckDesc": "",
         "backup": "",
         "backupDesc": ""
-      }
+      },
+      "dlq_other": ""
     },
     "clientErrors": {
       "title": "",
@@ -2533,12 +2656,12 @@
         "ofCountedPlays": "",
         "topTitles": "",
         "topArtists": "",
+        "browse": "",
+        "allGenresPeak": "",
         "artistCount_one": "",
         "artistCount_few": "",
         "artistCount_many": "",
-        "artistCount_other": "",
-        "browse": "",
-        "allGenresPeak": ""
+        "artistCount_other": ""
       }
     },
     "detail": {
@@ -2577,8 +2700,13 @@
       },
       "kpis": {
         "ariaLabel": "",
+        "yourPlays": "",
+        "yourWatchTime": "",
         "yourListenTime": "",
+        "yourCompletion": "",
+        "lastWatched": "",
         "lastPlayed": "",
+        "episodesOf": "",
         "loadError": "",
         "completionLoadError": "",
         "plays": {
@@ -2599,6 +2727,7 @@
           "detailMovie": "",
           "detailMusic": ""
         },
+        "watchedByOthers_other": "",
         "playedByOthers_other": ""
       },
       "watchers": {

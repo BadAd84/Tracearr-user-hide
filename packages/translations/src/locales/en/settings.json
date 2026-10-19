@@ -16,7 +16,7 @@
       "locale": "Locale & units",
       "behavior": "Behavior",
       "connections": "Connections",
-      "posters": "Poster source",
+      "posters": "Posters",
       "plexAccounts": "Plex accounts",
       "destinations": "Destinations",
       "newsletters": "Newsletters",
@@ -32,9 +32,9 @@
     "descriptions": {
       "appearance": "Theme and accent color, stored in this browser.",
       "locale": "Language, clock and units used across the dashboard.",
-      "behavior": "How often Tracearr polls your servers and what it caches.",
+      "behavior": "How often Tracearr polls your servers and checks for updates.",
       "connections": "Media servers Tracearr reads sessions and libraries from.",
-      "posters": "Which server's artwork wins when a title exists on more than one.",
+      "posters": "Which server's artwork wins when a title exists on more than one, whether posters are cached ahead of time, and what the cache holds.",
       "plexAccounts": "Plex.tv accounts Tracearr uses to discover and authorize servers.",
       "destinations": "Where notifications and digests are delivered.",
       "memberLogin": "Who can sign in to Tracearr, and how.",
@@ -243,7 +243,9 @@
       "description": "When a title is on more than one server, use this server's poster. If it doesn't have one, we'll fall back to the most recently added copy.",
       "automatic": "Automatic (most recent)",
       "emptyHint": "Add a server to choose a preferred poster source.",
-      "ownerOnly": "Only the owner can choose the preferred poster source."
+      "ownerOnly": "Only the owner can change poster settings.",
+      "precache": "Cache posters after library syncs",
+      "precacheDescription": "Fetches posters for new and changed titles after each sync, so Library pages don't wait on your media server. Off, a poster is cached the first time someone opens a page that shows it."
     },
     "version": {
       "installed": "Version {{version}}",

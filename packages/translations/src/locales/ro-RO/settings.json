@@ -21,6 +21,7 @@
       "destinations": "",
       "newsletters": "",
       "email": "",
+      "memberLogin": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -36,6 +37,7 @@
       "posters": "",
       "plexAccounts": "",
       "destinations": "",
+      "memberLogin": "",
       "mobile": "",
       "remote": "",
       "import": "",
@@ -242,7 +244,9 @@
       "description": "",
       "automatic": "",
       "emptyHint": "",
-      "ownerOnly": ""
+      "ownerOnly": "",
+      "precache": "",
+      "precacheDescription": ""
     },
     "version": {
       "installed": "",
@@ -353,6 +357,42 @@
     "automatic": "",
     "startJob": "Începe sarcina"
   },
+  "memberLogin": {
+    "serverActivity": "",
+    "serverActivityDesc": "",
+    "noServers": "",
+    "addServer": "",
+    "serversLoadFailed": "",
+    "signIn": {
+      "title": "",
+      "titleDesc": "",
+      "local": "",
+      "localDesc": "",
+      "oidc": "",
+      "oidcDesc": "",
+      "plex": "",
+      "plexDesc": "",
+      "onlyWay": "",
+      "membersTitle": "",
+      "media": "",
+      "mediaDesc": "",
+      "servers": "",
+      "overrides": "",
+      "overridesDesc": "",
+      "overridesEmpty": "",
+      "overridesLoadFailed": "",
+      "addPerson": "",
+      "searchPeople": "",
+      "nobodyFound": "",
+      "accessLabel": "",
+      "roleLabel": "",
+      "allow": "",
+      "block": "",
+      "admin": "",
+      "member": "",
+      "backToDefault": ""
+    }
+  },
   "import": {
     "noServers": "Niciun server conectat",
     "noServersHint": "Aveţi nevoie de cel puţin un server conectat pentru a importa date.",
@@ -412,19 +452,19 @@
     "importFullRangeHelp": "",
     "skipOverlap": "",
     "skipDuplicatePlugin": "",
-    "overlapSkipped_one": "",
-    "overlapSkipped_few": "",
-    "overlapSkipped_other": "",
-    "duplicates_one": "",
-    "duplicates_few": "",
-    "duplicates_other": "",
     "importFailed": "",
     "dropzone": {
       "dropHere": "",
       "dragOrClick": "",
       "limit": "",
       "removeFile": ""
-    }
+    },
+    "overlapSkipped_one": "",
+    "overlapSkipped_few": "",
+    "overlapSkipped_other": "",
+    "duplicates_one": "",
+    "duplicates_few": "",
+    "duplicates_other": ""
   },
   "plex": {
     "signInWithPlex": "Autentificare cu Plex",
