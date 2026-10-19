@@ -22,12 +22,14 @@ import {
   SHANGHAI,
   hashSeed,
   intBetween,
+  loadMusic,
   loadTitles,
   pick,
   pickWeighted,
   rng,
   type ServerKey,
   type ShowcaseAccount,
+  type ShowcaseArtist,
   type ShowcaseDevice,
   type ShowcasePerson,
   type ShowcasePlace,
@@ -41,6 +43,8 @@ export interface ShowcaseIds {
   activeSessionIds: string[];
   featuredMovieMediaId: string;
   featuredMovieTitle: string;
+  featuredArtistMediaId: string;
+  featuredArtistName: string;
   /** Keyed `<serverKey>:<libraryId>`, valued with the libraries row id. */
   libraryIds: Record<string, string>;
 }
@@ -48,6 +52,7 @@ export interface ShowcaseIds {
 const DAY_MS = 24 * 60 * 60 * 1000;
 const HISTORY_DAYS = 90;
 const SESSION_COUNT = 1400;
+const MUSIC_SESSION_COUNT = 350;
 const RECENT_MOVIES = 9;
 const RECENT_SHOWS = 5;
 
@@ -62,6 +67,17 @@ const mediaIdOf = (title: ShowcaseTitle): string =>
 const itemIdOf = (server: ServerKey, ratingKey: string): string =>
   fixtureId(`showcase:item:${server}:${ratingKey}`);
 const sessionIdOf = (key: string): string => fixtureId(`showcase:session:${key}`);
+
+/**
+ * A poster file under assets/posters/ as the server type's own image path:
+ * the image proxy refuses any other shape, and assetServer.ts maps both back.
+ */
+function posterPath(server: ServerKey, file: string): string {
+  const name = file.replace(/\.webp$/, '');
+  return server === 'plex'
+    ? `/library/metadata/showcase/thumb/${name}`
+    : `/Items/showcase/Images/Primary?tag=${name}`;
+}
 
 /** The owner id is whatever auth.setup signed up; every other row hangs off these. */
 function personById(personKey: string): ShowcasePerson {
@@ -251,13 +267,82 @@ function featuredMovie(catalog: CatalogTitle[]): CatalogTitle {
   return featured;
 }
 
+interface MusicTrack {
+  mediaId: string;
+  ratingKey: string;
+  title: string;
+  number: number;
+  runtimeMs: number;
+}
+
+interface MusicAlbum {
+  spec: ShowcaseArtist['albums'][number];
+  mediaId: string;
+  ratingKey: string;
+  addedAt: Date;
+  tracks: MusicTrack[];
+}
+
+interface MusicArtist {
+  index: number;
+  spec: ShowcaseArtist;
+  mediaId: string;
+  ratingKey: string;
+  albums: MusicAlbum[];
+}
+
+/**
+ * The Plex music library. Every fifth album is new this month so Recently
+ * Added Albums has a front; the rest spread over the history window, which
+ * the library snapshots have to cover or the overview asks for a sync.
+ */
+function buildMusic(now: Date): MusicArtist[] {
+  let albumCount = 0;
+  return loadMusic().map((spec, index) => {
+    const ratingKey = `music-${index + 1}`;
+    return {
+      index,
+      spec,
+      ratingKey,
+      mediaId: fixtureId(`showcase:media:artist:${spec.name}`),
+      albums: spec.albums.map((album, albumIndex) => {
+        const albumKey = `${ratingKey}-${albumIndex + 1}`;
+        const order = albumCount++;
+        const daysAgo = order % 5 === 0 ? 1.5 + (order / 5) * 4 : 8 + ((order * 37) % 79);
+        return {
+          spec: album,
+          mediaId: fixtureId(`showcase:media:album:${spec.name}:${album.title}`),
+          ratingKey: albumKey,
+          addedAt: new Date(now.getTime() - daysAgo * DAY_MS),
+          tracks: album.tracks.map((track, trackIndex) => ({
+            mediaId: fixtureId(
+              `showcase:media:track:${spec.name}:${album.title}:${trackIndex + 1}`
+            ),
+            ratingKey: `${albumKey}-${trackIndex + 1}`,
+            title: track.title,
+            number: trackIndex + 1,
+            runtimeMs:
+              (150 + (hashSeed(`t:${spec.name}:${album.title}:${trackIndex}`) % 180)) * 1000,
+          })),
+        };
+      }),
+    };
+  });
+}
+
+function featuredArtist(music: MusicArtist[]): MusicArtist {
+  const featured = music[0];
+  if (!featured) throw new Error('assets/music.json has no artists');
+  return featured;
+}
+
 interface SessionRow {
   id: string;
   serverKey: ServerKey;
   serverUserId: string;
   sessionKey: string;
   state: 'playing' | 'paused' | 'stopped';
-  mediaType: 'movie' | 'episode';
+  mediaType: 'movie' | 'episode' | 'track';
   mediaTitle: string;
   grandparentTitle: string | null;
   seasonNumber: number | null;
@@ -281,6 +366,13 @@ interface SessionRow {
   isTranscode: boolean;
   bitrate: number;
   sourceResolution: string;
+  music?: {
+    artist: string;
+    album: string;
+    trackNumber: number;
+    artistKey: string;
+    albumKey: string;
+  };
 }
 
 const SESSION_COLUMNS = [
@@ -335,6 +427,11 @@ const SESSION_COLUMNS = [
   'source_video_details',
   'stream_video_details',
   'transcode_info',
+  'artist_name',
+  'album_name',
+  'track_number',
+  'parent_rating_key',
+  'grandparent_rating_key',
 ];
 
 const transcodeInfoOf = (row: SessionRow): Record<string, unknown> | null =>
@@ -365,6 +462,7 @@ const streamVideoDetailsOf = (row: SessionRow): Record<string, unknown> | null =
 function sessionValues(row: SessionRow): unknown[] {
   const [width, height] = FRAME_SIZE[row.sourceResolution] ?? [1920, 1080];
   const json = (value: unknown): string | null => (value === null ? null : JSON.stringify(value));
+  const { music } = row;
   return [
     row.id,
     serverIdOf(row.serverKey),
@@ -405,18 +503,23 @@ function sessionValues(row: SessionRow): unknown[] {
     row.device.platform,
     row.quality,
     row.isTranscode,
-    row.isTranscode ? 'transcode' : 'directplay',
+    music ? null : row.isTranscode ? 'transcode' : 'directplay',
     row.isTranscode ? 'transcode' : 'directplay',
     row.bitrate,
-    row.sourceResolution === '4k' ? 'hevc' : 'h264',
-    row.isTranscode ? 'h264' : null,
-    width,
-    height,
-    row.sourceResolution === '4k' ? 'eac3' : 'aac',
+    music ? null : row.sourceResolution === '4k' ? 'hevc' : 'h264',
+    row.isTranscode && !music ? 'h264' : null,
+    music ? null : width,
+    music ? null : height,
+    music ? 'flac' : row.sourceResolution === '4k' ? 'eac3' : 'aac',
     row.sourceResolution === '4k' ? 6 : 2,
-    json(sourceVideoDetailsOf(row)),
+    music ? null : json(sourceVideoDetailsOf(row)),
     json(streamVideoDetailsOf(row)),
     json(transcodeInfoOf(row)),
+    music?.artist ?? null,
+    music?.album ?? null,
+    music?.trackNumber ?? null,
+    music?.albumKey ?? null,
+    music?.artistKey ?? null,
   ];
 }
 
@@ -538,7 +641,7 @@ function buildHistory(now: Date, catalog: CatalogTitle[]): SessionRow[] {
       seasonNumber: playback.seasonNumber,
       episodeNumber: playback.episodeNumber,
       year: playback.title.spec.year,
-      thumbPath: `/posters/${playback.title.spec.poster}`,
+      thumbPath: posterPath(account.server, playback.title.spec.poster),
       ratingKey: playback.ratingKey,
       mediaId: playback.title.mediaId,
       showMediaId: playback.mediaType === 'episode' ? playback.title.mediaId : null,
@@ -556,6 +659,74 @@ function buildHistory(now: Date, catalog: CatalogTitle[]): SessionRow[] {
       isTranscode,
       bitrate: bitrateFor(random, playback.copy.resolution, isTranscode),
       sourceResolution: playback.copy.resolution,
+    });
+  }
+  return rows;
+}
+
+/** Track plays on the Plex music library, never before the album was added. */
+function buildMusicHistory(now: Date, music: MusicArtist[]): SessionRow[] {
+  const listeners = CAST.flatMap((person) => {
+    const account = person.accounts.find((entry) => entry.server === 'plex');
+    return account ? [{ person, account }] : [];
+  });
+  const rows: SessionRow[] = [];
+
+  for (let i = 0; i < MUSIC_SESSION_COUNT; i++) {
+    const random = rng(`showcase:music:${i}`);
+    const { person, account } = pickWeighted(random, listeners, (entry) => entry.person.weight);
+    const artist = pickWeighted(random, music, (entry) => 1 / (1 + entry.index * 0.3));
+    const album = pick(random, artist.albums);
+    const track = pick(random, album.tracks);
+    const minDaysAgo = account.removedDaysAgo === undefined ? 0 : account.removedDaysAgo + 1;
+    const albumDaysAgo = Math.floor((now.getTime() - album.addedAt.getTime()) / DAY_MS);
+    const maxDaysAgo = Math.min(HISTORY_DAYS - 1, albumDaysAgo);
+    if (maxDaysAgo < minDaysAgo) continue;
+    const startedAt = startedAtFor(random, now, person.place, minDaysAgo, maxDaysAgo);
+    if (startedAt.getTime() < album.addedAt.getTime()) continue;
+
+    const fraction = random() < 0.8 ? 1 : 0.2 + random() * 0.6;
+    const progressMs = Math.round(track.runtimeMs * fraction);
+    const device = deviceById(pick(random, person.devices));
+    const bitrate = intBetween(random, 850, 1150);
+
+    rows.push({
+      id: sessionIdOf(`music:${i}`),
+      serverKey: 'plex',
+      serverUserId: serverUserIdOf(person.key, 'plex'),
+      sessionKey: `showcase-music-${i}`,
+      state: 'stopped',
+      mediaType: 'track',
+      mediaTitle: track.title,
+      grandparentTitle: null,
+      seasonNumber: null,
+      episodeNumber: null,
+      year: album.spec.year,
+      thumbPath: posterPath('plex', album.spec.art),
+      ratingKey: track.ratingKey,
+      mediaId: track.mediaId,
+      showMediaId: null,
+      startedAt,
+      stoppedAt: new Date(startedAt.getTime() + progressMs),
+      lastSeenAt: new Date(startedAt.getTime() + progressMs),
+      durationMs: progressMs,
+      totalDurationMs: track.runtimeMs,
+      progressMs,
+      watched: fraction >= 0.85,
+      place: person.place,
+      device,
+      deviceId: `${person.slug}-${device.key}`,
+      quality: `${(bitrate / 1000).toFixed(1)} Mbps`,
+      isTranscode: false,
+      bitrate,
+      sourceResolution: 'audio',
+      music: {
+        artist: artist.spec.name,
+        album: album.spec.title,
+        trackNumber: track.number,
+        artistKey: artist.ratingKey,
+        albumKey: album.ratingKey,
+      },
     });
   }
   return rows;
@@ -720,7 +891,7 @@ function buildScripted(now: Date, catalog: CatalogTitle[]): SessionRow[] {
       seasonNumber: playback.seasonNumber,
       episodeNumber: playback.episodeNumber,
       year: playback.title.spec.year,
-      thumbPath: `/posters/${playback.title.spec.poster}`,
+      thumbPath: posterPath(spec.serverKey, playback.title.spec.poster),
       ratingKey: playback.ratingKey,
       mediaId: playback.title.mediaId,
       showMediaId: playback.mediaType === 'episode' ? playback.title.mediaId : null,
@@ -804,7 +975,7 @@ function buildActive(now: Date, catalog: CatalogTitle[]): ActiveRow[] {
         seasonNumber: isEpisode ? (season?.number ?? 1) : null,
         episodeNumber,
         year: title.spec.year,
-        thumbPath: `/posters/${title.spec.poster}`,
+        thumbPath: posterPath(spec.serverKey, title.spec.poster),
         ratingKey: isEpisode
           ? `${copy.ratingKey}-s${season?.number ?? 1}e${episodeNumber}`
           : copy.ratingKey,
@@ -1041,23 +1212,67 @@ async function seedPeople(client: Client, ownerId: string, assetBaseUrl: string,
   );
 }
 
+const MEDIA_COLUMNS = [
+  'id',
+  'media_type',
+  'match_key',
+  'title',
+  'normalized_title',
+  'sort_title',
+  'year',
+  'genres',
+  'latest_added_at',
+  'show_media_id',
+  'parent_media_id',
+];
+
+const ITEM_COLUMNS = [
+  'id',
+  'server_id',
+  'library_id',
+  'rating_key',
+  'title',
+  'media_type',
+  'year',
+  'video_resolution',
+  'video_codec',
+  'audio_codec',
+  'audio_channels',
+  'file_size',
+  'video_dynamic_range',
+  'media_id',
+  'genres',
+  'thumb_path',
+  'grandparent_title',
+  'grandparent_rating_key',
+  'parent_title',
+  'parent_rating_key',
+  'parent_index',
+  'item_index',
+  'created_at',
+  'first_seen_at',
+];
+
+const VERSION_COLUMNS = [
+  'id',
+  'library_item_id',
+  'server_version_key',
+  'video_resolution',
+  'video_codec',
+  'video_dynamic_range',
+  'audio_codec',
+  'audio_channels',
+  'container',
+  'bitrate',
+  'file_size',
+  'first_seen_at',
+];
+
 async function seedLibrary(client: Client, catalog: CatalogTitle[]): Promise<void> {
   await insertRows(
     client,
     'media',
-    [
-      'id',
-      'media_type',
-      'match_key',
-      'title',
-      'normalized_title',
-      'sort_title',
-      'year',
-      'genres',
-      'latest_added_at',
-      'show_media_id',
-      'parent_media_id',
-    ],
+    MEDIA_COLUMNS,
     catalog.map((title) => [
       title.mediaId,
       title.spec.type,
@@ -1073,32 +1288,6 @@ async function seedLibrary(client: Client, catalog: CatalogTitle[]): Promise<voi
     ])
   );
 
-  const itemColumns = [
-    'id',
-    'server_id',
-    'library_id',
-    'rating_key',
-    'title',
-    'media_type',
-    'year',
-    'video_resolution',
-    'video_codec',
-    'audio_codec',
-    'audio_channels',
-    'file_size',
-    'video_dynamic_range',
-    'media_id',
-    'genres',
-    'thumb_path',
-    'grandparent_title',
-    'grandparent_rating_key',
-    'parent_title',
-    'parent_rating_key',
-    'parent_index',
-    'item_index',
-    'created_at',
-    'first_seen_at',
-  ];
   const items: unknown[][] = [];
   const versions: unknown[][] = [];
   // Seasons and episodes are media rows of their own, shared by every server's
@@ -1150,7 +1339,7 @@ async function seedLibrary(client: Client, catalog: CatalogTitle[]): Promise<voi
 
   for (const title of catalog) {
     for (const copy of title.copies) {
-      const poster = `/posters/${title.spec.poster}`;
+      const poster = posterPath(copy.serverKey, title.spec.poster);
       const showItemId = itemIdOf(copy.serverKey, copy.ratingKey);
       items.push([
         showItemId,
@@ -1276,46 +1465,191 @@ async function seedLibrary(client: Client, catalog: CatalogTitle[]): Promise<voi
     }
   }
 
-  await insertRows(
-    client,
-    'media',
-    [
-      'id',
-      'media_type',
-      'match_key',
-      'title',
-      'normalized_title',
-      'sort_title',
-      'year',
-      'genres',
-      'latest_added_at',
-      'show_media_id',
-      'parent_media_id',
-    ],
-    [...childMedia.values()],
-    400
-  );
-  await insertRows(client, 'library_items', itemColumns, items, 400);
-  await insertRows(
-    client,
-    'library_item_versions',
-    [
-      'id',
-      'library_item_id',
-      'server_version_key',
-      'video_resolution',
-      'video_codec',
-      'video_dynamic_range',
-      'audio_codec',
-      'audio_channels',
-      'container',
-      'bitrate',
-      'file_size',
-      'first_seen_at',
-    ],
-    versions,
-    400
-  );
+  await insertRows(client, 'media', MEDIA_COLUMNS, [...childMedia.values()], 400);
+  await insertRows(client, 'library_items', ITEM_COLUMNS, items, 400);
+  await insertRows(client, 'library_item_versions', VERSION_COLUMNS, versions, 400);
+}
+
+/**
+ * Artists, albums and tracks on the Plex music library, linked the way the
+ * sync links them: an album's parent is its artist's rating key, a track's
+ * grandparent the artist's and its parent the album's.
+ */
+async function seedMusic(client: Client, music: MusicArtist[]): Promise<void> {
+  const serverId = serverIdOf('plex');
+  const media: unknown[][] = [];
+  const items: unknown[][] = [];
+  const versions: unknown[][] = [];
+  const mediaRow = (
+    id: string,
+    type: string,
+    matchKey: string,
+    title: string,
+    year: number | null,
+    genres: string[],
+    addedAt: Date
+  ) => [
+    id,
+    type,
+    matchKey,
+    title,
+    normalizeTitleLocal(title),
+    sortTitleLocal(title),
+    year,
+    genres,
+    addedAt,
+    null,
+    null,
+  ];
+
+  for (const artist of music) {
+    const { name } = artist.spec;
+    const artistAddedAt = new Date(
+      Math.min(...artist.albums.map((album) => album.addedAt.getTime()))
+    );
+    const latestAddedAt = new Date(
+      Math.max(...artist.albums.map((album) => album.addedAt.getTime()))
+    );
+    media.push(
+      mediaRow(
+        artist.mediaId,
+        'artist',
+        `artist:showcase:${name}`,
+        name,
+        null,
+        artist.spec.genres,
+        latestAddedAt
+      )
+    );
+    items.push([
+      itemIdOf('plex', artist.ratingKey),
+      serverId,
+      'music',
+      artist.ratingKey,
+      name,
+      'artist',
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      artist.mediaId,
+      artist.spec.genres,
+      posterPath('plex', artist.spec.art),
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      artistAddedAt,
+      artistAddedAt,
+    ]);
+
+    for (const album of artist.albums) {
+      const { title, year, art } = album.spec;
+      const genres = album.spec.genres.length > 0 ? album.spec.genres : artist.spec.genres;
+      media.push(
+        mediaRow(
+          album.mediaId,
+          'album',
+          `album:showcase:${name}:${title}`,
+          title,
+          year,
+          genres,
+          album.addedAt
+        )
+      );
+      items.push([
+        itemIdOf('plex', album.ratingKey),
+        serverId,
+        'music',
+        album.ratingKey,
+        title,
+        'album',
+        year,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        album.mediaId,
+        genres,
+        posterPath('plex', art),
+        null,
+        null,
+        name,
+        artist.ratingKey,
+        null,
+        null,
+        album.addedAt,
+        album.addedAt,
+      ]);
+
+      for (const track of album.tracks) {
+        media.push(
+          mediaRow(
+            track.mediaId,
+            'track',
+            `track:showcase:${name}:${title}:${track.number}`,
+            track.title,
+            year,
+            genres,
+            album.addedAt
+          )
+        );
+        const trackItemId = itemIdOf('plex', track.ratingKey);
+        const fileSize = Math.round((track.runtimeMs / 1000) * 125_000);
+        versions.push([
+          fixtureId(`showcase:version:${trackItemId}`),
+          trackItemId,
+          'v1',
+          null,
+          null,
+          null,
+          'flac',
+          2,
+          'flac',
+          1000,
+          fileSize,
+          album.addedAt,
+        ]);
+        items.push([
+          trackItemId,
+          serverId,
+          'music',
+          track.ratingKey,
+          track.title,
+          'track',
+          year,
+          null,
+          null,
+          'flac',
+          2,
+          fileSize,
+          null,
+          track.mediaId,
+          genres,
+          posterPath('plex', art),
+          name,
+          artist.ratingKey,
+          title,
+          album.ratingKey,
+          1,
+          track.number,
+          album.addedAt,
+          album.addedAt,
+        ]);
+      }
+    }
+  }
+
+  await insertRows(client, 'media', MEDIA_COLUMNS, media, 400);
+  await insertRows(client, 'library_items', ITEM_COLUMNS, items, 400);
+  await insertRows(client, 'library_item_versions', VERSION_COLUMNS, versions, 400);
 }
 
 /**
@@ -1337,7 +1671,7 @@ async function seedSnapshots(client: Client, now: Date): Promise<void> {
             count(*) FILTER (WHERE li.media_type = 'episode'),
             count(*) FILTER (WHERE li.media_type = 'season'),
             count(*) FILTER (WHERE li.media_type = 'show'),
-            0,
+            count(*) FILTER (WHERE li.file_size > 0 AND li.media_type IN ('artist', 'album', 'track')),
             count(*) FILTER (WHERE li.video_resolution = '8k'),
             count(*) FILTER (WHERE li.video_resolution = '4k'),
             count(*) FILTER (WHERE li.video_resolution = '1440p'),
@@ -1415,7 +1749,9 @@ export async function seedShowcase(
 ): Promise<ShowcaseIds> {
   const { ownerId, assetBaseUrl, now } = opts;
   const catalog = buildCatalog(now);
+  const music = buildMusic(now);
   const history = buildHistory(now, catalog);
+  const musicHistory = buildMusicHistory(now, music);
   const scripted = buildScripted(now, catalog);
   const active = buildActive(now, catalog);
   seedAnchor = now;
@@ -1467,13 +1803,16 @@ export async function seedShowcase(
 
     await seedPeople(client, ownerId, assetBaseUrl, now);
     await seedLibrary(client, catalog);
+    await seedMusic(client, music);
     await seedSnapshots(client, now);
 
     await insertRows(
       client,
       'sessions',
       SESSION_COLUMNS,
-      [...history, ...scripted, ...active.map((entry) => entry.row)].map(sessionValues),
+      [...history, ...musicHistory, ...scripted, ...active.map((entry) => entry.row)].map(
+        sessionValues
+      ),
       300
     );
 
@@ -1522,6 +1861,8 @@ export async function seedShowcase(
     activeSessionIds: active.map((entry) => entry.row.id),
     featuredMovieMediaId: featuredMovie(catalog).mediaId,
     featuredMovieTitle: featuredMovie(catalog).spec.title,
+    featuredArtistMediaId: featuredArtist(music).mediaId,
+    featuredArtistName: featuredArtist(music).spec.name,
     libraryIds: Object.fromEntries(
       LIBRARIES.map((library) => [
         `${library.serverKey}:${library.libraryId}`,
