@@ -1,7 +1,8 @@
 /**
- * Plex album rows through a whole library sync on real Postgres: the album
+ * Album rows through a library sync on real Postgres: the Plex album
  * lands beside its artist and tracks, survives a rescan while the server
- * still lists it, and is tombstoned alone once it is gone.
+ * still lists it, and is tombstoned alone once it is gone; Emby tracks take
+ * their album cover path.
  *
  * Run with: pnpm --filter @tracearr/server test:integration librarySyncAlbums
  */
@@ -84,6 +85,47 @@ async function rowsByKey(serverId: string) {
 }
 
 describe('library sync album rows', () => {
+  it('points Emby tracks at their album cover and leaves tracks of untagged albums alone', async () => {
+    const server = await createTestServer({ type: 'emby' });
+    const embyTrack = (ratingKey: string, albumKey: string): MediaLibraryItem => ({
+      ratingKey,
+      title: ratingKey,
+      mediaType: 'track',
+      addedAt: ALBUM_ADDED_AT,
+      parentRatingKey: albumKey,
+      thumbPath: `/Items/${ratingKey}/Images/Primary?tag=${ratingKey}`,
+    });
+    const covered: MediaLibraryItem = {
+      ...album,
+      ratingKey: '100',
+      thumbPath: '/Items/101/Images/Primary?tag=cover',
+    };
+    const untagged: MediaLibraryItem = {
+      ...album,
+      ratingKey: '200',
+      thumbPath: '/Items/200/Images/Primary',
+    };
+
+    await librarySyncService.upsertItems(server.id, LIBRARY_ID, [covered, untagged]);
+    await librarySyncService.upsertItems(server.id, LIBRARY_ID, [
+      embyTrack('101', '100'),
+      embyTrack('102', '100'),
+      embyTrack('201', '200'),
+    ]);
+    const later: MediaLibraryItem = {
+      ...album,
+      ratingKey: '300',
+      thumbPath: '/Items/300/Images/Primary?tag=own',
+    };
+    await librarySyncService.upsertItems(server.id, LIBRARY_ID, [later, embyTrack('301', '300')]);
+
+    const rows = await rowsByKey(server.id);
+    expect(rows.get('101')?.thumbPath).toBe('/Items/101/Images/Primary?tag=cover');
+    expect(rows.get('102')?.thumbPath).toBe('/Items/101/Images/Primary?tag=cover');
+    expect(rows.get('201')?.thumbPath).toBe('/Items/201/Images/Primary?tag=201');
+    expect(rows.get('301')?.thumbPath).toBe('/Items/300/Images/Primary?tag=own');
+  });
+
   it('stores the album under its artist, keeps it on rescan and tombstones it alone once gone', async () => {
     const server = await createTestServer({ type: 'plex' });
 

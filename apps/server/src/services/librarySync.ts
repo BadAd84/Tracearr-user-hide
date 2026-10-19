@@ -24,6 +24,7 @@ import {
   type MediaLibraryItem,
 } from './mediaServer/index.js';
 import { resolveMediaBatch, reconcileMediaDuplicates } from './library/mediaResolutionService.js';
+import { albumArtForTracks } from './library/trackArt.js';
 import {
   MEDIA_ANNOUNCE_CAP,
   MEDIA_BUFFER_CAP,
@@ -1532,6 +1533,8 @@ export class LibrarySyncService {
       }))
     );
 
+    const albumArt = await albumArtForTracks(serverId, uniqueItems);
+
     // Past the cap the run announces nothing more, so it stops reading and diffing too;
     // the suppressed count then reports the batch that hit the cap, not every later one.
     // The cap is spent at flush, so what gates the prior-quality read here is buffer room.
@@ -1592,7 +1595,12 @@ export class LibrarySyncService {
               itemIndex: item.itemIndex ?? null,
               mediaId: mediaIdByRatingKey.get(item.ratingKey) ?? null,
               genres: item.genres ?? null,
-              thumbPath: item.thumbPath ?? null,
+              thumbPath:
+                (item.mediaType === 'track' && item.parentRatingKey
+                  ? albumArt.get(item.parentRatingKey)
+                  : undefined) ??
+                item.thumbPath ??
+                null,
               removedAt: null,
               // insert-only: the conflict update never touches it
               firstSeenAt: firstSeenFromAdded ? createdAt : firstSeen,

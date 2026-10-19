@@ -1,55 +1,69 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { SQL } from 'drizzle-orm';
-import { renderSql } from '../../../test/helpers.js';
 
 vi.mock('../../../db/client.js', () => ({
   db: {
-    execute: vi.fn(),
+    select: vi.fn(),
   },
 }));
 
 import { db } from '../../../db/client.js';
-import { alignTrackArtToAlbums } from '../trackArt.js';
+import { albumArtForTracks, hasKnownImage } from '../trackArt.js';
+import type { MediaLibraryItem } from '../../mediaServer/types.js';
 
 const SERVER = '33333333-3333-4333-8333-333333333333';
+const ALBUM_ART = '/Items/100/Images/Primary?tag=cover';
 
-const normalize = (text: string) => text.replace(/\s+/g, ' ').trim();
-const executed = () => {
-  const [query] = vi.mocked(db.execute).mock.calls[0] ?? [];
-  const rendered = renderSql(query as unknown as SQL);
-  return { sql: normalize(rendered.sql), params: rendered.params };
-};
-
-beforeEach(() => {
-  vi.mocked(db.execute).mockReset();
-  vi.mocked(db.execute).mockResolvedValue({ rowCount: 7, rows: [] } as never);
+const item = (
+  ratingKey: string,
+  mediaType: MediaLibraryItem['mediaType'],
+  thumbPath?: string,
+  parentRatingKey?: string
+): MediaLibraryItem => ({
+  ratingKey,
+  title: ratingKey,
+  mediaType,
+  addedAt: new Date(0),
+  thumbPath,
+  parentRatingKey,
 });
 
-describe('alignTrackArtToAlbums', () => {
-  it('copies the known image path of an active album onto its active tracks that differ', async () => {
-    expect(await alignTrackArtToAlbums()).toBe(7);
+let selected: { ratingKey: string; thumbPath: string | null }[];
 
-    const { sql, params } = executed();
-    expect(sql).toContain(
-      'UPDATE library_items AS track SET thumb_path = li.thumb_path FROM library_items AS li'
-    );
-    expect(sql).toContain("track.media_type = 'track' AND track.removed_at IS NULL");
-    expect(sql).toContain('li.server_id = track.server_id');
-    expect(sql).toContain('li.rating_key = track.parent_rating_key');
-    expect(sql).toContain("li.media_type = 'album' AND li.removed_at IS NULL");
-    expect(sql).toContain(
-      "li.thumb_path IS NOT NULL AND (li.thumb_path NOT LIKE '/Items/%' OR li.thumb_path LIKE '%?tag=%')"
-    );
-    expect(sql).toContain('track.thumb_path IS DISTINCT FROM li.thumb_path');
-    expect(sql).not.toContain('track.server_id = $');
-    expect(params).toEqual([]);
+beforeEach(() => {
+  selected = [];
+  vi.mocked(db.select).mockReset();
+  vi.mocked(db.select).mockReturnValue({
+    from: () => ({ where: async () => selected }),
+  } as never);
+});
+
+describe('hasKnownImage', () => {
+  it('trusts non-Items paths and tagged Items paths only', () => {
+    expect(hasKnownImage('/library/metadata/1/thumb/2')).toBe(true);
+    expect(hasKnownImage(ALBUM_ART)).toBe(true);
+    expect(hasKnownImage('/Items/100/Images/Primary')).toBe(false);
+  });
+});
+
+describe('albumArtForTracks', () => {
+  it('reads albums from the batch first and skips the db when the batch covers every track', async () => {
+    const art = await albumArtForTracks(SERVER, [
+      item('100', 'album', ALBUM_ART, '1'),
+      item('101', 'track', '/Items/101/Images/Primary?tag=a', '100'),
+      item('200', 'album', '/Items/200/Images/Primary', '1'),
+    ]);
+    expect(art).toEqual(new Map([['100', ALBUM_ART]]));
+    expect(db.select).not.toHaveBeenCalled();
   });
 
-  it('scopes the update to one server when given', async () => {
-    await alignTrackArtToAlbums(SERVER);
-
-    const { sql, params } = executed();
-    expect(sql).toContain('AND track.server_id = $1');
-    expect(params).toEqual([SERVER]);
+  it('looks up the albums of tracks the batch lacks and drops artless ones', async () => {
+    selected = [{ ratingKey: '300', thumbPath: ALBUM_ART }];
+    const art = await albumArtForTracks(SERVER, [
+      item('301', 'track', '/Items/301/Images/Primary?tag=b', '300'),
+      item('401', 'track', '/Items/401/Images/Primary?tag=c', '400'),
+      item('500', 'episode', '/Items/500/Images/Primary?tag=d', '50'),
+    ]);
+    expect(art).toEqual(new Map([['300', ALBUM_ART]]));
+    expect(db.select).toHaveBeenCalledTimes(1);
   });
 });

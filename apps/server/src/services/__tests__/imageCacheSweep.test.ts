@@ -27,16 +27,11 @@ vi.mock('../../serverState.js', () => ({
   isMaintenance: vi.fn(() => false),
 }));
 
-vi.mock('../library/trackArt.js', () => ({
-  alignTrackArtToAlbums: vi.fn(async () => 0),
-}));
-
 import { readdir, stat, statfs, unlink } from 'node:fs/promises';
 import { REDIS_KEYS } from '@tracearr/shared';
 import { db } from '../../db/client.js';
 import { getRedis } from '../../lib/redisShared.js';
 import { isMaintenance } from '../../serverState.js';
-import { alignTrackArtToAlbums } from '../library/trackArt.js';
 import {
   ESTIMATED_POSTER_BYTES,
   cacheWriteAllowed,
@@ -341,41 +336,6 @@ describe('sweepImageCache', () => {
     expect(order).toContain('db');
     expect(result.scanned).toBe(1);
     expect(vi.mocked(unlink)).not.toHaveBeenCalled();
-  });
-
-  it('points tracks at their album art before reading the expected set, so replaced track files go now', async () => {
-    const serverId = randomUUID();
-    const albumPath = '/Items/100/Images/Primary?tag=album';
-    const trackPath = '/Items/101/Images/Primary?tag=track';
-    const albumPoster = posterCacheFileName(serverId, albumPath);
-    const trackPoster = posterCacheFileName(serverId, trackPath);
-    const order: string[] = [];
-
-    mockCacheDirFiles([
-      { shard: albumPoster.shard, fileName: albumPoster.fileName },
-      { shard: trackPoster.shard, fileName: trackPoster.fileName },
-    ]);
-    vi.mocked(alignTrackArtToAlbums).mockImplementationOnce(async () => {
-      order.push('align');
-      return 1;
-    });
-    const { limit } = mockLibraryItemsPages();
-    limit.mockImplementation(async () => {
-      order.push('db');
-      return [
-        { id: randomUUID(), serverId, thumbPath: albumPath, mediaType: 'album' },
-        { id: randomUUID(), serverId, thumbPath: albumPath, mediaType: 'track' },
-      ];
-    });
-
-    const result = await sweepImageCache({ cacheDir: CACHE_DIR });
-
-    expect(alignTrackArtToAlbums).toHaveBeenCalledWith();
-    expect(order).toEqual(['align', 'db']);
-    expect(vi.mocked(unlink)).toHaveBeenCalledWith(
-      join(CACHE_DIR, trackPoster.shard, trackPoster.fileName)
-    );
-    expect(result.deletedOrphans).toBe(1);
   });
 
   it('deletes no orphan when the db returns nothing while versioned files are cached', async () => {

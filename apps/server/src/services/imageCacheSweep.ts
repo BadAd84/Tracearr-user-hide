@@ -22,7 +22,6 @@ import {
   setCacheTallyBytes,
 } from './imageCacheGuard.js';
 import { IMAGE_CACHE_DIR, isVersionedFileName, posterCacheFileName } from './imageProxy.js';
-import { alignTrackArtToAlbums } from './library/trackArt.js';
 import { registerService, unregisterService } from './serviceTracker.js';
 import type { Redis } from 'ioredis';
 
@@ -130,11 +129,6 @@ export async function sweepImageCache(
   // Listed before the db read: a poster written after this point is not in the
   // listing at all, so a file the sweep sees always had its row read.
   const shards = await listShards(cacheDir);
-  // Belongs in the library sync once the jobs refactor lands. Run before the
-  // expected set is read, so the per-track copies it replaces go as orphans now.
-  await alignTrackArtToAlbums().catch((err: unknown) => {
-    console.warn('[ImageCache] could not align track art to albums:', err);
-  });
   const expected = await buildExpectedFileNames();
   // An empty expected set means the db read found nothing. Deleting on that
   // would wipe a populated cache, so orphan removal sits this sweep out.
