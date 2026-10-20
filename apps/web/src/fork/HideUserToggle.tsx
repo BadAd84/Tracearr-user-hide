@@ -1,11 +1,13 @@
-/** Fork patch: owner toggle to hide a person from active streams and history. */
+/** Fork patch: owner/admin toggle to hide a person from active streams and history. */
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useContext } from 'react';
+import { QueryClientContext, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { API_BASE_URL } from '@/lib/api';
+import { useAuth } from '@/hooks/useAuth';
 
 const HIDDEN_USERS_URL = `${API_BASE_URL}/fork/hidden-users`;
 const HIDDEN_USERS_KEY = ['fork', 'hiddenUsers'] as const;
@@ -17,7 +19,15 @@ async function hiddenUsersRequest(path: string, method = 'GET'): Promise<string[
   return body.data;
 }
 
+/** Renders only for an owner or admin, and only inside the app's query provider. */
 export function HideUserToggle({ userId }: { userId: string }) {
+  const { user: authUser } = useAuth();
+  const hasQueryClient = useContext(QueryClientContext) !== undefined;
+  const isStaff = authUser?.role === 'owner' || authUser?.role === 'admin';
+  return isStaff && hasQueryClient ? <Toggle userId={userId} /> : null;
+}
+
+function Toggle({ userId }: { userId: string }) {
   const queryClient = useQueryClient();
   const { data: hiddenIds, error } = useQuery({
     queryKey: HIDDEN_USERS_KEY,

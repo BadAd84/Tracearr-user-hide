@@ -236,6 +236,10 @@ export function initializeWebSocket(
   return io;
 }
 
+export function disconnectAllSockets(): void {
+  io?.disconnectSockets(true);
+}
+
 export function getIO(): TypedServer {
   if (!io) {
     throw new Error('WebSocket server not initialized');
