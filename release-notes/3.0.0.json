@@ -1,0 +1,26 @@
+{
+  "version": "3.0.0",
+  "date": "2026-10-20",
+  "changes": [
+    {
+      "type": "new",
+      "text": "Telegram is a notification destination: a bot token, a chat ID and an optional topic ID"
+    },
+    {
+      "type": "new",
+      "text": "Telegram sends the poster with media added and upgraded notifications"
+    },
+    {
+      "type": "new",
+      "text": "ntfy, Gotify, Pushover and Telegram open the media page from a media notification"
+    },
+    {
+      "type": "improved",
+      "text": "Gotify and ntfy builtin priorities follow the event severity on the Priority select's scale"
+    },
+    {
+      "type": "improved",
+      "text": "server back online no longer bypasses Pushover quiet hours"
+    }
+  ]
+}

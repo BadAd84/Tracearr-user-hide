@@ -843,6 +843,7 @@ export const destinationKindEnum = [
   'gotify',
   'apprise',
   'pushover',
+  'telegram',
   'email',
   'push',
   'web_toast',
