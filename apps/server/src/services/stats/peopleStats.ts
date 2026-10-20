@@ -48,7 +48,6 @@ import {
   startOfUtcDay,
   TREND_BUCKETS_SQL,
   bucketLabels,
-  dailyBoundsSql,
   percent,
   toIso,
   toSeries,
@@ -526,43 +525,31 @@ function peopleRowsCte(input: PeopleRowsInput): SQL {
     chains AS (
       SELECT
         a.user_id,
-        p.chain_id,
-        MIN(p.day) AS first_day,
-        MAX(p.media_id::text)::uuid AS media_id,
-        MAX(p.show_media_id::text)::uuid AS show_media_id,
-        BOOL_OR(p.counted) AS counted,
-        SUM(p.watched_ms) AS watched_ms,
-        MAX(p.max_progress_ms) AS max_progress_ms,
-        MAX(p.content_duration_ms) AS content_duration_ms
-      FROM user_media_plays_daily p
-      JOIN accounts a ON a.id = p.server_user_id
-      WHERE true ${dailyBoundsSql('p', range.start, range.end)}
-        ${buildMultiServerFragment(resolvedServerIds, 'p.server_id')}
-      GROUP BY a.user_id, p.chain_id
-    ),
-    bucketed AS (
-      SELECT *, ${trendBucketSql(range)} AS bucket FROM chains
-    ),
-    play_totals AS (
-      SELECT
-        user_id,
-        COUNT(*) FILTER (WHERE counted)::int AS plays,
-        COALESCE(SUM(watched_ms), 0)::bigint AS watch_ms,
-        ARRAY[${sql.join(trend, sql`, `)}]::int[] AS trend
-      FROM bucketed
-      GROUP BY user_id
-    ),
-    session_totals AS (
-      SELECT
-        a.user_id,
+        ${CHAIN_S} AS chain_id,
+        MIN(s.started_at) AS first_day,
+        BOOL_OR(${countedSessionSql('s')}) AS counted,
+        SUM(CASE WHEN ${countedSessionSql('s')} THEN s.duration_ms ELSE 0 END) AS watched_ms,
         ${BYTES_SQL} AS bytes,
-        COUNT(DISTINCT ${CHAIN_S}) FILTER (WHERE ${countedSessionSql('s')})::int AS session_plays,
-        COUNT(DISTINCT ${CHAIN_S}) FILTER (WHERE ${countedSessionSql('s')} AND ${TRANSCODED_SQL})::int AS transcodes
+        BOOL_OR(${countedSessionSql('s')} AND ${TRANSCODED_SQL}) AS transcoded
       FROM sessions s
       JOIN accounts a ON a.id = s.server_user_id
       WHERE true ${sessionBoundsSql(range.start, range.end)}
         ${buildMultiServerFragment(resolvedServerIds, 's.server_id')}
-      GROUP BY a.user_id
+      GROUP BY a.user_id, ${CHAIN_S}
+    ),
+    bucketed AS (
+      SELECT *, ${trendBucketSql(range)} AS bucket FROM chains
+    ),
+    totals AS (
+      SELECT
+        user_id,
+        COUNT(*) FILTER (WHERE counted)::int AS plays,
+        COALESCE(SUM(watched_ms), 0)::bigint AS watch_ms,
+        ARRAY[${sql.join(trend, sql`, `)}]::int[] AS trend,
+        COALESCE(SUM(bytes), 0)::bigint AS bytes,
+        COUNT(*) FILTER (WHERE transcoded)::int AS transcodes
+      FROM bucketed
+      GROUP BY user_id
     ),
     request_totals AS (
       SELECT * FROM jsonb_to_recordset(${JSON.stringify(input.requests)}::jsonb)
@@ -577,13 +564,12 @@ function peopleRowsCte(input: PeopleRowsInput): SQL {
         rep.username,
         rep.thumb_url,
         rep.server_id::text AS server_id,
-        COALESCE(pt.plays, 0) AS plays,
-        COALESCE(pt.watch_ms, 0)::bigint AS watch_ms,
-        COALESCE(pt.trend, ARRAY_FILL(0, ARRAY[${TREND_BUCKETS_SQL}])) AS trend,
-        COALESCE(st.bytes, 0)::bigint AS bytes,
-        COALESCE(st.session_plays, 0) AS session_plays,
-        COALESCE(st.transcodes, 0) AS transcodes,
-        ROUND(100.0 * st.transcodes / NULLIF(st.session_plays, 0), 1)::float8 AS transcode_share,
+        COALESCE(t.plays, 0) AS plays,
+        COALESCE(t.watch_ms, 0)::bigint AS watch_ms,
+        COALESCE(t.trend, ARRAY_FILL(0, ARRAY[${TREND_BUCKETS_SQL}])) AS trend,
+        COALESCE(t.bytes, 0)::bigint AS bytes,
+        COALESCE(t.transcodes, 0) AS transcodes,
+        ROUND(100.0 * t.transcodes / NULLIF(t.plays, 0), 1)::float8 AS transcode_share,
         COALESCE(rt.requests, 0) AS requests,
         COALESCE(rt."requestsWatched", 0) AS requests_watched,
         pp.last_play_at,
@@ -597,8 +583,7 @@ function peopleRowsCte(input: PeopleRowsInput): SQL {
         ORDER BY ${representativeAccountOrderSql('su')}
         LIMIT 1
       ) rep ON true
-      LEFT JOIN play_totals pt ON pt.user_id = u.id
-      LEFT JOIN session_totals st ON st.user_id = u.id
+      LEFT JOIN totals t ON t.user_id = u.id
       LEFT JOIN request_totals rt ON rt."userId" = u.id
     )`;
 }
@@ -646,7 +631,6 @@ interface PersonSqlRow {
   watch_ms: string | number;
   trend: number[];
   bytes: string | number;
-  session_plays: number;
   transcodes: number;
   transcode_share: number | null;
   requests: number;
@@ -730,7 +714,7 @@ export async function queryPeopleRanked(input: {
     plays: row.plays,
     watchMs: Number(row.watch_ms),
     bytes: Number(row.bytes),
-    directPlayRate: percent(row.session_plays - row.transcodes, row.session_plays),
+    directPlayRate: percent(row.plays - row.transcodes, row.plays),
     transcodes: row.transcodes,
     transcodeShare: row.transcode_share,
     requests: row.requests,

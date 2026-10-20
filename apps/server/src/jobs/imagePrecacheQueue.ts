@@ -17,7 +17,7 @@
  */
 
 import { Queue, Worker, type Job, type ConnectionOptions } from 'bullmq';
-import { and, asc, eq, gt, gte, isNotNull, isNull, sql } from 'drizzle-orm';
+import { and, asc, eq, gt, gte, isNotNull, isNull, ne, sql } from 'drizzle-orm';
 import { REDIS_KEYS, posterSizeFor } from '@tracearr/shared';
 import { getBullPrefix, queueConnectionOptions } from './queueConnection.js';
 import { isMaintenance } from '../serverState.js';
@@ -81,6 +81,8 @@ const SYNC_ACTIVE_RETRY_DELAY_MS = 60 * 1000;
 // later pass they look like a dead server and stall it in backoff. Browsing
 // still requests them, so an image that lands after the sync gets cached there.
 const HAS_KNOWN_IMAGE = sql`(${libraryItems.thumbPath} NOT LIKE '/Items/%' OR ${libraryItems.thumbPath} LIKE '%?tag=%')`;
+// Tracks carry their album's cover path, and no surface shows a track at the 2:3 size.
+const NOT_TRACK = ne(libraryItems.mediaType, 'track');
 
 // Per-server, in-process on purpose: a restart means the operator changed
 // something, so probe at full rate again rather than inherit a stale pause.
@@ -270,6 +272,7 @@ async function countEligibleItems(
         isNull(libraryItems.removedAt),
         isNotNull(libraryItems.thumbPath),
         HAS_KNOWN_IMAGE,
+        NOT_TRACK,
         sinceUpdatedAt ? gte(libraryItems.updatedAt, new Date(sinceUpdatedAt)) : undefined
       )
     );
@@ -309,6 +312,7 @@ async function fetchBatch(
         isNull(libraryItems.removedAt),
         isNotNull(libraryItems.thumbPath),
         HAS_KNOWN_IMAGE,
+        NOT_TRACK,
         cursor ? gt(libraryItems.id, cursor) : undefined,
         sinceUpdatedAt ? gte(libraryItems.updatedAt, new Date(sinceUpdatedAt)) : undefined
       )

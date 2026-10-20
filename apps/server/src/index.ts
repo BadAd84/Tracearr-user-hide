@@ -265,6 +265,9 @@ import {
 const PORT = parseInt(process.env.PORT ?? '3000', 10);
 const HOST = process.env.HOST ?? '0.0.0.0';
 const SHUTDOWN_GRACE_MS = Number(process.env.SHUTDOWN_GRACE_MS) || 8000;
+// Set by the signal handler; the exit timer runs from the signal, so job
+// shutdown gets what is left of the budget, not a fresh one.
+let shutdownDeadline: number | null = null;
 const RECOVERY_INTERVAL_MS = 10_000;
 // A migration failure is usually deterministic (bad SQL, missing privilege) rather
 // than a transient outage, so retry it more slowly than the plain connectivity probe.
@@ -1274,7 +1277,9 @@ async function initializeServices(app: FastifyInstance) {
 }
 
 async function shutdownQueues(app: FastifyInstance): Promise<void> {
-  await shutdownAllJobs(SHUTDOWN_GRACE_MS);
+  await shutdownAllJobs(
+    shutdownDeadline ? Math.max(shutdownDeadline - Date.now(), 0) : SHUTDOWN_GRACE_MS
+  );
   await Promise.all([
     shutdownNotificationQueue(),
     shutdownKillQueue(),
@@ -1614,6 +1619,7 @@ async function start() {
     for (const signal of signals) {
       process.once(signal, () => {
         app.log.info(`Received ${signal}, shutting down (budget ${SHUTDOWN_GRACE_MS}ms)...`);
+        shutdownDeadline = Date.now() + SHUTDOWN_GRACE_MS;
         setTimeout(() => process.exit(1), SHUTDOWN_GRACE_MS).unref();
         stopPoller();
         void stopConnectionBudget(app.redis);

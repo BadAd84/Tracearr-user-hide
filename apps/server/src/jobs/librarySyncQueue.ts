@@ -722,24 +722,21 @@ export async function getLibrarySyncStatus(
     return null;
   }
 
-  const jobs = await librarySyncQueue.getJobs(['active', 'waiting', 'delayed']);
-  const matching = await Promise.all(
-    jobs
-      .filter((j) => j.data.serverId === serverId && j.data.kind !== 'tick')
-      .map(async (j) => ({ job: j, state: await j.getState() }))
-  );
-  const match = matching.find((m) => m.state === 'active') ?? matching[0];
+  const forServer = (j: Job<LibrarySyncJobData>) =>
+    j.data.serverId === serverId && j.data.kind !== 'tick';
+  const active = (await librarySyncQueue.getJobs(['active'])).find(forServer);
+  const match = active ?? (await librarySyncQueue.getJobs(['waiting', 'delayed'])).find(forServer);
 
   if (!match) {
     return { isActive: false };
   }
 
-  const progress = match.job.progress;
+  const progress = match.progress;
 
   return {
-    isActive: match.state === 'active',
+    isActive: active !== undefined,
     progress: typeof progress === 'number' ? progress : undefined,
-    jobId: match.job.id ?? undefined,
+    jobId: match.id ?? undefined,
   };
 }
 

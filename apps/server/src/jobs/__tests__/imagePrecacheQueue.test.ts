@@ -456,7 +456,7 @@ describe('imagePrecacheQueue', () => {
       mockBatchQuery([
         makeItemRow('item-artist', '/library/metadata/101/thumb/1', 'artist'),
         makeItemRow('item-album', '/library/metadata/102/thumb/1', 'album'),
-        makeItemRow('item-track', '/library/metadata/103/thumb/1', 'track'),
+        makeItemRow('item-episode', '/library/metadata/103/thumb/1', 'episode'),
       ]);
 
       await processImagePrecacheJob(makeJob({ serverId: 'server-1', cursor: null }));

@@ -3,7 +3,9 @@ import {
   genreDetailQuerySchema,
   genresQuerySchema,
   libraryGrowthQuerySchema,
+  peopleQuerySchema,
   statsQuerySchema,
+  userRangeStatsQuerySchema,
 } from '../schemas.js';
 
 const SAME_DAY = {
@@ -37,6 +39,14 @@ describe('date order on day-inclusive endpoints', () => {
 
   it('keeps genres requiring both dates for a custom period', () => {
     expect(genresQuerySchema.safeParse({ period: 'custom' }).success).toBe(false);
+  });
+
+  it('accepts a single-day custom range on people and user range stats', () => {
+    expect(peopleQuerySchema.safeParse(SAME_DAY).success).toBe(true);
+    expect(userRangeStatsQuerySchema.safeParse(SAME_DAY).success).toBe(true);
+    const reversed = { ...SAME_DAY, startDate: '2026-09-16T00:00:00.000Z' };
+    expect(peopleQuerySchema.safeParse(reversed).success).toBe(false);
+    expect(peopleQuerySchema.safeParse({ period: 'custom' }).success).toBe(false);
   });
 
   it('keeps the strict order on statsQuerySchema', () => {

@@ -765,16 +765,30 @@ export const PEOPLE_RANKS = [
 export const peopleRankSchema = z.enum(PEOPLE_RANKS);
 export type PeopleRank = z.infer<typeof peopleRankSchema>;
 
-export const peopleQuerySchema = statsQuerySchema.safeExtend({
-  rank: peopleRankSchema.default('plays'),
-  page: paginationSchema.shape.page,
-  pageSize: paginationSchema.shape.pageSize,
-  search: z.string().trim().min(1).max(100).optional(),
-});
+// Day-aligned windows include the end day, so a one-day custom range has equal dates.
+const dayWindowQuerySchema = statsQueryObjectSchema.refine(
+  dateValidationRefinements.customPeriodRequiresDates.refinement,
+  { message: dateValidationRefinements.customPeriodRequiresDates.message }
+);
 
-export const userRangeStatsQuerySchema = statsQuerySchema.safeExtend({
-  scope: z.literal('identity').optional(),
-});
+export const peopleQuerySchema = dayWindowQuerySchema
+  .safeExtend({
+    rank: peopleRankSchema.default('plays'),
+    page: paginationSchema.shape.page,
+    pageSize: paginationSchema.shape.pageSize,
+    search: z.string().trim().min(1).max(100).optional(),
+  })
+  .refine(dateValidationRefinements.startNotAfterEnd.refinement, {
+    message: dateValidationRefinements.startNotAfterEnd.message,
+  });
+
+export const userRangeStatsQuerySchema = dayWindowQuerySchema
+  .safeExtend({
+    scope: z.literal('identity').optional(),
+  })
+  .refine(dateValidationRefinements.startNotAfterEnd.refinement, {
+    message: dateValidationRefinements.startNotAfterEnd.message,
+  });
 
 // Location stats with full filtering - uses same period system as statsQuerySchema
 export const locationStatsQuerySchema = z

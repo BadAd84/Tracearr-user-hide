@@ -366,6 +366,16 @@ describe('people search', () => {
 });
 
 describe('queryPeopleRanked', () => {
+  it('counts plays, hours, data and transcodes from the same session chains, as the user page does', () => {
+    const text = peopleText('plays');
+    expect(text).not.toContain('user_media_plays_daily');
+    expect(text).toContain('COALESCE(s.reference_id, s.id) AS chain_id');
+    expect(text).toContain('GROUP BY a.user_id, COALESCE(s.reference_id, s.id)');
+    expect(text).toContain('COUNT(*) FILTER (WHERE counted)::int AS plays');
+    expect(text).toContain('COUNT(*) FILTER (WHERE transcoded)::int AS transcodes');
+    expect(text).toContain('ROUND(100.0 * t.transcodes / NULLIF(t.plays, 0), 1)');
+  });
+
   it('ranks people by each metric and keeps zero-play people last except for lastSeen', () => {
     expect(orderClause(peopleText('plays'))).toBe('(plays = 0), plays DESC, user_id');
     expect(orderClause(peopleText('hours'))).toBe('(plays = 0), watch_ms DESC, user_id');

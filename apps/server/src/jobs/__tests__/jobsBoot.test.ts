@@ -61,11 +61,18 @@ function deps(
   }
   const redis = {
     get: vi.fn(async (key: string) => store.get(key) ?? null),
-    set: vi.fn(async (key: string, value: string, mode?: 'NX') => {
-      if (mode === 'NX' && store.has(key)) return null;
-      calls.push(`marker:${value}`);
+    set: vi.fn(async (key: string, value: string, ...flags: (string | number)[]) => {
+      if (flags.includes('NX') && store.has(key)) return null;
+      if (key === REDIS_KEYS.JOBS_SCHEMA) calls.push(`marker:${value}`);
       store.set(key, value);
+      const px = flags.indexOf('PX');
+      if (px !== -1) ttls.set(key, Number(flags[px + 1]));
       return 'OK' as const;
+    }),
+    del: vi.fn(async (key: string) => {
+      store.delete(key);
+      ttls.delete(key);
+      return 1 as const;
     }),
     pttl: vi.fn(async (key: string) => ttls.get(key) ?? -2),
     pexpire: vi.fn(async (key: string, ms: number) => {
@@ -200,7 +207,7 @@ describe('reconcileJobsOnBoot', () => {
     const d = deps([fakeQueue('library-sync'), backup]);
 
     await expect(reconcileJobsOnBoot(d.deps)).rejects.toThrow('redis down');
-    expect(d.redis.set).not.toHaveBeenCalled();
+    expect(d.store.has(REDIS_KEYS.JOBS_SCHEMA)).toBe(false);
     expect(d.store.has(REDIS_KEYS.JOBS_SCHEMA)).toBe(false);
   });
 
@@ -216,8 +223,29 @@ describe('reconcileJobsOnBoot', () => {
     const d = deps([], {}, ['backup']);
 
     expect(await reconcileJobsOnBoot(d.deps)).toEqual({ ran: true });
-    expect(d.redis.set).not.toHaveBeenCalled();
     expect(d.store.has(REDIS_KEYS.JOBS_SCHEMA)).toBe(false);
+  });
+
+  it('waits for the instance holding the lock and touches nothing itself', async () => {
+    vi.useFakeTimers();
+    const librarySync = fakeQueue('library-sync');
+    const d = deps([librarySync]);
+    d.store.set(`${REDIS_KEYS.JOBS_SCHEMA}:lock`, '1');
+    d.redis.pttl.mockResolvedValueOnce(400).mockResolvedValueOnce(-2);
+
+    const result = reconcileJobsOnBoot(d.deps);
+    await vi.advanceTimersByTimeAsync(500);
+
+    expect(await result).toEqual({ ran: false });
+    expect(librarySync.obliterate).not.toHaveBeenCalled();
+    expect(d.store.has(REDIS_KEYS.JOBS_SCHEMA)).toBe(false);
+    vi.useRealTimers();
+  });
+
+  it('releases the lock once reconciliation is done', async () => {
+    const d = deps([]);
+    await reconcileJobsOnBoot(d.deps);
+    expect(d.store.has(`${REDIS_KEYS.JOBS_SCHEMA}:lock`)).toBe(false);
   });
 
   it('a second boot after the marker is set does nothing', async () => {

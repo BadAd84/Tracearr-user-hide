@@ -12,7 +12,7 @@ import type { Redis } from 'ioredis';
 export const JOBS_SCHEMA_VERSION = '1';
 
 export interface JobsBootDeps {
-  redis: Pick<Redis, 'get' | 'set' | 'pttl' | 'pexpire'>;
+  redis: Pick<Redis, 'get' | 'set' | 'del' | 'pttl' | 'pexpire'>;
   queues: (name: string) => Queue | undefined;
   listServerIds: () => Promise<string[]>;
   enqueuePrecachePass: (serverId: string) => Promise<string | undefined>;
@@ -21,6 +21,8 @@ export interface JobsBootDeps {
 }
 
 const PENDING: JobType[] = ['waiting', 'delayed', 'prioritized'];
+const LOCK_MS = 5 * 60 * 1000;
+const LOCK_POLL_MS = 500;
 
 const STARTUP_QUEUES = [
   'version-check',
@@ -36,6 +38,24 @@ export async function reconcileJobsOnBoot(deps: JobsBootDeps): Promise<{ ran: bo
   const marker = REDIS_KEYS.JOBS_SCHEMA;
   if ((await deps.redis.get(marker)) === JOBS_SCHEMA_VERSION) return { ran: false };
 
+  // One instance reconciles; the others wait for it so their queued boot work is not wiped.
+  const lock = `${marker}:lock`;
+  if ((await deps.redis.set(lock, '1', 'PX', LOCK_MS, 'NX')) !== 'OK') {
+    console.log('[JobsBoot] another instance is reconciling, waiting');
+    while ((await deps.redis.pttl(lock)) > 0) {
+      await new Promise((resolve) => setTimeout(resolve, LOCK_POLL_MS));
+    }
+    return { ran: false };
+  }
+  try {
+    return await reconcile(deps);
+  } finally {
+    await deps.redis.del(lock);
+  }
+}
+
+async function reconcile(deps: JobsBootDeps): Promise<{ ran: boolean }> {
+  const marker = REDIS_KEYS.JOBS_SCHEMA;
   let skipped = 0;
   const queue = (name: string): Queue | undefined => {
     const found = deps.queues(name);

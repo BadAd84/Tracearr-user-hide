@@ -884,7 +884,7 @@ export class LibrarySyncService {
         }
 
         const allItems: MediaLibraryItem[] = [];
-        const combinedItems = [...newItems, ...newLeaves, ...newContainers];
+        const combinedItems = [...newItems, ...newContainers, ...newLeaves];
         let totalSkippedEmpty = 0;
 
         for (let i = 0; i < combinedItems.length; i += BATCH_SIZE) {

@@ -452,24 +452,33 @@ describe('hasPendingLibrarySync and getAllActiveLibrarySyncs', () => {
     expect(await getLibrarySyncStatus('srv-1')).toEqual({ isActive: false });
   });
 
-  it('getLibrarySyncStatus prefers the active job when several match', async () => {
-    mockQueueGetJobs.mockResolvedValue([
-      plainJob('srv-1', 'scheduled', {
-        id: 'waiting-1',
-        getState: vi.fn().mockResolvedValue('waiting'),
-      }),
-      plainJob('srv-1', 'manual', {
-        id: 'active-1',
-        progress: 40,
-        getState: vi.fn().mockResolvedValue('active'),
-      }),
-    ]);
+  it('getLibrarySyncStatus reads the active job first and never asks a job for its state', async () => {
+    const waiting = { ...plainJob('srv-1', 'scheduled', { id: 'waiting-1' }), getState: vi.fn() };
+    const active = {
+      ...plainJob('srv-1', 'manual', { id: 'active-1', progress: 40 }),
+      getState: vi.fn(),
+    };
+    mockQueueGetJobs.mockImplementation(async (states: string[]) =>
+      states.includes('active') ? [active] : [waiting]
+    );
 
     expect(await getLibrarySyncStatus('srv-1')).toEqual({
       isActive: true,
       progress: 40,
       jobId: 'active-1',
     });
+    expect(mockQueueGetJobs).toHaveBeenCalledTimes(1);
+    expect(active.getState).not.toHaveBeenCalled();
+
+    mockQueueGetJobs.mockImplementation(async (states: string[]) =>
+      states.includes('active') ? [] : [waiting]
+    );
+    expect(await getLibrarySyncStatus('srv-1')).toEqual({
+      isActive: false,
+      progress: undefined,
+      jobId: 'waiting-1',
+    });
+    expect(waiting.getState).not.toHaveBeenCalled();
   });
 
   it('counts an active or waiting job for the server, never a delayed scheduler placeholder or another server', async () => {
