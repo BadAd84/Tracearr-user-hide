@@ -24,12 +24,15 @@ import type {
 } from '@tracearr/shared';
 import { renderSql } from '../../../test/helpers.js';
 
+const { scopeRedis } = vi.hoisted(() => ({ scopeRedis: { get: vi.fn(), set: vi.fn() } }));
+
 vi.mock('../../../db/client.js', () => ({
   db: {
     execute: vi.fn(),
     select: vi.fn(),
   },
 }));
+vi.mock('../../../lib/redisShared.js', () => ({ getRedis: () => scopeRedis }));
 
 vi.mock('../../../services/settings.js', () => ({
   getSetting: vi.fn().mockResolvedValue(null),
@@ -258,8 +261,13 @@ describe('GET /library/media/:id and sub-resources', () => {
   });
 
   it('returns no downloads to a member', async () => {
+    const userId = randomUUID();
+    const serverId = randomUUID();
+    scopeRedis.get.mockResolvedValue(
+      JSON.stringify({ serverUserIds: [randomUUID()], serverIds: [serverId], libraryIds: {} })
+    );
     app = await buildTestApp(
-      { userId: randomUUID(), username: 'member', role: 'member', serverIds: [] },
+      { userId, username: 'member', role: 'member', serverIds: [] },
       createSpyRedis()
     );
     const row = rawMediaRow();
