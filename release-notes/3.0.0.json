@@ -1,6 +1,19 @@
 {
   "version": "3.0.0",
   "date": "2026-10-20",
+  "headline": "Download tracking and Telegram",
+  "highlights": [
+    {
+      "title": "Downloads",
+      "body": "Tracearr now records who downloads what from Plex, Jellyfin and Emby: the file, the device, and for app downloads the quality that was actually delivered. There is a Downloads tab under Stats, a tab on each user and a panel on each media page. A Download burst automation alerts when one person pulls more than a set number of items in a day.",
+      "docs": "https://docs.tracearr.com/configuration/downloads"
+    },
+    {
+      "title": "Telegram",
+      "body": "Telegram joins the notification destinations. Give it a bot token and a chat ID; messages come through as plain text with the title in bold, media alerts carry the poster, and links to the media page show as buttons. ntfy, Gotify and Pushover notifications now link to the media page too.",
+      "docs": "https://docs.tracearr.com/configuration/destinations"
+    }
+  ],
   "changes": [
     {
       "type": "new",
