@@ -1,11 +1,11 @@
 {
   "version": "2.9.0",
-  "date": "2026-10-15",
-  "headline": "A shorter sidebar, tabbed sections, and a time range that follows you",
+  "date": "2026-10-19",
+  "headline": "A shorter sidebar, tabbed Stats and Library, People, and music",
   "highlights": [
     {
       "title": "Navigation",
-      "body": "The sidebar is down to nine entries. Stats, Library and Automations are tabbed sections. Stats and Library share one time range picker (Library shows it to staff on every tab and to members on Genres; Automations has none), and the range stays across tabs and sidebar links. Violations sits under Automations with a pending count on the sidebar. Old URLs redirect."
+      "body": "The sidebar is down to nine entries. Stats, Library and Automations are tabbed sections. Stats and Library share one time range picker, and the range stays across tabs and sidebar links. Violations sits under Automations with a pending count on the sidebar. Old URLs redirect."
     },
     {
       "title": "People",
@@ -13,7 +13,7 @@
     },
     {
       "title": "Music",
-      "body": "Browse has a Music tab with an artist grid, and artist pages list albums with year and track count beside a Listeners panel. Overview has shelves for new albums and most played artists. Activity charts split plays into movies, shows and music. History and the Dashboard show listen time beside watch time, and tracks say played instead of watched. Storage lists each library's item count and size."
+      "body": "Browse has a Music tab with an artist grid, and artist pages list albums with year and track count beside a Listeners panel. Overview has shelves for new albums and most played artists. Activity charts split plays into movies, shows and music. History and the Dashboard show listen time beside watch time, and tracks say played instead of watched."
     }
   ],
   "changes": [
@@ -26,28 +26,8 @@
       "text": "Violations is a tab under Automations, and the sidebar shows the pending count"
     },
     {
-      "type": "improved",
-      "text": "page headers are gone; the controls row (tabs, time range, filters) is the header on list pages and sections"
-    },
-    {
       "type": "new",
       "text": "People tab in Stats ranks every person by plays, hours, data, transcodes, requests or last seen"
-    },
-    {
-      "type": "improved",
-      "text": "Users is a management table with role, sign-in and pending flags, and filters for each"
-    },
-    {
-      "type": "improved",
-      "text": "user pages show range stats, prior-range and server-average comparisons, when, what and where cards, and tabs"
-    },
-    {
-      "type": "improved",
-      "text": "the Top 3 podium is gone; the People table is the ranking, with no separate top-three section"
-    },
-    {
-      "type": "improved",
-      "text": "Bandwidth, Devices and Requests link to People in place of their per-user tables"
     },
     {
       "type": "new",
@@ -59,7 +39,7 @@
     },
     {
       "type": "new",
-      "text": "Genres has a media type control for movies, TV shows or artists that stays in the URL across Library tabs"
+      "text": "Library tabs share one media type control (movies, TV shows or artists) that stays in the URL and in links"
     },
     {
       "type": "new",
@@ -68,6 +48,10 @@
     {
       "type": "new",
       "text": "Browse has a Music tab with an artist grid, and artist pages list albums, listeners and plays"
+    },
+    {
+      "type": "new",
+      "text": "clicking an album on an artist page opens a sheet with its tracks, plays, listeners and listen time"
     },
     {
       "type": "new",
@@ -87,7 +71,27 @@
     },
     {
       "type": "new",
-      "text": "clicking an album on an artist page opens a sheet with its tracks, plays, listeners and listen time"
+      "text": "poster caching after library syncs can be turned off in Settings → Servers → Posters"
+    },
+    {
+      "type": "improved",
+      "text": "page headers are gone; the controls row (tabs, time range, filters) is the header on list pages and sections"
+    },
+    {
+      "type": "improved",
+      "text": "Users is a management table with role, sign-in and pending flags, and filters for each"
+    },
+    {
+      "type": "improved",
+      "text": "user pages show range stats, prior-range and server-average comparisons, when, what and where cards, and tabs"
+    },
+    {
+      "type": "improved",
+      "text": "the Top 3 podium is gone; the People table is the ranking"
+    },
+    {
+      "type": "improved",
+      "text": "Bandwidth shows the top five people by data; Bandwidth, Devices and Requests link to People for the full ranking"
     },
     {
       "type": "improved",
@@ -95,35 +99,11 @@
     },
     {
       "type": "improved",
-      "text": "Most Watched, codec, resolution, binge and stale tables are translated"
+      "text": "History's date range is in the URL like every other page"
     },
     {
       "type": "improved",
-      "text": "History's date range uses the same URL params as every other page"
-    },
-    {
-      "type": "improved",
-      "text": "Storage, Watch, top content tables, badges and the error state are translated"
-    },
-    {
-      "type": "improved",
-      "text": "session details, stream details, debug tabs, dialogs and chart empty states are translated"
-    },
-    {
-      "type": "improved",
-      "text": "Quality and Browse use the shared media type control, and Library links carry the type"
-    },
-    {
-      "type": "improved",
-      "text": "engagement tiers and the session sheet labels are translated"
-    },
-    {
-      "type": "improved",
-      "text": "artist pages read their plays through a new index on the track-to-artist link"
-    },
-    {
-      "type": "improved",
-      "text": "Bandwidth shows the top five people by data with a link to the full ranking"
+      "text": "Stats tables, session and stream details, dialogs, badges and empty states are translated"
     },
     {
       "type": "fix",
@@ -136,20 +116,41 @@
     },
     {
       "type": "fix",
-      "text": "a Library link carrying a media type no longer sends Browse back to Movies"
-    },
-    {
-      "type": "fix",
-      "text": "music rows in History say played instead of watched, and today's plays count tracks",
+      "text": "music rows in History say played instead of watched",
       "refs": ["#1000"]
     },
     {
+      "type": "fix",
+      "text": "background tasks no longer pile up after restarts; one sync or poster warm-up per server, resumed where it stopped"
+    },
+    {
+      "type": "fix",
+      "text": "a Tautulli import interrupted by a restart continues from the last finished page"
+    },
+    {
+      "type": "fix",
+      "text": "a busy server no longer bounces you to the dashboard; you stay on the page, and signing in returns you to it"
+    },
+    {
+      "type": "fix",
+      "text": "PAL SD shows as 576p in Now Playing and history; Normalize Resolutions under Jobs relabels older plays",
+      "refs": ["#1334"]
+    },
+    {
+      "type": "fix",
+      "text": "a custom range of one day no longer fails with an error on People and user pages"
+    },
+    {
       "type": "note",
-      "text": "Storage's never-watched count now comes from the Stale query, and the Dead Weight list moved into the Stale card"
+      "text": "Storage's never-watched count matches Stale, and the Dead Weight list is in the Stale card"
     },
     {
       "type": "note",
       "text": "stats rebuild in the background after updating and show the last 7 days until done; music play counts will go up"
+    },
+    {
+      "type": "note",
+      "text": "today's plays, sessions and active users count music on the Dashboard and the v1 /stats/today"
     },
     {
       "type": "note",
@@ -165,32 +166,7 @@
     },
     {
       "type": "note",
-      "text": "today's plays, sessions and active users count music on the Dashboard and the v1 /stats/today"
-    },
-    {
-      "type": "fix",
-      "text": "background tasks no longer pile up after restarts; one sync or poster warm-up per server, resumed where it stopped"
-    },
-    {
-      "type": "fix",
-      "text": "a Tautulli import interrupted by a restart continues from the last finished page"
-    },
-    {
-      "type": "note",
       "text": "first boot after updating clears queued tasks once and queues one poster pass per server; syncs restart, imports stay"
-    },
-    {
-      "type": "new",
-      "text": "poster caching after library syncs can be turned off in Settings → Servers → Posters"
-    },
-    {
-      "type": "fix",
-      "text": "a busy server no longer bounces you to the dashboard; you stay on the page, and signing in returns you to it"
-    },
-    {
-      "type": "fix",
-      "text": "PAL SD shows as 576p in Now Playing and history; Normalize Resolutions under Jobs relabels older plays",
-      "refs": ["#1334"]
     }
   ]
 }
