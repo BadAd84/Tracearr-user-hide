@@ -21,6 +21,22 @@
     {
       "type": "improved",
       "text": "server back online no longer bypasses Pushover quiet hours"
+    },
+    {
+      "type": "new",
+      "text": "downloads are tracked on Plex, Jellyfin and Emby, with a Downloads tab under Stats and on each user"
+    },
+    {
+      "type": "new",
+      "text": "an automation can fire when a person downloads more than N items in a window"
+    },
+    {
+      "type": "new",
+      "text": "converted downloads are tracked: Plex and Emby app downloads with delivered quality, Jellyfin pulls with the plugin"
+    },
+    {
+      "type": "note",
+      "text": "SSE plugin 0.6.0 reports downloads immediately; older plugins are polled every 30 seconds"
     }
   ]
 }
