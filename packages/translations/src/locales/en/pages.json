@@ -934,7 +934,7 @@
             "description": "Minimum time between notifications"
           },
           "priority": {
-            "description": "Used by Pushover, Gotify and ntfy"
+            "description": "Used by Pushover, Gotify, ntfy and Telegram"
           }
         },
         "ran": "Sent a notification"
@@ -2219,6 +2219,9 @@
         "authToken": "Auth token",
         "userKey": "User key",
         "apiToken": "API token",
+        "botToken": "Bot token",
+        "chatId": "Chat ID",
+        "topicId": "Topic ID",
         "preset": "Provider",
         "host": "SMTP host",
         "port": "Port",
@@ -2240,6 +2243,7 @@
       },
       "hints": {
         "authTokenOptional": "Optional for public topics",
+        "telegramTopic": "Forum groups only. Leave blank for a normal chat or channel.",
         "smtpPreset": "Fills the host, port and security for common providers. Amazon SES and Mailgun EU need the region edited into the host.",
         "smtpVerifyCertificate": "Checks the mail server's TLS certificate against a trusted authority. Turn it off only for a server with a self-signed certificate, such as a local bridge: anyone on the path between Tracearr and the mail server can then intercept the connection.",
         "smtpUsernameOptional": "Leave blank when the server needs no login",
@@ -2297,6 +2301,7 @@
         "gotify": "Gotify",
         "apprise": "Apprise",
         "pushover": "Pushover",
+        "telegram": "Telegram",
         "email": "Email",
         "push": "Mobile push",
         "webToast": "Browser toasts"
