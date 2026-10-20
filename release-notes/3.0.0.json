@@ -4,19 +4,19 @@
   "changes": [
     {
       "type": "new",
-      "text": "Telegram is a notification destination: a bot token, a chat ID and an optional topic ID"
+      "text": "Telegram is a notification destination, set up with a bot token and a chat ID"
     },
     {
       "type": "new",
-      "text": "Telegram sends the poster with media added and upgraded notifications"
+      "text": "Telegram notifications for added and upgraded media carry the poster"
     },
     {
       "type": "new",
-      "text": "ntfy, Gotify, Pushover and Telegram open the media page from a media notification"
+      "text": "media notifications on ntfy, Gotify, Pushover and Telegram open the media page"
     },
     {
       "type": "improved",
-      "text": "Gotify and ntfy builtin priorities follow the event severity on the Priority select's scale"
+      "text": "Gotify and ntfy notification priority follows the event severity"
     },
     {
       "type": "improved",
@@ -24,19 +24,19 @@
     },
     {
       "type": "new",
-      "text": "downloads are tracked on Plex, Jellyfin and Emby, with a Downloads tab under Stats and on each user"
+      "text": "downloads from Plex, Jellyfin and Emby show under Stats, on each user and on the media page"
     },
     {
       "type": "new",
-      "text": "an automation can fire when a person downloads more than N items in a window"
+      "text": "an automation can fire when a person downloads more than N items or gigabytes in a window"
     },
     {
       "type": "new",
-      "text": "converted downloads are tracked: Plex and Emby app downloads with delivered quality, Jellyfin pulls with the plugin"
+      "text": "converted downloads record the quality the app received, not the file on the server"
     },
     {
       "type": "note",
-      "text": "SSE plugin 0.6.0 reports downloads immediately; older plugins are polled every 30 seconds"
+      "text": "without the 0.6.0 SSE plugin, downloads are picked up every 30 seconds instead of immediately"
     }
   ]
 }
