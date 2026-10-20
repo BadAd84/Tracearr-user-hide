@@ -34,9 +34,11 @@ const THUMBNAIL = 11;
 const SEPARATOR = 14;
 const CONTAINER = 17;
 const LINK_STYLE = 5;
-// The Components reference caps a message at 40 components and a button label at 80 characters.
+// The Components reference caps a message at 40 components, a button label at 80 characters
+// and the text across every text display at 4000 characters.
 const MAX_COMPONENTS = 40;
 const MAX_BUTTON_LABEL = 80;
+const MAX_TEXT = 4000;
 
 /**
  * @typedef {{ type: string; text: string; refs?: string[] }} Change
@@ -49,18 +51,12 @@ const version = tag.replace(/^v/, '');
 const isPrerelease = prerelease === 'true';
 
 const SECTION_LABELS = {
-  new: ['new', 'new'],
-  improved: ['improved', 'improved'],
-  fix: ['fix', 'fixes'],
-  security: ['security fix', 'security fixes'],
-  note: ['note', 'notes'],
+  new: 'New',
+  improved: 'Improved',
+  fix: 'Fixes',
+  security: 'Security',
+  note: 'Notes',
 };
-const counts = {};
-for (const change of notes.changes ?? []) counts[change.type] = (counts[change.type] ?? 0) + 1;
-const countsLine = Object.entries(SECTION_LABELS)
-  .filter(([type]) => counts[type])
-  .map(([type, [one, many]]) => `${counts[type]} ${counts[type] === 1 ? one : many}`)
-  .join(' · ');
 
 const text = (content) => ({ type: TEXT, content });
 const separator = (divider) => ({ type: SEPARATOR, divider, spacing: 1 });
@@ -73,6 +69,36 @@ const changeLine = (change) => {
   if (change.refs?.length) line += ` (${change.refs.join(', ')})`;
   return line;
 };
+const textLength = (list) =>
+  list.reduce(
+    (sum, block) => sum + (block.content?.length ?? 0) + textLength(block.components ?? []),
+    0
+  );
+
+/** The changes grouped under bold type labels, cut at a line when the budget runs out. */
+function changeList(changes, budget) {
+  const groups = Object.entries(SECTION_LABELS)
+    .map(([type, label]) => [label, changes.filter((change) => change.type === type)])
+    .filter(([, list]) => list.length > 0);
+  const lines = groups.flatMap(([label, list], index) => [
+    `${index > 0 ? '\n' : ''}**${label}**`,
+    ...list.map(changeLine),
+  ]);
+  const more = (n) => `\n…and ${n} more in the release notes`;
+  const out = [];
+  let shown = 0;
+  for (const line of lines) {
+    const left = changes.length - shown;
+    if (out.join('\n').length + line.length + 1 + more(left).length > budget) {
+      // Never leave a label with nothing under it.
+      while (out.length > 0 && !out.at(-1).startsWith('- ')) out.pop();
+      return out.join('\n') + more(left);
+    }
+    out.push(line);
+    if (line.startsWith('- ')) shown++;
+  }
+  return out.join('\n');
+}
 
 // Stable releases page everyone plus the release alerts role; betas page the beta role only.
 // DISCORD_NO_MENTIONS posts the card silently, for a test run.
@@ -89,7 +115,8 @@ const allowedMentions = noMentions
 
 const blocks = [];
 const title = `## Tracearr v${version}`;
-const subtitle = isPrerelease ? 'Beta release' : notes.headline;
+// A beta carries the whole file for its base version, so its card reads as the release so far.
+const subtitle = [isPrerelease && 'Beta', notes.headline].filter(Boolean).join(' · ');
 blocks.push({
   type: SECTION,
   components: [text(subtitle ? `${title}\n${subtitle}` : title)],
@@ -98,21 +125,15 @@ blocks.push({
 if (notes.upgradeWarning) blocks.push(text(`**${notes.upgradeWarning}**`));
 blocks.push(separator(true));
 
-if (isPrerelease) {
-  // Every beta posts the whole file, so the card stays short and points at the release.
-  blocks.push(text(countsLine || 'Release notes on GitHub'));
-} else if (notes.highlights?.length) {
-  notes.highlights.forEach((highlight, index) => {
-    if (index > 0) blocks.push(separator(false));
-    blocks.push(highlightBlock(highlight));
-  });
-  blocks.push(separator(true));
-  blocks.push(text(countsLine));
-} else {
-  // Patch releases carry no highlights and a short list, so the list itself is the card.
-  const list = (notes.changes ?? []).map(changeLine).join('\n');
-  blocks.push(text(list || countsLine));
+for (const [index, highlight] of (notes.highlights ?? []).entries()) {
+  if (index > 0) blocks.push(separator(false));
+  blocks.push(highlightBlock(highlight));
 }
+if (notes.highlights?.length) blocks.push(separator(true));
+
+const used = textLength(blocks) + (mentionLine?.length ?? 0);
+const list = changeList(notes.changes ?? [], MAX_TEXT - used);
+blocks.push(text(list || 'Release notes on GitHub'));
 
 blocks.push({
   type: ACTION_ROW,
@@ -134,6 +155,10 @@ if (all.length > MAX_COMPONENTS) {
   console.error(
     `Card has ${all.length} components, over Discord's ${MAX_COMPONENTS}; trim the notes`
   );
+  process.exit(1);
+}
+if (textLength(components) > MAX_TEXT) {
+  console.error(`Card text is ${textLength(components)} characters, over Discord's ${MAX_TEXT}`);
   process.exit(1);
 }
 const longLabel = all.find(
