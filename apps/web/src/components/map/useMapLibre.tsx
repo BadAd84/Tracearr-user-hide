@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { AttributionControl, Map as MLMap, NavigationControl, Popup } from 'maplibre-gl';
 import type { LngLatLike, StyleSpecification } from 'maplibre-gl';
@@ -143,13 +143,18 @@ interface AutoFitOptions {
   suspend?: boolean;
 }
 
+/**
+ * Returns `fitMissed`: when the points changed while suspended, it fits them now and returns
+ * true, so a caller restoring its own camera on resume can skip that.
+ */
 export function useAutoFit(
   map: MLMap | null,
   points: FitPoint[],
   { maxZoom, filterKey, isLoading, suspend }: AutoFitOptions
-): void {
+): () => boolean {
   const prevKeyRef = useRef('');
   const userMovedRef = useRef(false);
+  const missedRef = useRef<FitPoint[] | null>(null);
 
   useEffect(() => {
     if (!map) return;
@@ -180,11 +185,24 @@ export function useAutoFit(
     if (key === prevKeyRef.current) return;
     const isInitial = prevKeyRef.current === '';
     prevKeyRef.current = key;
-    if (suspend && !isInitial) return;
-    if (isInitial || !userMovedRef.current) {
-      const bounds = autoFitBounds(points);
-      if (!bounds) return;
-      map.fitBounds(bounds, { padding: 50, maxZoom, duration: 600 });
+    if (suspend && !isInitial) {
+      missedRef.current = points;
+      return;
     }
+    missedRef.current = null;
+    if (isInitial || !userMovedRef.current) fitTo(map, points, maxZoom);
   }, [map, points, isLoading, maxZoom, suspend]);
+
+  return useCallback(() => {
+    const missed = missedRef.current;
+    missedRef.current = null;
+    return Boolean(map && missed && fitTo(map, missed, maxZoom));
+  }, [map, maxZoom]);
+}
+
+export function fitTo(map: MLMap, points: FitPoint[], maxZoom: number): boolean {
+  const bounds = autoFitBounds(points);
+  if (!bounds) return false;
+  map.fitBounds(bounds, { padding: 50, maxZoom, duration: 600 });
+  return true;
 }
