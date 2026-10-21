@@ -18,7 +18,14 @@ vi.mock('@protomaps/basemaps', () => ({ layers: () => [], namedFlavor: () => ({}
 import type { Point } from 'geojson';
 import type { LocationStats } from '@tracearr/shared';
 import { type Area, circleRadius } from './areas';
-import { checkBasemap, HEAT_FADE, hasMapPosition, locationsGeojson, mapMaxZoom } from './maplibre';
+import {
+  checkBasemap,
+  HEAT_FADE,
+  hasMapPosition,
+  locationsGeojson,
+  mapMaxZoom,
+  worldFillZoom,
+} from './maplibre';
 import { locationKey } from './locationKey';
 
 function location(overrides: Partial<LocationStats>): LocationStats {
@@ -200,5 +207,22 @@ describe('mapMaxZoom', () => {
 
   it('never drops below the heat to circle crossfade', () => {
     expect(mapMaxZoom(6)).toBe(HEAT_FADE.end);
+  });
+});
+
+describe('worldFillZoom', () => {
+  it('is the zoom at which one copy of the world spans the width', () => {
+    expect(worldFillZoom(512)).toBe(0);
+    expect(worldFillZoom(2048)).toBe(2);
+  });
+
+  it('lets a map narrowed by the location column fit a US to Thailand spread', () => {
+    // 1296 px of map beside the 380 px column needs zoom 1.92 to show 222 degrees with padding.
+    expect(worldFillZoom(1296)).toBeLessThan(1.92);
+  });
+
+  it('never goes below zero for a narrow or unmeasured container', () => {
+    expect(worldFillZoom(0)).toBe(0);
+    expect(worldFillZoom(300)).toBe(0);
   });
 });

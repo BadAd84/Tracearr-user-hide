@@ -43,6 +43,11 @@ export function mapMaxZoom(archiveZoom = archiveMaxZoom): number {
   return archiveZoom === null ? 14 : Math.max(HEAT_FADE.end, archiveZoom + MAX_OVERZOOM);
 }
 
+// The world is 512 px wide at zoom 0, so below this zoom the map would show it more than once.
+export function worldFillZoom(width: number): number {
+  return width > 512 ? Math.log2(width / 512) : 0;
+}
+
 let webglSupport: boolean | null = null;
 
 // maplibre v6 needs webgl2 and fires its GPU error inside the Map constructor,

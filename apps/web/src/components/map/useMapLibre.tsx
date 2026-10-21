@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { recordClientError } from '@/lib/clientErrors';
 import { useTheme } from '@/components/theme-provider';
 import { autoFitBounds, type FitPoint } from './autoFitBounds';
-import { checkBasemap, isWebglSupported, mapMaxZoom } from './maplibre';
+import { checkBasemap, isWebglSupported, mapMaxZoom, worldFillZoom } from './maplibre';
 
 export function useResolvedDark(): boolean {
   const { theme } = useTheme();
@@ -41,19 +41,14 @@ interface UseMapOptions {
   navControl?: boolean;
   center?: LngLatLike;
   zoom?: number;
+  /** Omitted: the zoom at which one copy of the world fills the map's width, kept current on resize. */
   minZoom?: number;
 }
 
 export function useMapLibre(
   containerRef: RefObject<HTMLDivElement | null>,
   style: StyleSpecification | null,
-  {
-    interactive = true,
-    navControl = true,
-    center = [0, 20],
-    zoom = 2,
-    minZoom = 2,
-  }: UseMapOptions = {}
+  { interactive = true, navControl = true, center = [0, 20], zoom = 2, minZoom }: UseMapOptions = {}
 ): MLMap | null {
   const [map, setMap] = useState<MLMap | null>(null);
   const styleRef = useRef(style);
@@ -62,12 +57,13 @@ export function useMapLibre(
 
   useEffect(() => {
     if (!containerRef.current || !styleRef.current || !isWebglSupported()) return;
+    const container = containerRef.current;
     const m = new MLMap({
-      container: containerRef.current,
+      container,
       style: styleRef.current,
       center,
       zoom,
-      minZoom,
+      minZoom: minZoom ?? worldFillZoom(container.clientWidth),
       maxZoom: mapMaxZoom(),
       interactive,
       attributionControl: false,
@@ -76,6 +72,9 @@ export function useMapLibre(
     m.addControl(new AttributionControl({ compact: !interactive }));
     if (interactive && navControl) {
       m.addControl(new NavigationControl({ showCompass: false }), 'bottom-right');
+    }
+    if (minZoom === undefined) {
+      m.on('resize', () => m.setMinZoom(worldFillZoom(container.clientWidth)));
     }
     setMap(m);
     return () => {
