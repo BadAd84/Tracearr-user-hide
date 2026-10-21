@@ -29,7 +29,7 @@
     },
     {
       "type": "improved",
-      "text": "Gotify and ntfy notification priority follows the event severity"
+      "text": "Gotify and ntfy priority and the Apprise type follow the event severity unless an automation sets one"
     },
     {
       "type": "improved",
@@ -70,8 +70,32 @@
       "text": "the map shows every location instead of the 500 busiest, and its totals count all of them"
     },
     {
+      "type": "fix",
+      "text": "a custom date range on Stats, Map, History and user pages includes the whole last day in your time zone"
+    },
+    {
+      "type": "improved",
+      "text": "session writes and maintenance walks no longer scan compressed history, which was slow on small hosts"
+    },
+    {
+      "type": "improved",
+      "text": "maintenance walks pause between batches so polling and the UI stay responsive on a single core"
+    },
+    {
+      "type": "fix",
+      "text": "a session left open through downtime is closed at the time it was last seen, however old it is"
+    },
+    {
+      "type": "fix",
+      "text": "merging accounts refreshes the daily aggregates so the merged person's older history stays in stats"
+    },
+    {
       "type": "note",
       "text": "without the 0.6.0 SSE plugin, downloads are picked up every 30 seconds instead of immediately"
+    },
+    {
+      "type": "note",
+      "text": "Plex downloads come from its websocket, so one made while Tracearr is disconnected from Plex is not recorded"
     }
   ]
 }
