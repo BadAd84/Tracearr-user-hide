@@ -14,6 +14,7 @@ import { and, between, eq } from 'drizzle-orm';
 import { db } from '../../db/client.js';
 import { sessions } from '../../db/schema.js';
 import { uncapDecompressionForTx } from '../../db/timescale.js';
+import { resolveImportedPlays } from '../library/importedPlayIdentity.js';
 import { normalizeClient, normalizePlatformName } from '../../utils/platformNormalizer.js';
 import { scrubStringFields } from '../../utils/sanitizeText.js';
 
@@ -97,6 +98,25 @@ function normalizeSessionFields(session: NewSession): NewSession {
 }
 
 /**
+ * Imported plays whose rating key found no library item still get a media identity, the way
+ * a live play does at insert: the rows with none are resolved by title, year and numbers.
+ */
+async function stampImportedIdentity(rows: NewSession[]): Promise<void> {
+  const pending = rows.filter(
+    (row) =>
+      row.mediaId == null &&
+      row.externalSessionId != null &&
+      (row.mediaType === 'movie' || row.mediaType === 'episode')
+  );
+  if (pending.length === 0) return;
+  const { identities } = await resolveImportedPlays(pending);
+  for (const [row, identity] of identities) {
+    row.mediaId = identity.mediaId;
+    row.showMediaId = identity.showMediaId;
+  }
+}
+
+/**
  * Insert sessions in chunks to avoid Drizzle ORM stack overflow
  *
  * Automatically normalizes device/platform fields before insert.
@@ -117,6 +137,7 @@ export async function flushInsertBatch(
   const normalizedSessions = sessionsToInsert.map((s) =>
     scrubStringFields(normalizeSessionFields(s))
   );
+  await stampImportedIdentity(normalizedSessions);
 
   for (let i = 0; i < normalizedSessions.length; i += chunkSize) {
     const chunk = normalizedSessions.slice(i, i + chunkSize);

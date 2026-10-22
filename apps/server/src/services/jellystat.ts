@@ -46,6 +46,7 @@ import {
   enqueueServerLocationSyncIfBehind,
 } from '../jobs/maintenanceQueue.js';
 import { batchGetLibraryItemIdentity, type SessionIdentity } from '../jobs/poller/database.js';
+import { importIdentityByKey } from './import/libraryKeyMatch.js';
 import { sanitizeCodec } from '../utils/codecNormalizer.js';
 import { extractIpFromEndpoint } from '../utils/parsing.js';
 import { normalizeClient } from '../utils/platformNormalizer.js';
@@ -493,6 +494,13 @@ export function transformActivityToSession(
   const bitrate = transcodingInfoFull?.Bitrate
     ? Math.floor(transcodingInfoFull.Bitrate / 1000)
     : (streamDetails.sourceVideoDetails?.bitrate ?? null);
+  // The type is evidence only when the source stated it; the SeriesName and stream
+  // heuristics above are guesses that must not refuse a key the library still holds.
+  identity = importIdentityByKey(identity, {
+    mediaType: enrichment?.itemType ? mediaType : 'unknown',
+    title: activity.NowPlayingItemName,
+    year: enrichment?.year ?? null,
+  });
 
   return {
     serverId,

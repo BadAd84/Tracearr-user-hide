@@ -30,6 +30,7 @@ import {
 import { getGeoIPSettings } from '../../routes/settings.js';
 import { isMaintenance } from '../../serverState.js';
 import { isLeader } from '../../services/leaderLease.js';
+import { requestSyncForUnknownKeys } from '../../services/libraryEventSync.js';
 import { isLiveRow } from '../../services/liveServers.js';
 import type { CacheService, PubSubService } from '../../services/cache.js';
 import { geoipService } from '../../services/geoip.js';
@@ -993,6 +994,19 @@ async function processServerSessions(
     for (const p of processedSessions) {
       p.identity = libraryItemIdentityMap.get(p.ratingKey) ?? null;
     }
+    // Only movies and episodes: live TV keys change per channel, and photos and extras are
+    // never library items, so a sync could not bring them in.
+    requestSyncForUnknownKeys(
+      { id: server.id, name: server.name },
+      processedSessions
+        .filter(
+          (p) =>
+            (p.mediaType === 'movie' || p.mediaType === 'episode') &&
+            p.ratingKey &&
+            !libraryItemIdentityMap.has(p.ratingKey)
+        )
+        .map((p) => p.ratingKey)
+    );
 
     // OPTIMIZATION: Batch load sibling server_user ids per identity for cross-server
     // rule aggregation on merged users. One query per poll tick covers every server

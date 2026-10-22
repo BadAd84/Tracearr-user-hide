@@ -17,6 +17,30 @@
     {
       "type": "fix",
       "text": "Telegram alerts held back by its rate limit now wait it out instead of being dropped after three quick retries"
+    },
+    {
+      "type": "improved",
+      "text": "Storage ROI and every number on the Watch tab now follow the date range picker"
+    },
+    {
+      "type": "fix",
+      "text": "ROI and Watch counts now include plays of titles that were later re-added or merged"
+    },
+    {
+      "type": "fix",
+      "text": "Most Watched counts the same plays as ROI, the Watch stats and a title page, by media identity"
+    },
+    {
+      "type": "improved",
+      "text": "Imported play history counts on the Library tabs, including titles no longer in the library"
+    },
+    {
+      "type": "note",
+      "text": "Imported plays of a title with the same name and year as a library title count as that title"
+    },
+    {
+      "type": "note",
+      "text": "Most Watched counts each play of two minutes or more, a resumed watch once, like the title pages, not runtime watched"
     }
   ]
 }

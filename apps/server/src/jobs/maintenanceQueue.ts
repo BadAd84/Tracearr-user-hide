@@ -68,7 +68,10 @@ import {
   type AggregateRefreshProgress,
   type FailedRefreshBatch,
 } from '../db/timescale.js';
-import { runSessionIdentityBackfillWalk } from './sessionIdentityBackfill.js';
+import {
+  IDENTITY_PASSES_VERSION,
+  runSessionIdentityBackfillWalk,
+} from './sessionIdentityBackfill.js';
 import { runImportDuplicateCleanupWalk } from './importDuplicateCleanup.js';
 import {
   importedHistoryLinkDeps,
@@ -1254,6 +1257,7 @@ async function processBackfillSessionIdentityJob(
     throw error;
   }
   await setSetting('identityBackfillAutoAttempts', 0);
+  await setSetting('identityPassesVersion', IDENTITY_PASSES_VERSION);
   return result;
 }
 

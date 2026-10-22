@@ -83,7 +83,7 @@ function getAggregateDefinitions(): AggregateDefinition[] {
 
   return [
     {
-      // Used by: /stats/engagement, /library/completion, /library/patterns
+      // Used by: /stats/engagement, /stats/me, /library/top-movies, /library/top-shows
       name: 'daily_content_engagement',
       sql: `
         CREATE MATERIALIZED VIEW IF NOT EXISTS daily_content_engagement
