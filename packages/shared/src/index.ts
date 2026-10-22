@@ -23,6 +23,9 @@ export type {
   SetupStatus,
   UserLocation,
   UserDevice,
+  MediaDownloadRow,
+  MediaDownloadSource,
+  DownloadsStats,
   UserMergeResult,
   ServerUserSplitResult,
   MergeSuggestionIdentity,
@@ -65,8 +68,11 @@ export type {
   PlayStats,
   UserStats,
   LocationStats,
+  LocationUserInfo,
   LocationStatsSummary,
+  LocationFilterOptions,
   LocationStatsResponse,
+  LocationPeopleResponse,
   LibraryStats,
   DayOfWeekStats,
   HourOfDayStats,
@@ -557,6 +563,7 @@ export {
   statPeriodSchema,
   dateValidationRefinements,
   statsQuerySchema,
+  downloadsListQuerySchema,
   PLAYS_MEDIA_GROUPS,
   playsBreakdownQuerySchema,
   playsQuerySchema,
@@ -565,6 +572,7 @@ export {
   peopleQuerySchema,
   userRangeStatsQuerySchema,
   locationStatsQuerySchema,
+  locationPeopleQuerySchema,
   // Settings
   updateSettingsSchema,
   // Tailscale
@@ -778,6 +786,7 @@ export type {
   PlaysMediaGroup,
   PeopleRank,
   LocationStatsQueryInput,
+  LocationPeopleQueryInput,
   UpdateSettingsInput,
   TautulliImportInput,
   // Jellystat types
@@ -909,6 +918,9 @@ export {
 
 // Session constants
 export { MEDIA_TYPES, DEFAULT_STREAM_DETAILS } from './types.js';
+
+// Map constants
+export { LOCATION_LIST_PEOPLE } from './types.js';
 
 // Backup constants
 export { RESTORE_PHASES } from './types.js';

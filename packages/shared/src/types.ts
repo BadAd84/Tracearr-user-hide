@@ -769,23 +769,32 @@ export interface UserStats {
 }
 
 export interface LocationUserInfo {
-  id: string;
+  id: string; // Representative server_user id
   username: string;
+  identityName: string | null;
   thumbUrl: string | null;
+  serverId: string; // The representative account's server, which owns thumbUrl
+  serverUserIds: string[]; // Every account of the identity within the caller's servers
+  count: number; // Plays at this location
 }
+
+/** The people each location of the /stats/locations list carries; the list draws this many avatars. */
+export const LOCATION_LIST_PEOPLE = 3;
 
 export interface LocationStats {
   city: string | null;
   region: string | null; // State/province
   country: string | null;
   isLocal: boolean;
-  lat: number;
-  lon: number;
+  lat: number | null; // Null when no session in the group has coordinates
+  lon: number | null;
   count: number;
   lastActivity?: Date;
   firstActivity?: Date;
-  // Contextual data - populated based on filters
-  users?: LocationUserInfo[]; // Top users at this location (when not filtering by userId)
+  // Count DESC then name: the first LOCATION_LIST_PEOPLE in the list, every person from
+  // /stats/locations/people. One entry under a user filter.
+  users?: LocationUserInfo[];
+  peopleCount: number;
   deviceCount?: number; // Unique devices from this location
   // Per-server breakdown ordered by count DESC; servers[0] is the dominant server
   servers?: { serverId: string; count: number }[];
@@ -804,7 +813,6 @@ export interface LocationFilterOptions {
     identityName: string | null;
     serverUserIds: string[];
   }[];
-  servers: { id: string; name: string }[];
   mediaTypes: MediaType[];
 }
 
@@ -812,6 +820,10 @@ export interface LocationStatsResponse {
   data: LocationStats[];
   summary: LocationStatsSummary;
   availableFilters: LocationFilterOptions;
+}
+
+export interface LocationPeopleResponse {
+  data: LocationStats[];
 }
 
 export interface LibraryStats {
@@ -1416,7 +1428,7 @@ export interface DeviceLocation {
   city: string | null;
   region: string | null;
   country: string | null;
-  isLocal: boolean;
+  isLocal: boolean | null;
   sessionCount: number;
   lastSeenAt: Date;
 }
@@ -1429,8 +1441,65 @@ export interface UserDevice {
   device: string | null;
   platform: string | null;
   sessionCount: number;
+  downloadCount: number;
   lastSeenAt: Date;
   locations: DeviceLocation[]; // Where this device has been used from
+}
+
+export type MediaDownloadSource = 'activity_log' | 'emby_sync' | 'plex' | 'jellyfin_transcode';
+
+export interface MediaDownloadRow {
+  id: string;
+  serverId: string;
+  serverName: string;
+  serverType: ServerType;
+  serverUserId: string | null;
+  username: string | null;
+  identityName: string | null;
+  thumbUrl: string | null;
+  libraryItemId: string | null;
+  mediaId: string | null;
+  title: string;
+  mediaType: string | null;
+  thumbPath: string | null;
+  app: string | null;
+  device: string | null;
+  source: MediaDownloadSource;
+  requestCount: number;
+  firstSeenAt: string;
+  lastSeenAt: string;
+  videoResolution: string | null;
+  videoCodec: string | null;
+  videoDynamicRange: string | null;
+  container: string | null;
+  fileSizeBytes: number | null;
+  ipAddress: string | null;
+  isLocal: boolean | null;
+  geoCity: string | null;
+  geoRegion: string | null;
+  geoCountry: string | null;
+  deliveredBytes: number | null;
+  deliveredVideoCodec: string | null;
+  deliveredAudioCodec: string | null;
+  deliveredContainer: string | null;
+  deliveredBitrateKbps: number | null;
+  deliveredResolution: string | null;
+  /** A converted pull's last reported progress */
+  completionPercent: number | null;
+  deviceId: string | null;
+  playerName: string | null;
+  product: string | null;
+  platform: string | null;
+}
+
+export interface DownloadsStats {
+  total: number;
+  people: number;
+  totalBytes: number;
+  topTitle: { title: string; count: number; libraryItemId: string | null } | null;
+  rows: MediaDownloadRow[];
+  page: number;
+  pageSize: number;
 }
 
 // API response types
@@ -1797,7 +1866,9 @@ export interface PlexActivityNotification {
     subtitle: string;
     progress: number;
     Context?: {
-      key: string;
+      deviceID: string;
+      metadataID: string;
+      partID: string;
     };
   };
 }
@@ -3117,6 +3188,7 @@ export interface MediaDetailResponse {
   posterUrl: string | null;
   posterVersion: string | null;
   dominantColor: string | null;
+  downloads: MediaDownloadRow[];
 }
 
 export interface MediaChildEntry {
