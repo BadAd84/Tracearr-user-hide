@@ -1,0 +1,22 @@
+{
+  "version": "3.0.1",
+  "date": "2026-10-22",
+  "changes": [
+    {
+      "type": "fix",
+      "text": "Telegram and other notifications no longer fail with \"fetch failed\" on slow internet that takes over 250 ms to connect"
+    },
+    {
+      "type": "improved",
+      "text": "a destination that can't be reached now names the host and each address tried instead of \"fetch failed\""
+    },
+    {
+      "type": "improved",
+      "text": "Telegram errors show Telegram's own reason, point at a bad bot token, and name a supergroup's new chat ID"
+    },
+    {
+      "type": "fix",
+      "text": "Telegram alerts held back by its rate limit now wait it out instead of being dropped after three quick retries"
+    }
+  ]
+}
