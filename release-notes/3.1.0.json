@@ -31,6 +31,10 @@
       "text": "library syncs stop pausing after pages a slow server already took long to return, and fetch Plex genres in parallel"
     },
     {
+      "type": "improved",
+      "text": "links to Tracearr show the logo banner in chat previews, and search engines are asked not to index it"
+    },
+    {
       "type": "fix",
       "text": "Telegram and other notifications no longer fail with \"fetch failed\" on slow internet that takes over 250 ms to connect"
     },
