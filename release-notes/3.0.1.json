@@ -41,6 +41,16 @@
     {
       "type": "note",
       "text": "Most Watched counts each play of two minutes or more, a resumed watch once, like the title pages, not runtime watched"
+    },
+    {
+      "type": "fix",
+      "text": "Helm chart StatefulSets no longer stay OutOfSync in Argo CD over their volume claim templates",
+      "refs": ["#1360"]
+    },
+    {
+      "type": "note",
+      "text": "Argo CD renders the Helm chart without cluster access, so set secrets.existingSecret or both secrets there",
+      "docs": "https://docs.tracearr.com/getting-started/installation/kubernetes"
     }
   ]
 }
