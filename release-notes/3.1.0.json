@@ -1,6 +1,17 @@
 {
   "version": "3.1.0",
   "date": "2026-10-22",
+  "headline": "Faster on large libraries and long play histories",
+  "highlights": [
+    {
+      "title": "Faster as history grows",
+      "body": "History, user pages and Stale Content read only the time they show instead of every session, so they stay quick on servers with years of plays. Library syncs spend less time waiting on slow servers, and large libraries no longer run the database out of memory during a sync."
+    },
+    {
+      "title": "Dates follow your region",
+      "body": "Dates and times use your region's format, and Settings → General → Locale sets the date format and the first day of the week."
+    }
+  ],
   "changes": [
     {
       "type": "new",
