@@ -3,6 +3,11 @@
   "date": "2026-10-22",
   "changes": [
     {
+      "type": "new",
+      "text": "dates follow your region, and Settings → General → Locale sets the date format and first day of the week",
+      "refs": ["#661", "#786"]
+    },
+    {
       "type": "improved",
       "text": "notifications that can't reach a destination name the host and address tried instead of \"fetch failed\""
     },
