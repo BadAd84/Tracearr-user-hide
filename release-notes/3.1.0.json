@@ -1,6 +1,6 @@
 {
   "version": "3.1.0",
-  "date": "2026-10-22",
+  "date": "2026-10-23",
   "headline": "Faster on large libraries and long play histories",
   "highlights": [
     {
@@ -66,6 +66,10 @@
       "type": "fix",
       "text": "Helm chart StatefulSets no longer stay OutOfSync in Argo CD over their volume claim templates",
       "refs": ["#1360"]
+    },
+    {
+      "type": "fix",
+      "text": "the Helm network policy lets Tracearr reach an external Redis on a port other than 6379"
     },
     {
       "type": "fix",
