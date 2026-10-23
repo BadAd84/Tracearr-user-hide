@@ -423,10 +423,14 @@ export class SyncInterruptedError extends Error {}
 export type OnProgressCallback = (progress: LibrarySyncProgress) => void;
 
 /**
- * Helper to delay between batches (rate limiting)
+ * Rate limit between pages. The page's own fetch and write count toward the
+ * pause, so a server slower than the pause is not made to wait twice.
  */
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+function paceAfter(pageStartedAt: number, pauseMs: number): Promise<void> {
+  const remainingMs = pauseMs - (Date.now() - pageStartedAt);
+  return remainingMs > 0
+    ? new Promise((resolve) => setTimeout(resolve, remainingMs))
+    : Promise.resolve();
 }
 
 /**
@@ -964,6 +968,7 @@ export class LibrarySyncService {
         let totalSkippedEmpty = 0;
 
         for (let i = 0; i < combinedItems.length; i += BATCH_SIZE) {
+          const pageStartedAt = Date.now();
           const batch = combinedItems.slice(i, i + BATCH_SIZE);
           allItems.push(...batch);
           const { skippedEmpty } = await this.upsertItems(
@@ -976,7 +981,7 @@ export class LibrarySyncService {
           totalSkippedEmpty += skippedEmpty;
 
           if (i + BATCH_SIZE < combinedItems.length) {
-            await delay(BATCH_DELAY_MS_INCREMENTAL);
+            await paceAfter(pageStartedAt, BATCH_DELAY_MS_INCREMENTAL);
           }
         }
 
@@ -1079,6 +1084,7 @@ export class LibrarySyncService {
     let processedItems = 0;
 
     while (offset < totalCount) {
+      const pageStartedAt = Date.now();
       const { items, rawCount } = await client.getLibraryItems(libraryId, {
         offset,
         limit: BATCH_SIZE,
@@ -1125,9 +1131,8 @@ export class LibrarySyncService {
         });
       }
 
-      // Rate limit between batches
       if (offset < totalCount) {
-        await delay(BATCH_DELAY_MS);
+        await paceAfter(pageStartedAt, BATCH_DELAY_MS);
       }
     }
 
@@ -1162,6 +1167,7 @@ export class LibrarySyncService {
       let listingProcessed = 0;
 
       while (listingOffset < listingCount) {
+        const pageStartedAt = Date.now();
         const { items: pageItems, rawCount } = await fetchPage({
           offset: listingOffset,
           limit: BATCH_SIZE,
@@ -1203,7 +1209,7 @@ export class LibrarySyncService {
         }
 
         if (listingOffset < listingCount) {
-          await delay(BATCH_DELAY_MS);
+          await paceAfter(pageStartedAt, BATCH_DELAY_MS);
         }
       }
 

@@ -63,7 +63,7 @@ import {
   flushInsertBatch,
   type MediaEnrichment,
   queryExistingByExternalIds,
-  sessionRowById,
+  storedSessionRowById,
   type ExistingSession,
   type TimeBounds,
 } from './import/index.js';
@@ -1029,7 +1029,7 @@ export async function importJellystatBackup(
           // this transaction.
           await uncapDecompressionForTx(tx);
           for (const update of updateBatch) {
-            await tx.update(sessions).set(update.data).where(sessionRowById(update));
+            await tx.update(sessions).set(update.data).where(storedSessionRowById(update));
           }
         });
       }

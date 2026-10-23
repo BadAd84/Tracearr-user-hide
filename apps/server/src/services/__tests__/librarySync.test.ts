@@ -1363,6 +1363,67 @@ describe('LibrarySyncService', () => {
       expect(results[0]!.itemsAdded).toBe(1);
     });
 
+    describe('page pacing', () => {
+      async function runTwoPageScan(pageMs: number) {
+        const service = new LibrarySyncService();
+        const mockServer = createMockServer();
+        let selectCallCount = 0;
+        vi.mocked(db.select).mockImplementation(() => {
+          selectCallCount++;
+          const first = () => Promise.resolve(selectCallCount === 1 ? [mockServer] : []);
+          const chain = {
+            from: vi.fn().mockReturnThis(),
+            innerJoin: vi.fn().mockReturnThis(),
+            where: vi
+              .fn()
+              .mockImplementation(() =>
+                Object.assign(Promise.resolve([]), { limit: vi.fn().mockImplementation(first) })
+              ),
+            limit: vi.fn().mockImplementation(first),
+            returning: vi.fn().mockResolvedValue([]),
+          };
+          return chain as never;
+        });
+        mockInsertChain([{ id: randomUUID() }]);
+        mockDeleteChain();
+        mockTransaction();
+        const client = mockMediaServerClient({
+          libraries: [createMockLibrary({ id: '1', name: 'Movies' })],
+          totalCount: 300,
+        });
+        client.getLibraryItems = vi.fn().mockImplementation(async (_id: string, opts?: unknown) => {
+          const { offset } = (opts ?? {}) as { offset?: number };
+          if (offset === undefined) return { items: [], totalCount: 300 };
+          if (pageMs > 0) await new Promise((resolve) => setTimeout(resolve, pageMs));
+          return {
+            items: [createMockLibraryItem({ ratingKey: `item-${offset}` })],
+            totalCount: 300,
+            rawCount: offset === 0 ? 200 : 100,
+          };
+        });
+
+        const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout');
+        await service.syncServer(mockServer.id);
+        expect(client.getLibraryItems).toHaveBeenCalledTimes(3);
+        return setTimeoutSpy.mock.calls
+          .map(([, ms]) => ms)
+          .filter((ms): ms is number => typeof ms === 'number' && ms > 0 && ms <= 150);
+      }
+
+      it('waits the full pause after a page the server answered instantly', async () => {
+        const pauses = await runTwoPageScan(0);
+
+        expect(pauses).toHaveLength(1);
+        expect(pauses[0]).toBeGreaterThan(0);
+      });
+
+      it('adds no pause after a page that took longer than the pause', async () => {
+        const pauses = await runTwoPageScan(200);
+
+        expect(pauses).toEqual([]);
+      });
+    });
+
     it('should skip photo libraries during sync', async () => {
       const service = new LibrarySyncService();
       const mockServer = createMockServer();

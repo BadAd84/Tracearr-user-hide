@@ -41,7 +41,7 @@ import {
   getServerTrackingStart,
   queryExistingByExternalIds,
   queryExistingByTimeKeys,
-  sessionRowById,
+  storedSessionRowById,
   type SessionUpdate,
   type TimeBounds,
 } from './import/index.js';
@@ -1855,7 +1855,7 @@ export class TautulliService {
             // to this transaction.
             await uncapDecompressionForTx(tx);
             for (const update of pendingUpdates) {
-              await tx.update(sessions).set(update.data).where(sessionRowById(update));
+              await tx.update(sessions).set(update.data).where(storedSessionRowById(update));
             }
           });
           for (const update of pendingUpdates) {
