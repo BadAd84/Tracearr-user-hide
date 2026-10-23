@@ -29,6 +29,10 @@
     },
     {
       "type": "improved",
+      "text": "user pages and their termination history load faster on servers with years of history"
+    },
+    {
+      "type": "improved",
       "text": "history and user session pages read only the days on screen instead of every session"
     },
     {
