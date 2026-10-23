@@ -48,6 +48,10 @@
       "refs": ["#1360"]
     },
     {
+      "type": "fix",
+      "text": "library syncs on large libraries no longer run the database out of memory while checking older history"
+    },
+    {
       "type": "note",
       "text": "imported plays with the same name and year as a library title count as that title"
     },
