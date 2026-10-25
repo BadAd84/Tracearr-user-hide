@@ -1,0 +1,39 @@
+# Fork: PR checks for fixer-bot branches. Runs the full verification with the
+# private fork tests, so a dropped hook line fails here before anything merges.
+name: Fork PR checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: ['agent/**']
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.FORK_CI_TOKEN }}
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Fetch the private fork-test suite
+        run: |
+          git clone --depth 1 "https://tracearr-ci:${{ secrets.FORK_CI_TOKEN }}@gitea.ots-int.net/ots/tracearr-fork-private.git" /tmp/private
+          mkdir -p apps/server/src/fork/__tests__
+          cp /tmp/private/fork-tests/*.ts apps/server/src/fork/__tests__/
+
+      - name: Verify
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm lint
+          pnpm typecheck
+          pnpm --filter @tracearr/server exec vitest run
+          pnpm --filter @tracearr/web test
