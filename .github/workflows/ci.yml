@@ -12,9 +12,10 @@ concurrency:
 
 env:
   HUSKY: 0
-
 jobs:
+  # fork: hide users - CI runs on GitHub; the Gitea runner only does the sync
   lint-and-typecheck:
+    if: github.repository == 'BadAd84/Tracearr-user-hide'
     name: Lint & Typecheck
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -59,6 +60,7 @@ jobs:
         run: pnpm --filter @tracearr/translations check
 
   test:
+    if: github.repository == 'BadAd84/Tracearr-user-hide'
     name: Test (${{ matrix.group }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -106,6 +108,7 @@ jobs:
 
   # Web (frontend) unit tests - includes the auth client/hook suites
   test-web:
+    if: github.repository == 'BadAd84/Tracearr-user-hide'
     name: Test (web ${{ matrix.shard }}/2)
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -152,6 +155,7 @@ jobs:
 
   # Integration tests require real database - run separately from unit tests
   test-integration:
+    if: github.repository == 'BadAd84/Tracearr-user-hide'
     name: Test (integration, ${{ matrix.db.label }}, ${{ matrix.part.name }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -245,6 +249,7 @@ jobs:
   # Separate job for coverage reporting (runs all tests together for accurate coverage)
   # Runs in parallel with test matrix - if tests pass there, coverage will too
   test-coverage:
+    if: github.repository == 'BadAd84/Tracearr-user-hide'
     name: Test Coverage
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -306,6 +311,7 @@ jobs:
 
   # E2E tests run Playwright against real servers with a real database
   test-e2e:
+    if: github.repository == 'BadAd84/Tracearr-user-hide'
     name: Test (E2E ${{ matrix.shard }}/3)
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -423,6 +429,7 @@ jobs:
           if-no-files-found: warn
 
   build:
+    if: github.repository == 'BadAd84/Tracearr-user-hide'
     name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 15
