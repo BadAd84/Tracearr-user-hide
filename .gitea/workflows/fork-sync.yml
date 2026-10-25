@@ -1,0 +1,111 @@
+# Fork: merge each new upstream stable release. Runs on Gitea only (this file
+# lives in .gitea/workflows, which GitHub ignores). On a clean merge it pushes
+# main and the tag, which triggers GitHub's image build via the push mirror.
+# On a conflict it pushes a conflict-capture branch, labels an issue
+# agent-fix, and the fixer bot resolves it.
+name: Fork sync
+
+on:
+  schedule:
+    - cron: '17 */2 * * *'
+  workflow_dispatch:
+
+env:
+  UPSTREAM: https://github.com/connorgallopo/Tracearr.git
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.FORK_CI_TOKEN }}
+
+      - name: Merge latest upstream release
+        id: merge
+        run: |
+          git config user.name 'tracearr-fork-bot'
+          git config user.email 'tracearr-fork-bot@ots-int.net'
+          tag=$(git ls-remote --tags --refs "$UPSTREAM" 'v*' | sed 's#.*refs/tags/##' |
+            grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
+          git fetch --no-tags "$UPSTREAM" "+refs/tags/$tag:refs/upstream/$tag"
+          if git merge-base --is-ancestor "refs/upstream/$tag" HEAD; then
+            echo "Already on upstream $tag."
+            exit 0
+          fi
+          if git merge --no-edit -m "Merge upstream $tag" "refs/upstream/$tag"; then
+            echo "merged=true" >> "$GITHUB_OUTPUT"
+          else
+            git diff --name-only --diff-filter=U | tee /tmp/conflicts.txt
+            branch="agent/sync-${tag}"
+            {
+              echo "branch=$branch"
+              echo "tag=$tag"
+              echo "conflicted=true"
+            } >> "$GITHUB_OUTPUT"
+            git add -A
+            git commit -m "WIP: merge upstream $tag (conflicts)"
+            git push origin "HEAD:refs/heads/$branch"
+            git reset -q --hard HEAD@{1}
+          fi
+
+      - uses: pnpm/action-setup@v4
+        if: steps.merge.outputs.merged == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.merge.outputs.merged == 'true'
+        with:
+          node-version: 24
+
+      - name: Fetch the private fork-test suite
+        if: steps.merge.outputs.merged == 'true'
+        run: |
+          git clone --depth 1 "https://tracearr-ci:${{ secrets.FORK_CI_TOKEN }}@gitea.ots-int.net/ots/tracearr-fork-private.git" /tmp/private
+          mkdir -p apps/server/src/fork/__tests__
+          cp /tmp/private/fork-tests/*.ts apps/server/src/fork/__tests__/
+
+      - name: Verify and push
+        if: steps.merge.outputs.merged == 'true'
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm lint
+          pnpm typecheck
+          pnpm --filter @tracearr/server exec vitest run
+          pnpm --filter @tracearr/web test
+          git push origin "HEAD:main" "refs/tags/${{ steps.merge.outputs.tag }}" || \
+            git push origin "HEAD:main"
+
+      - name: Open a fixer issue on conflict
+        if: steps.merge.outputs.conflicted == 'true'
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request
+          base = os.environ['GITHUB_SERVER_URL'].rstrip('/') + '/api/v1'
+          repo = os.environ['GITHUB_REPOSITORY']
+          tag = '${{ steps.merge.outputs.tag }}'
+          branch = '${{ steps.merge.outputs.branch }}'
+          conflicts = open('/tmp/conflicts.txt').read().strip() or '(git reported none)'
+          body = (
+              'The merge of upstream ' + tag + ' hit conflicts in:\n\n```\n'
+              + conflicts + '\n```\n\n'
+              + 'The conflicted state is committed on `' + branch + '`.\n'
+              + 'Resolve it with the standing hide-users brief, run the checks, push, and open a PR.'
+          )
+          req = urllib.request.Request(
+              base + '/repos/' + repo + '/issues',
+              data=json.dumps({
+                  'title': 'Resolve upstream ' + tag + ' merge conflicts',
+                  'body': body,
+                  'labels': ['agent-fix'],
+              }).encode(),
+              headers={
+                  'Authorization': 'token ' + os.environ['FORK_CI_TOKEN'],
+                  'Content-Type': 'application/json',
+              },
+          )
+          print(urllib.request.urlopen(req).read()[:200])
+          PY
+        env:
+          FORK_CI_TOKEN: ${{ secrets.FORK_CI_TOKEN }}

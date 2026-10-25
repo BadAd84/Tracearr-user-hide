@@ -1,9 +1,13 @@
 # Fork: publish ghcr.io/<owner>/tracearr-user-hide images and a matching GitHub
 # release. Tags follow upstream: :latest, :X.Y.Z, :X.Y, :X and :supervised,
-# :supervised-X.Y.Z. Run by Fork sync after it merges an upstream release, or by hand.
+# :supervised-X.Y.Z. Runs on GitHub when a release tag arrives via the Gitea
+# push mirror, or by hand. Gitea runs its own sync in .gitea/workflows.
 name: Fork image
 
 on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
   workflow_dispatch:
 
 concurrency:
@@ -12,6 +16,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.repository == 'BadAd84/Tracearr-user-hide'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
