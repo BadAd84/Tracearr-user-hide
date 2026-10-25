@@ -112,9 +112,9 @@ import type {
   DuplicateFilesResponse,
   StaleResponse,
   WatchResponse,
-  CompletionResponse,
   PatternsResponse,
   RoiResponse,
+  LibraryRoiQueryInput,
   TopMoviesResponse,
   TopShowsResponse,
   LibraryCodecsResponse,
@@ -176,11 +176,13 @@ export type {
   PlexAccount,
   PlexAccountsResponse,
 };
-import { API_BASE_PATH, getClientTimezone } from '@tracearr/shared';
+import { API_BASE_PATH } from '@tracearr/shared';
 
 import { BASE_PATH } from '@/lib/basePath';
+import { browserTimeZone } from '@/lib/dateFormat';
 export { BASE_PATH, BASE_URL, imageProxyUrl } from '@/lib/basePath';
 import { MAINTENANCE_EVENT } from '@/hooks/useMaintenanceMode';
+import type { ApiLibraryParams } from '@/hooks/useTimeRange';
 
 /** A settings write: loginMethods takes any subset of its switches, as the server's schema does. */
 export type SettingsUpdate = Omit<Partial<Settings>, 'loginMethods'> & {
@@ -443,10 +445,6 @@ export interface PlaysBreakdownOptions {
   self?: boolean;
   groupBy?: PlaysGroupBy;
 }
-
-// Re-export shared timezone helper for backwards compatibility
-// Uses Intl API which works in both browser and React Native
-export const getBrowserTimezone = getClientTimezone;
 
 // Types for Plex server selection during signup (from check-pin endpoint)
 export interface PlexServerConnection {
@@ -1207,7 +1205,7 @@ class ApiClient {
     if (serverId) params.set('serverId', serverId);
     // Always include timezone for consistent chart display
     // Use provided timezone or fall back to browser's timezone
-    params.set('timezone', timeRange?.timezone ?? getBrowserTimezone());
+    params.set('timezone', timeRange?.timezone ?? browserTimeZone());
     return params;
   }
 
@@ -1227,7 +1225,7 @@ class ApiClient {
         params.append('serverIds', id);
       }
     }
-    params.set('timezone', timeRange?.timezone ?? getBrowserTimezone());
+    params.set('timezone', timeRange?.timezone ?? browserTimeZone());
     return params;
   }
 
@@ -1240,11 +1238,11 @@ class ApiClient {
         }
       }
       // Include timezone so "today" is calculated in user's local timezone
-      params.set('timezone', getBrowserTimezone());
+      params.set('timezone', browserTimeZone());
       return this.request<DashboardStats>(`/stats/dashboard?${params.toString()}`);
     },
     me: () => {
-      const params = new URLSearchParams({ timezone: getBrowserTimezone() });
+      const params = new URLSearchParams({ timezone: browserTimeZone() });
       return this.request<MyStats>(`/stats/me?${params.toString()}`);
     },
     myTitles: (serverIds?: string[]) => {
@@ -1485,7 +1483,7 @@ class ApiClient {
         }
       }
       if (libraryId) params.set('libraryId', libraryId);
-      params.set('timezone', getBrowserTimezone());
+      params.set('timezone', browserTimeZone());
       return this.request<LibraryStatsResponse>(`/library/stats?${params.toString()}`);
     },
     growth: (
@@ -1505,7 +1503,7 @@ class ApiClient {
       params.set('period', period);
       if (startDate) params.set('startDate', startDate);
       if (endDate) params.set('endDate', endDate);
-      params.set('timezone', getBrowserTimezone());
+      params.set('timezone', browserTimeZone());
       return this.request<LibraryGrowthResponse>(`/library/growth?${params.toString()}`);
     },
     quality: (
@@ -1521,7 +1519,7 @@ class ApiClient {
       params.set('mediaType', mediaType);
       if (startDate) params.set('startDate', startDate);
       if (endDate) params.set('endDate', endDate);
-      params.set('timezone', getBrowserTimezone());
+      params.set('timezone', browserTimeZone());
       return this.request<LibraryQualityResponse>(`/library/quality?${params.toString()}`);
     },
     storage: (
@@ -1537,7 +1535,7 @@ class ApiClient {
       params.set('period', period);
       if (startDate) params.set('startDate', startDate);
       if (endDate) params.set('endDate', endDate);
-      params.set('timezone', getBrowserTimezone());
+      params.set('timezone', browserTimeZone());
       return this.request<LibraryStorageResponse>(`/library/storage?${params.toString()}`);
     },
     // Scoped variant: one request over the whole selection, so the server's
@@ -1555,7 +1553,7 @@ class ApiClient {
       params.set('period', period);
       if (startDate) params.set('startDate', startDate);
       if (endDate) params.set('endDate', endDate);
-      params.set('timezone', getBrowserTimezone());
+      params.set('timezone', browserTimeZone());
       return this.request<LibraryStorageResponse>(`/library/storage?${params.toString()}`);
     },
     duplicates: (serverIds?: string[], page: number = 1, pageSize: number = 20) => {
@@ -1603,36 +1601,28 @@ class ApiClient {
       params.set('sortOrder', sortOrder);
       return this.request<StaleResponse>(`/library/stale?${params.toString()}`);
     },
-    watch: (serverIds?: string[], libraryId?: string, page: number = 1, pageSize: number = 20) => {
-      const params = new URLSearchParams();
-      if (serverIds?.length) {
-        for (const id of serverIds) {
-          params.append('serverIds', id);
-        }
-      }
-      if (libraryId) params.set('libraryId', libraryId);
-      params.set('page', String(page));
-      params.set('pageSize', String(pageSize));
-      return this.request<WatchResponse>(`/library/watch?${params.toString()}`);
-    },
-    completion: (
-      serverId?: string,
-      libraryId?: string,
-      aggregateLevel: string = 'item',
-      page: number = 1,
-      pageSize: number = 20,
-      mediaType?: 'movie' | 'episode'
+    watch: (
+      serverIds: string[] | undefined,
+      libraryId: string | undefined,
+      range: ApiLibraryParams
     ) => {
       const params = new URLSearchParams();
-      if (serverId) params.set('serverId', serverId);
+      if (serverIds?.length) {
+        for (const id of serverIds) {
+          params.append('serverIds', id);
+        }
+      }
       if (libraryId) params.set('libraryId', libraryId);
-      params.set('aggregateLevel', aggregateLevel);
-      params.set('page', String(page));
-      params.set('pageSize', String(pageSize));
-      if (mediaType) params.set('mediaType', mediaType);
-      return this.request<CompletionResponse>(`/library/completion?${params.toString()}`);
+      params.set('period', range.period);
+      if (range.startDate) params.set('startDate', range.startDate);
+      if (range.endDate) params.set('endDate', range.endDate);
+      return this.request<WatchResponse>(`/library/watch?${params.toString()}`);
     },
-    patterns: (serverIds?: string[], libraryId?: string, periodWeeks: number = 12) => {
+    patterns: (
+      serverIds: string[] | undefined,
+      libraryId: string | undefined,
+      range: ApiLibraryParams
+    ) => {
       const params = new URLSearchParams();
       if (serverIds?.length) {
         for (const id of serverIds) {
@@ -1640,18 +1630,23 @@ class ApiClient {
         }
       }
       if (libraryId) params.set('libraryId', libraryId);
-      params.set('periodWeeks', String(periodWeeks));
-      params.set('timezone', getBrowserTimezone());
+      params.set('period', range.period);
+      if (range.startDate) params.set('startDate', range.startDate);
+      if (range.endDate) params.set('endDate', range.endDate);
+      params.set('timezone', browserTimeZone());
       return this.request<PatternsResponse>(`/library/patterns?${params.toString()}`);
     },
     roi: (
-      serverIds?: string[],
-      libraryId?: string,
+      serverIds: string[] | undefined,
+      libraryId: string | undefined,
+      period: string,
+      startDate: string | undefined,
+      endDate: string | undefined,
       page: number = 1,
       pageSize: number = 20,
-      mediaType?: 'movie' | 'show' | 'artist',
-      sortBy: 'watch_hours_per_gb' | 'value_score' | 'file_size' | 'title' = 'watch_hours_per_gb',
-      sortOrder: 'asc' | 'desc' = 'asc'
+      mediaType?: 'movie' | 'show',
+      sortBy: LibraryRoiQueryInput['sortBy'] = 'watch_hours_per_gb',
+      sortOrder: 'asc' | 'desc' = 'desc'
     ) => {
       const params = new URLSearchParams();
       if (serverIds?.length) {
@@ -1660,12 +1655,14 @@ class ApiClient {
         }
       }
       if (libraryId) params.set('libraryId', libraryId);
+      params.set('period', period);
+      if (startDate) params.set('startDate', startDate);
+      if (endDate) params.set('endDate', endDate);
       params.set('page', String(page));
       params.set('pageSize', String(pageSize));
       if (mediaType) params.set('mediaType', mediaType);
       params.set('sortBy', sortBy);
       params.set('sortOrder', sortOrder);
-      params.set('timezone', getBrowserTimezone());
       return this.request<RoiResponse>(`/library/roi?${params.toString()}`);
     },
     topMovies: (
