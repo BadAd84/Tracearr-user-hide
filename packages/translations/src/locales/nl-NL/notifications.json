@@ -160,6 +160,8 @@
       "brandingSaved": "",
       "suppressionAdded": "",
       "suppressionRemoved": "",
+      "ownerAccountLinked": "",
+      "ownerAccountUnlinked": "",
       "newsletterRetryQueued_one": "",
       "newsletterRetryQueued_other": ""
     },
@@ -169,7 +171,7 @@
       "serverSyncFailed": "Server synchroniseren mislukt",
       "serverHistoricalFailed": "",
       "settingsUpdateFailed": "Instellingen bijwerken mislukt",
-      "copyFailed": "Kopiëren naar klembord mislukt",
+      "copyManual": "",
       "acknowledgeFailed": "Overtreding bevestigen mislukt",
       "dismissFailed": "Overtreding negeren mislukt",
       "authFailed": "Authenticatie mislukt",
@@ -196,8 +198,6 @@
       "jobAlreadyRunning": "Taak wordt al uitgevoerd",
       "jobStartFailed": "Taak starten mislukt",
       "jobLoadFailed": "Onderhoudstaken laden mislukt",
-      "invalidUrl": "Ongeldige URL",
-      "plexDirectUrl": "Een plex.direct-URL is een relay-adres dat hier niet gebruikt kan worden. Gebruik een direct IP-adres of hostnaam.",
       "userMergeFailed": "Het samenvoegen van gebruikers is mislukt",
       "serverUserSplitFailed": "Splitsen van het account is mislukt",
       "mergeSuggestionDismissFailed": "",
@@ -221,7 +221,9 @@
       "newsletterSnapshotFailed": "",
       "brandingSaveFailed": "",
       "suppressionAddFailed": "",
-      "suppressionRemoveFailed": ""
+      "suppressionRemoveFailed": "",
+      "ownerAccountLinkFailed": "",
+      "ownerAccountUnlinkFailed": ""
     },
     "warning": {
       "jobFailed": {

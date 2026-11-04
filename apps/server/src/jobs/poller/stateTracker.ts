@@ -186,6 +186,7 @@ export function shouldRecordSession(
  * checkWatchCompletion(8500, 9000, 10000);      // true (both pass)
  * checkWatchCompletion(5000, 9000, 10000);      // true (progress passes)
  * checkWatchCompletion(8500, null, 10000);      // true (duration passes, no progress)
+ * checkWatchCompletion(0, 9900, 10000);         // false (position alone, nothing played)
  * checkWatchCompletion(5000, 5000, 10000);      // false (neither passes)
  * checkWatchCompletion(null, null, 10000);      // false (no data)
  */
@@ -196,7 +197,9 @@ export function checkWatchCompletion(
   threshold: number = SESSION_LIMITS.WATCH_COMPLETION_THRESHOLD
 ): boolean {
   if (!totalDurationMs) return false;
-  if (progressMs && progressMs / totalDurationMs >= threshold) return true;
+  // a client left sitting at the end of an item reports that position with no play time
+  const played = durationMs === null || durationMs >= 1000;
+  if (played && progressMs && progressMs / totalDurationMs >= threshold) return true;
   if (durationMs && durationMs / totalDurationMs >= threshold) return true;
   return false;
 }
@@ -380,6 +383,23 @@ export function shouldGroupWithPreviousSession(
 // ============================================================================
 // Playback Confirmation (Rule Evaluation Delay)
 // ============================================================================
+
+// A restart resumes where the kill left off, a few seconds behind where a leftover would be.
+const KILL_RESTART_TOLERANCE_MS = 5_000;
+
+/**
+ * Whether a Jellyfin/Emby report after a kill is still the killed playback. The server keeps
+ * advancing a playback whose client never reported the stop, one second per second unless it was
+ * paused, so a report at or past that point is the leftover; one behind it started again.
+ */
+export function isLeftoverOfKill(
+  kill: { killedAt: number; positionMs: number; paused: boolean },
+  progressMs: number,
+  now: number
+): boolean {
+  const expectedMs = kill.positionMs + (kill.paused ? 0 : now - kill.killedAt);
+  return progressMs >= expectedMs - KILL_RESTART_TOLERANCE_MS;
+}
 
 /**
  * Check if playback has been confirmed for rule evaluation.

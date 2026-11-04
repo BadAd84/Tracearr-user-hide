@@ -160,6 +160,8 @@
       "brandingSaved": "",
       "suppressionAdded": "",
       "suppressionRemoved": "",
+      "ownerAccountLinked": "",
+      "ownerAccountUnlinked": "",
       "newsletterRetryQueued_one": "",
       "newsletterRetryQueued_other": ""
     },
@@ -169,7 +171,7 @@
       "serverSyncFailed": "Server-Synchronisation fehlgeschlagen",
       "serverHistoricalFailed": "",
       "settingsUpdateFailed": "Einstellungen aktualisieren fehlgeschlagen",
-      "copyFailed": "Kopieren in die Zwischenablage fehlgeschlagen",
+      "copyManual": "",
       "acknowledgeFailed": "Verstoß bestätigen fehlgeschlagen",
       "dismissFailed": "Verstoß verwerfen fehlgeschlagen",
       "authFailed": "Authentifizierung fehlgeschlagen",
@@ -196,8 +198,6 @@
       "jobAlreadyRunning": "Aufgabe läuft bereits",
       "jobStartFailed": "Aufgabe starten fehlgeschlagen",
       "jobLoadFailed": "Wartungsaufgaben laden fehlgeschlagen",
-      "invalidUrl": "Ungültige URL",
-      "plexDirectUrl": "plex.direct URLs sind Relayadressen, die hier nicht verwendet werden können. Bitte verwenden Sie stattdessen eine direkte IP-Adresse oder einen Hostnamen.",
       "userMergeFailed": "",
       "serverUserSplitFailed": "",
       "mergeSuggestionDismissFailed": "",
@@ -221,7 +221,9 @@
       "newsletterSnapshotFailed": "",
       "brandingSaveFailed": "",
       "suppressionAddFailed": "",
-      "suppressionRemoveFailed": ""
+      "suppressionRemoveFailed": "",
+      "ownerAccountLinkFailed": "",
+      "ownerAccountUnlinkFailed": ""
     },
     "warning": {
       "jobFailed": {

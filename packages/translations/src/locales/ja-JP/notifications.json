@@ -155,6 +155,8 @@
       "brandingSaved": "",
       "suppressionAdded": "",
       "suppressionRemoved": "",
+      "ownerAccountLinked": "",
+      "ownerAccountUnlinked": "",
       "newsletterRetryQueued_other": ""
     },
     "error": {
@@ -163,7 +165,7 @@
       "serverSyncFailed": "サーバーの同期に失敗しました",
       "serverHistoricalFailed": "",
       "settingsUpdateFailed": "設定の更新に失敗しました",
-      "copyFailed": "クリップボードにコピーできませんでした",
+      "copyManual": "",
       "acknowledgeFailed": "違反の承認に失敗しました",
       "dismissFailed": "違反を却下できませんでした",
       "authFailed": "認証に失敗しました",
@@ -190,8 +192,6 @@
       "jobAlreadyRunning": "ジョブは既に実行されています",
       "jobStartFailed": "ジョブの開始に失敗しました",
       "jobLoadFailed": "メンテナンスジョブの読み込みに失敗しました",
-      "invalidUrl": "無効な URL",
-      "plexDirectUrl": "plex.directのURLはここでは使用できないリレーアドレスです。代わりにIPアドレスまたはホスト名を使用してください。",
       "userMergeFailed": "",
       "serverUserSplitFailed": "",
       "mergeSuggestionDismissFailed": "",
@@ -215,7 +215,9 @@
       "newsletterSnapshotFailed": "",
       "brandingSaveFailed": "",
       "suppressionAddFailed": "",
-      "suppressionRemoveFailed": ""
+      "suppressionRemoveFailed": "",
+      "ownerAccountLinkFailed": "",
+      "ownerAccountUnlinkFailed": ""
     },
     "warning": {
       "jobFailed": {

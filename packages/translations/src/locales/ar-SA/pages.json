@@ -86,6 +86,11 @@
         "seeAll": "",
         "availableThisWeek_other": ""
       },
+      "link": {
+        "title": "",
+        "description": "",
+        "action": ""
+      },
       "episodes_other": ""
     },
     "resources": {
@@ -2255,6 +2260,7 @@
         "reset": "",
         "tls": "",
         "http": "",
+        "relay": "",
         "unknown": ""
       },
       "connectionsReachable": "",

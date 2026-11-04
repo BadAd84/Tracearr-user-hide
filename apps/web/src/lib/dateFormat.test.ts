@@ -1,6 +1,7 @@
 import { afterEach, describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   browserTimeZone,
+  dateFormatChoices,
   formatClock,
   formatCompactAge,
   formatDate,
@@ -21,6 +22,7 @@ import {
   parseChartDate,
   resolveFormatLocale,
   safeFormatDate,
+  sampleDate,
   setDateRegion,
   setTimeFormat,
   setWeekStartPref,
@@ -97,6 +99,20 @@ describe('preferences', () => {
   });
 });
 
+describe('date format choices', () => {
+  it('lists each format once, previewing short and medium dates, apart from automatic', () => {
+    const samples = dateFormatChoices('en', 'auto').map((choice) => choice.sample);
+    expect(new Set(samples).size).toBe(samples.length);
+    expect(samples).not.toContain(sampleDate('en', 'auto'));
+    expect(samples).toContain('17/05/2026 · 17 May 2026');
+  });
+
+  it('keeps the saved region as its own row', () => {
+    expect(dateFormatChoices('en', 'NZ').map((choice) => choice.region)).toContain('NZ');
+    expect(dateFormatChoices('en', 'US').map((choice) => choice.region)).toContain('US');
+  });
+});
+
 describe('formatDate', () => {
   afterEach(() => {
     vi.restoreAllMocks();
@@ -139,6 +155,13 @@ describe('formatHourOfDay', () => {
     setTimeFormat('24h');
     expect(formatHourOfDay(0)).toBe('00:00');
     expect(formatHourOfDay(13)).toBe('13:00');
+  });
+
+  it('pads single-digit hours on the 24-hour clock in regions that would not', () => {
+    setDateRegion('GB');
+    setTimeFormat('24h');
+    expect(formatHourOfDay(8)).toBe('08:00');
+    expect(formatClock('08:05')).toBe('08:05');
   });
 });
 

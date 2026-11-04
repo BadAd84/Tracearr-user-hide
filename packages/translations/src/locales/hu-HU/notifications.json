@@ -160,6 +160,8 @@
       "brandingSaved": "",
       "suppressionAdded": "",
       "suppressionRemoved": "",
+      "ownerAccountLinked": "",
+      "ownerAccountUnlinked": "",
       "newsletterRetryQueued_one": "",
       "newsletterRetryQueued_other": ""
     },
@@ -169,7 +171,7 @@
       "serverSyncFailed": "",
       "serverHistoricalFailed": "",
       "settingsUpdateFailed": "",
-      "copyFailed": "",
+      "copyManual": "",
       "acknowledgeFailed": "",
       "dismissFailed": "",
       "authFailed": "",
@@ -196,8 +198,6 @@
       "jobAlreadyRunning": "",
       "jobStartFailed": "",
       "jobLoadFailed": "",
-      "invalidUrl": "",
-      "plexDirectUrl": "",
       "userMergeFailed": "",
       "serverUserSplitFailed": "",
       "mergeSuggestionDismissFailed": "",
@@ -221,7 +221,9 @@
       "newsletterSnapshotFailed": "",
       "brandingSaveFailed": "",
       "suppressionAddFailed": "",
-      "suppressionRemoveFailed": ""
+      "suppressionRemoveFailed": "",
+      "ownerAccountLinkFailed": "",
+      "ownerAccountUnlinkFailed": ""
     },
     "warning": {
       "jobFailed": {

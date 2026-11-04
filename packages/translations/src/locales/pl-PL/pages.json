@@ -86,6 +86,11 @@
         "seeAll": "",
         "availableThisWeek_other": ""
       },
+      "link": {
+        "title": "",
+        "description": "",
+        "action": ""
+      },
       "episodes_other": ""
     },
     "resources": {
@@ -2207,6 +2212,7 @@
         "reset": "Połączenie zresetowane",
         "tls": "Błąd protokołu TLS",
         "http": "HTTP {{status}}",
+        "relay": "",
         "unknown": "Nie udało się połączyć"
       },
       "connectionsReachable": "Osiągalne połączenia: {{reachable}} z {{total}}",

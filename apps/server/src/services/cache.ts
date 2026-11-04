@@ -3,12 +3,7 @@
  * Handles caching of active sessions, dashboard stats, and other frequently accessed data
  */
 
-import type {
-  ActiveSession,
-  DashboardStats,
-  ServerConnectionStatus,
-  ServerDownReason,
-} from '@tracearr/shared';
+import type { ActiveSession, ServerConnectionStatus, ServerDownReason } from '@tracearr/shared';
 import { CACHE_TTL, REDIS_KEYS } from '@tracearr/shared';
 import { randomUUID } from 'node:crypto';
 import type { Redis } from 'ioredis';
@@ -18,11 +13,19 @@ import { PUBLIC_CHANNEL_EVENTS, publishPublicEvent } from './publicEvents/channe
 
 const cacheLogger = createLogger('Cache');
 
-export interface CacheService {
-  // Active sessions (legacy - JSON array, deprecated)
-  getActiveSessions(): Promise<ActiveSession[] | null>;
-  setActiveSessions(sessions: ActiveSession[]): Promise<void>;
+/** Where a Jellyfin/Emby playback stood when Tracearr killed it. */
+export interface TerminationCooldown {
+  killedAt: number;
+  positionMs: number;
+  paused: boolean;
+}
 
+// Jellyfin and Emby clear a playback when the client reports the stop. A client that never does
+// stays listed until the server's idle sweep, which on Jellyfin runs every 5 minutes for playbacks
+// silent more than 5 minutes, so up to 10.
+const TERMINATION_COOLDOWN_COMPOSITE_SECONDS = 15 * 60;
+
+export interface CacheService {
   // Active sessions (atomic SET-based operations)
   addActiveSession(session: ActiveSession): Promise<void>;
   // skipDashboardInvalidation: for callers removing many sessions in one wave
@@ -35,7 +38,6 @@ export interface CacheService {
   getActiveSessionIds(): Promise<string[]>;
   getAllActiveSessions(): Promise<ActiveSession[]>;
   updateActiveSession(session: ActiveSession): Promise<void>;
-  syncActiveSessions(sessions: ActiveSession[]): Promise<void>;
   incrementalSyncActiveSessions(
     newSessions: ActiveSession[],
     stoppedSessionIds: string[],
@@ -44,8 +46,6 @@ export interface CacheService {
   ): Promise<void>;
 
   // Dashboard stats
-  getDashboardStats(): Promise<DashboardStats | null>;
-  setDashboardStats(stats: DashboardStats): Promise<void>;
   invalidateDashboardStatsCache(): Promise<void>;
 
   // Public API v2 per-media stats/watchers (TTL-based, no active invalidation)
@@ -54,8 +54,6 @@ export interface CacheService {
 
   // Session by ID
   getSessionById(id: string): Promise<ActiveSession | null>;
-  setSessionById(id: string, session: ActiveSession): Promise<void>;
-  deleteSessionById(id: string): Promise<void>;
 
   // Server health tracking
   getServerHealth(serverId: string): Promise<boolean | null>;
@@ -89,16 +87,11 @@ export interface CacheService {
   hasTerminationCooldown(serverId: string, sessionKey: string, ratingKey: string): Promise<boolean>;
   setTerminationCooldownComposite(
     serverId: string,
-    serverUserId: string,
-    deviceId: string,
-    ratingKey: string
+    sessionKey: string,
+    kill: TerminationCooldown
   ): Promise<void>;
-  hasTerminationCooldownComposite(
-    serverId: string,
-    serverUserId: string,
-    deviceId: string,
-    ratingKey: string
-  ): Promise<boolean>;
+  getTerminationCooldownsComposite(serverId: string): Promise<Map<string, TerminationCooldown>>;
+  clearTerminationCooldownsComposite(serverId: string, sessionKeys: string[]): Promise<void>;
 
   // Pending sessions (Redis-first, not yet in DB)
   // Sessions stay here until 30s confirmation threshold, then persist to DB
@@ -177,27 +170,6 @@ export function createCacheService(redis: Redis): CacheService {
   };
 
   const service: CacheService = {
-    // Active sessions
-    async getActiveSessions(): Promise<ActiveSession[] | null> {
-      const data = await redis.get(REDIS_KEYS.ACTIVE_SESSIONS);
-      if (!data) return null;
-      try {
-        return JSON.parse(data) as ActiveSession[];
-      } catch {
-        return null;
-      }
-    },
-
-    async setActiveSessions(sessions: ActiveSession[]): Promise<void> {
-      await redis.setex(
-        REDIS_KEYS.ACTIVE_SESSIONS,
-        CACHE_TTL.ACTIVE_SESSIONS,
-        JSON.stringify(sessions)
-      );
-      // Invalidate dashboard stats so they reflect the new session count
-      await invalidateDashboardStats();
-    },
-
     // Atomic SET-based operations for active sessions
     async addActiveSession(session: ActiveSession): Promise<void> {
       const pipeline = redis.multi();
@@ -300,36 +272,6 @@ export function createCacheService(redis: Redis): CacheService {
       }
     },
 
-    async syncActiveSessions(sessions: ActiveSession[]): Promise<void> {
-      // Full sync: replace all active sessions atomically
-      const pipeline = redis.multi();
-
-      // Delete old SET
-      pipeline.del(REDIS_KEYS.ACTIVE_SESSION_IDS);
-
-      if (sessions.length > 0) {
-        // Add all session IDs to SET
-        pipeline.sadd(REDIS_KEYS.ACTIVE_SESSION_IDS, ...sessions.map((s) => s.id));
-        pipeline.expire(REDIS_KEYS.ACTIVE_SESSION_IDS, CACHE_TTL.ACTIVE_SESSIONS);
-
-        // Store each session's data
-        for (const session of sessions) {
-          pipeline.setex(
-            REDIS_KEYS.SESSION_BY_ID(session.id),
-            CACHE_TTL.ACTIVE_SESSIONS,
-            JSON.stringify(session)
-          );
-        }
-      }
-
-      const results = await pipeline.exec();
-      if (!results || results.some(([err]) => err !== null)) {
-        cacheLogger.error('syncActiveSessions pipeline failed', { results });
-      }
-      // Invalidate dashboard stats (uses pattern matching for timezone-specific keys)
-      await invalidateDashboardStats();
-    },
-
     async incrementalSyncActiveSessions(
       newSessions: ActiveSession[],
       stoppedSessionIds: string[],
@@ -385,24 +327,6 @@ export function createCacheService(redis: Redis): CacheService {
     },
 
     // Dashboard stats
-    async getDashboardStats(): Promise<DashboardStats | null> {
-      const data = await redis.get(REDIS_KEYS.DASHBOARD_STATS);
-      if (!data) return null;
-      try {
-        return JSON.parse(data) as DashboardStats;
-      } catch {
-        return null;
-      }
-    },
-
-    async setDashboardStats(stats: DashboardStats): Promise<void> {
-      await redis.setex(
-        REDIS_KEYS.DASHBOARD_STATS,
-        CACHE_TTL.DASHBOARD_STATS,
-        JSON.stringify(stats)
-      );
-    },
-
     async invalidateDashboardStatsCache(): Promise<void> {
       await invalidateDashboardStats();
     },
@@ -434,18 +358,6 @@ export function createCacheService(redis: Redis): CacheService {
       } catch {
         return null;
       }
-    },
-
-    async setSessionById(id: string, session: ActiveSession): Promise<void> {
-      await redis.setex(
-        REDIS_KEYS.SESSION_BY_ID(id),
-        CACHE_TTL.ACTIVE_SESSIONS,
-        JSON.stringify(session)
-      );
-    },
-
-    async deleteSessionById(id: string): Promise<void> {
-      await redis.del(REDIS_KEYS.SESSION_BY_ID(id));
     },
 
     // Server health tracking
@@ -557,32 +469,39 @@ export function createCacheService(redis: Redis): CacheService {
 
     async setTerminationCooldownComposite(
       serverId: string,
-      serverUserId: string,
-      deviceId: string,
-      ratingKey: string
+      sessionKey: string,
+      kill: TerminationCooldown
     ): Promise<void> {
-      const cooldownKey = REDIS_KEYS.TERMINATION_COOLDOWN_COMPOSITE(
-        serverId,
-        serverUserId,
-        deviceId,
-        ratingKey
-      );
-      await redis.setex(cooldownKey, 300, '1');
+      const key = REDIS_KEYS.TERMINATION_COOLDOWNS_COMPOSITE(serverId);
+      await redis
+        .multi()
+        .hset(key, sessionKey, JSON.stringify(kill))
+        .expire(key, TERMINATION_COOLDOWN_COMPOSITE_SECONDS)
+        .exec();
     },
 
-    async hasTerminationCooldownComposite(
+    async getTerminationCooldownsComposite(
+      serverId: string
+    ): Promise<Map<string, TerminationCooldown>> {
+      const key = REDIS_KEYS.TERMINATION_COOLDOWNS_COMPOSITE(serverId);
+      const cutoff = Date.now() - TERMINATION_COOLDOWN_COMPOSITE_SECONDS * 1000;
+      const live = new Map<string, TerminationCooldown>();
+      const expired: string[] = [];
+      for (const [sessionKey, value] of Object.entries(await redis.hgetall(key))) {
+        const kill = JSON.parse(value) as TerminationCooldown;
+        if (kill.killedAt > cutoff) live.set(sessionKey, kill);
+        else expired.push(sessionKey);
+      }
+      if (expired.length > 0) await redis.hdel(key, ...expired);
+      return live;
+    },
+
+    async clearTerminationCooldownsComposite(
       serverId: string,
-      serverUserId: string,
-      deviceId: string,
-      ratingKey: string
-    ): Promise<boolean> {
-      const cooldownKey = REDIS_KEYS.TERMINATION_COOLDOWN_COMPOSITE(
-        serverId,
-        serverUserId,
-        deviceId,
-        ratingKey
-      );
-      return (await redis.exists(cooldownKey)) === 1;
+      sessionKeys: string[]
+    ): Promise<void> {
+      if (sessionKeys.length === 0) return;
+      await redis.hdel(REDIS_KEYS.TERMINATION_COOLDOWNS_COMPOSITE(serverId), ...sessionKeys);
     },
 
     // Pending sessions (Redis-first architecture)
@@ -812,117 +731,4 @@ export function createPubSubService(publisher: Redis, subscriber: Redis): PubSub
   pubSubServiceInstance = service;
 
   return service;
-}
-
-// ============================================================================
-// Atomic Cache Helpers
-// ============================================================================
-
-/**
- * Execute DB operation with cache invalidation.
- * Pattern: Invalidate → Execute → Invalidate again
- * Prevents stale reads during and after operation.
- *
- * @param redis - Redis client
- * @param keysToInvalidate - Cache keys to invalidate
- * @param operation - Async operation to execute
- * @returns Result of the operation
- *
- * @example
- * await withCacheInvalidation(redis, [REDIS_KEYS.ACTIVE_SESSIONS], async () => {
- *   return await db.insert(sessions).values(data);
- * });
- */
-export async function withCacheInvalidation<T>(
-  redis: Redis,
-  keysToInvalidate: string[],
-  operation: () => Promise<T>
-): Promise<T> {
-  // Invalidate before (prevents stale reads during operation)
-  if (keysToInvalidate.length > 0) {
-    await redis.del(...keysToInvalidate);
-  }
-
-  // Execute the operation
-  const result = await operation();
-
-  // Invalidate after (catches concurrent writes)
-  if (keysToInvalidate.length > 0) {
-    await redis.del(...keysToInvalidate);
-  }
-
-  return result;
-}
-
-/**
- * Atomic cache update with distributed lock.
- * Prevents race conditions when multiple processes update same key.
- *
- * @param redis - Redis client
- * @param key - Cache key to update
- * @param ttl - TTL in seconds
- * @param getData - Async function to get fresh data
- * @returns Cached or fresh data
- *
- * @example
- * const stats = await atomicCacheUpdate(redis, 'dashboard:stats', 60, async () => {
- *   return await computeDashboardStats();
- * });
- */
-export async function atomicCacheUpdate<T>(
-  redis: Redis,
-  key: string,
-  ttl: number,
-  getData: () => Promise<T>
-): Promise<T> {
-  const lockKey = `${key}:lock`;
-  const token = randomUUID();
-
-  // Try to acquire lock (5 second expiry)
-  const lockAcquired = await redis.set(lockKey, token, 'EX', 5, 'NX');
-
-  if (!lockAcquired) {
-    // Another process is updating, wait and read cached value
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    const cached = await redis.get(key);
-    if (cached) {
-      return JSON.parse(cached) as T;
-    }
-    // Cache miss, try again (recursive call)
-    return atomicCacheUpdate(redis, key, ttl, getData);
-  }
-
-  try {
-    const data = await getData();
-    await redis.setex(key, ttl, JSON.stringify(data));
-    return data;
-  } finally {
-    await releaseLockIfHeld(redis, lockKey, token);
-  }
-}
-
-/**
- * Atomic multi-key update using Redis MULTI/EXEC.
- * All updates succeed or fail together.
- *
- * @param redis - Redis client
- * @param updates - Array of key/value/ttl updates
- *
- * @example
- * await atomicMultiUpdate(redis, [
- *   { key: REDIS_KEYS.ACTIVE_SESSIONS, value: sessions, ttl: 300 },
- *   { key: REDIS_KEYS.DASHBOARD_STATS, value: stats, ttl: 60 },
- * ]);
- */
-export async function atomicMultiUpdate(
-  redis: Redis,
-  updates: Array<{ key: string; value: unknown; ttl: number }>
-): Promise<void> {
-  const pipeline = redis.multi();
-
-  for (const { key, value, ttl } of updates) {
-    pipeline.setex(key, ttl, JSON.stringify(value));
-  }
-
-  await pipeline.exec();
 }

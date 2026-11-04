@@ -160,6 +160,8 @@
       "brandingSaved": "",
       "suppressionAdded": "",
       "suppressionRemoved": "",
+      "ownerAccountLinked": "",
+      "ownerAccountUnlinked": "",
       "newsletterRetryQueued_one": "",
       "newsletterRetryQueued_other": ""
     },
@@ -169,7 +171,7 @@
       "serverSyncFailed": "Αποτυχία συγχρονισμού διακομιστή",
       "serverHistoricalFailed": "",
       "settingsUpdateFailed": "Αποτυχία ενημέρωσης των ρυθμίσεων",
-      "copyFailed": "Αδυναμία αντιγραφής στο πρόχειρο",
+      "copyManual": "",
       "acknowledgeFailed": "Αποτυχία αναγνώρισης παραβίασης",
       "dismissFailed": "Αποτυχία απόρριψης παραβίασης",
       "authFailed": "Αποτυχία ταυτοποίησης",
@@ -196,8 +198,6 @@
       "jobAlreadyRunning": "Η εργασία εκτελείται ήδη",
       "jobStartFailed": "Αποτυχία έναρξης εργασίας",
       "jobLoadFailed": "Αποτυχία φόρτωσης εργασιών συντήρησης",
-      "invalidUrl": "Μη Έγκυρο URL",
-      "plexDirectUrl": "Οι διευθύνσεις URL plex.direct είναι διευθύνσεις ρελέ που δεν μπορούν να χρησιμοποιηθούν εδώ. Παρακαλώ χρησιμοποιήστε μια άμεση διεύθυνση IP ή όνομα κεντρικού υπολογιστή.",
       "userMergeFailed": "",
       "serverUserSplitFailed": "",
       "mergeSuggestionDismissFailed": "",
@@ -221,7 +221,9 @@
       "newsletterSnapshotFailed": "",
       "brandingSaveFailed": "",
       "suppressionAddFailed": "",
-      "suppressionRemoveFailed": ""
+      "suppressionRemoveFailed": "",
+      "ownerAccountLinkFailed": "",
+      "ownerAccountUnlinkFailed": ""
     },
     "warning": {
       "jobFailed": {

@@ -183,9 +183,15 @@ const formatters = new Map<string, Intl.DateTimeFormat>();
 
 export function formatDate(date: Date | number, options: Intl.DateTimeFormatOptions): string {
   const locale = getFormatLocale();
-  const withHour12 =
+  const hour12 = getHour12();
+  const withHour12: Intl.DateTimeFormatOptions =
     options.hour !== undefined || options.timeStyle !== undefined
-      ? { ...options, hour12: getHour12() }
+      ? {
+          ...options,
+          hour12,
+          // Forcing hour12 off drops the locale's own padding, so en-GB would show 8:05.
+          ...(!hour12 && options.hour !== undefined && { hour: '2-digit' }),
+        }
       : options;
   const key = `${locale}|${JSON.stringify(withHour12)}`;
   let formatter = formatters.get(key);
@@ -385,12 +391,34 @@ export function formatLastUpdated(dateStr: string | null | undefined): string {
 
 const SAMPLE_DATE = Date.UTC(2026, 4, 17, 12);
 
-/** A fixed short date as another region choice would print it, for that choice's label. */
+/** A fixed date in short and medium style as a region choice would print it, for that choice's label. */
 export function sampleDate(language: string, region: DateRegion): string {
-  return new Intl.DateTimeFormat(resolveFormatLocale(language, region, navigator.languages), {
-    dateStyle: 'short',
-    timeZone: 'UTC',
-  }).format(SAMPLE_DATE);
+  const locale = resolveFormatLocale(language, region, navigator.languages);
+  const sample = (dateStyle: 'short' | 'medium') =>
+    new Intl.DateTimeFormat(locale, { dateStyle, timeZone: 'UTC' }).format(SAMPLE_DATE);
+  return `${sample('short')} · ${sample('medium')}`;
+}
+
+/**
+ * The distinct formats a pick can give, other than Automatic's, each under its first region.
+ * The saved region always keeps its own row so the select holds exactly what is stored.
+ */
+export function dateFormatChoices(
+  language: string,
+  saved: DateRegion
+): { region: string; sample: string }[] {
+  const seen = new Set<string>();
+  const choices: { region: string; sample: string }[] = [];
+  const add = (region: string) => {
+    const sample = sampleDate(language, region);
+    if (seen.has(sample)) return;
+    seen.add(sample);
+    choices.push({ region, sample });
+  };
+  if (saved !== 'auto') add(saved);
+  seen.add(sampleDate(language, 'auto'));
+  DATE_REGIONS.forEach(add);
+  return choices.sort((a, b) => a.sample.localeCompare(b.sample, language));
 }
 
 /**
@@ -450,7 +478,7 @@ export function axisDateTimeLabelFormats(
       hour: {
         main: getHour12()
           ? { hour: 'numeric', hour12: true }
-          : { hour: 'numeric', minute: '2-digit', hour12: false },
+          : { hour: '2-digit', minute: '2-digit', hour12: false },
       },
     }),
   } satisfies Record<string, { main: Intl.DateTimeFormatOptions }>;

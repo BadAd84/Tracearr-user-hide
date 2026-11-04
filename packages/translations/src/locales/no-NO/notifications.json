@@ -160,6 +160,8 @@
       "brandingSaved": "",
       "suppressionAdded": "",
       "suppressionRemoved": "",
+      "ownerAccountLinked": "",
+      "ownerAccountUnlinked": "",
       "newsletterRetryQueued_one": "",
       "newsletterRetryQueued_other": ""
     },
@@ -169,7 +171,7 @@
       "serverSyncFailed": "Kan ikke synkronisere serveren",
       "serverHistoricalFailed": "",
       "settingsUpdateFailed": "Kunne ikke oppdatere innstillingene",
-      "copyFailed": "Kunne ikke kopiere til utklippstavlen",
+      "copyManual": "",
       "acknowledgeFailed": "Kunne ikke bekrefte brudd",
       "dismissFailed": "Kunne ikke avvise brudd",
       "authFailed": "Godkjenning mislyktes",
@@ -196,8 +198,6 @@
       "jobAlreadyRunning": "Jobb kjører allerede",
       "jobStartFailed": "Kan ikke starte jobb",
       "jobLoadFailed": "Kunne ikke laste vedlikeholdsjobber",
-      "invalidUrl": "Ugyldig nettadresse",
-      "plexDirectUrl": "plex.direkte URL-er er relay adresser som ikke kan brukes her. Vennligst bruk en direkte IP-adresse eller vertsnavn i stedet.",
       "userMergeFailed": "",
       "serverUserSplitFailed": "",
       "mergeSuggestionDismissFailed": "",
@@ -221,7 +221,9 @@
       "newsletterSnapshotFailed": "",
       "brandingSaveFailed": "",
       "suppressionAddFailed": "",
-      "suppressionRemoveFailed": ""
+      "suppressionRemoveFailed": "",
+      "ownerAccountLinkFailed": "",
+      "ownerAccountUnlinkFailed": ""
     },
     "warning": {
       "jobFailed": {

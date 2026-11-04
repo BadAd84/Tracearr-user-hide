@@ -262,6 +262,25 @@ export interface ServerUserSplitResult {
   serverUserId: string;
 }
 
+/** Why an account cannot be linked to the owner as it stands. */
+export type OwnerLinkBlockedReason = 'other_accounts' | 'signs_in';
+
+export interface OwnerLinkCandidate {
+  serverUserId: string;
+  username: string;
+  thumbUrl: string | null;
+  isServerAdmin: boolean;
+  lastActivityAt: string | null;
+  blockedReason: OwnerLinkBlockedReason | null;
+}
+
+/** The owner's own account on one Jellyfin or Emby server, or the accounts it could be. */
+export interface OwnerLinkServer {
+  serverId: string;
+  linked: { serverUserId: string; username: string } | null;
+  candidates: OwnerLinkCandidate[];
+}
+
 export interface MergeSuggestionIdentity {
   userId: string;
   username: string;
@@ -1180,6 +1199,30 @@ export interface ImageCacheStatus {
   shortfallBytes: number;
 }
 
+/** Supervised template volumes: postgres is PostgreSQL Data, redis is Redis Data, appData is App Data. */
+export type StorageMountKey = 'postgres' | 'redis' | 'appData';
+
+export interface StorageMountIssue {
+  key: StorageMountKey;
+  /** From /proc/self/mountinfo, for example fuse.shfs. */
+  fsType: string;
+  /** Host path, known only for fuse.shfs: /mnt/user plus the share-relative root. */
+  currentPath: string | null;
+  placement:
+    | { kind: 'pool'; pool: string; newPath: string }
+    /** system.LOCATIONS names as reported, array disks and pools alike. */
+    | { kind: 'split'; disks: string[] }
+    | { kind: 'unknown' };
+}
+
+/** GET /settings/storage-warning. Not applicable outside the supervised image. */
+export interface StorageWarning {
+  applicable: boolean;
+  issues: StorageMountIssue[];
+  bootId: string;
+  dismissed: boolean;
+}
+
 // Tailscale integration
 export type TailscaleStatus =
   'disabled' | 'starting' | 'awaiting_auth' | 'connected' | 'error' | 'stopping';
@@ -1985,7 +2028,7 @@ export interface TerminationLogWithDetails {
 
 // Reachability error categorization for a tested Plex connection
 export type PlexConnectionErrorCode =
-  'timeout' | 'dns' | 'refused' | 'unreachable' | 'reset' | 'tls' | 'http' | 'unknown';
+  'timeout' | 'dns' | 'refused' | 'unreachable' | 'reset' | 'tls' | 'http' | 'relay' | 'unknown';
 
 export interface PlexConnectionError {
   code: PlexConnectionErrorCode;
@@ -2624,7 +2667,7 @@ export interface LibraryStorageResponse {
 // Library Duplicates Response (GET /library/duplicates)
 /** 'version' groups are one title whose single library item carries several
  * physical files; the others group distinct items (copies) by identity. */
-export type MatchType = 'imdb' | 'tmdb' | 'tvdb' | 'fuzzy' | 'version';
+export type MatchType = 'imdb' | 'tmdb' | 'tvdb' | 'mbid' | 'fuzzy' | 'version';
 
 /** One physical file of a duplicate item */
 export interface DuplicateItemVersion {
@@ -2632,6 +2675,7 @@ export interface DuplicateItemVersion {
   serverVersionKey: string;
   resolution: string | null;
   videoCodec: string | null;
+  audioCodec: string | null;
   fileSize: number | null;
   filePath: string | null;
   /**
@@ -2654,6 +2698,8 @@ export interface DuplicateItem {
   mediaType: string;
   /** Show for an episode, artist for a track; null for anything flat */
   grandparentTitle: string | null;
+  /** Album for a track, season for an episode */
+  parentTitle: string | null;
   seasonNumber: number | null;
   episodeNumber: number | null;
   fileSize: number | null;
@@ -2685,7 +2731,14 @@ export interface DuplicatesSummary {
   totalGroups: number;
   totalDuplicateItems: number;
   totalPotentialSavingsBytes: number;
-  byMatchType: { imdb: number; tmdb: number; tvdb: number; fuzzy: number; version: number };
+  byMatchType: {
+    imdb: number;
+    tmdb: number;
+    tvdb: number;
+    mbid: number;
+    fuzzy: number;
+    version: number;
+  };
 }
 
 export interface DuplicatesResponse {

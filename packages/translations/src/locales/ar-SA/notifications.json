@@ -180,6 +180,8 @@
       "brandingSaved": "",
       "suppressionAdded": "",
       "suppressionRemoved": "",
+      "ownerAccountLinked": "",
+      "ownerAccountUnlinked": "",
       "newsletterRetryQueued_zero": "",
       "newsletterRetryQueued_one": "",
       "newsletterRetryQueued_two": "",
@@ -193,7 +195,7 @@
       "serverSyncFailed": "فشل في مزامنة الخادم",
       "serverHistoricalFailed": "",
       "settingsUpdateFailed": "فشل تحديث الإعدادات",
-      "copyFailed": "تعذر النسخ إلى الحافظة",
+      "copyManual": "",
       "acknowledgeFailed": "فشل في الاعتراف بالانتهاك",
       "dismissFailed": "فشل في رفض الانتهاك",
       "authFailed": "فشل المصادقة",
@@ -220,8 +222,6 @@
       "jobAlreadyRunning": "العمل قيد التشغيل مسبقاً",
       "jobStartFailed": "فشل في بدء المهمة",
       "jobLoadFailed": "فشل تحميل مهام الصيانة",
-      "invalidUrl": "رابط غير صالح",
-      "plexDirectUrl": "plex.direct URLs هي عناوين إعادة الإرسال التي لا يمكن استخدامها هنا. الرجاء استخدام عنوان IP مباشر أو اسم المضيف بدلاً من ذلك.",
       "userMergeFailed": "",
       "serverUserSplitFailed": "",
       "mergeSuggestionDismissFailed": "",
@@ -245,7 +245,9 @@
       "newsletterSnapshotFailed": "",
       "brandingSaveFailed": "",
       "suppressionAddFailed": "",
-      "suppressionRemoveFailed": ""
+      "suppressionRemoveFailed": "",
+      "ownerAccountLinkFailed": "",
+      "ownerAccountUnlinkFailed": ""
     },
     "warning": {
       "jobFailed": {

@@ -155,6 +155,8 @@
       "brandingSaved": "",
       "suppressionAdded": "",
       "suppressionRemoved": "",
+      "ownerAccountLinked": "",
+      "ownerAccountUnlinked": "",
       "newsletterRetryQueued_other": ""
     },
     "error": {
@@ -163,7 +165,7 @@
       "serverSyncFailed": "無法同步伺服器",
       "serverHistoricalFailed": "",
       "settingsUpdateFailed": "無法更新設定",
-      "copyFailed": "無法複製到剪貼簿",
+      "copyManual": "",
       "acknowledgeFailed": "無法確認違規",
       "dismissFailed": "無法忽略違規",
       "authFailed": "認證失敗",
@@ -190,8 +192,6 @@
       "jobAlreadyRunning": "任務已在運行",
       "jobStartFailed": "無法啟動任務",
       "jobLoadFailed": "無法加載維護任務",
-      "invalidUrl": "無效的網址",
-      "plexDirectUrl": "plex.direct URL 是中繼位址，這裡不能使用。請改用直接 IP 位址或主機名稱。",
       "userMergeFailed": "",
       "serverUserSplitFailed": "",
       "mergeSuggestionDismissFailed": "",
@@ -215,7 +215,9 @@
       "newsletterSnapshotFailed": "",
       "brandingSaveFailed": "",
       "suppressionAddFailed": "",
-      "suppressionRemoveFailed": ""
+      "suppressionRemoveFailed": "",
+      "ownerAccountLinkFailed": "",
+      "ownerAccountUnlinkFailed": ""
     },
     "warning": {
       "jobFailed": {
