@@ -3,6 +3,8 @@ import type {
   Session,
   TriggerType as CatalogTriggerType,
   ViolationSeverity,
+  ServerType,
+  JellyfinEmbyServerType,
 } from '@tracearr/shared';
 import type { db } from '../../../db/client.js';
 import type { sessions } from '../../../db/schema.js';
@@ -22,7 +24,7 @@ export type TriggerType =
 export interface EvaluationServer {
   id: string;
   name: string;
-  type: 'plex' | 'jellyfin' | 'emby';
+  type: ServerType;
 }
 
 /** What every producer already holds about the account; matches SessionCreationInput['serverUser']. */
@@ -79,6 +81,11 @@ export interface SessionHeldForEvent extends SessionEventBase {
   heldMinutes: number;
   /** The held_for node whose crossing armed this wake; absent for a compound-rule recheck. */
   triggerNodeId?: string;
+}
+
+/** The tick that crossed the watched threshold set for its media type; the row's flag keeps it to one per session. */
+export interface SessionWatchedEvent extends SessionEventBase {
+  type: 'session.watched';
 }
 
 /** Wake cancellations carry ids and no evaluation inputs. */
@@ -185,7 +192,7 @@ export interface ServerUpEvent extends BaseEvent {
 
 export interface PluginUpdateEvent extends BaseEvent {
   type: 'plugin.update_available';
-  server: EvaluationServer;
+  server: EvaluationServer & { type: JellyfinEmbyServerType };
   installedVersion: string | null;
   latestVersion: string;
   downloadUrl: string;
@@ -220,6 +227,7 @@ export type RuleEvent =
   | SessionTranscodeChangedEvent
   | SessionPausedEvent
   | SessionHeldForEvent
+  | SessionWatchedEvent
   | SessionStoppedEvent
   | SessionRefEvent
   | AccountInactiveForEvent

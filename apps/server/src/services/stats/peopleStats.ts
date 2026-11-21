@@ -18,10 +18,10 @@ import {
 } from '@tracearr/shared';
 import { db } from '../../db/client.js';
 import { serverUsers, servers } from '../../db/schema.js';
-import { countedSessionSql, localSessionSql } from '../../db/sessions/rules.js';
+import { countedSessionSql, countedViewersSql, localSessionSql } from '../../db/sessions/rules.js';
 import { buildMultiServerFragment } from '../../utils/serverFiltering.js';
 import { likePattern } from '../../utils/listQuery.js';
-import { representativeAccountOrderSql } from '../../utils/representativeAccount.js';
+import { personNameSql, representativeAccountOrderSql } from '../../utils/representativeAccount.js';
 import {
   identityAccountsWhere,
   serverUserIdAnyFragment,
@@ -338,7 +338,7 @@ export async function queryIdentityRangeStats(input: {
         time_bucket(${bucketInterval}::interval, s.started_at AT TIME ZONE ${timezone})::text AS date,
         ROUND(
           COUNT(DISTINCT ${CHAIN_S}) FILTER (WHERE ${countedSessionSql('s')})::numeric
-            / NULLIF(COUNT(DISTINCT su.user_id), 0),
+            / NULLIF(${countedViewersSql(countedSessionSql('s'))}, 0),
           2
         )::float8 AS count
       FROM sessions s
@@ -506,7 +506,7 @@ function peopleRowsCte(input: PeopleRowsInput): SQL {
   );
   const pattern = search ? likePattern(search) : null;
   const matched = pattern
-    ? sql`(u.name ILIKE ${pattern} OR EXISTS (
+    ? sql`(${personNameSql()} ILIKE ${pattern} OR EXISTS (
         SELECT 1 FROM server_users msu
         WHERE msu.user_id = u.id ${buildMultiServerFragment(resolvedServerIds, 'msu.server_id')}
           AND msu.username ILIKE ${pattern}))`
@@ -557,10 +557,10 @@ function peopleRowsCte(input: PeopleRowsInput): SQL {
     rows AS (
       SELECT
         u.id AS user_id,
-        u.name AS identity_name,
+        ${personNameSql()} AS identity_name,
         u.aggregate_trust_score AS trust_score,
         rep.id AS server_user_id,
-        rep.username,
+        u.username,
         rep.thumb_url,
         rep.server_id::text AS server_id,
         COALESCE(t.plays, 0) AS plays,
@@ -576,7 +576,7 @@ function peopleRowsCte(input: PeopleRowsInput): SQL {
       FROM people pp
       JOIN users u ON u.id = pp.user_id
       INNER JOIN LATERAL (
-        SELECT su.id, su.username, su.thumb_url, su.server_id
+        SELECT su.id, su.thumb_url, su.server_id
         FROM server_users su
         WHERE su.user_id = u.id ${accountServers}
         ORDER BY ${representativeAccountOrderSql('su')}
@@ -665,9 +665,7 @@ async function fetchIdentityServers(
     .where(identityAccountsWhere(authUser, userIds));
   for (const row of rows) {
     const entry = { id: row.serverId, name: row.serverName };
-    const existing = byUser.get(row.userId);
-    if (existing) existing.push(entry);
-    else byUser.set(row.userId, [entry]);
+    byUser.getOrInsertComputed(row.userId, () => []).push(entry);
   }
   return byUser;
 }

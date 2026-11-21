@@ -7,21 +7,17 @@ import { ChartSkeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { formatDate, axisDateTimeLabelFormats, parseChartDate } from '@/lib/dateFormat';
 import { TrendingUp } from 'lucide-react';
-import { chartLang } from './chartUtils';
+import { chartLang, MEDIA_TYPE_COLORS } from './chartUtils';
+
+export type GrowthSeries = 'movies' | 'episodes';
 
 interface LibraryGrowthChartProps {
   data: LibraryGrowthResponse | undefined;
   isLoading?: boolean;
   height?: number;
-  period?: string;
+  /** Clicking the movies or episodes area; music has no catalog filter to land on. */
+  onSeriesClick?: (series: GrowthSeries) => void;
 }
-
-// Colors for each media type
-const SERIES_COLORS = {
-  movies: 'hsl(221, 83%, 53%)', // Blue
-  episodes: 'hsl(142, 76%, 36%)', // Green
-  music: 'hsl(262, 83%, 58%)', // Purple
-};
 
 /**
  * Get all unique dates from all series, sorted chronologically
@@ -68,7 +64,12 @@ function alignSeries(series: GrowthDataPoint[] | undefined, allDates: string[]):
   return result;
 }
 
-export function LibraryGrowthChart({ data, isLoading, height = 250 }: LibraryGrowthChartProps) {
+export function LibraryGrowthChart({
+  data,
+  isLoading,
+  height = 250,
+  onSeriesClick,
+}: LibraryGrowthChartProps) {
   const { t } = useTranslation(['pages', 'common']);
   const options = useMemo<Highcharts.Options>(() => {
     if (!data) return {};
@@ -89,15 +90,17 @@ export function LibraryGrowthChart({ data, isLoading, height = 250 }: LibraryGro
     if (!hasMovies && !hasEpisodes && !hasMusic) return {};
 
     const series: Highcharts.SeriesOptionsType[] = [];
+    const clickable = (name: GrowthSeries) =>
+      onSeriesClick ? { cursor: 'pointer', events: { click: () => onSeriesClick(name) } } : {};
 
     if (hasMovies) {
       series.push({
         type: 'area',
         name: t('common:media.movie_plural'),
         data: allTimestamps.map((ts, i) => [ts, moviesValues[i] ?? 0]),
-        color: SERIES_COLORS.movies,
-        fillOpacity: 0.2,
+        color: MEDIA_TYPE_COLORS.movie,
         marker: { enabled: false, states: { hover: { enabled: true, radius: 4 } } },
+        ...clickable('movies'),
       });
     }
 
@@ -106,9 +109,9 @@ export function LibraryGrowthChart({ data, isLoading, height = 250 }: LibraryGro
         type: 'area',
         name: t('common:media.episode_plural'),
         data: allTimestamps.map((ts, i) => [ts, episodesValues[i] ?? 0]),
-        color: SERIES_COLORS.episodes,
-        fillOpacity: 0.2,
+        color: MEDIA_TYPE_COLORS.show,
         marker: { enabled: false, states: { hover: { enabled: true, radius: 4 } } },
+        ...clickable('episodes'),
       });
     }
 
@@ -117,8 +120,7 @@ export function LibraryGrowthChart({ data, isLoading, height = 250 }: LibraryGro
         type: 'area',
         name: t('common:media.music'),
         data: allTimestamps.map((ts, i) => [ts, musicValues[i] ?? 0]),
-        color: SERIES_COLORS.music,
-        fillOpacity: 0.2,
+        color: MEDIA_TYPE_COLORS.music,
         marker: { enabled: false, states: { hover: { enabled: true, radius: 4 } } },
       });
     }
@@ -140,11 +142,11 @@ export function LibraryGrowthChart({ data, isLoading, height = 250 }: LibraryGro
         verticalAlign: 'top',
         layout: 'horizontal',
         itemStyle: {
-          color: 'hsl(var(--foreground))',
-          fontSize: '11px',
+          color: 'oklch(var(--foreground))',
+          fontSize: '12px',
         },
         itemHoverStyle: {
-          color: 'hsl(var(--primary))',
+          color: 'oklch(var(--primary))',
         },
       },
       xAxis: {
@@ -152,17 +154,17 @@ export function LibraryGrowthChart({ data, isLoading, height = 250 }: LibraryGro
         tickPixelInterval: 120,
         dateTimeLabelFormats: axisDateTimeLabelFormats(),
         labels: {
-          style: { color: 'hsl(var(--muted-foreground))' },
+          style: { color: 'oklch(var(--muted-foreground))' },
         },
-        lineColor: 'hsl(var(--border))',
-        tickColor: 'hsl(var(--border))',
+        lineColor: 'oklch(var(--border))',
+        tickColor: 'oklch(var(--border))',
         startOnTick: false,
         endOnTick: false,
       },
       yAxis: {
         title: { text: undefined },
-        labels: { style: { color: 'hsl(var(--muted-foreground))' } },
-        gridLineColor: 'hsl(var(--border))',
+        labels: { style: { color: 'oklch(var(--muted-foreground))' } },
+        gridLineColor: 'oklch(var(--border))',
       },
       plotOptions: {
         area: {
@@ -173,9 +175,9 @@ export function LibraryGrowthChart({ data, isLoading, height = 250 }: LibraryGro
         },
       },
       tooltip: {
-        backgroundColor: 'hsl(var(--popover))',
-        borderColor: 'hsl(var(--border))',
-        style: { color: 'hsl(var(--popover-foreground))' },
+        backgroundColor: 'oklch(var(--popover))',
+        borderColor: 'oklch(var(--border))',
+        style: { color: 'oklch(var(--popover-foreground))' },
         shared: true,
         formatter: function () {
           const points = this.points;
@@ -199,18 +201,12 @@ export function LibraryGrowthChart({ data, isLoading, height = 250 }: LibraryGro
             condition: { maxWidth: 400 },
             chartOptions: {
               legend: { enabled: false },
-              xAxis: {
-                labels: {
-                  style: { fontSize: '9px' },
-                },
-              },
-              yAxis: { labels: { style: { fontSize: '9px' } } },
             },
           },
         ],
       },
     };
-  }, [data, height, t]);
+  }, [data, height, onSeriesClick, t]);
 
   if (isLoading) {
     return <ChartSkeleton height={height} />;

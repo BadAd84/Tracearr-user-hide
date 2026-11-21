@@ -33,6 +33,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { NotificationTextField } from '@/components/automations/NotificationTextField';
 import { DestinationsField } from '@/components/automations/builder/DestinationsField';
 import { conditionValueView, FieldControl } from '@/components/automations/builder/fields';
+import { rosterPersonName } from '@/components/users/utils';
 import { useUsers } from '@/hooks/queries/useUsers';
 import {
   conditionFieldForInput,
@@ -52,7 +53,7 @@ interface TemplateInputFieldProps {
   value: unknown;
   onChange: (value: unknown) => void;
   servers: readonly Server[];
-  /** The server the form has bound, so an account picker knows whose accounts to offer. */
+  /** The server the form has bound, if any, so an account picker can narrow to its accounts. */
   boundServerId: string;
   filterOptions: AutomationFilterOptions | undefined;
   unitSystem: UnitSystem;
@@ -84,10 +85,9 @@ export function TemplateInputField({
   const labelId = `${controlId}-label`;
   const label = templateInputLabel(t, input);
 
-  const needsAccounts = input.kind === 'account' && boundServerId !== '';
   const { data: accountsPage } = useUsers(
-    { serverId: boundServerId, pageSize: 100 },
-    { enabled: needsAccounts }
+    { serverId: boundServerId || undefined, pageSize: 100 },
+    { enabled: input.kind === 'account' }
   );
   const { data: identitiesPage } = useUsers(
     { pageSize: 100 },
@@ -143,20 +143,33 @@ export function TemplateInputField({
         );
       }
 
-      case 'account':
+      case 'account': {
+        // Unbound, the roster has one row per person, so each of their accounts is offered.
+        const options = (accountsPage?.data ?? []).flatMap((person) => {
+          const name = person.identityName ?? person.username;
+          if (boundServerId) return [{ value: person.id, label: name }];
+          return (person.identityServers ?? []).flatMap((account) =>
+            account.serverUserId && !account.removedAt
+              ? [
+                  {
+                    value: account.serverUserId,
+                    label: servers.length > 1 ? `${name} · ${account.name}` : name,
+                  },
+                ]
+              : []
+          );
+        });
         return (
           <Combobox
             id={controlId}
             value={typeof value === 'string' ? value : null}
-            options={(accountsPage?.data ?? []).map((account) => ({
-              value: account.id,
-              label: account.identityName ?? account.username,
-            }))}
+            options={options}
             onChange={onChange}
             placeholder={label}
             {...pickerLabels}
           />
         );
+      }
 
       case 'person':
         return (
@@ -165,7 +178,7 @@ export function TemplateInputField({
             value={typeof value === 'string' ? value : null}
             options={(identitiesPage?.data ?? []).map((identity) => ({
               value: identity.userId,
-              label: identity.identityName ?? identity.username,
+              label: rosterPersonName(identity),
             }))}
             onChange={onChange}
             placeholder={label}

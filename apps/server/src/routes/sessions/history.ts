@@ -117,7 +117,7 @@ export function buildHistoryFilterConditions(
             SELECT 1 FROM server_users su_search
             LEFT JOIN users u_search ON u_search.id = su_search.user_id
             WHERE su_search.id = s.server_user_id
-            AND (su_search.username ILIKE ${searchPattern} OR u_search.name ILIKE ${searchPattern})
+            AND (su_search.username ILIKE ${searchPattern} OR u_search.name ILIKE ${searchPattern} OR u_search.username ILIKE ${searchPattern})
           )
         )`
     );
@@ -187,7 +187,7 @@ export function buildCacheFingerprint(params: Record<string, unknown>): string {
       if (val instanceof Date) {
         acc[key] = val.toISOString().slice(0, 16);
       } else if (val !== undefined && val !== null && val !== '') {
-        acc[key] = Array.isArray(val) ? val.slice().sort() : val;
+        acc[key] = Array.isArray(val) ? val.toSorted() : val;
       }
       return acc;
     }, {});
@@ -199,6 +199,7 @@ export function buildCacheFingerprint(params: Record<string, unknown>): string {
 const HISTORY_ROW_COLUMNS = sql`
     gs.play_id as id,
     gs.started_at,
+    gs.last_started_at,
     gs.stopped_at,
     gs.duration_ms,
     gs.paused_duration_ms,
@@ -213,7 +214,7 @@ const HISTORY_ROW_COLUMNS = sql`
     s.server_user_id,
     su.username,
     su.thumb_url as user_thumb,
-    u.name as identity_name,
+    COALESCE(u.name, u.username) as identity_name,
     s.session_key,
     s.media_type,
     s.media_title,
@@ -238,6 +239,7 @@ const HISTORY_ROW_COLUMNS = sql`
     s.geo_asn_number,
     s.geo_asn_organization,
     ${localSessionSql('s')} AS is_local,
+    s.profile_name,
     s.player_name,
     s.device_id,
     s.product,
@@ -305,8 +307,9 @@ type HistoryCursor = NonNullable<HistoryPageParams['cursor']>;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
- * Cursor: `${startedAtMs}_${playId}`, plus `_${hex(JSON sort key)}` for the Content and
- * Duration sorts so the keyset comparison starts from the key. Undefined when malformed.
+ * Cursor: `${lastStartedAtMs}_${playId}`, the time being the play's latest segment start,
+ * plus `_${hex(JSON sort key)}` for the Content and Duration sorts so the keyset comparison
+ * starts from the key. Undefined when malformed.
  */
 export function parseHistoryCursor(
   cursor: string,
@@ -359,8 +362,8 @@ function pageOrder(params: Pick<HistoryPageParams, 'orderBy' | 'orderDir' | 'cur
       : sql``;
   // Every key in one direction so the keyset tuple comparison below is exact.
   const orderByExpr = sortKeyExpr
-    ? sql`${sortKeyExpr} ${dir}, MIN(s.started_at) ${dir}, ${playIdTiebreak} ${dir}`
-    : sql`MIN(s.started_at) ${dir}, ${playIdTiebreak} ${dir}`;
+    ? sql`${sortKeyExpr} ${dir}, MAX(s.started_at) ${dir}, ${playIdTiebreak} ${dir}`
+    : sql`MAX(s.started_at) ${dir}, ${playIdTiebreak} ${dir}`;
 
   const cursorOp = orderDir === 'desc' ? sql`<` : sql`>`;
   const cursorKeyParam =
@@ -368,8 +371,8 @@ function pageOrder(params: Pick<HistoryPageParams, 'orderBy' | 'orderDir' | 'cur
   const havingClause =
     cursorTime && cursorId
       ? sortKeyExpr
-        ? sql`HAVING (${sortKeyExpr}, MIN(s.started_at), ${playIdTiebreak}) ${cursorOp} (${cursorKeyParam}, ${cursorTime}, ${cursorId})`
-        : sql`HAVING (MIN(s.started_at), ${playIdTiebreak}) ${cursorOp} (${cursorTime}, ${cursorId})`
+        ? sql`HAVING (${sortKeyExpr}, MAX(s.started_at), ${playIdTiebreak}) ${cursorOp} (${cursorKeyParam}, ${cursorTime}, ${cursorId})`
+        : sql`HAVING (MAX(s.started_at), ${playIdTiebreak}) ${cursorOp} (${cursorTime}, ${cursorId})`
       : sql``;
 
   return { dir, sortKeyExpr, mediaJoin, orderByExpr, havingClause };
@@ -399,9 +402,11 @@ async function fetchStartedAtHistoryPage(params: HistoryPageParams): Promise<His
     );
     const result = await tx.execute(sql`
       SELECT play_id,
-        to_char(started_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS started_utc
+        to_char(started_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS started_utc,
+        to_char(last_started_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS last_started_utc
       FROM (
-        SELECT COALESCE(s.reference_id, s.id) AS play_id, MIN(s.started_at) AS started_at
+        SELECT COALESCE(s.reference_id, s.id) AS play_id, MIN(s.started_at) AS started_at,
+          MAX(s.started_at) AS last_started_at
         FROM sessions s
         ${whereClause(conditions)}
         GROUP BY COALESCE(s.reference_id, s.id)
@@ -409,15 +414,19 @@ async function fetchStartedAtHistoryPage(params: HistoryPageParams): Promise<His
         ORDER BY ${orderByExpr}
         LIMIT ${pageSize + 1}
       ) page
-      ORDER BY started_at ${dir}, play_id::text ${dir}
+      ORDER BY last_started_at ${dir}, play_id::text ${dir}
     `);
-    return result.rows as { play_id: string; started_utc: string }[];
+    return result.rows as { play_id: string; started_utc: string; last_started_utc: string }[];
   });
   const page = candidates.slice(0, pageSize);
   if (page.length === 0) return [];
   const starts = page.map((p) => p.started_utc).sort();
   const lo = sql`${starts[0]}::timestamptz`;
   const hi = sql`${starts.at(-1)}::timestamptz`;
+  const ceiling = sql`${page
+    .map((p) => p.last_started_utc)
+    .sort()
+    .at(-1)}::timestamptz`;
 
   const result = await db.execute(sql`
       WITH history_page_ids AS MATERIALIZED (
@@ -429,6 +438,7 @@ async function fetchStartedAtHistoryPage(params: HistoryPageParams): Promise<His
           ...conditions,
           sql`COALESCE(s.reference_id, s.id) IN (SELECT play_id FROM history_page_ids)`,
           sql`s.started_at >= ${lo}`,
+          sql`s.started_at <= ${ceiling}`,
         ],
       })})
       SELECT ${HISTORY_ROW_COLUMNS},
@@ -452,13 +462,15 @@ export async function fetchSortedHistoryPage(params: HistoryPageParams): Promise
   const { conditions, pageSize, startDate, endDate } = params;
   const { sortKeyExpr, mediaJoin, orderByExpr, havingClause } = pageOrder(params);
 
-  // Full per-play aggregation is scoped to this page's play ids and to started_at at or
-  // after the page's earliest play (a segment can never start before its own play's start,
-  // so this lower bound never drops a segment an unbounded aggregation would count).
+  // Full per-play aggregation is scoped to this page's play ids and to started_at between
+  // the page's earliest play start and its latest segment start. Every matching segment of
+  // a page play falls inside those bounds, so they never drop one an unbounded aggregation
+  // would count.
   const groupedConditions = [
     ...conditions,
     sql`COALESCE(s.reference_id, s.id) IN (SELECT play_id FROM history_page_ids)`,
     sql`s.started_at >= (SELECT MIN(started_at) FROM history_page_ids)`,
+    sql`s.started_at <= (SELECT MAX(last_started_at) FROM history_page_ids)`,
   ];
 
   const result = await db.execute(sql`
@@ -466,6 +478,7 @@ export async function fetchSortedHistoryPage(params: HistoryPageParams): Promise
         SELECT
           COALESCE(s.reference_id, s.id) as play_id,
           MIN(s.started_at) as started_at,
+          MAX(s.started_at) as last_started_at,
           ${sortKeyExpr ?? sql`NULL`} as sort_key,
           ROW_NUMBER() OVER (ORDER BY ${orderByExpr}) as rn
         FROM sessions s
@@ -477,7 +490,7 @@ export async function fetchSortedHistoryPage(params: HistoryPageParams): Promise
         LIMIT ${pageSize + 1}
       ),
       history_page_ids AS MATERIALIZED (
-        SELECT play_id, started_at, sort_key, rn FROM history_page WHERE rn <= ${pageSize}
+        SELECT play_id, started_at, last_started_at, sort_key, rn FROM history_page WHERE rn <= ${pageSize}
       ),
       grouped_sessions AS (${groupedPlaysCte({ where: groupedConditions })})
       SELECT ${HISTORY_ROW_COLUMNS},

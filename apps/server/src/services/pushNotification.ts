@@ -13,6 +13,7 @@ import {
   SEVERITY_LEVELS,
   getSeverityPriority,
   formatEpisodeLabel,
+  namesShow,
   fitText,
 } from '@tracearr/shared';
 import { db } from '../db/client.js';
@@ -105,19 +106,19 @@ const RECEIPT_MAX_AGE_MS = 60 * 60 * 1000; // 1 hour - receipts older than this 
  * TV Shows: "Show Name - S01E05 Episode Title" or "Show Name - S01E05"
  */
 function formatMediaTitle(session: ActiveSession): string {
-  const { mediaType, mediaTitle, grandparentTitle, seasonNumber, episodeNumber } = session;
+  const { mediaTitle, seasonNumber, episodeNumber } = session;
 
   // For episodes, format as "Show - S01E05 Episode"
-  if (mediaType === 'episode' && grandparentTitle) {
+  if (namesShow(session)) {
     // Fall back to 0 for a genuinely missing season/episode so the notification
     // still shows a code (e.g. "S00E00") instead of dropping it entirely.
     const episodeCode = formatEpisodeLabel(seasonNumber ?? 0, episodeNumber ?? 0) ?? 'S00E00';
 
     // If episode title is different from show title, include it
-    if (mediaTitle && mediaTitle !== grandparentTitle) {
-      return `${grandparentTitle} - ${episodeCode} ${mediaTitle}`;
+    if (mediaTitle && mediaTitle !== session.grandparentTitle) {
+      return `${session.grandparentTitle} - ${episodeCode} ${mediaTitle}`;
     }
-    return `${grandparentTitle} - ${episodeCode}`;
+    return `${session.grandparentTitle} - ${episodeCode}`;
   }
 
   // For movies and other media, just use the title
@@ -133,14 +134,6 @@ interface SessionWithPrefs {
   platform: 'ios' | 'android';
   deviceSecret: string | null;
   pushEnabled: boolean;
-  onViolationDetected: boolean;
-  onStreamStarted: boolean;
-  onStreamStopped: boolean;
-  onConcurrentStreams: boolean;
-  onNewDevice: boolean;
-  onTrustScoreChanged: boolean;
-  onServerDown: boolean;
-  onServerUp: boolean;
   violationMinSeverity: number;
   violationRuleTypes: string[] | null;
   // Rate limiting
@@ -260,14 +253,6 @@ async function getSessionsWithPreferences(): Promise<SessionWithPrefs[]> {
       platform: mobileSessions.platform,
       deviceSecret: mobileSessions.deviceSecret,
       pushEnabled: notificationPreferences.pushEnabled,
-      onViolationDetected: notificationPreferences.onViolationDetected,
-      onStreamStarted: notificationPreferences.onStreamStarted,
-      onStreamStopped: notificationPreferences.onStreamStopped,
-      onConcurrentStreams: notificationPreferences.onConcurrentStreams,
-      onNewDevice: notificationPreferences.onNewDevice,
-      onTrustScoreChanged: notificationPreferences.onTrustScoreChanged,
-      onServerDown: notificationPreferences.onServerDown,
-      onServerUp: notificationPreferences.onServerUp,
       violationMinSeverity: notificationPreferences.violationMinSeverity,
       violationRuleTypes: notificationPreferences.violationRuleTypes,
       maxPerMinute: notificationPreferences.maxPerMinute,
@@ -299,14 +284,6 @@ async function getSessionsWithPreferences(): Promise<SessionWithPrefs[]> {
       deviceSecret: s.deviceSecret ?? null,
       // Use defaults if no preferences exist
       pushEnabled: s.pushEnabled ?? true,
-      onViolationDetected: s.onViolationDetected ?? true,
-      onStreamStarted: s.onStreamStarted ?? true,
-      onStreamStopped: s.onStreamStopped ?? true,
-      onConcurrentStreams: s.onConcurrentStreams ?? true,
-      onNewDevice: s.onNewDevice ?? true,
-      onTrustScoreChanged: s.onTrustScoreChanged ?? true,
-      onServerDown: s.onServerDown ?? true,
-      onServerUp: s.onServerUp ?? true,
       violationMinSeverity: s.violationMinSeverity ?? 1,
       violationRuleTypes: s.violationRuleTypes ?? [],
       maxPerMinute: s.maxPerMinute ?? 10,
@@ -603,11 +580,7 @@ export class PushNotificationService {
 
     // Filter sessions based on preferences
     const eligibleSessions = sessions.filter((s) => {
-      // Check master toggle
       if (!s.pushEnabled) return false;
-
-      // Check event toggle
-      if (!s.onViolationDetected) return false;
 
       // Check minimum severity
       if (severityNum < s.violationMinSeverity) return false;
@@ -697,12 +670,7 @@ export class PushNotificationService {
     const sessions = await getSessionsWithPreferences();
     if (sessions.length === 0) return;
 
-    // Filter sessions based on preferences
-    const eligibleSessions = sessions.filter((s) => {
-      if (!s.pushEnabled) return false;
-      if (!s.onStreamStarted) return false;
-      return true;
-    });
+    const eligibleSessions = sessions.filter((s) => s.pushEnabled);
 
     if (eligibleSessions.length === 0) {
       console.log(`[Push] No eligible sessions for stream started notification`);
@@ -774,12 +742,7 @@ export class PushNotificationService {
     const sessions = await getSessionsWithPreferences();
     if (sessions.length === 0) return;
 
-    // Filter sessions based on preferences
-    const eligibleSessions = sessions.filter((s) => {
-      if (!s.pushEnabled) return false;
-      if (!s.onStreamStopped) return false;
-      return true;
-    });
+    const eligibleSessions = sessions.filter((s) => s.pushEnabled);
 
     if (eligibleSessions.length === 0) {
       console.log(`[Push] No eligible sessions for stream stopped notification`);
@@ -854,12 +817,7 @@ export class PushNotificationService {
     const sessions = await getSessionsWithPreferences();
     if (sessions.length === 0) return;
 
-    // Filter sessions based on preferences
-    const eligibleSessions = sessions.filter((s) => {
-      if (!s.pushEnabled) return false;
-      if (!s.onServerDown) return false;
-      return true;
-    });
+    const eligibleSessions = sessions.filter((s) => s.pushEnabled);
 
     if (eligibleSessions.length === 0) {
       console.log(`[Push] No eligible sessions for server down notification`);
@@ -915,7 +873,7 @@ export class PushNotificationService {
     const sessions = await getSessionsWithPreferences();
     if (sessions.length === 0) return;
 
-    const eligibleSessions = sessions.filter((s) => s.pushEnabled && s.onNewDevice);
+    const eligibleSessions = sessions.filter((s) => s.pushEnabled);
     if (eligibleSessions.length === 0) {
       console.log(`[Push] No eligible sessions for new device notification`);
       return;
@@ -963,7 +921,7 @@ export class PushNotificationService {
     const sessions = await getSessionsWithPreferences();
     if (sessions.length === 0) return;
 
-    const eligibleSessions = sessions.filter((s) => s.pushEnabled && s.onTrustScoreChanged);
+    const eligibleSessions = sessions.filter((s) => s.pushEnabled);
     if (eligibleSessions.length === 0) {
       console.log(`[Push] No eligible sessions for trust score notification`);
       return;
@@ -1121,12 +1079,7 @@ export class PushNotificationService {
     const sessions = await getSessionsWithPreferences();
     if (sessions.length === 0) return;
 
-    // Filter sessions based on preferences
-    const eligibleSessions = sessions.filter((s) => {
-      if (!s.pushEnabled) return false;
-      if (!s.onServerUp) return false;
-      return true;
-    });
+    const eligibleSessions = sessions.filter((s) => s.pushEnabled);
 
     if (eligibleSessions.length === 0) {
       console.log(`[Push] No eligible sessions for server up notification`);

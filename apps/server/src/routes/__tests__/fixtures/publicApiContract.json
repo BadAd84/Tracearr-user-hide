@@ -35,7 +35,7 @@
                     },
                     "type": {
                       "type": "string",
-                      "enum": ["plex", "jellyfin", "emby"]
+                      "enum": ["plex", "jellyfin", "emby", "tofa"]
                     },
                     "online": {
                       "type": "boolean"
@@ -133,6 +133,9 @@
               "todayPlays": {
                 "type": "integer"
               },
+              "todaySessions": {
+                "type": "integer"
+              },
               "watchTimeHours": {
                 "type": "number"
               },
@@ -141,18 +144,14 @@
               },
               "activeUsersToday": {
                 "type": "integer"
-              },
-              "timestamp": {
-                "type": "string",
-                "format": "date-time"
               }
             },
             "required": [
               "activeStreams",
               "activeUsersToday",
               "alertsLast24h",
-              "timestamp",
               "todayPlays",
+              "todaySessions",
               "watchTimeHours"
             ]
           }
@@ -1938,7 +1937,7 @@
                     },
                     "server_type": {
                       "type": "string",
-                      "enum": ["plex", "jellyfin", "emby"]
+                      "enum": ["plex", "jellyfin", "emby", "tofa"]
                     },
                     "state": {
                       "type": "string",
@@ -2457,7 +2456,7 @@
                     },
                     "server_type": {
                       "type": "string",
-                      "enum": ["plex", "jellyfin", "emby"]
+                      "enum": ["plex", "jellyfin", "emby", "tofa"]
                     },
                     "username": {
                       "type": "string"
@@ -3104,7 +3103,7 @@
                         },
                         "type": {
                           "type": "string",
-                          "enum": ["plex", "jellyfin", "emby"]
+                          "enum": ["plex", "jellyfin", "emby", "tofa"]
                         }
                       },
                       "required": ["id", "name", "type"]
@@ -3240,7 +3239,7 @@
                       },
                       "type": {
                         "type": "string",
-                        "enum": ["plex", "jellyfin", "emby"]
+                        "enum": ["plex", "jellyfin", "emby", "tofa"]
                       }
                     },
                     "required": ["id", "name", "type"]
@@ -3370,7 +3369,7 @@
                     },
                     "server_type": {
                       "type": "string",
-                      "enum": ["plex", "jellyfin", "emby"]
+                      "enum": ["plex", "jellyfin", "emby", "tofa"]
                     },
                     "historical": {
                       "type": "boolean"
@@ -3474,7 +3473,7 @@
                           },
                           "server_type": {
                             "type": "string",
-                            "enum": ["plex", "jellyfin", "emby"]
+                            "enum": ["plex", "jellyfin", "emby", "tofa"]
                           },
                           "username": {
                             "type": "string"
@@ -3925,7 +3924,7 @@
                           },
                           "server_type": {
                             "type": "string",
-                            "enum": ["plex", "jellyfin", "emby"]
+                            "enum": ["plex", "jellyfin", "emby", "tofa"]
                           },
                           "username": {
                             "type": "string"
@@ -4427,7 +4426,7 @@
                               },
                               "server_type": {
                                 "type": "string",
-                                "enum": ["plex", "jellyfin", "emby"]
+                                "enum": ["plex", "jellyfin", "emby", "tofa"]
                               },
                               "username": {
                                 "type": "string"
@@ -4917,7 +4916,7 @@
                               },
                               "type": {
                                 "type": "string",
-                                "enum": ["plex", "jellyfin", "emby"]
+                                "enum": ["plex", "jellyfin", "emby", "tofa"]
                               }
                             },
                             "required": ["id", "name", "type"]
@@ -5092,7 +5091,7 @@
                     },
                     "server_type": {
                       "type": "string",
-                      "enum": ["plex", "jellyfin", "emby"]
+                      "enum": ["plex", "jellyfin", "emby", "tofa"]
                     },
                     "library_id": {
                       "type": "string"
@@ -5641,7 +5640,7 @@
                     },
                     "server_type": {
                       "type": "string",
-                      "enum": ["plex", "jellyfin", "emby"]
+                      "enum": ["plex", "jellyfin", "emby", "tofa"]
                     },
                     "state": {
                       "type": "string",
@@ -6164,6 +6163,10 @@
                     "username": {
                       "type": "string"
                     },
+                    "identity_name": {
+                      "type": "string",
+                      "nullable": true
+                    },
                     "email": {
                       "type": "string",
                       "nullable": true
@@ -6183,7 +6186,7 @@
                           },
                           "server_type": {
                             "type": "string",
-                            "enum": ["plex", "jellyfin", "emby"]
+                            "enum": ["plex", "jellyfin", "emby", "tofa"]
                           },
                           "server_user_id": {
                             "type": "string",
@@ -6212,7 +6215,14 @@
                       }
                     }
                   },
-                  "required": ["accounts", "email", "id", "plex_account_id", "username"]
+                  "required": [
+                    "accounts",
+                    "email",
+                    "id",
+                    "identity_name",
+                    "plex_account_id",
+                    "username"
+                  ]
                 }
               },
               "meta": {
@@ -6259,6 +6269,10 @@
               "username": {
                 "type": "string"
               },
+              "identity_name": {
+                "type": "string",
+                "nullable": true
+              },
               "email": {
                 "type": "string",
                 "nullable": true
@@ -6278,7 +6292,7 @@
                     },
                     "server_type": {
                       "type": "string",
-                      "enum": ["plex", "jellyfin", "emby"]
+                      "enum": ["plex", "jellyfin", "emby", "tofa"]
                     },
                     "server_user_id": {
                       "type": "string",
@@ -6307,7 +6321,7 @@
                 }
               }
             },
-            "required": ["accounts", "email", "id", "plex_account_id", "username"]
+            "required": ["accounts", "email", "id", "identity_name", "plex_account_id", "username"]
           }
         }
       }
@@ -6449,7 +6463,7 @@
                     },
                     "server_type": {
                       "type": "string",
-                      "enum": ["plex", "jellyfin", "emby"]
+                      "enum": ["plex", "jellyfin", "emby", "tofa"]
                     },
                     "state": {
                       "type": "string",
@@ -6996,7 +7010,7 @@
                     },
                     "server_type": {
                       "type": "string",
-                      "enum": ["plex", "jellyfin", "emby"]
+                      "enum": ["plex", "jellyfin", "emby", "tofa"]
                     },
                     "library_id": {
                       "type": "string"
@@ -7110,7 +7124,7 @@
                     },
                     "server_type": {
                       "type": "string",
-                      "enum": ["plex", "jellyfin", "emby"]
+                      "enum": ["plex", "jellyfin", "emby", "tofa"]
                     },
                     "library_id": {
                       "type": "string"
@@ -7314,6 +7328,143 @@
                     "tmdb_id",
                     "tvdb_id",
                     "watched_state",
+                    "year"
+                  ]
+                }
+              },
+              "meta": {
+                "type": "object",
+                "properties": {
+                  "nextCursor": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "pageSize": {
+                    "type": "integer"
+                  }
+                },
+                "required": ["nextCursor", "pageSize"]
+              }
+            },
+            "required": ["data", "meta"]
+          }
+        }
+      }
+    },
+    "GET /api/v2/public/top-media": {
+      "tags": ["Media"],
+      "parameters": {
+        "query:media_type": {
+          "required": true,
+          "schema": {
+            "type": "string",
+            "enum": ["movie", "show"]
+          }
+        },
+        "query:days": {
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 365,
+            "default": 30
+          }
+        },
+        "query:server_id": {
+          "required": false,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "query:sort": {
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": ["plays", "watch_time", "viewers"],
+            "default": "plays"
+          }
+        },
+        "query:cursor": {
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        "query:pageSize": {
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000,
+            "exclusiveMinimum": true,
+            "default": 100
+          }
+        }
+      },
+      "request": null,
+      "responses": {
+        "200": {
+          "mediaType": "application/json",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "media_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "media_type": {
+                      "type": "string",
+                      "enum": ["movie", "show"]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "year": {
+                      "type": "integer",
+                      "nullable": true
+                    },
+                    "imdb_id": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "tmdb_id": {
+                      "type": "integer",
+                      "nullable": true
+                    },
+                    "tvdb_id": {
+                      "type": "integer",
+                      "nullable": true
+                    },
+                    "plays": {
+                      "type": "integer"
+                    },
+                    "watch_time_ms": {
+                      "type": "integer"
+                    },
+                    "unique_users": {
+                      "type": "integer"
+                    },
+                    "last_watched_day": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "imdb_id",
+                    "last_watched_day",
+                    "media_id",
+                    "media_type",
+                    "plays",
+                    "title",
+                    "tmdb_id",
+                    "tvdb_id",
+                    "unique_users",
+                    "watch_time_ms",
                     "year"
                   ]
                 }

@@ -11,6 +11,7 @@ import { db } from '../../db/client.js';
 import { buildMultiServerFragment } from '../../utils/serverFiltering.js';
 import { type Scope, scopedServerFragment } from '../../lib/scope.js';
 import { uuidArraySql } from '../../utils/sqlArrays.js';
+import { personPictureJoinSql } from '../../utils/representativeAccount.js';
 
 export interface RequestsAnalyticsData {
   funnel: RequestsFunnel;
@@ -38,6 +39,7 @@ interface AnalyticsSqlRow {
   username: string | null;
   identity_name: string | null;
   thumb: string | null;
+  thumb_server_id: string | null;
 }
 
 function at(value: Date | string): Date {
@@ -53,6 +55,7 @@ function requesterOf(row: AnalyticsSqlRow): RequestRequester {
         username: row.username,
         identityName: row.identity_name,
         thumb: row.thumb,
+        thumbServerId: row.thumb_server_id,
       }
     : {
         serverUserId: null,
@@ -61,6 +64,7 @@ function requesterOf(row: AnalyticsSqlRow): RequestRequester {
         username: row.remote_username,
         identityName: null,
         thumb: null,
+        thumbServerId: null,
       };
 }
 
@@ -70,7 +74,7 @@ function requesterKey(row: AnalyticsSqlRow): string {
 
 function median(values: number[]): number | null {
   if (values.length === 0) return null;
-  const sorted = [...values].sort((a, b) => a - b);
+  const sorted = values.toSorted((a, b) => a - b);
   const mid = sorted.length / 2;
   if (sorted.length % 2 === 1) return sorted[Math.floor(mid)] ?? null;
   const low = sorted[mid - 1];
@@ -284,14 +288,16 @@ export async function getRequestsAnalytics(
       su.user_id AS lens_user_id,
       su.server_id AS user_server_id,
       su.username,
-      u.name AS identity_name,
-      COALESCE(u.thumbnail, su.thumb_url) AS thumb
+      COALESCE(u.name, u.username) AS identity_name,
+      u.thumbnail AS thumb,
+      pic.server_id AS thumb_server_id
     FROM media_requests mr
     JOIN request_services rs ON rs.id = mr.service_id
     -- A merge repoints library rows but not requests, so the id stored at sync time can be a loser.
     LEFT JOIN media cm ON cm.id = mr.media_id
     LEFT JOIN server_users su ON su.id = mr.server_user_id
     LEFT JOIN users u ON u.id = su.user_id
+    ${personPictureJoinSql()}
     WHERE mr.deleted_at IS NULL ${authFragment}
     ORDER BY mr.requested_at DESC, mr.id
   `);

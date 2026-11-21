@@ -14,6 +14,7 @@ import type { NotificationToast } from './destinations.js';
 import type { ListMeta } from './listQuery.js';
 import type { UpgradeWarning } from './releaseNotes.js';
 import type { ResolutionBucket } from './resolution.js';
+import type { ServerType } from './serverTypes.js';
 import type { LibraryMediaType, PlaysMediaGroup, statPeriodSchema } from './schemas.js';
 import type { z } from 'zod';
 import type { LOGIN_ACCESS } from './constants.js';
@@ -42,8 +43,7 @@ export const hasMinRole = (userRole: UserRole, required: 'owner' | 'admin' | 'me
 export const isOwner = (role: UserRole): boolean => role === 'owner';
 export const isActive = (role: UserRole): boolean => canLogin(role);
 
-// Server types
-export type ServerType = 'plex' | 'jellyfin' | 'emby';
+export type { ServerType };
 
 export interface Server {
   id: string;
@@ -62,6 +62,8 @@ export interface Server {
   /** When Tracearr stopped contacting this server. Null, or absent on older payloads, while it is live. */
   historicalAt?: string | null;
   allowMemberLogin?: boolean;
+  /** False when the saved API key may not stop streams; null for servers whose key always may. */
+  canStopStreams?: boolean | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -127,6 +129,12 @@ export interface ServerUser {
 export interface ServerUserWithIdentity extends ServerUser {
   serverName: string;
   identityName: string | null;
+  // The Tracearr user's name, the same under every server filter: identityName, else the
+  // user's username, not this account's `username`. Only populated by the list endpoint.
+  personName?: string;
+  // Only the list endpoint: there thumbUrl is the person's picture, loaded through this server
+  // (null for a full URL), not the representative account's picture.
+  thumbServerId?: string | null;
   role: UserRole; // From linked User identity
   loginAccess: LoginAccess; // From linked User identity
   lastLoginAt: Date | string | null; // Tracearr sign-ins of the linked identity
@@ -195,6 +203,8 @@ export interface ServerUserFullDetail {
   user: ServerUserDetail;
   identity: {
     userId: string;
+    /** The Tracearr user's username, which names the person when identityName is unset. */
+    username: string;
     aggregateTrustScore: number;
     totalViolations: number;
     contactEmail: string | null;
@@ -274,10 +284,11 @@ export interface OwnerLinkCandidate {
   blockedReason: OwnerLinkBlockedReason | null;
 }
 
-/** The owner's own account on one Jellyfin or Emby server, or the accounts it could be. */
+/** The owner's own account on one Jellyfin, Emby or tofa server, or the accounts it could be. */
 export interface OwnerLinkServer {
   serverId: string;
-  linked: { serverUserId: string; username: string } | null;
+  /** canUnlink is false for the tofa account the owner's own tofa sign-in came with, which stays. */
+  linked: { serverUserId: string; username: string; canUnlink: boolean } | null;
   candidates: OwnerLinkCandidate[];
 }
 
@@ -303,7 +314,8 @@ export interface MergeSuggestionIdentity {
 }
 
 export interface MergeSuggestion {
-  matchType: 'email' | 'username';
+  /** linkedAccount: one server reports the other account as its user's own; matchValue is that account's username */
+  matchType: 'linkedAccount' | 'email' | 'username';
   matchValue: string;
   users: [MergeSuggestionIdentity, MergeSuggestionIdentity];
   requiredTargetUserId: string | null;
@@ -329,7 +341,10 @@ export interface SetupStatus {
     plex: boolean;
     oidc: boolean;
     oidcProviderName: string | null;
+    tofa: boolean;
     member: boolean;
+    /** SSO-only is hiding the owner's and admins' other methods; /login?all shows them. */
+    ssoOnly: boolean;
   };
   memberLoginServers: { id: string; name: string; type: ServerType; quickConnect: boolean }[];
 }
@@ -409,6 +424,10 @@ export interface TranscodeInfo {
   /** Seconds from the file start that the transcoder has ready (Plex only; Jellyfin sends none) */
   maxOffsetAvailable?: number;
   reasons?: string[];
+  /** Playback health the client reports (tofa only) */
+  rebufferCount?: number;
+  rebufferDurationMs?: number;
+  droppedFrames?: number;
 }
 
 /** Subtitle stream information */
@@ -518,6 +537,8 @@ export interface Session extends StreamDetailFields {
   geoAsnOrganization: string | null;
   // A local network session; its geo fields hold its server's location when one is set
   isLocal: boolean;
+  /** The profile that played, where one account holds several (tofa); null elsewhere */
+  profileName: string | null;
   playerName: string | null; // Friendly device name
   deviceId: string | null; // Unique device identifier (machineIdentifier)
   product: string | null; // Product/app name (e.g., "Plex for iOS")
@@ -564,6 +585,8 @@ export interface SessionSegment {
 export interface SessionWithDetails extends Omit<Session, 'ratingKey' | 'externalSessionId'> {
   user: Pick<ServerUser, 'id' | 'username' | 'thumbUrl'> & { identityName: string | null };
   server: Pick<Server, 'id' | 'name' | 'type'>;
+  /** Start of the play's latest segment; History dates and sorts plays by it. */
+  lastStartedAt?: Date;
   // Number of pause/resume segments in this grouped play (1 = no pauses)
   segmentCount?: number;
   // Individual segment details (up to 20), only present when segmentCount > 1
@@ -723,6 +746,9 @@ export interface DashboardStats {
   watchTimeHours: number;
   /** Music tracks since the start of the day; watchTimeHours covers movies and episodes */
   listenTimeHours: number;
+  /** The same two totals unrounded; the hour fields keep 0.1 h for the mobile app and the public API */
+  watchTimeMs: number;
+  listenTimeMs: number;
   /** Absent for members, who never see violations */
   alertsLast24h?: number;
   /** Absent for members, who get othersActive instead */
@@ -1119,6 +1145,7 @@ export interface LoginMethods {
   local: boolean;
   plex: boolean;
   oidc: boolean;
+  tofa: boolean;
   member: boolean;
 }
 
@@ -1166,6 +1193,8 @@ export interface Settings {
   preferredPosterServerId: string | null;
   // Members see anonymous counts of other people's activity: others watching, title totals, Most Popular, popularity sorts
   memberServerActivity: boolean;
+  // Admins and members sign in only through SSO; their Plex, Jellyfin and Emby sign-in is refused
+  memberSsoOnly: boolean;
 }
 
 /** GET and PATCH /settings: the settings plus deployment facts that are not settings. */
@@ -1258,7 +1287,16 @@ export interface HeavyOpsWaitingFor {
 
 // Tautulli import types
 export interface TautulliImportProgress {
-  status: 'idle' | 'waiting' | 'fetching' | 'processing' | 'complete' | 'error';
+  serverId: string;
+  status:
+    | 'idle'
+    | 'waiting'
+    | 'fetching'
+    | 'processing'
+    | 'enriching'
+    | 'retrying'
+    | 'complete'
+    | 'error';
   /** Expected total from API (may differ from actual if API count is stale) */
   totalRecords: number;
   /** Actual records fetched from API so far */
@@ -1284,10 +1322,13 @@ export interface TautulliImportProgress {
   message: string;
   /** Present when status='waiting' - what this job is waiting for */
   waitingFor?: HeavyOpsWaitingFor;
+  /** Present when status='retrying' */
+  retry?: ImportRetry;
 }
 
 export interface TautulliImportResult {
-  success: boolean;
+  /** Always true: a failed import throws */
+  success: true;
   imported: number;
   updated: number;
   /** No longer set; kept for clients built against older versions */
@@ -1305,7 +1346,9 @@ export interface TautulliImportResult {
 
 // Jellystat import types
 export interface JellystatImportProgress {
-  status: 'idle' | 'waiting' | 'parsing' | 'enriching' | 'processing' | 'complete' | 'error';
+  serverId: string;
+  status:
+    'idle' | 'waiting' | 'parsing' | 'enriching' | 'processing' | 'retrying' | 'complete' | 'error';
   totalRecords: number;
   processedRecords: number;
   importedRecords: number;
@@ -1324,10 +1367,13 @@ export interface JellystatImportProgress {
   message: string;
   /** Present when status='waiting' - what this job is waiting for */
   waitingFor?: HeavyOpsWaitingFor;
+  /** Present when status='retrying' */
+  retry?: ImportRetry;
 }
 
 export interface JellystatImportResult {
-  success: boolean;
+  /** Always true: a failed import throws */
+  success: true;
   imported: number;
   updated: number;
   skipped: number;
@@ -1351,6 +1397,7 @@ export interface JellystatImportResult {
 
 // Playback Reporting plugin import types
 export interface PlaybackReportingImportProgress {
+  serverId: string;
   status:
     | 'idle'
     | 'waiting'
@@ -1358,6 +1405,7 @@ export interface PlaybackReportingImportProgress {
     | 'fetching'
     | 'enriching'
     | 'processing'
+    | 'retrying'
     | 'complete'
     | 'error';
   totalRecords: number;
@@ -1380,10 +1428,13 @@ export interface PlaybackReportingImportProgress {
   message: string;
   /** Present when status='waiting' - what this job is waiting for */
   waitingFor?: HeavyOpsWaitingFor;
+  /** Present when status='retrying' */
+  retry?: ImportRetry;
 }
 
 export interface PlaybackReportingImportResult {
-  success: boolean;
+  /** Always true: a failed import throws */
+  success: true;
   imported: number;
   skipped: number;
   duplicates: number;
@@ -1400,6 +1451,74 @@ export interface PlaybackReportingImportResult {
   }[];
 }
 
+// tofa watch history import types
+export interface TofaImportProgress {
+  serverId: string;
+  status: 'idle' | 'waiting' | 'fetching' | 'processing' | 'retrying' | 'complete' | 'error';
+  fetchedRecords: number;
+  processedRecords: number;
+  importedRecords: number;
+  skippedRecords: number;
+  /** Skipped: a play Tracearr captured itself, or one an earlier import brought in */
+  duplicateRecords: number;
+  /** Skipped: user not found in Tracearr (sync server first) */
+  unknownUserRecords: number;
+  /** Skipped: a play still running, which has no end yet */
+  activeRecords: number;
+  errorRecords: number;
+  message: string;
+  /** Present when status='waiting' - what this job is waiting for */
+  waitingFor?: HeavyOpsWaitingFor;
+  /** Present when status='retrying' */
+  retry?: ImportRetry;
+}
+
+export interface TofaImportResult {
+  /** Always true: a failed import throws */
+  success: true;
+  imported: number;
+  skipped: number;
+  duplicates: number;
+  errors: number;
+  message: string;
+  skippedUsers?: {
+    userId: string;
+    username: string | null;
+    recordCount: number;
+  }[];
+}
+
+/**
+ * An import held while the server's first library sync is owed, queued or running, until a
+ * library sync of the server completes (or a day at most).
+ */
+export interface ImportWaitingForLibrarySync {
+  state: 'waitingForLibrarySync';
+  /** The library sync it waits for; null when none is queued or running for the server */
+  librarySync: { state: 'queued' | 'running'; progress: number | null } | null;
+}
+
+/** An import attempt that failed with a retry still to come */
+export interface ImportRetry {
+  /** The attempt that failed, counted from 1 */
+  attempt: number;
+  /** Attempts allowed in all */
+  attempts: number;
+  reason: string | null;
+}
+
+/**
+ * Where a server's latest import from one source stands: the one held for the server's first
+ * library sync, or one the owner started.
+ */
+export type LatestImportStatus<Progress, Result> =
+  | ImportWaitingForLibrarySync
+  | { state: 'queued' }
+  | { state: 'running'; progress: Progress | null }
+  | ({ state: 'retrying' } & ImportRetry)
+  | { state: 'failed'; reason: string | null }
+  | { state: 'complete'; result: Result; finishedAt: number | null };
+
 // Library sync progress types
 export interface LibrarySyncProgress {
   serverId: string;
@@ -1415,6 +1534,8 @@ export interface LibrarySyncProgress {
   startedAt: string;
   completedAt?: string;
   error?: string;
+  /** Set on the error event of a server's first library sync once its last attempt failed */
+  firstSyncFailed?: true;
 }
 
 /** Why the poller marked a server down, when it knows; absent for unreachable. */
@@ -1431,6 +1552,7 @@ export interface ServerToClientEvents {
   'import:progress': (progress: TautulliImportProgress) => void;
   'import:jellystat:progress': (progress: JellystatImportProgress) => void;
   'import:playbackreporting:progress': (progress: PlaybackReportingImportProgress) => void;
+  'import:tofa:progress': (progress: TofaImportProgress) => void;
   'maintenance:progress': (progress: MaintenanceJobProgress) => void;
   'library:sync:progress': (progress: LibrarySyncProgress) => void;
   'tasks:updated': (tasks: RunningTask[]) => void;
@@ -1489,7 +1611,8 @@ export interface UserDevice {
   locations: DeviceLocation[]; // Where this device has been used from
 }
 
-export type MediaDownloadSource = 'activity_log' | 'emby_sync' | 'plex' | 'jellyfin_transcode';
+export type MediaDownloadSource =
+  'activity_log' | 'emby_sync' | 'plex' | 'jellyfin_transcode' | 'tofa';
 
 export interface MediaDownloadRow {
   id: string;
@@ -1615,7 +1738,7 @@ export interface UserFilterOption {
 export interface ServerFilterOption {
   id: string;
   name: string;
-  type: 'plex' | 'jellyfin' | 'emby';
+  type: ServerType;
 }
 
 /**
@@ -1720,7 +1843,7 @@ export interface MobilePairResponse {
   server: {
     id: string;
     name: string;
-    type: 'plex' | 'jellyfin' | 'emby';
+    type: ServerType;
   };
   user: {
     userId: string;
@@ -1798,7 +1921,7 @@ export interface RateLimitStatus {
   resetHourIn: number; // seconds until hour window resets
 }
 
-/** The per-device toggles that filter a push after the server has decided to send it. */
+/** The push switches; each reads and writes the server-wide senders, not the device. */
 export type PushEventPreference =
   | 'onViolationDetected'
   | 'onStreamStarted'
@@ -1808,7 +1931,16 @@ export type PushEventPreference =
   | 'onServerDown'
   | 'onServerUp';
 
-/** What stands between an event and this device, apart from the device's own toggles. */
+export interface PushSwitch {
+  /** Something sends this event to Mobile push, and Mobile push is on. */
+  on: boolean;
+  /** Senders the switch does not own: built or customized in the web, or scoped to a server. */
+  others: number;
+  /** How many of `others` are scoped to one server. */
+  scoped: number;
+}
+
+/** What stands between an event and this device. */
 export interface PushDeliveryStatus {
   /** The server holds a push token for this device. */
   tokenRegistered: boolean;
@@ -1818,6 +1950,8 @@ export interface PushDeliveryStatus {
   violationsSubscribed: boolean;
   /** Active automations that send each event to Mobile push. */
   automations: Record<PushEventPreference, number>;
+  /** Absent before the switches read from the senders. */
+  switches?: Record<PushEventPreference, PushSwitch>;
 }
 
 // Extended preferences response including live rate limit status
@@ -2003,7 +2137,7 @@ export interface TerminationLogWithDetails {
   serverUserId: string;
   trigger: TerminationTrigger;
   triggeredByUserId: string | null;
-  triggeredByUsername: string | null; // Joined from users table
+  triggeredByUsername: string | null; // The person who terminated: users.name, else users.username
   ruleId: string | null;
   ruleName: string | null; // Joined from rules table
   violationId: string | null;
@@ -2188,6 +2322,7 @@ export type RunningTaskType =
   | 'tautulli_import'
   | 'jellystat_import'
   | 'playback_reporting_import'
+  | 'tofa_import'
   | 'image_precache'
   | 'maintenance';
 
@@ -2256,43 +2391,6 @@ export interface ContentEngagement {
   lastWatchedAt: Date;
 }
 
-// Top content with engagement metrics (from top_content_by_plays view)
-export interface TopContentEngagement {
-  ratingKey: string;
-  title: string;
-  showTitle: string | null;
-  type: MediaType;
-  thumbPath: string | null;
-  serverId: string | null;
-  year: number | null;
-  totalPlays: number;
-  totalWatchHours: number;
-  uniqueViewers: number;
-  validSessions: number;
-  totalSessions: number;
-  completions: number;
-  rewatches: number;
-  abandonments: number;
-  completionRate: number;
-  abandonmentRate: number;
-}
-
-// Show-level engagement (from top_shows_by_engagement view)
-export interface ShowEngagement {
-  showTitle: string;
-  thumbPath: string | null;
-  serverId: string | null;
-  year: number | null;
-  totalEpisodeViews: number;
-  totalWatchHours: number;
-  uniqueViewers: number;
-  avgEpisodesPerViewer: number;
-  avgCompletionRate: number;
-  bingeScore: number;
-  validSessions: number;
-  totalSessions: number;
-}
-
 // User engagement profile (from user_engagement_profile view)
 export interface UserEngagementProfile {
   serverUserId: string;
@@ -2323,8 +2421,6 @@ export interface EngagementTierBreakdown {
 
 // Main engagement stats response
 export interface EngagementStats {
-  topContent: TopContentEngagement[];
-  topShows: ShowEngagement[];
   engagementBreakdown: EngagementTierBreakdown[];
   userProfiles: UserEngagementProfile[];
   // Summary metrics
@@ -2335,12 +2431,6 @@ export interface EngagementStats {
     sessionInflationPct: number; // How much overcounting would occur with raw sessions
     avgCompletionRate: number;
   };
-}
-
-// Show stats response (for GET /stats/shows)
-export interface ShowStatsResponse {
-  data: ShowEngagement[];
-  total: number;
 }
 
 // =============================================================================
@@ -2497,7 +2587,7 @@ export interface DailyBandwidthResponse {
 // Top bandwidth user
 export interface BandwidthTopUser {
   username: string;
-  /** Display name from linked identity (null if no linked user) */
+  /** The person's name: the Tracearr display name, else the Tracearr username */
   identityName: string | null;
   /** Avatar URL from server user */
   thumbUrl: string | null;
@@ -3109,6 +3199,12 @@ export interface MediaAvailabilityEntry {
   /** Library display name, null until that server's library sync has recorded it. */
   libraryName: string | null;
   ratingKey: string;
+  /** Episode and season rows only: this server's key for the show. */
+  showRatingKey: string | null;
+  /** Episode and season rows only. */
+  seasonNumber: number | null;
+  /** Episode rows only. */
+  episodeNumber: number | null;
   addedAt: string;
   removedAt: string | null;
   videoResolution: string | null;
@@ -3241,8 +3337,10 @@ export interface MediaWatcherEntry {
     serverId: string;
     username: string | null;
     identityName: string | null;
-    /** Identity thumbnail when set, else the server account's avatar. */
+    /** The person's picture: their most recently active account's that has one. */
     thumb: string | null;
+    /** Server the picture loads through; null for a full URL. */
+    thumbServerId: string | null;
   };
   plays: number;
   watchTimeMs: number;
@@ -3272,6 +3370,8 @@ export interface MediaPlatformBreakdownResponse {
 }
 
 export interface SeasonHeatEpisode {
+  mediaId: string;
+  title: string;
   episodeNumber: number | null;
   watchedState: WatchedState;
 }
@@ -3294,9 +3394,8 @@ export interface MediaSeasonHeatResponse {
 // Library Watch Patterns Response (GET /library/patterns)
 
 /**
- * A single binge-show row.
- * When multiple servers are in scope, episodes of the same show across
- * different servers are collapsed into one row (deduped by show matchKey).
+ * A single binge-show row, one per show identity. Plays are counted per person, so one
+ * person's accounts on several servers form one run of episodes.
  */
 export interface BingeShow {
   /** Show identity, a merged alias folded into its winner. */
@@ -3305,12 +3404,19 @@ export interface BingeShow {
   /** Server with the most episodes watched in this binge journey. */
   primaryServerId: string;
   thumbPath: string | null;
+  /** Plays (resume chains) by the people counted in `people`. */
   totalEpisodeWatches: number;
+  /**
+   * Plays of a different episode starting 30 minutes or less after the same person's previous
+   * play of the show ended.
+   */
   consecutiveEpisodes: number;
+  /** consecutiveEpisodes as a share of totalEpisodeWatches. */
   consecutivePct: number;
-  avgGapMinutes: number;
-  bingeScore: number;
+  /** Most distinct episodes one person played in one UTC day. */
   maxEpisodesInOneDay: number;
+  /** Identities with at least the binge threshold of consecutive plays. */
+  people: number;
   /** All server IDs involved in this binge journey. */
   serverIds: string[];
 }
@@ -3345,9 +3451,8 @@ export interface PatternsResponse {
     quietest: string | null;
   };
   summary: {
-    totalWatchSessions: number;
-    avgSessionsPerDay: number;
-    bingeSessionsPct: number;
+    /** Share of episode plays in scope that were consecutive, with no threshold. */
+    consecutivePlaysPct: number;
   };
 }
 
@@ -3423,7 +3528,8 @@ export interface TopShow {
   totalWatchHours: number;
   uniqueViewers: number;
   avgCompletionRate: number;
-  bingeScore: number;
+  /** Distinct episodes with a counted play per person, averaged over the viewers. */
+  episodesPerViewer: number;
 }
 
 export interface TopShowsSummary {

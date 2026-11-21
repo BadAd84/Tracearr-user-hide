@@ -11,7 +11,13 @@ import fastifyStatic from '@fastify/static';
 import { existsSync, readFileSync } from 'node:fs';
 import { gzipSync, createGzip } from 'node:zlib';
 import { Redis } from 'ioredis';
-import { API_BASE_PATH, API_V2_BASE_PATH, REDIS_KEYS, WS_EVENTS } from '@tracearr/shared';
+import {
+  API_BASE_PATH,
+  API_V2_BASE_PATH,
+  REDIS_KEYS,
+  SERVER_TYPES,
+  WS_EVENTS,
+} from '@tracearr/shared';
 import { createBetterAuthHandler, deriveScheme } from './lib/betterAuthRequest.js';
 import { getBasePath } from './lib/basePath.js';
 import { registerOriginPolicy, trustProxyFromEnv } from './lib/origins.js';
@@ -27,7 +33,7 @@ const PROJECT_ROOT = resolve(__dirname, '../../..');
 // Load .env from project root
 config({ path: resolve(PROJECT_ROOT, '.env'), quiet: true });
 
-// Node drops a dual-stack connect attempt after 250ms rather than racing it, so a host whose
+// Node drops a dual-stack connect attempt after 500ms rather than racing it, so a host whose
 // IPv4 handshake is slower than that fails outright when the IPv6 fallback is unreachable.
 setDefaultAutoSelectFamilyAttemptTimeout(2_500);
 
@@ -48,6 +54,7 @@ import type {
   TautulliImportProgress,
   JellystatImportProgress,
   PlaybackReportingImportProgress,
+  TofaImportProgress,
   MaintenanceJobProgress,
   LibrarySyncProgress,
   NotificationToast,
@@ -166,6 +173,7 @@ import {
   startMaintenanceWorker,
   shutdownMaintenanceQueue,
   enqueueServerLocationSyncIfBehind,
+  seedSnapshotsNormalizedAt,
 } from './jobs/maintenanceQueue.js';
 import {
   initLibrarySyncQueue,
@@ -197,6 +205,7 @@ import {
   scheduleRequestSync,
   shutdownRequestSyncQueue,
 } from './jobs/requestSyncQueue.js';
+import { addBuiltInRequestServices } from './services/requests/store.js';
 import {
   initBackupQueue,
   startBackupWorker,
@@ -227,6 +236,7 @@ import { registeredQueue, shutdownAllJobs } from './jobs/jobSafety.js';
 import { reconcileJobsOnBoot } from './jobs/jobsBoot.js';
 import { DEFAULT_LOCK_DURATION_MS } from './jobs/lockUtils.js';
 import { startConnectionBudget, stopConnectionBudget } from './services/connectionBudget.js';
+import { reconcileDeviceMutes } from './services/pushDelivery.js';
 import { initPushRateLimiter } from './services/pushRateLimiter.js';
 import { initializeV2Rules } from './services/automations/v2Integration.js';
 import { rehydratePauseWakes, stopPauseWakes } from './services/automations/wakes/pauseWakes.js';
@@ -930,11 +940,25 @@ async function initializeServices(app: FastifyInstance) {
   // those templates. Unwrapped too, or an install ends up with neither the checkbox nor the rule.
   await runSystemEventsMigration();
 
+  // Wrapped: the device columns stay as they were and the next boot tries again.
+  try {
+    await reconcileDeviceMutes();
+  } catch (err) {
+    app.log.warn({ err }, 'Failed to move device push mutes onto their senders');
+  }
+
   // Wrapped: a failed seed leaves the setting null, which shows nothing and retries next boot.
   try {
     await seedWhatsNewLastSeen();
   } catch (err) {
     app.log.warn({ err }, "Failed to seed what's-new last-seen version");
+  }
+
+  // Wrapped the same way: a failed seed leaves the setting null and the first sync normalizes.
+  try {
+    await seedSnapshotsNormalizedAt();
+  } catch (err) {
+    app.log.warn({ err }, 'Failed to seed snapshot normalization marker');
   }
 
   try {
@@ -1147,9 +1171,15 @@ async function initializeServices(app: FastifyInstance) {
 
   try {
     startRequestSyncWorker();
-    scheduleRequestSync().catch((err: unknown) => {
-      app.log.error({ err }, 'Failed to schedule request sync');
-    });
+    // Servers added before their type had requests built in get theirs here
+    void addBuiltInRequestServices(db, SERVER_TYPES)
+      .catch((err: unknown) => {
+        app.log.error({ err }, 'Failed to add built-in request services');
+      })
+      .then(scheduleRequestSync)
+      .catch((err: unknown) => {
+        app.log.error({ err }, 'Failed to schedule request sync');
+      });
     app.log.info('Request sync queue initialized');
   } catch (err) {
     app.log.error({ err }, 'Failed to initialize request sync queue');
@@ -1255,7 +1285,7 @@ async function initializeServices(app: FastifyInstance) {
 
       if (dbOk) {
         await refreshTimescaleCache();
-        retryDegradedCompressionPolicy().catch((err) => {
+        retryDegradedCompressionPolicy().catch((err: unknown) => {
           app.log.warn({ err }, 'Failed to retry degraded compression policy');
         });
       } else {
@@ -1405,6 +1435,9 @@ async function initializePostListen(app: FastifyInstance) {
             data as PlaybackReportingImportProgress
           );
           break;
+        case WS_EVENTS.IMPORT_TOFA_PROGRESS:
+          broadcastToSessions('import:tofa:progress', data as TofaImportProgress);
+          break;
         case WS_EVENTS.MAINTENANCE_PROGRESS:
           broadcastToSessions('maintenance:progress', data as MaintenanceJobProgress);
           break;
@@ -1525,7 +1558,7 @@ async function initializePostListen(app: FastifyInstance) {
     pendingAggregateBackfill = null;
     aggregateBackfillRunning = true;
     void runAggregateBackfill(targetVersion)
-      .catch((err) => {
+      .catch((err: unknown) => {
         app.log.error({ err }, 'Aggregate backfill failed unexpectedly');
       })
       .finally(() => {

@@ -35,11 +35,10 @@ function buildDeviceMatrix(rows: MatrixDeviceRow[], codecs: string[]): DeviceCom
   >();
 
   for (const row of rows) {
-    let entry = deviceMap.get(row.device_type);
-    if (!entry) {
-      entry = { device: row.device_type, codecs: {} };
-      deviceMap.set(row.device_type, entry);
-    }
+    const entry = deviceMap.getOrInsertComputed(row.device_type, (device) => ({
+      device,
+      codecs: {},
+    }));
     entry.codecs[row.video_codec] = {
       sessions: row.session_count,
       directPct: row.direct_pct,
@@ -47,7 +46,7 @@ function buildDeviceMatrix(rows: MatrixDeviceRow[], codecs: string[]): DeviceCom
   }
 
   return {
-    codecs: [...codecs].sort(compareNames),
+    codecs: codecs.toSorted(compareNames),
     devices: Array.from(deviceMap.values()).sort((a, b) => compareNames(a.device, b.device)),
   };
 }
@@ -462,7 +461,7 @@ export const devicesRoutes: FastifyPluginAsync = async (app) => {
           su.server_id,
           su.id AS server_user_id,
           COALESCE(su.username, 'Unknown') AS username,
-          u.name AS identity_name,
+          COALESCE(u.name, u.username) AS identity_name,
           su.thumb_url AS avatar,
           COUNT(*)::int AS total_sessions,
           COUNT(*) FILTER (WHERE s.video_decision != 'transcode' AND s.audio_decision != 'transcode')::int AS direct_play_count,
@@ -475,7 +474,7 @@ export const devicesRoutes: FastifyPluginAsync = async (app) => {
         AND s.source_video_codec IS NOT NULL
         ${period === 'custom' ? sql`AND s.started_at < ${dateRange.end}` : sql``}
         ${serverFilter}
-        GROUP BY su.server_id, su.id, su.username, su.thumb_url, u.name
+        GROUP BY su.server_id, su.id, su.username, su.thumb_url, u.name, u.username
         HAVING COUNT(*) FILTER (WHERE s.video_decision = 'transcode' OR s.audio_decision = 'transcode') > 0
         ORDER BY transcode_count DESC
         LIMIT 10

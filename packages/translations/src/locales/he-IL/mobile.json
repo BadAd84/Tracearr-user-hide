@@ -112,9 +112,16 @@
     "noViolationSender": "",
     "noAutomationSends": "",
     "eventsFooter": "",
+    "sharedEventsFooter": "",
     "sentByAutomations_one": "",
     "sentByAutomations_two": "",
-    "sentByAutomations_other": ""
+    "sentByAutomations_other": "",
+    "alsoSentBy_one": "",
+    "alsoSentBy_two": "",
+    "alsoSentBy_other": "",
+    "scopedSenders_one": "",
+    "scopedSenders_two": "",
+    "scopedSenders_other": ""
   },
   "session": {
     "streamTerminated": "",
@@ -129,6 +136,7 @@
     "noTerminations": "",
     "lastSeen": "",
     "terminatedBy": "",
+    "terminatedByName": "",
     "trustScoreConfirm": "",
     "trustScoreRange": "",
     "moreLocations_one": "",

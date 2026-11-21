@@ -138,13 +138,19 @@ vi.mock('../../services/automations/events/contextAssembly.js', () => ({
   }),
   setContextAssemblyDeps: vi.fn(),
 }));
+vi.mock('../../services/settings.js', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  getWatchedThreshold: vi.fn().mockResolvedValue(0.85),
+}));
 vi.mock('../../services/serviceTracker.js', () => ({
   registerService: vi.fn(),
   unregisterService: vi.fn(),
 }));
 
 import { shouldFlushDbWrite } from '../poller/dbWriteThrottle.js';
+import { checkWatchCompletion } from '../poller/stateTracker.js';
 import { initializeSSEProcessor, startSSEProcessor, stopSSEProcessor } from '../sseProcessor.js';
+import { fakePlexClient } from '../../test/mediaServerFakes.js';
 
 const EXISTING_SESSION_ID = 'session-paused-1';
 
@@ -211,9 +217,11 @@ describe('SSE processor pause edge', () => {
     mockGetActiveAutomations.mockResolvedValue([{ id: 'rule-1' }]);
     mockLoadEvaluationContext.mockResolvedValue(evaluationContext);
     mockCalculatePauseAccumulation.mockReturnValue({ lastPausedAt: null, pausedDurationMs: 0 });
-    mockCreateMediaServerClient.mockReturnValue({
-      getSessions: vi.fn().mockResolvedValue([{ sessionKey: 'sess-key-1' }]),
-    });
+    mockCreateMediaServerClient.mockReturnValue(
+      fakePlexClient({
+        getSessions: vi.fn().mockResolvedValue([{ sessionKey: 'sess-key-1' }]),
+      })
+    );
     mockMapMediaSession.mockReturnValue({
       sessionKey: 'sess-key-1',
       ratingKey: '1001',
@@ -293,6 +301,41 @@ describe('SSE processor pause edge', () => {
     );
     const types = mockDispatch.mock.calls.map((c) => (c[0] as { type: string }).type);
     expect(types).not.toContain('session.paused');
+  });
+
+  describe('session.watched', () => {
+    const watchedRule = {
+      id: 'rule-w',
+      triggers: [{ id: 'node-w', type: 'session.watched', enabled: true }],
+    };
+
+    function watchedDispatches() {
+      return mockDispatch.mock.calls
+        .map((c) => c[0] as { type: string; session?: { watched: boolean } })
+        .filter((e) => e.type === 'session.watched');
+    }
+
+    beforeEach(() => {
+      mockGetActiveAutomations.mockResolvedValue([watchedRule]);
+      vi.mocked(checkWatchCompletion).mockReturnValueOnce(true);
+    });
+
+    it('dispatches once when a progress tick crosses the threshold', async () => {
+      mockFindActiveSession.mockResolvedValue({ ...existingSession('playing'), watched: false });
+
+      await emit('plex:session:progress', { state: 'playing' });
+
+      expect(watchedDispatches()).toHaveLength(1);
+      expect(watchedDispatches()[0]?.session?.watched).toBe(true);
+    });
+
+    it('dispatches once when a state change crosses the threshold', async () => {
+      mockFindActiveSession.mockResolvedValue({ ...existingSession('playing'), watched: false });
+
+      await emit('plex:session:paused');
+
+      expect(watchedDispatches()).toHaveLength(1);
+    });
   });
 
   it('dispatches nothing when a paused row receives a buffering progress tick', async () => {

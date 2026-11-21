@@ -17,17 +17,20 @@ import {
   type LibraryDuplicateFilesQueryInput,
   type DuplicateFileStatus,
   type DuplicateFilesResponse,
+  type ServerType,
 } from '@tracearr/shared';
 import { db } from '../../db/client.js';
 import { createMediaServerClient } from '../../services/mediaServer/index.js';
+import { NOT_NEEDED } from '../../services/mediaServer/types.js';
 import { resolveServerIds, buildMultiServerFragment } from '../../utils/serverFiltering.js';
 import { buildLibraryCacheKey } from './utils.js';
+import { serverCacheSegment } from '../../lib/scope.js';
 
 interface ItemRow {
   id: string;
   rating_key: string;
   server_id: string;
-  server_type: 'plex' | 'jellyfin' | 'emby';
+  server_type: ServerType;
   server_url: string;
   server_token: string;
   server_historical_at: string | null;
@@ -48,8 +51,8 @@ export const libraryDuplicateFilesRoute: FastifyPluginAsync = async (app) => {
 
       const cacheKey = buildLibraryCacheKey(
         REDIS_KEYS.LIBRARY_DUPLICATE_FILES,
-        resolvedIds ? resolvedIds.slice().sort().join(',') : 'all',
-        itemIds.slice().sort().join(',')
+        serverCacheSegment(resolvedIds),
+        itemIds.toSorted().join(',')
       );
       const cached = await app.redis.get(cacheKey);
       if (cached) {
@@ -97,10 +100,10 @@ export const libraryDuplicateFilesRoute: FastifyPluginAsync = async (app) => {
           id: serverId,
           name: serverId,
         });
-        if (!client.checkFilesExist) continue;
 
         try {
           const existence = await client.checkFilesExist(serverRows.map((r) => r.rating_key));
+          if (existence === NOT_NEEDED) continue;
           checked = true;
           for (const row of serverRows) {
             for (const [serverVersionKey, exists] of existence.get(row.rating_key) ?? []) {

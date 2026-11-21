@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
@@ -112,7 +112,7 @@ describe('PosterCard', () => {
     const chip = screen.getByText('2');
     expect(chip).toHaveAttribute('aria-hidden', 'true');
     expect(chip).toHaveClass('text-transparent');
-    expect(chip.style.textShadow).toContain('hsl(var(--foreground) / 0.45)');
+    expect(chip.style.textShadow).toContain('oklch(var(--foreground) / 0.45)');
     expect(chip).not.toHaveClass('bg-black/60');
   });
 
@@ -133,9 +133,9 @@ describe('PosterCard', () => {
 
   it('renders double-digit ranks at the same size as single digits', () => {
     renderCard({ rank: 12 });
-    expect(screen.getByText('12')).toHaveClass('text-[26px]', 'tabular-nums');
+    expect(screen.getByText('12')).toHaveClass('text-2xl', 'tabular-nums');
     renderCard({ rank: 2 });
-    expect(screen.getByText('2')).toHaveClass('text-[26px]');
+    expect(screen.getByText('2')).toHaveClass('text-2xl');
   });
 
   it('tracks the poster hover lift on the rank numeral so it never drifts from the poster on hover', () => {
@@ -320,7 +320,7 @@ describe('PosterCard', () => {
     const { container } = renderCard({ posterUrl: null, dominantColor: null });
     const small = container.querySelector('small');
     const fallback = small!.parentElement!;
-    expect(fallback.getAttribute('style')).toContain('linear-gradient(160deg, hsl(var(--muted))');
+    expect(fallback.getAttribute('style')).toContain('linear-gradient(160deg, oklch(var(--muted))');
   });
 
   it('names the accessible watched suffix "by you" when the requester watched it', () => {
@@ -414,5 +414,19 @@ describe('buildPosterSrc', () => {
     const src = buildPosterSrc(url, 'abc12345', { lqip: true });
     const parsed = new URL(src, 'http://localhost');
     expect(parsed.searchParams.get('lqip')).toBe('1');
+  });
+
+  it('keeps the subpath when Tracearr runs under BASE_PATH', async () => {
+    const base = document.createElement('base');
+    base.href = `${window.location.origin}/tracearr/`;
+    document.head.appendChild(base);
+    try {
+      vi.resetModules();
+      const { buildPosterSrc: build } = await import('./PosterCard');
+      expect(build(url, null)).toMatch(/^\/tracearr\/api\/v1\/images\/proxy\?/);
+    } finally {
+      base.remove();
+      vi.resetModules();
+    }
   });
 });

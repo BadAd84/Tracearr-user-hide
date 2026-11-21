@@ -13,7 +13,7 @@ export function ShelfSkeleton({
 }) {
   return (
     <div className="space-y-3">
-      <h2 className="text-[16px] font-semibold tracking-[-0.01em]">{title}</h2>
+      <h2 className="text-base font-semibold tracking-[-0.01em]">{title}</h2>
       <div className="flex gap-4 overflow-x-hidden">
         {Array.from({ length: 6 }).map((_, index) => (
           <div key={index} className="w-[138px] shrink-0 space-y-1.5">
@@ -77,7 +77,7 @@ export function Shelf({
     <section aria-labelledby={headingId} className={cn('space-y-2', className)}>
       <div className="flex items-center gap-2">
         {Icon && <Icon className="text-primary h-5 w-5" />}
-        <h2 id={headingId} className="text-[16px] font-semibold tracking-[-0.01em]">
+        <h2 id={headingId} className="text-base font-semibold tracking-[-0.01em]">
           {title}
         </h2>
         {caption && <span className="text-muted-foreground ml-1 text-xs">{caption}</span>}
@@ -94,6 +94,7 @@ export function Shelf({
           matching -ml-1.5 cancels pl-1.5's visual shift so the row still lines
           up with the heading above it. */}
       <ul
+        // oxlint-disable-next-line jsx-a11y/no-redundant-roles -- Safari drops list semantics once Tailwind resets list-style
         role="list"
         className="-ml-1.5 flex snap-x snap-proximity scrollbar-thin gap-4 overflow-x-auto pt-3 pb-2 pl-1.5"
       >

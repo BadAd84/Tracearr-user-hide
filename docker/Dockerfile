@@ -1,10 +1,16 @@
 # syntax=docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+
+# Must match packageManager in package.json.
+# renovate: datasource=npm depName=pnpm versioning=npm
+ARG PNPM_VERSION=12.20.0
+
 # Build stage
-FROM node:24-alpine3.23@sha256:0468540aa58203ff9e40c2aab3907c52644ab818af6176b1c70a026137dc92a2 AS builder
+FROM node:26-alpine3.23@sha256:39d8c143e60e99ae98f014bebea1e72fc96d3c9bdf9504bc3a27af5c05bfa39f AS builder
 
 # pnpm's install script is what puts its native binary in place. corepack never runs it,
 # and npm 12 blocks it unless allowed, so both leave pnpm's shebang-less fallback shim instead.
-RUN npm install -g --allow-scripts=pnpm pnpm@12.3.4
+ARG PNPM_VERSION
+RUN npm install -g --allow-scripts=pnpm pnpm@${PNPM_VERSION}
 
 WORKDIR /app
 
@@ -27,9 +33,10 @@ COPY --exclude=data . .
 RUN pnpm turbo run build --filter=@tracearr/shared --filter=@tracearr/server --filter=@tracearr/web
 
 # Production stage
-FROM node:24-alpine3.23@sha256:0468540aa58203ff9e40c2aab3907c52644ab818af6176b1c70a026137dc92a2 AS runner
+FROM node:26-alpine3.23@sha256:39d8c143e60e99ae98f014bebea1e72fc96d3c9bdf9504bc3a27af5c05bfa39f AS runner
 
-RUN npm install -g --allow-scripts=pnpm pnpm@12.3.4
+ARG PNPM_VERSION
+RUN npm install -g --allow-scripts=pnpm pnpm@${PNPM_VERSION}
 
 RUN apk upgrade --no-cache && apk add --no-cache postgresql-client
 
@@ -37,7 +44,7 @@ RUN apk upgrade --no-cache && apk add --no-cache postgresql-client
 # trails upstream, so this takes Tailscale's static build at the same pin as
 # Dockerfile.supervised.
 # renovate: datasource=deb depName=tailscale
-ARG TAILSCALE_VERSION=1.104.2
+ARG TAILSCALE_VERSION=1.104.7
 ARG TARGETARCH
 RUN wget -qO /tmp/tailscale.tgz "https://pkgs.tailscale.com/stable/tailscale_${TAILSCALE_VERSION}_${TARGETARCH}.tgz" \
     && tar -xzf /tmp/tailscale.tgz -C /tmp \

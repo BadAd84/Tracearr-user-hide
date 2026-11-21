@@ -315,7 +315,7 @@ describe('media detail for a member', () => {
     await app.inject({ method: 'GET', url: `/library/media/${MEDIA}/season-heat` });
 
     expect(vi.mocked(getSeasonHeat).mock.calls[0]?.[2]).toBe('u-member');
-    expect(cacheWrites().some((key) => key.includes('season-heat:member:u-member'))).toBe(true);
+    expect(cacheWrites().some((key) => key.includes('season-heat-v2:member:u-member'))).toBe(true);
   });
 
   it('shows a member their own title stats unless the owner shows server activity', async () => {
@@ -341,7 +341,9 @@ describe('media detail for a member', () => {
         server_id: SERVER,
         username: null,
         identity_name: null,
+        person_name: 'someone',
         thumb: null,
+        thumb_server_id: null,
       },
       plays: 1,
       watch_time_ms: 0,

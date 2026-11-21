@@ -22,6 +22,7 @@ import { registerLibrariesRoutes } from './libraries.js';
 import { registerMediaRoutes } from './media.js';
 import { registerServersRoutes } from './servers.js';
 import { registerStreamsRoutes } from './streams.js';
+import { registerTopMediaRoutes } from './topMedia.js';
 import { registerUsersRoutes } from './users.js';
 import { registerViolationsRoutes } from './violations.js';
 import { registerWatchedMediaRoutes } from './watchedMedia.js';
@@ -49,8 +50,8 @@ export const publicV2Routes: FastifyPluginAsync = async (app) => {
     async (request, reply) => {
       const spec = generateOpenAPIDocumentV2() as Record<string, unknown>;
 
-      // Derive basePath from the pre-rewrite URL so Swagger UI's "Try it out"
-      // sends requests to the correct prefixed path (e.g. /tracearr/api/v2/...)
+      // Derive basePath from the pre-rewrite URL so the API reference's test requests
+      // go to the correct prefixed path (e.g. /tracearr/api/v2/...)
       const originalPath = (request.originalUrl ?? request.url).split('?')[0] ?? '';
       const basePath = originalPath.replace(/\/api\/v2\/public\/docs$/, '');
       if (basePath) {
@@ -102,6 +103,7 @@ export const publicV2Routes: FastifyPluginAsync = async (app) => {
   registerUsersRoutes(app, routeConfig);
   registerLibrariesRoutes(app, routeConfig);
   registerWatchedMediaRoutes(app, routeConfig);
+  registerTopMediaRoutes(app, routeConfig);
   registerViolationsRoutes(app, routeConfig);
   registerServersRoutes(app, routeConfig);
   registerEventsRoutes(app, routeConfig);

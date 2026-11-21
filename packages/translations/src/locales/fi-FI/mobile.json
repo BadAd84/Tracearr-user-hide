@@ -112,8 +112,13 @@
     "noViolationSender": "",
     "noAutomationSends": "",
     "eventsFooter": "",
+    "sharedEventsFooter": "",
     "sentByAutomations_one": "",
-    "sentByAutomations_other": ""
+    "sentByAutomations_other": "",
+    "alsoSentBy_one": "",
+    "alsoSentBy_other": "",
+    "scopedSenders_one": "",
+    "scopedSenders_other": ""
   },
   "session": {
     "streamTerminated": "Striimi lopetettu",
@@ -128,6 +133,7 @@
     "noTerminations": "Ei lopetettuja striimejä",
     "lastSeen": "Viimeksi nähty {{relative}}",
     "terminatedBy": "Tekijä: @{{username}}",
+    "terminatedByName": "",
     "trustScoreConfirm": "Asetetaanko käyttäjän @{{username}} luottamuspisteiksi {{score}}?",
     "trustScoreRange": "Käyttäjän @{{username}} luottamuspisteet, 0 - 100.",
     "moreLocations_one": "+{{count}} sijainti lisää",

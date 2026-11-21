@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
+import { isJellyfinEmby } from '@/lib/serverType';
 import { isNotPermitted, toastNotPermitted } from '@/lib/signInRefusal';
 import {
   useMemberSignIn,
@@ -91,7 +92,7 @@ function MemberCredentials({
   const signedIn = useRef(false);
 
   const signIn = useMemberSignIn();
-  const wantsCode = server.type === 'jellyfin' && server.quickConnect && !passwordChosen;
+  const wantsCode = server.quickConnect && !passwordChosen;
   const code = useQuickConnectCode(server.id, attempt, wantsCode);
   const check = useQuickConnectCheck(wantsCode ? code.data?.handle : undefined);
 
@@ -120,9 +121,10 @@ function MemberCredentials({
 
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!isJellyfinEmby(server.type)) return;
     signIn.mutate(
       {
-        type: server.type === 'emby' ? 'emby' : 'jellyfin',
+        type: server.type,
         serverId: server.id,
         username: username.trim(),
         password,
@@ -141,6 +143,7 @@ function MemberCredentials({
         ) : expired ? (
           <output className="bg-muted/50 flex flex-col items-center gap-3 rounded-lg p-4 text-center">
             <p className="text-sm font-medium">{t('pages:login.member.codeExpired')}</p>
+            {/* oxlint-disable-next-line jsx-a11y/no-autofocus -- requesting a new code is the only action left */}
             <Button type="button" autoFocus onClick={requestNewCode}>
               {t('pages:login.member.newCode')}
             </Button>
@@ -220,7 +223,7 @@ function MemberCredentials({
         {signIn.isPending ? <Loader2 className="animate-spin" /> : <KeyRound />}
         {t('common:actions.signIn')}
       </Button>
-      {server.type === 'jellyfin' && server.quickConnect && passwordChosen && (
+      {server.quickConnect && passwordChosen && (
         <Button
           type="button"
           variant="link"
