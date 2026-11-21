@@ -57,7 +57,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: steps.merge.outputs.merged == 'true'
         with:
-          node-version: 24
+          node-version: 26
 
       - name: Fetch the private fork-test suite
         if: steps.merge.outputs.merged == 'true'
